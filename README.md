@@ -11,11 +11,11 @@
     <br/>
   </p>
 
-<h2 style="color: yellow">О проекте</h2>
+## О проекте
 
 Телеграм-бот, предназначенный для проведения очных квестов-игр несколькими командами!
 
-<h2 style="color: yellow">Технологии</h2>
+## Технологии
 
 * [Java](https://www.java.com/ru/)
 * [Spring Boot](https://www.java.com/ru/)
@@ -23,33 +23,33 @@
 * [PostgreSQL](https://www.postgresql.org/)
 * [Liquibase](https://www.liquibase.org/)
 
-<h2 style="color: yellow">Начало работы</h2>
+## Начало работы
 
 <Будет дополнено>
 
-<h3 style="color: grey; margin-left: 50px">Перед установкой</h3>
-    <ul style="padding-left: 80px;">
-        <li> Неодходимо JRE версии 11 и выше
-    </ul>
+### Перед установкой
+<ul style="padding-left: 80px;">
+    <li> Неодходимо JRE версии 11 и выше
+</ul>
 
-<h3 style="color: grey; margin-left: 50px">Установка</h3>
+### Установка
 <ul style="padding-left: 80px;">
     <li> Будет дополнено
 </ul>
 
-<h2 style="color: yellow">Использование</h2>
+## Использование
 
 <Будет дополнено>
 
-<h2 style="color: yellow">Планы</h2>
+## Планы
 
 :white_check_mark: Сделать версию 1.0
 
 ## Над проектом работают
 ### "The Coffee Coders"
-* **Владимир** - *Начинающий backend-developer* - [GitHub](https://github.com/ezuykow/)</br>
-* **Дмитрий** - *Начинающий backend-developer* - [GitHub](https://github.com/AblDm)</br>
-* **Анатолий** - *Начинающий backend-developer* - [GitHub](https://github.com/Virusec)</br>
-* **Анна** - *Начинающий backend-developer* - [GitHub](https://github.com/AnnaAskerova)</br>
-* **Максим** - *Начинающий backend-developer* - [GitHub](https://github.com/maks2001916)</br>
+* **Владимир** - *Начинающий backend-developer* - [GitHub](https://github.com/ezuykow/)
+* **Дмитрий** - *Начинающий backend-developer* - [GitHub](https://github.com/AblDm)
+* **Анатолий** - *Начинающий backend-developer* - [GitHub](https://github.com/Virusec)
+* **Анна** - *Начинающий backend-developer* - [GitHub](https://github.com/AnnaAskerova)
+* **Максим** - *Начинающий backend-developer* - [GitHub](https://github.com/maks2001916)
 
