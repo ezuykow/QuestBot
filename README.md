@@ -1,7 +1,7 @@
 <br/>
 <p style="text-align: center;">
   <a href="https://github.com/ezuykow/QuestBot">
-    <img src="https://github.com/ezuykow/QuestBot/blob/master/src/main/resources/pictures/logo.png" alt="Logo" width="80" height="80">
+    <img src="https://github.com/ezuykow/QuestBot/blob/master/src/main/resources/pictures/logo.png?raw=true" alt="Logo" width="80" height="80">
   </a>
 <h1 style="text-align: center; color: greenyellow">QuestBot</h1>
 
@@ -31,8 +31,8 @@
     <ul style="padding-left: 80px;">
         <li> Неодходимо JRE версии 11 и выше
     </ul>
-
 <h3 style="color: grey; margin-left: 50px">Установка</h3>
+
     <ul style="padding-left: 80px;">
         <li> <Будет дополнено>
     </ul>
@@ -47,9 +47,9 @@
 
 <h2 style="color: yellow">Над проектом работают</h2>
 <h2 style="padding-left: 120px; color: red">The Coffee Coders</h2>
-* **Владимир** - *Начинающий backend-developer* - [GitHub](https://github.com/ezuykow/)
-* **Дмитрий** - *Начинающий backend-developer* - [GitHub](https://github.com/AblDm)
-* **Анатолий** - *Начинающий backend-developer* - [GitHub](https://github.com/Virusec)
-* **Анна** - *Начинающий backend-developer* - [GitHub](https://github.com/AnnaAskerova)
-* **Максим** - *Начинающий backend-developer* - [GitHub](https://github.com/maks2001916)
+* **Владимир** - *Начинающий backend-developer* - [GitHub](https://github.com/ezuykow/)</br>
+* **Дмитрий** - *Начинающий backend-developer* - [GitHub](https://github.com/AblDm)</br>
+* **Анатолий** - *Начинающий backend-developer* - [GitHub](https://github.com/Virusec)</br>
+* **Анна** - *Начинающий backend-developer* - [GitHub](https://github.com/AnnaAskerova)</br>
+* **Максим** - *Начинающий backend-developer* - [GitHub](https://github.com/maks2001916)</br>
 
