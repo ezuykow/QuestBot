@@ -45,8 +45,8 @@
 
 :white_check_mark: Сделать версию 1.0
 
-<h2 style="color: yellow">Над проектом работают</h2>
-<h3 style="padding-left: 120px; color: red">The Coffee Coders</h3>
+## Над проектом работают
+### "The Coffee Coders"
 * **Владимир** - *Начинающий backend-developer* - [GitHub](https://github.com/ezuykow/)</br>
 * **Дмитрий** - *Начинающий backend-developer* - [GitHub](https://github.com/AblDm)</br>
 * **Анатолий** - *Начинающий backend-developer* - [GitHub](https://github.com/Virusec)</br>
