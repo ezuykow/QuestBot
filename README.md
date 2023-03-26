@@ -31,11 +31,11 @@
     <ul style="padding-left: 80px;">
         <li> Неодходимо JRE версии 11 и выше
     </ul>
-<h3 style="color: grey; margin-left: 50px">Установка</h3>
 
-    <ul style="padding-left: 80px;">
-        <li> <Будет дополнено>
-    </ul>
+<h3 style="color: grey; margin-left: 50px">Установка</h3>
+<ul style="padding-left: 80px;">
+    <li> Будет дополнено
+</ul>
 
 <h2 style="color: yellow">Использование</h2>
 
@@ -46,7 +46,7 @@
 :white_check_mark: Сделать версию 1.0
 
 <h2 style="color: yellow">Над проектом работают</h2>
-<h2 style="padding-left: 120px; color: red">The Coffee Coders</h2>
+<h3 style="padding-left: 120px; color: red">The Coffee Coders</h3>
 * **Владимир** - *Начинающий backend-developer* - [GitHub](https://github.com/ezuykow/)</br>
 * **Дмитрий** - *Начинающий backend-developer* - [GitHub](https://github.com/AblDm)</br>
 * **Анатолий** - *Начинающий backend-developer* - [GitHub](https://github.com/Virusec)</br>
