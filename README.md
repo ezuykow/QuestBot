@@ -1,7 +1,7 @@
 <br/>
 <p style="text-align: center;">
   <a href="https://github.com/ezuykow/QuestBot">
-    <img src="https://github.com/ezuykow/QuestBot/tree/master/src/main/resources/pictures/logo.png" alt="Logo" width="80" height="80">
+    <img src="https://github.com/ezuykow/QuestBot/blob/master/src/main/resources/pictures/logo.png" alt="Logo" width="80" height="80">
   </a>
 <h1 style="text-align: center; color: greenyellow">QuestBot</h1>
 
