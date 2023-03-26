@@ -3,13 +3,10 @@
   <a href="https://github.com/ezuykow/QuestBot">
     <img src="https://github.com/ezuykow/QuestBot/blob/master/src/main/resources/pictures/logo.png?raw=true" alt="Logo" width="80" height="80">
   </a>
-<h1 style="text-align: center; color: greenyellow">QuestBot</h1>
 
-  <p style="text-align: center;">
-    Телеграм-бот для проведения квестов
-    <br/>
-    <br/>
-  </p>
+# QuestBot
+
+Телеграм-бот для проведения квестов. Текущая версия ***0.0.1***
 
 ## О проекте
 
