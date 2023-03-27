@@ -10,37 +10,37 @@ public class Admin {
 
     @Id
     @Column(name = "admin_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "admins_admin_id_seq")
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long adminId;
 
     @Column(name = "tg_user_id")
-    private long TgUserId;
+    private long tgUserId;
 
     @Column(name = "tg_admin_chat_id")
-    private long TgAdminChatId;
+    private long tgAdminChatId;
 
-    public long getId() {
-        return id;
+    public long getAdminId() {
+        return adminId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setAdminId(long id) {
+        this.adminId = id;
     }
 
     public long getTgUserId() {
-        return TgUserId;
+        return tgUserId;
     }
 
     public void setTgUserId(long tgUserId) {
-        TgUserId = tgUserId;
+        this.tgUserId = tgUserId;
     }
 
     public long getTgAdminChatId() {
-        return TgAdminChatId;
+        return tgAdminChatId;
     }
 
     public void setTgAdminChatId(long tgAdminChatId) {
-        TgAdminChatId = tgAdminChatId;
+        this.tgAdminChatId = tgAdminChatId;
     }
 
     @Override
@@ -48,20 +48,20 @@ public class Admin {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Admin admin = (Admin) o;
-        return id == admin.id;
+        return adminId == admin.adminId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(adminId);
     }
 
     @Override
     public String toString() {
         return "Admin{" +
-                "id=" + id +
-                ", TgUserId=" + TgUserId +
-                ", TgAdminChatId=" + TgAdminChatId +
+                "id=" + adminId +
+                ", TgUserId=" + tgUserId +
+                ", TgAdminChatId=" + tgAdminChatId +
                 '}';
     }
 }
