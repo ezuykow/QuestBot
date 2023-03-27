@@ -13,9 +13,10 @@ public class AdminsCommandActions {
 
     /**
      * Методы
-     * newGameCommand()
-     * alreadyRunningGamesCommand()
-     * questionsCommand()
+     * newGameCommand(long chatId, int userId)
+     * alreadyRunningGamesCommand(long chatId, int userId)
+     * questionsCommand(long chatId, int userId)
+     * defaultKeyboardNotAdmin(long chatId)
      */
     private final KeyboardButton visitChatButton = new KeyboardButton("Посетить чат сообщества");
     //логика кнопки Игра по станциям
@@ -76,17 +77,22 @@ public class AdminsCommandActions {
         SendResponse response = msgSender.send(request);
     }
 
-    public void questionsCommand(long chatId) {
-        replyText = "Выберите действие:";
-        KeyboardButton openBankButton = new KeyboardButton("Открыть банк вопросов");
-        //логика кнопки "Открыть банк вопросов"
-        KeyboardButton addQuestionButton = new KeyboardButton("Добавить вопрос");
-        //логика кнопки "Добавить вопрос"
-        KeyboardButton[] buttonsRow1 = new KeyboardButton[]{openBankButton,addQuestionButton};
-        KeyboardButton[] buttonsRow2 = new KeyboardButton[]{returnKeyboardButton};
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(buttonsRow1, buttonsRow2);
-        SendMessage request = new SendMessage(chatId, replyText).replyMarkup(keyboardMarkup);
-        SendResponse response = msgSender.send(request);
+    public void questionsCommand(long chatId, int userId) {
+        if (isAdmin(userId)) {
+            replyText = "Выберите действие:";
+            KeyboardButton openBankButton = new KeyboardButton("Открыть банк вопросов");
+            //логика кнопки "Открыть банк вопросов"
+            KeyboardButton addQuestionButton = new KeyboardButton("Добавить вопрос");
+            //логика кнопки "Добавить вопрос"
+            KeyboardButton[] buttonsRow1 = new KeyboardButton[]{openBankButton, addQuestionButton};
+            KeyboardButton[] buttonsRow2 = new KeyboardButton[]{returnKeyboardButton};
+            ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(buttonsRow1, buttonsRow2);
+            SendMessage request = new SendMessage(chatId, replyText).replyMarkup(keyboardMarkup);
+            SendResponse response = msgSender.send(request);
+
+        } else {
+            defaultKeyboardNotAdmin(chatId);
+        }
     }
 
     public void exitToKeyboardCommand(long chatId) {
