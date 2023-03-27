@@ -10,3 +10,9 @@ CREATE TABLE admins(
 -- changeset ezuykow:2
 ALTER TABLE admins
     DROP COLUMN tg_admin_chat_id;
+
+-- changeset ezuykow:3
+DROP TABLE admins;
+CREATE TABLE admins(
+    tg_admin_user_id BIGINT PRIMARY KEY
+);
