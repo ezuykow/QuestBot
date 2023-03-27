@@ -33,6 +33,9 @@ public class Question {
     @Column(name = "last_usage")
     private Date lastUsage;
 
+    @Column(name = "group")
+    private String group;
+
     public long getQuestionId() {
         return questionId;
     }
@@ -81,6 +84,14 @@ public class Question {
         this.lastUsage = lastUsage;
     }
 
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -103,6 +114,7 @@ public class Question {
                 ", answer='" + answer + '\'' +
                 ", mapUrl present='" + !mapUrl.isBlank() + '\'' +
                 ", lastUsage=" + lastUsage +
+                ", group='" + group + '\'' +
                 '}';
     }
 }
