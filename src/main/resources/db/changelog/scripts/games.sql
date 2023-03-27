@@ -11,3 +11,9 @@ CREATE TABLE games(
     min_questions_count_in_game INT CHECK ( min_questions_count_in_game > -1 ),
     questions_count_to_add INT CHECK ( questions_count_to_add > -1 )
 );
+
+-- changeset ezuykow:2
+ALTER TABLE games
+    RENAME COLUMN "groups" TO groups_id;
+ALTER TABLE games
+    ALTER COLUMN groups_id TYPE INT[] USING groups_id::INT[];
