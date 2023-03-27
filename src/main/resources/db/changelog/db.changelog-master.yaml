@@ -9,3 +9,5 @@ databaseChangeLog:
       file: db/changelog/scripts/questions.sql
   - include:
       file: db/changelog/scripts/question_groups.sql
+  - include:
+      file: db/changelog/scripts/games.sql
