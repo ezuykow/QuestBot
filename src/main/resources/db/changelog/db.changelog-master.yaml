@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/scripts/admin_chats.sql
   - include:
       file: db/changelog/scripts/global_chats.sql
+  - include:
+      file: db/changelog/scripts/questions.sql
