@@ -6,3 +6,7 @@ CREATE TABLE admins(
     tg_user_id BIGINT NOT NULL ,
     tg_admin_chat_id BIGINT NOT NULL
 );
+
+-- changeset ezuykow:2
+ALTER TABLE admins
+    DROP COLUMN tg_admin_chat_id;
