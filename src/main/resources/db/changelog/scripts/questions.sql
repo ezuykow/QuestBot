@@ -9,3 +9,7 @@ CREATE TABLE questions(
     map_url TEXT ,
     last_usage DATE
 );
+
+-- changeset ezuykow:2
+ALTER TABLE questions
+    ADD COLUMN "group" TEXT NOT NULL DEFAULT 'General';
