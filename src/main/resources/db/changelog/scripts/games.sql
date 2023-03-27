@@ -17,3 +17,7 @@ ALTER TABLE games
     RENAME COLUMN "groups" TO groups_id;
 ALTER TABLE games
     ALTER COLUMN groups_id TYPE INT[] USING groups_id::INT[];
+
+-- changeset ezuykow:3
+ALTER TABLE games
+    RENAME COLUMN groups_id TO groups_ids;

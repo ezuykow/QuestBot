@@ -20,6 +20,6 @@ public class Game {
     @Column(name = "global_chat_id")
     private long globalChatId;
 
-    @Column(name = "groups")
-    private Object groups;
+    @Column(name = "groups_id")
+    private int[] groupsIds;
 }

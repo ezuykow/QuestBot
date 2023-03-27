@@ -4,10 +4,7 @@
 
 package ru.coffeecoders.questbot.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
@@ -16,15 +13,19 @@ import java.util.Objects;
 public class QuestionGroup {
 
     @Id
+    @Column(name = "group_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int groupId;
+
     @Column(name = "group_name")
     private String groupName;
 
-    public String getGroupName() {
-        return groupName;
+    public int getGroupId() {
+        return groupId;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
     @Override
@@ -32,18 +33,19 @@ public class QuestionGroup {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         QuestionGroup that = (QuestionGroup) o;
-        return groupName.equals(that.groupName);
+        return groupId == that.groupId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(groupName);
+        return Objects.hash(groupId);
     }
 
     @Override
     public String toString() {
         return "QuestionGroup{" +
-                "groupName='" + groupName + '\'' +
+                "groupId=" + groupId +
+                ", groupName='" + groupName + '\'' +
                 '}';
     }
 }
