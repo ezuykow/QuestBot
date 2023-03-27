@@ -1,3 +1,7 @@
+/**
+ * Author: ezuykow
+ */
+
 package ru.coffeecoders.questbot.entities;
 
 import jakarta.persistence.*;
@@ -16,9 +20,6 @@ public class Admin {
     @Column(name = "tg_user_id")
     private long tgUserId;
 
-    @Column(name = "tg_admin_chat_id")
-    private long tgAdminChatId;
-
     public long getAdminId() {
         return adminId;
     }
@@ -33,14 +34,6 @@ public class Admin {
 
     public void setTgUserId(long tgUserId) {
         this.tgUserId = tgUserId;
-    }
-
-    public long getTgAdminChatId() {
-        return tgAdminChatId;
-    }
-
-    public void setTgAdminChatId(long tgAdminChatId) {
-        this.tgAdminChatId = tgAdminChatId;
     }
 
     @Override
@@ -60,8 +53,7 @@ public class Admin {
     public String toString() {
         return "Admin{" +
                 "id=" + adminId +
-                ", TgUserId=" + tgUserId +
-                ", TgAdminChatId=" + tgAdminChatId +
+                ", tgUserId=" + tgUserId +
                 '}';
     }
 }

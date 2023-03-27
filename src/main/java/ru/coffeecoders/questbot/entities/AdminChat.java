@@ -1,3 +1,7 @@
+/**
+ * Author: ezuykow
+ */
+
 package ru.coffeecoders.questbot.entities;
 
 import jakarta.persistence.*;
