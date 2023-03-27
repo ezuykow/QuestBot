@@ -13,27 +13,15 @@ import java.util.Objects;
 public class AdminChat {
 
     @Id
-    @Column(name = "admin_chat_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long adminChatId;
+    @Column(name = "tg_admin_chat_id")
+    private long tgAdminChatId;
 
-    @Column(name = "tg_chat_id")
-    private long tgChatId;
-
-    public long getAdminChatId() {
-        return adminChatId;
+    public long getTgAdminChatId() {
+        return tgAdminChatId;
     }
 
-    public void setAdminChatId(long adminChatId) {
-        this.adminChatId = adminChatId;
-    }
-
-    public long getTgChatId() {
-        return tgChatId;
-    }
-
-    public void setTgChatId(long tgChatId) {
-        this.tgChatId = tgChatId;
+    public void setTgAdminChatId(long tgAdminChatId) {
+        this.tgAdminChatId = tgAdminChatId;
     }
 
     @Override
@@ -41,19 +29,18 @@ public class AdminChat {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AdminChat adminChat = (AdminChat) o;
-        return adminChatId == adminChat.adminChatId;
+        return tgAdminChatId == adminChat.tgAdminChatId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(adminChatId);
+        return Objects.hash(tgAdminChatId);
     }
 
     @Override
     public String toString() {
         return "AdminChat{" +
-                "adminChatId=" + adminChatId +
-                ", tgChatId=" + tgChatId +
+                "tgAdminChatId=" + tgAdminChatId +
                 '}';
     }
 }

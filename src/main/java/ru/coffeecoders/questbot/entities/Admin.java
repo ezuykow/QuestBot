@@ -13,27 +13,15 @@ import java.util.Objects;
 public class Admin {
 
     @Id
-    @Column(name = "admin_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long adminId;
+    @Column(name = "tg_admin_user_id")
+    private long tgAdminUserId;
 
-    @Column(name = "tg_user_id")
-    private long tgUserId;
-
-    public long getAdminId() {
-        return adminId;
+    public long getTgAdminUserId() {
+        return tgAdminUserId;
     }
 
-    public void setAdminId(long id) {
-        this.adminId = id;
-    }
-
-    public long getTgUserId() {
-        return tgUserId;
-    }
-
-    public void setTgUserId(long tgUserId) {
-        this.tgUserId = tgUserId;
+    public void setTgAdminUserId(long tgAdminUserId) {
+        this.tgAdminUserId = tgAdminUserId;
     }
 
     @Override
@@ -41,19 +29,18 @@ public class Admin {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Admin admin = (Admin) o;
-        return adminId == admin.adminId;
+        return tgAdminUserId == admin.tgAdminUserId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(adminId);
+        return Objects.hash(tgAdminUserId);
     }
 
     @Override
     public String toString() {
         return "Admin{" +
-                "id=" + adminId +
-                ", tgUserId=" + tgUserId +
+                "tgAdminUserId=" + tgAdminUserId +
                 '}';
     }
 }
