@@ -43,7 +43,7 @@ public class AdminsCommandActions {
             KeyboardButton byStationsButton = new KeyboardButton("Игра по станциям");
             //логика кнопки Игра по станциям
             KeyboardButton backButton = new KeyboardButton("Назад");
-            //логика кнопки Назад
+            //логика кнопки Назад (своя)
             KeyboardButton[] buttonsRow1 = new KeyboardButton[]{freeModeButton, byStationsButton};
             KeyboardButton[]  buttonsRow2 = new KeyboardButton[]{backButton,returnToMain};
             Keyboard keyboardMarkup = new ReplyKeyboardMarkup(buttonsRow1, buttonsRow2).selective(true);
@@ -86,8 +86,10 @@ public class AdminsCommandActions {
             //логика кнопки "Открыть банк вопросов" - тут переход в метод
             KeyboardButton addQuestionButton = new KeyboardButton("Добавить вопрос");
             //логика кнопки "Добавить вопрос"
+            KeyboardButton backButton = new KeyboardButton("Назад");
+            //логика кнопки Назад (своя)
             KeyboardButton[] buttonsRow1 = new KeyboardButton[]{openBankButton, addQuestionButton};
-            KeyboardButton[] buttonsRow2 = new KeyboardButton[]{returnKeyboardButton,returnToMain };
+            KeyboardButton[] buttonsRow2 = new KeyboardButton[]{backButton,returnToMain };
             ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(buttonsRow1, buttonsRow2);
             SendMessage request = new SendMessage(chatId, replyText).replyMarkup(keyboardMarkup);
             SendResponse response = msgSender.send(request);
@@ -104,8 +106,10 @@ public class AdminsCommandActions {
             //логика кнопки "Выбрать и удалить"
             KeyboardButton editQuestion = new KeyboardButton("Выбрать и редактировать");
             //логика кнопки "Добавить вопрос"
+            KeyboardButton backButton = new KeyboardButton("Назад");
+            //логика кнопки Назад (своя)
             KeyboardButton[] buttonsRow1 = new KeyboardButton[]{deleteQuestion,editQuestion };
-            KeyboardButton[] buttonsRow2 = new KeyboardButton[]{returnToMain};
+            KeyboardButton[] buttonsRow2 = new KeyboardButton[]{returnToMain, backButton};
             ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(buttonsRow1, buttonsRow2);
             SendMessage request = new SendMessage(chatId, replyText).replyMarkup(keyboardMarkup);
             SendResponse response = msgSender.send(request);
