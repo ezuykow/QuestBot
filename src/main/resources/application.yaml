@@ -1,0 +1,3 @@
+spring:
+  config:
+    import: classpath:properties/sql.prepared.statements.yaml
