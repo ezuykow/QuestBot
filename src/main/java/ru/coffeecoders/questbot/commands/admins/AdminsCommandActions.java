@@ -34,6 +34,15 @@ public class AdminsCommandActions {
         this.msgSender = msgSender;
     }
 
+    private void defaultKeyboardNotAdmin(long chatId) {
+        replyText = "Это технический чат, вы можете посетить наше сообщество";
+        KeyboardButton[] buttonsRow1 = new KeyboardButton[]{visitChatButton};
+        KeyboardButton[] buttonsRow2 = new KeyboardButton[]{returnKeyboardButton};
+        Keyboard keyboardMarkup = new ReplyKeyboardMarkup(buttonsRow1, buttonsRow2).selective(true);
+        SendMessage request = new SendMessage(chatId, replyText).replyMarkup(keyboardMarkup);
+        SendResponse response = msgSender.send(request);
+    }
+
     public void newGameCommand(long chatId, int userId) {
 
        if(isAdmin(userId)) {
@@ -70,14 +79,6 @@ public class AdminsCommandActions {
         }
     }
 
-    private void defaultKeyboardNotAdmin(long chatId) {
-        replyText = "Это технический чат, вы можете посетить наше сообщество";
-        KeyboardButton[] buttonsRow1 = new KeyboardButton[]{visitChatButton};
-        KeyboardButton[] buttonsRow2 = new KeyboardButton[]{returnKeyboardButton};
-        Keyboard keyboardMarkup = new ReplyKeyboardMarkup(buttonsRow1, buttonsRow2).selective(true);
-        SendMessage request = new SendMessage(chatId, replyText).replyMarkup(keyboardMarkup);
-        SendResponse response = msgSender.send(request);
-    }
 
     public void questionsCommand(long chatId, int userId) {
         if (isAdmin(userId)) {
