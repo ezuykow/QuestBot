@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
+import ru.coffeecoders.questbot.commands.admins.keybords.DefaultAdminKeyboard;
 
 public class QuestionsCommandsAdminKeyboard {
 
@@ -12,21 +13,18 @@ public class QuestionsCommandsAdminKeyboard {
     }
 
     private final DefaultAdminKeyboard defaultAmKb;
-
+    //TODO логика кнопки "Открыть банк вопросов" - тут переход в метод"Добавить вопрос"кнопки Назад (своя)
     public void questionsCommand(long chatId, int userId) {
         if (isAdmin(userId)) {
             String replyText = "Выберите действие:";
             KeyboardButton openBankButton = new KeyboardButton("Открыть банк вопросов");
-            //логика кнопки "Открыть банк вопросов" - тут переход в метод
             KeyboardButton addQuestionButton = new KeyboardButton("Добавить вопрос");
-            //логика кнопки "Добавить вопрос"
             KeyboardButton backButton = new KeyboardButton("Назад");
-            //логика кнопки Назад (своя)
             KeyboardButton[] buttonsRow1 = new KeyboardButton[]{openBankButton, addQuestionButton};
             KeyboardButton[] buttonsRow2 = new KeyboardButton[]{backButton, returnToMain};
             ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(buttonsRow1, buttonsRow2);
             SendMessage request = new SendMessage(chatId, replyText).replyMarkup(keyboardMarkup);
-            SendResponse response = msgSender.poll(request);
+            msgSender.poll(request);
 
         } else {
             defaultAmKb.defaultKeyboardNotAdmin(chatId);

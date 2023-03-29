@@ -1,12 +1,7 @@
 package ru.coffeecoders.questbot.commands.admins.keybords;
 
 import com.pengrad.telegrambot.model.request.KeyboardButton;
-import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
-import com.pengrad.telegrambot.request.SendMessage;
-import com.pengrad.telegrambot.response.SendResponse;
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.commands.admins.keybords.DefaultAdminKeyboard;
-import ru.coffeecoders.questbot.commands.admins.keybords.NewGameAdminKeyboard;
 
 @Component
 public class AdminsCommandActions {
@@ -28,11 +23,14 @@ public class AdminsCommandActions {
     private final AdminCommandsMsgSender msgSender;
     private final DefaultAdminKeyboard defaultAmKb;
     private final NewGameAdminKeyboard newGameAmKb;
-    public AdminsCommandActions(AdminCommandsMsgSender msgSender, DefaultAdminKeyboard defaultAdminKeyboard, NewGameAdminKeyboard newGameAmKb) {
+
+    private final KeyboardFactory keyboardFactory;
+    public AdminsCommandActions(AdminCommandsMsgSender msgSender, DefaultAdminKeyboard defaultAdminKeyboard, NewGameAdminKeyboard newGameAmKb, KeyboardFactory keyboardFactory) {
 
         this.msgSender = msgSender;
         this.defaultAmKb = defaultAdminKeyboard;
         this.newGameAmKb = newGameAmKb;
+        this.keyboardFactory = keyboardFactory;
     }
 
 
@@ -41,43 +39,18 @@ public class AdminsCommandActions {
     //TODO ??.isAdmin(userId)
 
 
+
+
+
     private void defaultNotAdmin(long chatId) {
         defaultAmKb.defaultKeyboardNotAdmin(chatId);
+
+        keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.NEW_GAME);
     }
     public void newGameCommand(long chatId, int userId) {
 
     }
 
-    public void questionsCommand(long chatId, int userId) {
-        if (isAdmin(userId)) {
-
-        } else {
-            defaultAmKb.defaultKeyboardNotAdmin(chatId);
-        }
-    }
-
-
-
-
-
-
-    public void allRunningGamesCommand(long chatId, int userId) {
-        if (isAdmin(userId)) {
-
-        } else {
-            defaultKeyboardNotAdmin(chatId);
-        }
-    }
-
-// нужно решить по сколько вопросов выводит бот //
-    public void showQuestionList(long chatId, int userId) {
-        if (isAdmin(userId)) {
-
-        } else {
-            defaultKeyboardNotAdmin(chatId);
-        }
-
-    }
 
 
 

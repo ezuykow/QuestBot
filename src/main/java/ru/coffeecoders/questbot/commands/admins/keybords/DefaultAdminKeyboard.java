@@ -17,17 +17,15 @@ public class DefaultAdminKeyboard {
         this.msgSender = msgSender;
     }
 
-    private final KeyboardButton visitChatButton = new KeyboardButton("Посетить чат сообщества");
-    //логика кнопки Игра по станциям
-    private final KeyboardButton returnKeyboardButton = new KeyboardButton("Вернуть клавиатуру");
+
 
     public void defaultKeyboardNotAdmin(long chatId) {
         String replyText = "Это технический код, вы можете посетить наше сообщество";
         KeyboardButton[] buttonsRow1 = new KeyboardButton[]{visitChatButton};
         KeyboardButton[] buttonsRow2 = new KeyboardButton[]{returnKeyboardButton};
         Keyboard keyboardMarkup = new ReplyKeyboardMarkup(buttonsRow1, buttonsRow2).selective(true);
-        //SendMessage request = new SendMessage(chatId, replyText).replyMarkup(keyboardMarkup);
-        //SendResponse response = msgSender.send(request);
+        SendMessage request = new SendMessage(chatId, replyText).replyMarkup(keyboardMarkup);
+        SendResponse response = msgSender.send(request);
     }
 
     public void exitToKeyboardCommand(long chatId) {
