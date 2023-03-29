@@ -2,18 +2,18 @@ package ru.coffeecoders.questbot.dynamic.tables;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.dynamic.tables.creators.PlayersTableCreator;
 import ru.coffeecoders.questbot.dynamic.tables.creators.TasksTableCreator;
 import ru.coffeecoders.questbot.dynamic.tables.creators.TeamsTableCreator;
 
-import java.util.List;
 import java.util.Map;
 
 @Component
 public class DynamicTablesManager {
 
-    @Value("${dynamic.tables.teams.postfix}")
+    @Value("${dynamic.tables.teams.namePostfix}")
     private String teamsTableNamePostfix;
-    @Value("${dynamic.tables.players.postfix}")
+    @Value("${dynamic.tables.players.namePostfix}")
     private String playersTableNamePostfix;
     @Value("${dynamic.tables.tasks.mapKey}")
     private String tasksKey;
@@ -24,12 +24,14 @@ public class DynamicTablesManager {
 
     private final TasksTableCreator tasksCreator;
     private final TeamsTableCreator teamsCreator;
+    private final PlayersTableCreator playersCreator;
 
     private Map<String, String> tablesNames;
 
-    public DynamicTablesManager(TasksTableCreator tasksCreator, TeamsTableCreator teamsCreator) {
+    public DynamicTablesManager(TasksTableCreator tasksCreator, TeamsTableCreator teamsCreator, PlayersTableCreator playersCreator) {
         this.tasksCreator = tasksCreator;
         this.teamsCreator = teamsCreator;
+        this.playersCreator = playersCreator;
     }
 
     public Map<String, String> createTables(String gameName, Long tgChatId) {
@@ -37,8 +39,7 @@ public class DynamicTablesManager {
         createTablesNames(gameName, tgChatId);
         tasksCreator.createTable(tablesNames.get(tasksKey));
         teamsCreator.createTable(tablesNames.get(teamsKey));
-        //TODO players
-
+        playersCreator.createTable(tablesNames.get(playersKey));
 
         return tablesNames;
     }
