@@ -16,7 +16,7 @@ public class UpdateManager {
     }
 
     private void checkTextForCommand(String text) {
-        if (text.matches("/.*")) {
+        if (text.trim().matches("/.*")) {
             //TODO
         }
     }
