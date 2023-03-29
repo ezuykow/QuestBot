@@ -12,16 +12,16 @@ import java.sql.SQLException;
 public class PlayerMapper implements RowMapper<Player> {
 
     @Value("${dynamic.tables.players.idColumn}")
-    private String tgUserIdColumn;
+    private String tgUserIdColumnName;
     @Value("${dynamic.tables.players.teamNameColumn}")
-    private String teamNameColumn;
+    private String teamNameColumnName;
 
     @Override
     public Player mapRow(ResultSet rs, int rowNum) throws SQLException {
 
         Player player = new Player();
-        player.setTgUserId(rs.getLong(tgUserIdColumn));
-        player.setTeamName(rs.getString(teamNameColumn));
+        player.setTgUserId(rs.getLong(tgUserIdColumnName));
+        player.setTeamName(rs.getString(teamNameColumnName));
 
         return player;
     }
