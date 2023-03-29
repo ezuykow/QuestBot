@@ -5,7 +5,7 @@ import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 @Component
-public class QuestionKeyboardCreator extends ReplyKeyboardMarkup implements Keyboard {
+public class QuestionKeyboardCreator implements Keyboard {
 
 
     @Value("${keyboard.questions.show}")
@@ -13,8 +13,8 @@ public class QuestionKeyboardCreator extends ReplyKeyboardMarkup implements Keyb
     @Value("${keyboard.questions.add}")
     private static String addNewQuestion;
 
-    public QuestionKeyboardCreator(KeyboardButton[]... keyboard) {
-        super(keyboard);
+    protected QuestionKeyboardCreator(QuestionKeyboardCreator questionKeyboardCreator) {
+        this.questionKeyboardCreator = questionKeyboardCreator;
     }
 
     public QuestionKeyboardCreator getQuestionKeyboardCreator() {
@@ -44,6 +44,6 @@ public class QuestionKeyboardCreator extends ReplyKeyboardMarkup implements Keyb
     }
 
     private static ReplyKeyboardMarkup makeKeyboard(KeyboardButton[][] buttonRows) {
-        return new QuestionKeyboardCreator(buttonRows);
+        return new ReplyKeyboardMarkup(buttonRows);
     }
 }

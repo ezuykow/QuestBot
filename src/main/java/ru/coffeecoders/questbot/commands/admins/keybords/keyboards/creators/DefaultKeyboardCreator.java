@@ -8,19 +8,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class DefaultKeyboardCreator extends ReplyKeyboardMarkup implements Keyboard {
 
-
-
-
     @Value("${keyboard.defaultKb.toGroup}")
     private static String goToGroup;
     @Value("${keyboard.defaultKb.returnKb}")
     private static String buttonReturn;
 
-    public DefaultKeyboardCreator(KeyboardButton[]... keyboard) {
+    private DefaultKeyboardCreator(KeyboardButton[]... keyboard) {
         super(keyboard);
     }
 
+    DefaultKeyboardCreator defaultKeyboardCreator;
 
+    public DefaultKeyboardCreator getDefaultKeyboardCreator() {
+        return defaultKeyboardCreator;
+    }
 
     public static ReplyKeyboardMarkup createDefaultKeyboard() {
         KeyboardButton[] buttonArray = makeButtonArray();

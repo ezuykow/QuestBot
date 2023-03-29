@@ -10,13 +10,18 @@ public class KeyboardFactory implements Keyboard {
         NEW_GAME,MAIN_ADMIN,QUESTIONS_MENU
     }
 
-    public KeyboardFactory(KeyboardSender keyboardSender) {
+    private KeyboardFactory(KeyboardSender keyboardSender) {
         this.keyboardSender = keyboardSender;
     }
 
-    private final KeyboardSender keyboardSender;
+    public KeyboardFactory() {
+    }
 
+    private KeyboardSender keyboardSender;
 
+    public KeyboardSender getKeyboardSender() {
+        return keyboardSender;
+    }
 
     public void createKeyboard(KeyboardType keyboardType){
         switch (keyboardType){

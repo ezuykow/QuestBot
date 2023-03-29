@@ -6,11 +6,6 @@ import org.springframework.stereotype.Component;
 public class AdminsCommandActions {
 
 
-    //TODO msgSender.getAllGames();
-    //TODO msgSender.send(request);
-    //TODO ??.isAdmin(userId)
-
-
 
 
 
