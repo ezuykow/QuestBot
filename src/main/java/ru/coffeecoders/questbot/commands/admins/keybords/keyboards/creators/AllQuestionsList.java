@@ -5,7 +5,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 
 
-public class AllQuestionsKeyboard {
+public class AllQuestionsList {
 
 
     public void allRunningGamesCommand(Update update) {
