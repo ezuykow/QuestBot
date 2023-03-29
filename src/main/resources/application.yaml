@@ -4,15 +4,33 @@ dao:
 
 dynamic:
   tables:
+    createStatementPrefix: "CREATE TABLE "
+
     tasks:
+      mapKey: tasks
       idColumn: task_id
       questionIdColumn: question_id
       performedTeamNameColumn: performed_team_name
+      createStatementPostfix: >
+        (
+          task_id SERIAL PRIMARY KEY ,
+          question_id BIGINT UNIQUE NOT NULL ,
+          performed_team_name VARCHAR(100)
+        )
+
     teams:
+      mapKey: teams
       postfix: _teams
       idColumn: team_name
       scoreColumn: score
+      createStatementPostfix: >
+        (
+          team_name VARCHAR(100) PRIMARY KEY ,
+          score INT NOT NULL DEFAULT (0)
+        )
+
     players:
+      mapKey: players
       postfix: _players
       idColumn: tg_user_id
       teamNameColumn: team_name
