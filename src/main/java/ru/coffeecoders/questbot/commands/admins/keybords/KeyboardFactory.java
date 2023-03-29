@@ -1,10 +1,10 @@
 package ru.coffeecoders.questbot.commands.admins.keybords;
 
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.commands.admins.keybords.creators.NewGameKeyboardCreator;
 
 @Component
 public class KeyboardFactory {
-
 
     public enum KeyboardType {
         NEW_GAME
@@ -18,7 +18,7 @@ public class KeyboardFactory {
 
     public void createKeyboard(KeyboardType keyboardType){
         switch (keyboardType){
-            case NEW_GAME -> keyboardSender.sendKeyboard(new NewGameAdminKeyboard());
+            case NEW_GAME -> keyboardSender.sendKeyboard(NewGameKeyboardCreator.createNewGameKeyboard());
         }
 
     }
