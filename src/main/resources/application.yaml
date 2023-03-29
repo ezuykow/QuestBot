@@ -1,0 +1,11 @@
+dao:
+  player:
+    statement:
+      findAll: SELECT * FROM ?
+
+dynamic:
+  tables:
+    players:
+      postfix: _players
+      idColumn: tg_user_id
+      teamNameColumn: team_name
