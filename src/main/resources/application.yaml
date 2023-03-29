@@ -1,10 +1,17 @@
 dao:
-  player:
-    statement:
-      findAll: SELECT * FROM ?
+  statements:
+    findAll: SELECT * FROM ?
 
 dynamic:
   tables:
+    tasks:
+      idColumn: task_id
+      questionIdColumn: question_id
+      performedTeamNameColumn: performed_team_name
+    teams:
+      postfix: _teams
+      idColumn: team_name
+      scoreColumn: score
     players:
       postfix: _players
       idColumn: tg_user_id
