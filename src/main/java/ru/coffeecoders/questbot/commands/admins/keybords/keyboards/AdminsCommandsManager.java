@@ -19,21 +19,18 @@ public class AdminsCommandsManager {
         this.defaultKeyboardCreator = defaultKeyboardCreator;
     }
 
-    public void chooseKeyboard(String keyboardType, Update update) {
-        if (isAdmin(update.message().chat().id())) {
+    public void chooseKeyboard(String KbType, Update update) {
             KeyboardFactory.KeyboardType chosenType = null;
             for (KeyboardFactory.KeyboardType type : KeyboardFactory.KeyboardType.values()) {
-                if (type.name().equals(keyboardType)) {
+                if (type.name().equals(KbType)) {
                     chosenType = type;
                     break;
                 }
             }
             if (chosenType != null) {
-                keyboardFactory.createKeyboard(chosenType);
+                keyboardFactory.createKeyboard(chosenType, update);
             }
-        } else {
-            DefaultKeyboardCreator.createDefaultKeyboard();
-        }
+
     }
 }
 
