@@ -11,9 +11,9 @@ public class MainKeyboardCreator extends ReplyKeyboardMarkup implements Keyboard
 
     @Value("${keyboard.mainKb.newGame}")
     private static String buttonNewGame;
-    @Value("${keyboard.belongGame.belongGame}")
+    @Value("${keyboard.mainKb.belongGame}")
     private static String buttonCurrentGame;
-    @Value("${keyboard.belongGame.questions}")
+    @Value("${keyboard.mainKb.questions}")
     private static String buttonQuestions;
 
     private MainKeyboardCreator(KeyboardButton[]... keyboard) {

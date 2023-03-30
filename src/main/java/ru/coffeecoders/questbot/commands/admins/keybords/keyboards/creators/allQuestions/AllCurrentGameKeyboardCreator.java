@@ -1,4 +1,4 @@
-package ru.coffeecoders.questbot.commands.admins.keybords.keyboards.creators;
+package ru.coffeecoders.questbot.commands.admins.keybords.keyboards.creators.allQuestions;
 
 public class AllCurrentGameKeyboardCreator {
 

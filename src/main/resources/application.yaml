@@ -21,3 +21,28 @@ dynamic:
       namePostfix: _players
       idColumn: tg_user_id
       teamNameColumn: team_name
+
+keyboard:
+  newGame:
+    annotation: Выбор типа игры
+    returnMain: Вернуться в главное меню
+    freeMode: Свободный режим
+    stationMode: Игра по станциям
+    back: Назад
+
+  defaultKb:
+    returnKb: вернуть клавиатуру
+    toGroup: посетить сообщество
+
+  mainKb:
+    newGame: Новая игра
+    belongGame: Текущие игры
+    questions: Вопросы
+  Questions:
+    show: смотреть банк вопросов
+    add: добавить вопрос
+
+  allQuestions:
+    delete: удалить
+    edit: редактировать
+    show_news: показать обновлённый список вопросов
