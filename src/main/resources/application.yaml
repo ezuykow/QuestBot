@@ -1,3 +1,7 @@
+spring:
+  config:
+    import: classpath:messages/messages.yaml
+
 dynamic:
   tables:
     tasks:
