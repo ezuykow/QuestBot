@@ -1,5 +1,6 @@
 package ru.coffeecoders.questbot.commands.admins.keybords.keyboards.creators;
 
+import com.pengrad.telegrambot.request.EditMessageText;
 import ru.coffeecoders.questbot.entities.Question;
 import ru.coffeecoders.questbot.repositories.QuestionRepository;
 
@@ -35,7 +36,18 @@ public class AllQuestionKeyboardMetods {
     }
 
 
-    //TODO 4 метод замены сообщения
+
+    //TODO 4 метод замены сообщения - перенести
+    public void editMessage(long chatId, int messageId, String newText) {
+        messageSender.editerMes(new EditMessageText(chatId, messageId, newText));
+    }
+    public void editerMes(long chatId, int messageId, String newText) {
+        telegramBot.execute(new EditMessageText(chatId, messageId, newText));
+    }
+
+    //TODO 4.1 метод замены сообщения уточнить что будем передавать (текст должен быть из свича или метода)
+    // / уточнить что будет если апдэйт уже не существует
+
     //TODO 5 метод замены клавиатуры
 
 
