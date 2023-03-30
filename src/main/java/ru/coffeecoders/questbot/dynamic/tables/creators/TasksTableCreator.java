@@ -7,10 +7,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class TasksTableCreator {
 
-    @Value("${dynamic.tables.createStatementPrefix}")
-    private String createTablePrefix;
-    @Value("${dynamic.tables.tasks.createStatementPostfix}")
-    private String createTasksTablePreparedStatementPostfix;
+    @Value("${dynamic.tables.tasks.idColumn}")
+    private String idColumnName;
+    @Value("${dynamic.tables.tasks.questionIdColumn}")
+    private String questionIdColumnName;
+    @Value("${dynamic.tables.tasks.performedTeamNameColumn}")
+    private String performedTeamNameColumnName;
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -19,7 +21,12 @@ public class TasksTableCreator {
     }
 
     public void createTable(String tableName) {
-        final String statement = createTablePrefix + tableName + createTasksTablePreparedStatementPostfix;
+        final String statement = String.format("CREATE TABLE %s (" +
+                        "%s SERIAL PRIMARY KEY ," +
+                        "%s BIGINT UNIQUE NOT NULL ," +
+                        "%s VARCHAR(100)" +
+                        ")",
+                tableName, idColumnName, questionIdColumnName, performedTeamNameColumnName);
         jdbcTemplate.update(statement);
     }
 }
