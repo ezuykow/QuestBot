@@ -58,3 +58,6 @@ keyboard:
   questions:
     show: смотреть банк вопросов
     add: добавить вопрос
+  allQuestions:
+    edit: Изменить вопрос из списка
+    delete: Удалить вопрос из списка

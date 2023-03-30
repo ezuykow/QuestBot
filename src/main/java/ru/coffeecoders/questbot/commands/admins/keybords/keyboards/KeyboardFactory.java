@@ -14,7 +14,7 @@ public class KeyboardFactory implements Keyboard {
         this.keyboardSender = keyboardSender;
     }
 
-    public KeyboardFactory() {
+    private KeyboardFactory() {
     }
 
     private KeyboardSender keyboardSender;
@@ -23,10 +23,11 @@ public class KeyboardFactory implements Keyboard {
         return keyboardSender;
     }
 
+    //TODO String replyText = "Это технический чат, вы можете посетить наше сообщество";
+    //TODO String reply String replyText = "Выберите действие:";
     public void createKeyboard(KeyboardType keyboardType){
         switch (keyboardType){
-            // String replyText = "Это технический чат, вы можете посетить наше сообщество";
-            //reply         String replyText = "Выберите действие:";
+
             case NEW_GAME -> keyboardSender.sendKeyboard((Keyboard) NewGameKeyboardCreator.newGameKeyboardCreate());
             case QUESTIONS_MENU -> keyboardSender.sendKeyboard((Keyboard) QuestionKeyboardCreator.createQuestionKeyboard());
             case MAIN_ADMIN -> keyboardSender.sendKeyboard((Keyboard) MainKeyboardCreator.MainKeyboardCreate());
