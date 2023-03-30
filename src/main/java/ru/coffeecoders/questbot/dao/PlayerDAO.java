@@ -24,7 +24,7 @@ public class PlayerDAO {
     }
 
     public List<Player> findAll(String tableName) {
-        final String statement = "SELECT * FROM " + tableName;
+        final String statement = String.format("SELECT * FROM %s", tableName);
         return jdbcTemplate.query(statement, playerMapper);
     }
 

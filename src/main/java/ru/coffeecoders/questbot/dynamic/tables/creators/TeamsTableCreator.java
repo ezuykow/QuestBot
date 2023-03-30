@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class TeamsTableCreator {
 
-    @Value("${dynamic.tables.createStatementPrefix}")
-    private String createTablePrefix;
-    @Value("${dynamic.tables.teams.createStatementPostfix}")
-    private String createTeamsTableStatementPostfix;
+    @Value("${dynamic.tables.teams.idColumn}")
+    private String idColumnName;
+    @Value("${dynamic.tables.teams.scoreColumn}")
+    private String scoreColumnName;
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -19,7 +19,11 @@ public class TeamsTableCreator {
     }
 
     public void createTable(String tableName) {
-        final String statement = createTablePrefix + tableName + createTeamsTableStatementPostfix;
+        final String statement = String.format("CREATE TABLE %s (" +
+                        "%s VARCHAR(100) PRIMARY KEY ," +
+                        "%s INT NOT NULL DEFAULT (0)" +
+                        ")",
+                tableName, idColumnName, scoreColumnName);
         jdbcTemplate.update(statement);
     }
 }
