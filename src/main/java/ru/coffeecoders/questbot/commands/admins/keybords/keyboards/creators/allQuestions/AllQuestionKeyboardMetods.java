@@ -1,6 +1,10 @@
 package ru.coffeecoders.questbot.commands.admins.keybords.keyboards.creators.allQuestions;
 
+import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.EditMessageText;
+import com.pengrad.telegrambot.request.SendMessage;
 import ru.coffeecoders.questbot.entities.Question;
 import ru.coffeecoders.questbot.repositories.QuestionRepository;
 
@@ -16,11 +20,11 @@ public class AllQuestionKeyboardMetods {
     private int currentPage = 0;
 
     public void resizeQuestionsList() {
-
         paginatedQuestions = QuestionService.allQuestionsBySix(allQuestions);
     }
-    //TODO 1 Распарсить на поля для представления до попадания в лист
+
     //TODO 2 создание первой клавиатуры class AllQuestionsKeyboardCreator+
+    // TODO 2.1 создание второй клавиатуры  class AllQuestionsKeyboardRECreator +
 
     //TODO 3 пагинация allQuestionsBySix(List<Question> allQuestion) -> List<List<Question>> paginatedQuestions
 
@@ -53,7 +57,23 @@ public class AllQuestionKeyboardMetods {
     // / уточнить что будет если апдэйт уже не существует...
 
     // TODO 5 метод замены клавиатуры
-    //  TODO 5.1 класс с полями цифр выбора от 1 до 6
+
+    public void switchKeyboard(Update update, InlineKeyboardMarkup newKeyboard) {
+        Message message = update.getMessage();
+        if (message != null) {
+            SendMessage sendMessage = new SendMessage();
+            sendMessage.setChatId(message.getChatId());
+            sendMessage.setText(message.getText());
+            sendMessage.setReplyMarkup(newKeyboard);
+            try {
+                execute(sendMessage);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //
 
 
     //  TODO метод удаления сущности из листа

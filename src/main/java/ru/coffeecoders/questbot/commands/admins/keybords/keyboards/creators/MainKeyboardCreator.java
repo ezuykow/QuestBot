@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MainKeyboardCreator extends ReplyKeyboardMarkup implements Keyboard{
+public class MainKeyboardCreator  implements Keyboard{
 
 
     @Value("${keyboard.mainKb.newGame}")
@@ -16,8 +16,8 @@ public class MainKeyboardCreator extends ReplyKeyboardMarkup implements Keyboard
     @Value("${keyboard.mainKb.questions}")
     private static String buttonQuestions;
 
-    private MainKeyboardCreator(KeyboardButton[]... keyboard) {
-        super(keyboard);
+    private MainKeyboardCreator(MainKeyboardCreator mainKeyboardCreator) {
+        this.mainKeyboardCreator = mainKeyboardCreator;
     }
 
     MainKeyboardCreator mainKeyboardCreator;

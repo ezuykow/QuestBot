@@ -13,7 +13,7 @@ public class QuestionKeyboardCreator implements Keyboard {
     @Value("${keyboard.questions.add}")
     private static String addNewQuestion;
 
-    protected QuestionKeyboardCreator(QuestionKeyboardCreator questionKeyboardCreator) {
+    private QuestionKeyboardCreator(QuestionKeyboardCreator questionKeyboardCreator) {
         this.questionKeyboardCreator = questionKeyboardCreator;
     }
 

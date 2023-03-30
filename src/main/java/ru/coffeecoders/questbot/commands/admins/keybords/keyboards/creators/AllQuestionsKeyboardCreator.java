@@ -1,13 +1,12 @@
-package ru.coffeecoders.questbot.commands.admins.keybords.keyboards.creators.allQuestions;
+package ru.coffeecoders.questbot.commands.admins.keybords.keyboards.creators;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.commands.admins.keybords.keyboards.creators.Keyboard;
 
 @Component
-public class AllQuestionsKeyboardCreator extends InlineKeyboardMarkup implements Keyboard {
+public class AllQuestionsKeyboardCreator implements Keyboard {
     @Value("${keyboard.allQuestions.edit}")
     private static String edits;
 
@@ -52,15 +51,8 @@ public class AllQuestionsKeyboardCreator extends InlineKeyboardMarkup implements
 
         return new InlineKeyboardButton [][] {firstRow, secondRow,thirdRow, fourthRow};
     }
-
-
-
-
-    private static InlineKeyboardMarkup makeArrowKeyboard(InlineKeyboardButton[][] buttonRows) {
+     private static InlineKeyboardMarkup makeArrowKeyboard(InlineKeyboardButton[][] buttonRows) {
         return new InlineKeyboardMarkup(buttonRows);
     }
-
-    //TODO нужно перененести эту логику, попробую сделать
-
 
 }
