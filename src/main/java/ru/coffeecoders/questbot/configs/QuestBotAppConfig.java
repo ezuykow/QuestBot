@@ -18,4 +18,7 @@ public class QuestBotAppConfig {
         bot.execute(new DeleteMyCommands());
         return bot;
     }
+
+
+
 }
