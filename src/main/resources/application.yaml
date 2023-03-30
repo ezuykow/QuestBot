@@ -21,10 +21,3 @@ dynamic:
       namePostfix: _players
       idColumn: tg_user_id
       teamNameColumn: team_name
-
-messages:
-  admins:
-    invalidMessage: Введена неверная команда
-    commandSentByNonAdmin: Эту команду может использовать только админ бота
-    sendAdminsMsgAdminCmdGameChat: Админ оставил сообщение в игровом чате
-    sendGamesMsgAdminChat: В админском чате оставлена игровая команда
