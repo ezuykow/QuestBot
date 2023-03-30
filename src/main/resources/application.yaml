@@ -1,11 +1,41 @@
 dao:
-  player:
-    statement:
-      findAll: SELECT * FROM ?
+  statements:
+    findAll: SELECT * FROM ?
 
 dynamic:
   tables:
+    createStatementPrefix: "CREATE TABLE "
+
+    tasks:
+      mapKey: tasks
+      idColumn: task_id
+      questionIdColumn: question_id
+      performedTeamNameColumn: performed_team_name
+      createStatementPostfix: >
+        (
+          task_id SERIAL PRIMARY KEY ,
+          question_id BIGINT UNIQUE NOT NULL ,
+          performed_team_name VARCHAR(100)
+        )
+
+    teams:
+      mapKey: teams
+      namePostfix: _teams
+      idColumn: team_name
+      scoreColumn: score
+      createStatementPostfix: >
+        (
+          team_name VARCHAR(100) PRIMARY KEY ,
+          score INT NOT NULL DEFAULT (0)
+        )
+
     players:
-      postfix: _players
+      mapKey: players
+      namePostfix: _players
       idColumn: tg_user_id
       teamNameColumn: team_name
+      createStatementPostfix: >
+        (
+          tg_user_id BIGINT PRIMARY KEY ,
+          team_name VARCHAR(100) NOT NULL
+        )

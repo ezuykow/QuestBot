@@ -3,28 +3,28 @@ package ru.coffeecoders.questbot.dao;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.dao.mappers.PlayerMapper;
-import ru.coffeecoders.questbot.models.Player;
+import ru.coffeecoders.questbot.dao.mappers.TeamMapper;
+import ru.coffeecoders.questbot.models.Team;
 
 import java.util.List;
 
 @Component
-public class PlayerDAO {
+public class TeamDAO {
 
     private final JdbcTemplate jdbcTemplate;
-    private final PlayerMapper playerMapper;
+    private final TeamMapper teamMapper;
 
     @Value("${dao.statements.findAll}")
     private String findAllPreparedStatement;
 
-    public PlayerDAO(JdbcTemplate jdbcTemplate, PlayerMapper playerMapper) {
+    public TeamDAO(JdbcTemplate jdbcTemplate, TeamMapper teamMapper) {
         this.jdbcTemplate = jdbcTemplate;
-        this.playerMapper = playerMapper;
+        this.teamMapper = teamMapper;
     }
 
-    public List<Player> findAll(String tableName) {
+    public List<Team> findAll(String tableName) {
         return jdbcTemplate.query(findAllPreparedStatement,
-                playerMapper,
+                teamMapper,
                 tableName);
     }
 }
