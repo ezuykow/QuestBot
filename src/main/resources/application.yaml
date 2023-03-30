@@ -1,7 +1,3 @@
-dao:
-  statements:
-    findAll: SELECT * FROM ?
-
 dynamic:
   tables:
     createStatementPrefix: "CREATE TABLE "
