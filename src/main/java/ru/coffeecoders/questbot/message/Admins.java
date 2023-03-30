@@ -10,16 +10,16 @@ import java.util.List;
 
 public class Admins {
 
-    @Value("@{messages.admins.invalidMessage}")
+    @Value("${messages.admins.invalidMessage}")
     private String invalidCommand;
 
-    @Value("@{messages.admins.commandSentByNonAdmin}")
+    @Value("${messages.admins.commandSentByNonAdmin}")
     private String commandNonAdmin;
 
-    @Value("@{message.admins.sendAdminsMsgAdminCmdGameChat}")
+    @Value("${message.admins.sendAdminsMsgAdminCmdGameChat}")
     private String adminsMsgAdminCmdGameChat;
 
-    @Value("@{message.admins.sendGamesMsgAdminChat}")
+    @Value("${message.admins.sendGamesMsgAdminChat}")
     private String gamesMsgAdminChat;
 
     TelegramBot telegramBot;
