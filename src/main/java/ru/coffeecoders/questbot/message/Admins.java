@@ -24,11 +24,9 @@ public class Admins {
 
     TelegramBot telegramBot;
 
-    public void sendInvalidMsg(List<Update> updates){
-        updates.forEach(update -> {
-            SendMessage message = new SendMessage(update.message().text(), invalidCommand);
-            telegramBot.execute(message);
-        });
+    public void sendInvalidMsg(long chatId){
+        SendMessage message = new SendMessage(chatId, invalidCommand);
+        telegramBot.execute(message);
     }
 
     public void sendNonAdminMsg(List<Update> updates){
