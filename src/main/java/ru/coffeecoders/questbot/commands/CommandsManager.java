@@ -1,70 +1,71 @@
 package ru.coffeecoders.questbot.commands;
 
-import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.request.SendMessage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-//TODO поменять методы классов AdminsCommandsManager, PlayersCommandsManager, AdminService, AdminChatService, GlobalChatService, когда они будут готовы
 
 @Component
 public class CommandsManager {
     private final AdminsCommandsManager adminsCommandsManager;
     private final PlayersCommandsManager playersCommandsManager;
-    private final Commands commands;
     private final AdminService adminService;
     private final AdminChatService adminChatService;
     private final GlobalChatService globalChatService;
-    private final Reports reports;
+    private final CommandsManagerMsgSender managerMsgSender;
 
-    public CommandsManager(AdminsCommandsManager adminsCommandsManager, PlayersCommandsManager playersCommandsManager, TelegramBot telegramBot, Commands commands, AdminService adminService, AdminChatService adminChatService, GlobalChatService globalChatService, Reports reports) {
+    private long chatId;
+
+    public CommandsManager(AdminsCommandsManager adminsCommandsManager, PlayersCommandsManager playersCommandsManager,
+                           AdminService adminService, AdminChatService adminChatService,
+                           GlobalChatService globalChatService, CommandsManagerMsgSender managerMsgSender) {
         this.adminsCommandsManager = adminsCommandsManager;
         this.playersCommandsManager = playersCommandsManager;
-        this.telegramBot = telegramBot;
-        this.commands = commands;
         this.adminService = adminService;
         this.adminChatService = adminChatService;
         this.globalChatService = globalChatService;
-        this.reports = reports;
+        this.managerMsgSender = managerMsgSender;
     }
 
     public void manageCommand(Update update) {
-        String command = update.message().text();
-        if (commands.getAllGlobalAdminsCommands().contains(command)) {
-            return adminsCommandsManager.doSome(update);
-        }
-        if (commands.getAllAdminsCommands().contains(command)) {
-            return checkAdminAndChatId(update);
-        }
-        if (commands.getAllPlayersCommands().contains(command)) {
-            return checkPlayerChatId(update);
-        }
-        telegramBot.execute(new SendMessage(update.message().chat().id(), reports.INVALID_COMMAND));
-
-    }
-
-    private int checkPlayerChatId(Update update) {
-        if (globalChatService.isGlobalChat(update.message().chat().id())) {
-            return playersCommandsManager.doSome(update);
-        } else {
-            telegramBot.execute(new SendMessage(update.message().chat().id(), reports.NOT_GLOBAL_CHAT));
-            return UpdatesListener.CONFIRMED_UPDATES_ALL;
+        String textCommand = update.message().text().trim().substring(1).toUpperCase();
+        try {
+            Commands.Command cmd = Commands.Command.valueOf(textCommand);
+            chatId = update.message().chat().id();
+            manageCommandByAttribute(update, cmd);
+        } catch (IllegalArgumentException e) {
+            //TODO  managerMsgSender.sendInvalidCommandMsg(chatId);
         }
     }
 
-    private int checkAdminAndChatId(Update update) {
-        if (adminService.isAdmin(update.message().from().id())) {
-            if (adminChatService.isAdminChat(update.message().chat().id())) {
-                return adminsCommandsManager.doSome(update);
-            } else {
-                telegramBot.execute(new SendMessage(update.message().chat().id(), reports.NOT_ADMIN_CHAT));
-                return UpdatesListener.CONFIRMED_UPDATES_ALL;
-            }
+    private void manageCommandByAttribute(Update update, Commands.Command cmd) {
+        Commands.Attribute attribute = cmd.getAttribute();
+        switch (attribute) {
+            case GLOBALADMIN -> checkAndSendGlobalAdminsCommand(update, cmd);
+            case PLAYER -> checkAndSendPlayersCommand(update, cmd);
+            case ADMIN -> checkAndSendAdminsCommand(update, cmd);
+        }
+    }
+
+    private void checkAndSendPlayersCommand(Update update, Commands.Command command) {
+        if (globalChatService.findById(chatId).isPresent) {
+            //TODO playersCommandsManager.doSome(update, command);
         } else {
-            telegramBot.execute(new SendMessage(update.message().chat().id(), reports.NOT_ADMIN));
-            return UpdatesListener.CONFIRMED_UPDATES_ALL;
+            //TODO managerMsgSender.sendNotGlobalChatMsg(chatId);
+        }
+    }
+
+    private void checkAndSendAdminsCommand(Update update, Commands.Command command) {
+        if (adminChatService.findById(chatId).isPresent) {
+            checkAndSendGlobalAdminsCommand(update, command);
+        } else {
+            //TODO managerMsgSender.sendNotAdminChatMsg(chatId);
+        }
+    }
+
+    private void checkAndSendGlobalAdminsCommand(Update update, Commands.Command command) {
+        if (adminService.findById(update.message().from().id()).isPresent) {
+            //TODO adminsCommandsManager.doSome(update, command);
+        } else {
+            //TODO managerMsgSender.sendNotAdminMsg(chatId);
         }
     }
 }
