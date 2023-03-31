@@ -7,3 +7,7 @@ CREATE TABLE tasks (
     question_id BIGINT UNIQUE NOT NULL ,
     performed_team_name VARCHAR(100)
 );
+
+-- changeset ezuykow:2
+ALTER TABLE tasks
+    ALTER COLUMN question_id TYPE INT;
