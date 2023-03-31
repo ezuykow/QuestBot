@@ -1,13 +1,7 @@
 package ru.coffeecoders.questbot.commands;
 
-import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.request.SendMessage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-//TODO поменять методы классов AdminsCommandsManager, PlayersCommandsManager, CommandsManagerMsgSender когда они будут готовы
 
 @Component
 public class CommandsManager {
@@ -17,6 +11,8 @@ public class CommandsManager {
     private final AdminChatService adminChatService;
     private final GlobalChatService globalChatService;
     private final CommandsManagerMsgSender managerMsgSender;
+
+    private long chatId;
 
     public CommandsManager(AdminsCommandsManager adminsCommandsManager, PlayersCommandsManager playersCommandsManager,
                            AdminService adminService, AdminChatService adminChatService,
@@ -30,34 +26,46 @@ public class CommandsManager {
     }
 
     public void manageCommand(Update update) {
-        String command = update.message().text().trim().substring(1).toUpperCase();
+        String textCommand = update.message().text().trim().substring(1).toUpperCase();
         try {
-            Commands.Attribute attribute = Commands.AllCommands.valueOf(command).getAttribute();
-            switch (attribute) {
-                case GLOBALADMIN -> checkAndSendGlobalAdminsCommand(update, command);
-                case PLAYER -> checkAndSendPlayersCommand(update, command);
-                case ADMIN -> checkAndSendAdminsCommand(update, command);
-            }
+            Commands.Command cmd = Commands.Command.valueOf(textCommand);
+            chatId = update.message().chat().id();
+            manageCommandByAttribute(update, cmd);
         } catch (IllegalArgumentException e) {
-            managerMsgSender.sendInvalidCommandMsg(update);
+            //TODO  managerMsgSender.sendInvalidCommandMsg(chatId);
         }
     }
 
-    private void checkAndSendPlayersCommand(Update update, String command) {
-        if (globalChatService.findById(update.message().chat().id()).isPresent) {
-            playersCommandsManager.doSome(update, command);
-        } else managerMsgSender.sendNotGlobalChatMsg(update);
+    private void manageCommandByAttribute(Update update, Commands.Command cmd) {
+        Commands.Attribute attribute = cmd.getAttribute();
+        switch (attribute) {
+            case GLOBALADMIN -> checkAndSendGlobalAdminsCommand(update, cmd);
+            case PLAYER -> checkAndSendPlayersCommand(update, cmd);
+            case ADMIN -> checkAndSendAdminsCommand(update, cmd);
+        }
     }
 
-    private void checkAndSendAdminsCommand(Update update, String command) {
-        if (adminChatService.findById(update.message().chat().id()).isPresent) {
+    private void checkAndSendPlayersCommand(Update update, Commands.Command command) {
+        if (globalChatService.findById(chatId).isPresent) {
+            //TODO playersCommandsManager.doSome(update, command);
+        } else {
+            //TODO managerMsgSender.sendNotGlobalChatMsg(chatId);
+        }
+    }
+
+    private void checkAndSendAdminsCommand(Update update, Commands.Command command) {
+        if (adminChatService.findById(chatId).isPresent) {
             checkAndSendGlobalAdminsCommand(update, command);
-        } else managerMsgSender.sendNotAdminChatMsg(update);
+        } else {
+            //TODO managerMsgSender.sendNotAdminChatMsg(chatId);
+        }
     }
 
-    private void checkAndSendGlobalAdminsCommand(Update update, String command) {
+    private void checkAndSendGlobalAdminsCommand(Update update, Commands.Command command) {
         if (adminService.findById(update.message().from().id()).isPresent) {
-            adminsCommandsManager.doSome(update, command);
-        } else managerMsgSender.sendNotAdminMsg(update);
+            //TODO adminsCommandsManager.doSome(update, command);
+        } else {
+            //TODO managerMsgSender.sendNotAdminMsg(chatId);
+        }
     }
 }

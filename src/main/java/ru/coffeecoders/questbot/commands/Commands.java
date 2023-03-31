@@ -6,7 +6,7 @@ import static ru.coffeecoders.questbot.commands.Commands.Attribute.*;
 
 @Component
 public class Commands {
-    public enum AllCommands {
+    public enum Command {
         NEWADMIN(ADMIN),
         NEWGAME(ADMIN),
         PLAYING(ADMIN),
@@ -20,7 +20,7 @@ public class Commands {
 
         private final Attribute attribute;
 
-        AllCommands(Attribute attribute) {
+        Command(Attribute attribute) {
             this.attribute = attribute;
         }
 
