@@ -31,23 +31,21 @@ public class MainAdminsKeyboardCreator {
         KeyboardButton[] buttonArray = makeButtonArray();
         KeyboardButton[][] buttonRows = makeRows(buttonArray);
         ReplyKeyboardMarkup keyboardMarkup = makeKeyboard(buttonRows);
-        return keyboardMarkup;
-        //перенести в менеджер: создать клаву - > отправить логику.
-
+            return keyboardMarkup;
     }
 
     private static KeyboardButton[] makeButtonArray() {
         KeyboardButton returnToMain = new KeyboardButton(buttonNewGame);
         KeyboardButton freeModeButton = new KeyboardButton(buttonCurrentGame);
         KeyboardButton byStationsButton = new KeyboardButton(buttonQuestions);
-        return new KeyboardButton[] {returnToMain, freeModeButton, byStationsButton};
+            return new KeyboardButton[] {returnToMain, freeModeButton, byStationsButton};
     }
 
 
     private static KeyboardButton[][] makeRows(KeyboardButton[] buttonArray) {
         KeyboardButton[] firstRow = new KeyboardButton[] {buttonArray[0], buttonArray[1]};
         KeyboardButton[] secondRow = new KeyboardButton[] {buttonArray[2]};
-        return new KeyboardButton[][] {firstRow, secondRow};
+            return new KeyboardButton[][] {firstRow, secondRow};
     }
 
 

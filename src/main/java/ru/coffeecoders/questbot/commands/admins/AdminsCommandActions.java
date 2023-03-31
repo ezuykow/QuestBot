@@ -28,4 +28,15 @@ public class AdminsCommandActions {
         keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.MAIN_ADMIN, update);
     }
 
+    public void performNewAddQuestionCmd(Update update) {
+    }
+
+    public void performDeleteQuestionCmd(Update update) {
+    }
+
+    public void performEditeQuestionCmd(Update update) {
+    }
+
+    public void performShowQuestionCmd(Update update) {
+    }
 }

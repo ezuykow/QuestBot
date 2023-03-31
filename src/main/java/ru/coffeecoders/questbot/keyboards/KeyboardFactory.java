@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.keyboards.admins.creators.MainAdminsKeyboardCreator;
 import ru.coffeecoders.questbot.keyboards.admins.creators.NewGameKeyboardCreator;
 import ru.coffeecoders.questbot.keyboards.admins.creators.QuestionsMenuKeyboardCreator;
+import ru.coffeecoders.questbot.keyboards.general.creators.ChatTypeSelectKeyboard;
 
 @Component
 public class KeyboardFactory {
@@ -34,7 +35,7 @@ public class KeyboardFactory {
     //TODO String reply String replyText = "Выберите действие:";
     public void createKeyboard(KeyboardType keyboardType, Update update) {
         switch (keyboardType) {
-            case START ->
+            case START -> keyboardSender.sendKeyboard(ChatTypeSelectKeyboard.createChatTypeSelectKeyboard(), update);
             case NEW_GAME -> keyboardSender.sendKeyboard(NewGameKeyboardCreator.newGameKeyboardCreate(), update);
             case QUESTIONS_MENU -> keyboardSender.sendKeyboard(QuestionsMenuKeyboardCreator.createQuestionKeyboard(), update);
             case MAIN_ADMIN -> keyboardSender.sendKeyboard(MainAdminsKeyboardCreator.MainKeyboardCreate(), update);

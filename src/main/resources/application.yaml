@@ -46,3 +46,7 @@ keyboard:
     delete: удалить
     edit: редактировать
     show_news: показать обновлённый список вопросов
+  startBoard:
+    globalChat: Глобальный чат
+    adminChat: Чат администрирования
+
