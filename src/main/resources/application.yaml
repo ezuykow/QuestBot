@@ -38,7 +38,7 @@ keyboard:
     newGame: Новая игра
     belongGame: Текущие игры
     questions: Вопросы
-  Questions:
+  questions:
     show: смотреть банк вопросов
     add: добавить вопрос
 
@@ -46,7 +46,3 @@ keyboard:
     delete: удалить
     edit: редактировать
     show_news: показать обновлённый список вопросов
-
-  questions:
-    add: Добавить вопрос
-    show: Показать вопрос
