@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.models.Task;
+import ru.coffeecoders.questbot.entities.Task;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Component
 public class TaskDAO {
-
+/*
     private static class TaskMapper implements RowMapper<Task> {
 
         @Value("${dynamic.tables.tasks.idColumn}")
@@ -45,13 +45,13 @@ public class TaskDAO {
         this.taskMapper = new TaskMapper();
     }
 
-    /**
+    *//**
      * Поиск всех задач
      * @param tableName имя таблицы, из которой брать задачи
      * @return список задач
-     */
+     *//*
     public List<Task> findAll(String tableName) {
         final String statement = String.format("SELECT * FROM %s", tableName);
         return jdbcTemplate.query(statement, taskMapper);
-    }
+    }*/
 }
