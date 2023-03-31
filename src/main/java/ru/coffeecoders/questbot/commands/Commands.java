@@ -2,19 +2,21 @@ package ru.coffeecoders.questbot.commands;
 
 import org.springframework.stereotype.Component;
 
+import static ru.coffeecoders.questbot.commands.Commands.Attribute.*;
+
 @Component
 public class Commands {
     public enum AllCommands {
-        NEWADMIN(Attribute.ADMIN),
-        NEWGAME(Attribute.ADMIN),
-        PLAYING(Attribute.ADMIN),
-        ADDQUESTION(Attribute.ADMIN),
-        DELETEQUESTION(Attribute.ADMIN),
-        EDITQUESTION(Attribute.ADMIN),
-        SHOWQUESTIONS(Attribute.ADMIN),
-        S(Attribute.ADMIN),
-        ADMINON(Attribute.GLOBALADMIN),
-        START(Attribute.PLAYER);
+        NEWADMIN(ADMIN),
+        NEWGAME(ADMIN),
+        PLAYING(ADMIN),
+        ADDQUESTION(ADMIN),
+        DELETEQUESTION(ADMIN),
+        EDITQUESTION(ADMIN),
+        SHOWQUESTIONS(ADMIN),
+        S(ADMIN),
+        ADMINON(GLOBALADMIN),
+        START(PLAYER);
 
         private final Attribute attribute;
 
