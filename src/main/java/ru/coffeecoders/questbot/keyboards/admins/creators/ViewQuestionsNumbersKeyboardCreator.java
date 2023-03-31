@@ -19,6 +19,8 @@ public class ViewQuestionsNumbersKeyboardCreator {
     // если JHW== 0, || ( JHW==1 &&(lo%5==0) то кнопка вперёд не нужна
     // если (JHW==1 &&(lo%5!=0) то нужна кнопка далее
     // если (JHW>1 &&(lo%5!=0) то нужны обе кнопки
+    //доп проверка на последнюю клаву - как понять что больше не будет апдэйтов  - счётчик?
+    //(JHW>1 &&(lo%5 ==0)
 
     private InlineKeyboardButton[] createButtonArrow(int count) {
         InlineKeyboardButton[] buttons = new InlineKeyboardButton[count];
