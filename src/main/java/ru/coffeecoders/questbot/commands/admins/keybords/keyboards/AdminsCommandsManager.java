@@ -2,6 +2,7 @@ package ru.coffeecoders.questbot.commands.admins.keybords.keyboards;
 
 import com.pengrad.telegrambot.model.Update;
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.commands.Commands;
 import ru.coffeecoders.questbot.commands.admins.keybords.keyboards.creators.DefaultKeyboardCreator;
 
 @Component
@@ -19,10 +20,10 @@ public class AdminsCommandsManager {
         this.defaultKeyboardCreator = defaultKeyboardCreator;
     }
 
-    public void chooseKeyboard(String KbType, Update update) {
+    public void chooseKeyboard(Commands.AdminsCommands KbType, Update update) {
             KeyboardFactory.KeyboardType chosenType = null;
             for (KeyboardFactory.KeyboardType type : KeyboardFactory.KeyboardType.values()) {
-                if (type.name().equals(KbType)) {
+                if (type.equals(KbType)) {
                     chosenType = type;
                     break;
                 }
