@@ -20,7 +20,7 @@ public class Task {
     private String gameName;
 
     @Column(name = "question_id")
-    private long questionId;
+    private int questionId;
 
     @Column(name = "performed_team_name")
     private String performedTeamName;
@@ -41,11 +41,11 @@ public class Task {
         this.gameName = gameName;
     }
 
-    public long getQuestionId() {
+    public int getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(long questionId) {
+    public void setQuestionId(int questionId) {
         this.questionId = questionId;
     }
 

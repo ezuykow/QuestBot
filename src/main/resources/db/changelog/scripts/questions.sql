@@ -13,3 +13,7 @@ CREATE TABLE questions(
 -- changeset ezuykow:2
 ALTER TABLE questions
     ADD COLUMN "group" TEXT NOT NULL DEFAULT 'General';
+
+-- changeset ezuykow:3
+ALTER TABLE questions
+    ALTER COLUMN question_id TYPE INT;
