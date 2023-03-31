@@ -1,6 +1,5 @@
 package ru.coffeecoders.questbot.dao;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.dao.mappers.TaskMapper;
@@ -14,17 +13,13 @@ public class TaskDAO {
     private final JdbcTemplate jdbcTemplate;
     private final TaskMapper taskMapper;
 
-    @Value("${dao.statements.findAll}")
-    private String findAllPreparedStatement;
-
     public TaskDAO(JdbcTemplate jdbcTemplate, TaskMapper taskMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.taskMapper = taskMapper;
     }
 
     public List<Task> findAll(String tableName) {
-        return jdbcTemplate.query(findAllPreparedStatement,
-                taskMapper,
-                tableName);
+        final String statement = String.format("SELECT * FROM %s", tableName);
+        return jdbcTemplate.query(statement, taskMapper);
     }
 }
