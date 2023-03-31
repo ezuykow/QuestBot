@@ -25,18 +25,22 @@ public class AdminsCommandActions {
     }
 
     public void performStartCmd(Update update) {
+        keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.START, update);
+    }
+
+   public void performMainCmd(Update update) {
         keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.MAIN_ADMIN, update);
     }
 
     public void performNewAddQuestionCmd(Update update) {
-    }
-
-    public void performDeleteQuestionCmd(Update update) {
-    }
-
-    public void performEditeQuestionCmd(Update update) {
+        keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.ADDQUESTION, update);
     }
 
     public void performShowQuestionCmd(Update update) {
+        keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.SHOWQUESTIONS, update);
+    }
+
+    public void performQuestionMenuCmd(Update update) {
+        keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.QUESTIONS_MENU, update);
     }
 }

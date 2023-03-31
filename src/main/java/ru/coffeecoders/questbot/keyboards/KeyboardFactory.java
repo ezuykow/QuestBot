@@ -15,7 +15,10 @@ public class KeyboardFactory {
         NEW_ADMIN,
         NEW_GAME,
         MAIN_ADMIN,
-        QUESTIONS_MENU
+        QUESTIONS_MENU,
+        ADDQUESTION,
+        SHOWQUESTIONS,
+
     }
 
     private KeyboardFactory(KeyboardSender keyboardSender) {
@@ -39,6 +42,10 @@ public class KeyboardFactory {
             case NEW_GAME -> keyboardSender.sendKeyboard(NewGameKeyboardCreator.newGameKeyboardCreate(), update);
             case QUESTIONS_MENU -> keyboardSender.sendKeyboard(QuestionsMenuKeyboardCreator.createQuestionKeyboard(), update);
             case MAIN_ADMIN -> keyboardSender.sendKeyboard(MainAdminsKeyboardCreator.MainKeyboardCreate(), update);
+            case ADDQUESTION -> keyboardSender.sendKeyboard(, update);
+
+            case SHOWQUESTIONS -> keyboardSender.sendKeyboard(QuestionsMenuKeyboardCreator.createQuestionKeyboard(), update);
+
         }
     }
 }

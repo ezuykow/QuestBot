@@ -18,6 +18,9 @@ public class KeyboardSender {
     public void changeKeyboard(Keyboard keyboard, Update update) {
         msgSender.sendMessage(keyboard, update);
     }
+    public void changeText(Keyboard keyboard, Update update, String editedUpdateText) {
+        msgSender.sendMessage(keyboard, update, editedUpdateText);
+    }
 
 
 }

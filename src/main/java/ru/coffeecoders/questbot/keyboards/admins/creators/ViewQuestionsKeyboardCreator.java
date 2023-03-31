@@ -12,12 +12,12 @@ public class ViewQuestionsKeyboardCreator {
 
    @Value("${keyboard.allQuestions.delete}")
     private static String deletes;
-    private ViewQuestionsKeyboardCreator viewQuestionsKeyboardCreator;
 
     @Value("${keyboard.allQuestions.show_news}")
     static
     String show_news;
 
+    private ViewQuestionsKeyboardCreator viewQuestionsKeyboardCreator;
     private ViewQuestionsKeyboardCreator(ViewQuestionsKeyboardCreator viewQuestionsKeyboardCreator) {
         this.viewQuestionsKeyboardCreator = viewQuestionsKeyboardCreator;
     }
@@ -37,8 +37,7 @@ public class ViewQuestionsKeyboardCreator {
     private static InlineKeyboardButton[] makeButtonArrow() {
         InlineKeyboardButton right = new InlineKeyboardButton("\t→");
         InlineKeyboardButton left = new InlineKeyboardButton("\t←");
-        InlineKeyboardButton delete = new InlineKeyboardButton(deletes);
-        InlineKeyboardButton edit = new InlineKeyboardButton(edits);
+
         InlineKeyboardButton showNewList = new InlineKeyboardButton(show_news);
 
             return new InlineKeyboardButton[] {left, right,edit,delete};

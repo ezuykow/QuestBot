@@ -19,13 +19,15 @@ public class AdminsCommandsManager {
             case NEWADMIN -> cmdActions.performNewAdminCmd(update);
             case NEWGAME -> cmdActions.performNewGameCmd(update);
             case START -> cmdActions.performStartCmd(update);
-            case MAIN -> cmdActions.performStartCmd();
+            case MAIN -> cmdActions.performMainCmd(update);
+
+            case QUESTIONSMENU -> cmdActions.performQuestionMenuCmd(update);
             case ADDQUESTION -> cmdActions.performNewAddQuestionCmd(update);
-            case DELETEQUESTION -> cmdActions.performDeleteQuestionCmd(update);
-            case EDITQUESTION -> cmdActions.performEditeQuestionCmd(update);
             case SHOWQUESTIONS ->  cmdActions.performShowQuestionCmd(update);
         }
     }
 }
 
-
+//TODO уточнить как приходят CBQ
+// case DELETEQUESTION -> cmdActions.performDeleteQuestionCmd(update);
+// case EDITQUESTION -> cmdActions.performEditeQuestionCmd(update);
