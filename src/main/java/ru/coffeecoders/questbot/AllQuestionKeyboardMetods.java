@@ -1,4 +1,4 @@
-package ru.coffeecoders.questbot.commands.admins.keybords.keyboards.creators.allQuestions;
+package ru.coffeecoders.questbot;
 
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;

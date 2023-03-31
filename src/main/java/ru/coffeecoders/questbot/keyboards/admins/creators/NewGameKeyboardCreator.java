@@ -1,12 +1,13 @@
-package ru.coffeecoders.questbot.commands.admins.keybords.keyboards.creators;
+package ru.coffeecoders.questbot.keyboards.admins.creators;
 
+import com.pengrad.telegrambot.model.request.Keyboard;
 import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class NewGameKeyboardCreator  implements Keyboard {
+public class NewGameKeyboardCreator {
 
     private NewGameKeyboardCreator newGameKeyboard;
 
@@ -27,7 +28,7 @@ public class NewGameKeyboardCreator  implements Keyboard {
         return newGameKeyboard;
     }
 
-    public static ReplyKeyboardMarkup newGameKeyboardCreate() {
+    public static Keyboard newGameKeyboardCreate() {
         KeyboardButton[] buttonArray = makeButtonArray();
         KeyboardButton[][] buttonRows = makeRows(buttonArray);
         ReplyKeyboardMarkup keyboardMarkup = makeKeyboard(buttonRows);

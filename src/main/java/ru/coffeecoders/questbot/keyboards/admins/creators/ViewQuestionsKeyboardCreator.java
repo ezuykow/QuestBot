@@ -1,4 +1,4 @@
-package ru.coffeecoders.questbot.commands.admins.keybords.keyboards.creators;
+package ru.coffeecoders.questbot.keyboards.admins.creators;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
@@ -6,24 +6,24 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AllQuestionsKeyboardCreator implements Keyboard {
+public class ViewQuestionsKeyboardCreator {
     @Value("${keyboard.allQuestions.edit}")
     private static String edits;
 
    @Value("${keyboard.allQuestions.delete}")
     private static String deletes;
-    private AllQuestionsKeyboardCreator allQuestionsKeyboardCreator;
+    private ViewQuestionsKeyboardCreator viewQuestionsKeyboardCreator;
 
     @Value("${keyboard.allQuestions.show_news}")
     static
     String show_news;
 
-    private AllQuestionsKeyboardCreator(AllQuestionsKeyboardCreator allQuestionsKeyboardCreator) {
-        this.allQuestionsKeyboardCreator = allQuestionsKeyboardCreator;
+    private ViewQuestionsKeyboardCreator(ViewQuestionsKeyboardCreator viewQuestionsKeyboardCreator) {
+        this.viewQuestionsKeyboardCreator = viewQuestionsKeyboardCreator;
     }
 
-    public AllQuestionsKeyboardCreator getAllQuestionsCreator() {
-        return allQuestionsKeyboardCreator;
+    public ViewQuestionsKeyboardCreator getAllQuestionsCreator() {
+        return viewQuestionsKeyboardCreator;
     }
 
     public static InlineKeyboardMarkup inlineKeyboardCreate() {
