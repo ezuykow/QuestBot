@@ -8,6 +8,9 @@ import ru.coffeecoders.questbot.dynamic.tables.creators.TeamsTableCreator;
 
 import java.util.Map;
 
+/**
+ * @author ezuykow
+ */
 @Component
 public class DynamicTablesManager {
 
@@ -34,6 +37,12 @@ public class DynamicTablesManager {
         this.playersCreator = playersCreator;
     }
 
+    /**
+     * Создает таблицы для запускаемой игры, возвращает имена созданных таблиц
+     * @param gameName название запускаемой игры
+     * @param tgChatId chat_id чата, в котором запускается игра
+     * @return Мапу, в которой храняться названия таблиц в формате mapKey(берите из файла свойств)-<имя таблицы>
+     */
     public Map<String, String> createTables(String gameName, Long tgChatId) {
 
         createTablesNames(gameName, tgChatId);
