@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author ezuykow
+ */
 @Configuration
 public class QuestBotAppConfig {
 
@@ -18,7 +21,4 @@ public class QuestBotAppConfig {
         bot.execute(new DeleteMyCommands());
         return bot;
     }
-
-
-
 }

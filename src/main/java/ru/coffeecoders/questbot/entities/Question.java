@@ -1,7 +1,3 @@
-/**
- * Author: ezuykow
- */
-
 package ru.coffeecoders.questbot.entities;
 
 import jakarta.persistence.*;
@@ -9,6 +5,9 @@ import jakarta.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
+/**
+ * @author ezuykow
+ */
 @Entity
 @Table(name = "questions")
 public class Question {

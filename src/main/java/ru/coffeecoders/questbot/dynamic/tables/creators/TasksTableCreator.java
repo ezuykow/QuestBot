@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author ezuykow
+ */
 @Component
 public class TasksTableCreator {
 
@@ -20,6 +23,10 @@ public class TasksTableCreator {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    /**
+     * Создает в БД таблицу задач с названием {@code tableName}
+     * @param tableName имя создаваемой таблицы
+     */
     public void createTable(String tableName) {
         final String statement = String.format("CREATE TABLE %s (" +
                         "%s SERIAL PRIMARY KEY ," +

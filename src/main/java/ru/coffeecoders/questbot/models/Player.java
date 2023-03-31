@@ -2,6 +2,9 @@ package ru.coffeecoders.questbot.models;
 
 import java.util.Objects;
 
+/**
+ * @author ezuykow
+ */
 public class Player {
 
     private long tgUserId;
