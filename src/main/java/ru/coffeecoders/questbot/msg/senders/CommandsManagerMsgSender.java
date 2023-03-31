@@ -2,9 +2,14 @@ package ru.coffeecoders.questbot.msg.senders;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.response.SendResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 
 public class CommandsManagerMsgSender {
+
+    private final Logger logger = LoggerFactory.getLogger(CommandsManagerMsgSender.class);
 
     private final Environment env;
 
@@ -15,23 +20,28 @@ public class CommandsManagerMsgSender {
         this.telegramBot = telegramBot;
     }
 
-    public void sendInvalidMsg(long chatId){
-        SendMessage message = new SendMessage(chatId, env.getProperty("messages.admins.invalidMessage"));
-        telegramBot.execute(message);
+    public void sendInvalidCmdMsg(long chatId){
+        checkResponse(telegramBot.execute(createSendMessage(chatId,  env.getProperty("messages.admins.invalidMsg"))));
     }
 
-    public void sendNonAdminMsg(long chatId){
-        SendMessage message = new SendMessage(chatId,  env.getProperty("messages.admins.commandSentByNonAdmin"));
-        telegramBot.execute(message);
+    public void sendNotAdminMsg(long chatId){
+        checkResponse(telegramBot.execute(createSendMessage(chatId,  env.getProperty("messages.admins.cmdSendByNotAdmin"))));
     }
-    public void sendAdminsMsgAdminCmdGameChat(long chatId){
-        SendMessage message = new SendMessage(chatId, env.getProperty("messages.admins.sendAdminsMsgAdminCmdGameChat"));
-        telegramBot.execute(message);
+    public void sendAdminCmdInGlobalChatMsg(long chatId){
+        checkResponse(telegramBot.execute(createSendMessage(chatId,  env.getProperty("messages.admins.adminCmdInGlobalChat"))));
     }
 
-    public void sendGamesMsgAdminChat(long chatId){
-        SendMessage message = new SendMessage(chatId, env.getProperty("messages.admins.sendGamesMsgAdminChat"));
-        telegramBot.execute(message);
+    public void sendGameCmdInAdminChatMsg(long chatId){
+        checkResponse(telegramBot.execute(createSendMessage(chatId,  env.getProperty("messages.admins.gameCmdInAdminChat"))));
     }
 
+    private SendMessage createSendMessage(long chatId, String msg) {
+        return new SendMessage(chatId,  msg);
+    }
+
+    private void checkResponse(SendResponse response) {
+        if (!response.isOk()) {
+            logger.warn("Unsent msg! {}", response.message().text());
+        }
+    }
 }
