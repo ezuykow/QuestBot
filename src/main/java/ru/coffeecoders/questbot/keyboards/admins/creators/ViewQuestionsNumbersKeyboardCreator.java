@@ -1,19 +1,11 @@
 package ru.coffeecoders.questbot.keyboards.admins.creators;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
-import ru.coffeecoders.questbot.entities.Question;
-
-import java.util.TreeMap;
 
 public class ViewQuestionsNumbersKeyboardCreator {
 
-    private TreeMap<Integer, Question> questionMap = new TreeMap<Integer, Question>();
+    //получаем
 
-
-    public void addQuestion(Question question) {
-        int questionNumber = questionMap.size() + 1;
-        questionMap.put(questionNumber, question);
-    }
     // получить остаток от деления на 5 от questionMap.lastOf()  и передать его в createButtonArray()
     //получить результат от деления JHW(size - lo/5) / 5
     // если JHW== 0, || ( JHW==1 &&(lo%5==0) то кнопка вперёд не нужна
@@ -21,6 +13,8 @@ public class ViewQuestionsNumbersKeyboardCreator {
     // если (JHW>1 &&(lo%5!=0) то нужны обе кнопки
     //доп проверка на последнюю клаву - как понять что больше не будет апдэйтов  - счётчик?
     //(JHW>1 &&(lo%5 ==0)
+
+
 
     private InlineKeyboardButton[] createButtonArrow(int count) {
         InlineKeyboardButton[] buttons = new InlineKeyboardButton[count];
