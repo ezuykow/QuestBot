@@ -57,7 +57,7 @@ public class ViewQuestionsUpdateAssembly {
     }
 
     public static InlineKeyboardMarkup lastPager() {
-        pageCounter -= 5;
+        pageCounter -= 10;
         return pager();
     }
 
