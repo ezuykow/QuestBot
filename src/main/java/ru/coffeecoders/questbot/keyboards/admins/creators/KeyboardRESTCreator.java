@@ -5,9 +5,6 @@ import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.entities.Question;
-
-import java.util.List;
 
 @Component
 public class KeyboardRESTCreator {
@@ -57,10 +54,7 @@ public class KeyboardRESTCreator {
     }
 
 // добавляем сразу в базу данных
-    private void addQuestions(List<Question> questions) {
-        for (int i = 0; i < questions.size(); i++) {
-            int questionNumber = questionMap.size() + 1;
-            questionMap.put(questionNumber, questions.get(i));
-        }
+    public static void addQuestions() {
+    // возможно парсить по блокам через инлайн "вопрос" - "ответ" - "группа" - "показать"? введите вопрос /вопрос: Кто обитает на дне океана введите ответ /ответ: Спанч боб
     }
 }
