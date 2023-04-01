@@ -2,20 +2,10 @@ package ru.coffeecoders.questbot.keyboards.admins.creators;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ViewQuestionsKeyboardCreator {
-    @Value("${keyboard.allQuestions.edit}")
-    private static String edits;
-
-   @Value("${keyboard.allQuestions.delete}")
-    private static String deletes;
-
-    @Value("${keyboard.allQuestions.show_news}")
-    static
-    String show_news;
 
     private ViewQuestionsKeyboardCreator viewQuestionsKeyboardCreator;
     private ViewQuestionsKeyboardCreator(ViewQuestionsKeyboardCreator viewQuestionsKeyboardCreator) {
@@ -26,29 +16,46 @@ public class ViewQuestionsKeyboardCreator {
         return viewQuestionsKeyboardCreator;
     }
 
+
+
+    //логика создания InlineKeyboardMarkup
     public static InlineKeyboardMarkup inlineKeyboardCreate() {
-        InlineKeyboardButton[] buttonArrow = makeButtonArrow();
-        InlineKeyboardButton[][] buttonRows = makeRows(buttonArrow);
+        InlineKeyboardButton[] buttonArrows = makeButtonArrows();
+        InlineKeyboardButton[] buttonNumbers = createButtonNumber();
+
+        InlineKeyboardButton[][] buttonRows = makeRows(buttonArrows);
         InlineKeyboardMarkup inlineKeyboardMarkup = makeArrowKeyboard(buttonRows);
         return inlineKeyboardMarkup;
 
     }
 
-    private static InlineKeyboardButton[] makeButtonArrow() {
+    //создание кнопки с номером вопроса
+    private static InlineKeyboardButton[] createButtonNumber(int count) {
+        InlineKeyboardButton[] buttons = new InlineKeyboardButton[count];
+        for (int i = 0; i < count; i++) {
+            buttons[i] = new InlineKeyboardButton(String.valueOf(i + 1));
+        }
+        return buttons;
+    }
+
+
+
+
+    // создание массива с кнопками влево вправо
+    private static InlineKeyboardButton[] makeButtonArrows() {
+
         InlineKeyboardButton right = new InlineKeyboardButton("\t→");
         InlineKeyboardButton left = new InlineKeyboardButton("\t←");
 
-        InlineKeyboardButton showNewList = new InlineKeyboardButton(show_news);
-
-            return new InlineKeyboardButton[] {left, right,edit,delete};
+            return new InlineKeyboardButton[] {left, right};
     }
-    private static InlineKeyboardButton [][] makeRows(InlineKeyboardButton [] buttonArray) {
-        InlineKeyboardButton [] firstRow = new InlineKeyboardButton [] {buttonArray[0], buttonArray[1]};
-        InlineKeyboardButton [] secondRow = new InlineKeyboardButton [] {buttonArray[2]};
-        InlineKeyboardButton [] thirdRow = new InlineKeyboardButton [] {buttonArray[3]};
-        InlineKeyboardButton [] fourthRow = new InlineKeyboardButton [] {buttonArray[4]};
 
-        return new InlineKeyboardButton [][] {firstRow, secondRow,thirdRow, fourthRow};
+
+
+
+    private static InlineKeyboardButton [][] makeRows(InlineKeyboardButton [] buttonArrowArray,
+                                                      InlineKeyboardButton [] buttonNumbers) {
+        return new InlineKeyboardButton [][] {buttonNumbers, buttonArrowArray};
     }
      private static InlineKeyboardMarkup makeArrowKeyboard(InlineKeyboardButton[][] buttonRows) {
         return new InlineKeyboardMarkup(buttonRows);

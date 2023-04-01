@@ -15,11 +15,12 @@ public class KeyboardSender {
     public void sendKeyboard(Keyboard keyboard, Update update) {
         msgSender.sendMessage(keyboard, update);
     }
+
     public void changeKeyboard(Keyboard keyboard, Update update) {
         msgSender.sendMessage(keyboard, update);
     }
-    public void changeText(Keyboard keyboard, Update update, String editedUpdateText) {
-        msgSender.sendMessage(keyboard, update, editedUpdateText);
+    public void sendTextAndKeyboard(Keyboard keyboard, Update update, String updatedText) {
+        msgSender.sendMessage(keyboard, update, updatedText);
     }
 
 

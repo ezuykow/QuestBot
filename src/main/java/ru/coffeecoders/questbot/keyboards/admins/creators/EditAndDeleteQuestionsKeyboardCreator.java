@@ -7,23 +7,27 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class QuestionsMenuKeyboardCreator {
+public class EditAndDeleteQuestionsKeyboardCreator {
 
 
-    @Value("${keyboard.questions.show}")
-    private static String showQuestions;
-    @Value("${keyboard.questions.add}")
-    private static String addNewQuestion;
+    @Value("${keyboard.allQuestions.edit}")
+    private static String edits;
 
-    private QuestionsMenuKeyboardCreator(QuestionsMenuKeyboardCreator questionsMenuKeyboardCreator) {
-        this.questionsMenuKeyboardCreator = questionsMenuKeyboardCreator;
+    @Value("${keyboard.allQuestions.delete}")
+    private static String deletes;
+
+
+    private EditAndDeleteQuestionsKeyboardCreator(EditAndDeleteQuestionsKeyboardCreator editAndDeleteQuestionsKeyboardCreator) {
+        this.editAndDeleteQuestionsKeyboardCreator = editAndDeleteQuestionsKeyboardCreator;
     }
 
-    public QuestionsMenuKeyboardCreator getQuestionKeyboardCreator() {
-        return questionsMenuKeyboardCreator;
+    public EditAndDeleteQuestionsKeyboardCreator getQuestionKeyboardCreator() {
+        return editAndDeleteQuestionsKeyboardCreator;
     }
 
-    QuestionsMenuKeyboardCreator questionsMenuKeyboardCreator;
+    EditAndDeleteQuestionsKeyboardCreator editAndDeleteQuestionsKeyboardCreator;
+
+
 
 
     public static Keyboard createQuestionKeyboard() {
@@ -34,8 +38,8 @@ public class QuestionsMenuKeyboardCreator {
     }
 
     private static KeyboardButton[] makeButtonArray() {
-    KeyboardButton returnKb = new KeyboardButton(addNewQuestion);
-    KeyboardButton toGroup = new KeyboardButton(showQuestions);
+    KeyboardButton returnKb = new KeyboardButton(edits);
+    KeyboardButton toGroup = new KeyboardButton(deletes);
         return new KeyboardButton[] {toGroup, returnKb};
     }
 
