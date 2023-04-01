@@ -2,7 +2,6 @@ package ru.coffeecoders.questbot.keyboards.admins.creators;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.model.request.Keyboard;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Question;
 
@@ -15,7 +14,9 @@ public class ViewQuestionsUpdateAssembly {
     private static int pageCounter = 0;
     private static int questionsInMap = 0;
 
-    public void refreshQuestions
+    public void refreshQuestions (){
+
+    }
 
     public static String getQuestionsFromIndex() {
         TreeMap<Integer, Question> result = new TreeMap<>();
@@ -50,7 +51,6 @@ public class ViewQuestionsUpdateAssembly {
     }
 
     public static InlineKeyboardMarkup pager() {
-        TreeMap<Integer, Question> result = getQuestionsFromIndex(pageCounter);
         InlineKeyboardMarkup keyboard = inlineKeyboardCreate();
         pageCounter += 5;
         return keyboard;
@@ -86,7 +86,7 @@ public class ViewQuestionsUpdateAssembly {
 
     private static InlineKeyboardButton[][] makeRows(InlineKeyboardButton[] buttonArrowArray,
                                                      InlineKeyboardButton[] buttonNumbers) {
-        return new InlineKeyboardButton[][] { buttonNumbers, buttonArrowArray };
+        return new InlineKeyboardButton[][] { buttonNumbers, buttonArrowArray, new InlineKeyboardButton[] {new InlineKeyboardButton("обновить базу")}};
     }
 
     private static InlineKeyboardMarkup makeArrowKeyboard(InlineKeyboardButton[][] buttonRows) {

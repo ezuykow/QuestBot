@@ -5,9 +5,12 @@ import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.entities.Question;
+
+import java.util.List;
 
 @Component
-public class EditAndDeleteQuestionsKeyboardCreator {
+public class KeyboardRESTCreator {
 
 
     @Value("${keyboard.allQuestions.edit}")
@@ -17,15 +20,15 @@ public class EditAndDeleteQuestionsKeyboardCreator {
     private static String deletes;
 
 
-    private EditAndDeleteQuestionsKeyboardCreator(EditAndDeleteQuestionsKeyboardCreator editAndDeleteQuestionsKeyboardCreator) {
-        this.editAndDeleteQuestionsKeyboardCreator = editAndDeleteQuestionsKeyboardCreator;
+    private KeyboardRESTCreator(KeyboardRESTCreator keyboardRESTCreator) {
+        this.keyboardRESTCreator = keyboardRESTCreator;
     }
 
-    public EditAndDeleteQuestionsKeyboardCreator getQuestionKeyboardCreator() {
-        return editAndDeleteQuestionsKeyboardCreator;
+    public KeyboardRESTCreator getQuestionKeyboardCreator() {
+        return keyboardRESTCreator;
     }
 
-    EditAndDeleteQuestionsKeyboardCreator editAndDeleteQuestionsKeyboardCreator;
+    KeyboardRESTCreator keyboardRESTCreator;
 
 
 
@@ -51,5 +54,13 @@ public class EditAndDeleteQuestionsKeyboardCreator {
 
     private static ReplyKeyboardMarkup makeKeyboard(KeyboardButton[][] buttonRows) {
         return new ReplyKeyboardMarkup(buttonRows);
+    }
+
+// добавляем сразу в базу данных
+    private void addQuestions(List<Question> questions) {
+        for (int i = 0; i < questions.size(); i++) {
+            int questionNumber = questionMap.size() + 1;
+            questionMap.put(questionNumber, questions.get(i));
+        }
     }
 }

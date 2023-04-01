@@ -4,7 +4,7 @@ import com.pengrad.telegrambot.model.Update;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.keyboards.admins.creators.MainAdminsKeyboardCreator;
 import ru.coffeecoders.questbot.keyboards.admins.creators.NewGameKeyboardCreator;
-import ru.coffeecoders.questbot.keyboards.admins.creators.EditAndDeleteQuestionsKeyboardCreator;
+import ru.coffeecoders.questbot.keyboards.admins.creators.KeyboardRESTCreator;
 import ru.coffeecoders.questbot.keyboards.admins.creators.ViewQuestionsUpdateAssembly;
 import ru.coffeecoders.questbot.keyboards.general.creators.ChatTypeSelectKeyboard;
 
@@ -42,12 +42,12 @@ public class KeyboardFactory {
         switch (keyboardType) {
             case START -> keyboardSender.sendKeyboard(ChatTypeSelectKeyboard.createChatTypeSelectKeyboard(), update);
             case NEW_GAME -> keyboardSender.sendKeyboard(NewGameKeyboardCreator.newGameKeyboardCreate(), update);
-            case QUESTIONS_MENU -> keyboardSender.sendKeyboard(EditAndDeleteQuestionsKeyboardCreator.createQuestionKeyboard(), update);
+            case QUESTIONS_MENU -> keyboardSender.sendKeyboard(KeyboardRESTCreator.createQuestionKeyboard(), update);
             case MAIN_ADMIN -> keyboardSender.sendKeyboard(MainAdminsKeyboardCreator.MainKeyboardCreate(), update);
             case ADDQUESTION -> keyboardSender.sendKeyboard(, update);
 
             case SHOWQUESTIONS -> keyboardSender.sendTextAndKeyboard(ViewQuestionsUpdateAssembly.pager(),  update, ViewQuestionsUpdateAssembly.getQuestionsFromIndex()); //  им же переходим на следующую страницу
-            case SHOWLASTQUESTIONS -> keyboardSender.sendTextAndKeyboard(ViewQuestionsUpdateAssembly.lastPager(),  update, ViewQuestionsUpdateAssembly.getQuestionsFromIndex()));
+            case SHOWLASTQUESTIONS -> keyboardSender.sendTextAndKeyboard(ViewQuestionsUpdateAssembly.lastPager(),  update, ViewQuestionsUpdateAssembly.getQuestionsFromIndex());
 
         }
     }
