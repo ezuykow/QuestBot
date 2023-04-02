@@ -5,3 +5,19 @@ spring:
 document:
   excel:
     mimeType: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  temp:
+    file:
+      prefix: question
+      suffix: .xlsx
+
+telegram:
+  bot:
+    api:
+     prefix: https://api.telegram.org/bot
+
+     method:
+       getFile: /getFile?file_id=
+
+  file:
+    api:
+      prefix: https://api.telegram.org/file/bot
