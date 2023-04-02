@@ -2,13 +2,8 @@ package ru.coffeecoders.questbot.keyboards;
 
 import com.pengrad.telegrambot.model.Update;
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.keyboards.admins.creators.MainAdminsKeyboardCreator;
-import ru.coffeecoders.questbot.keyboards.admins.creators.NewGameKeyboardCreator;
-import ru.coffeecoders.questbot.keyboards.admins.creators.KeyboardRESTCreator;
-import ru.coffeecoders.questbot.keyboards.admins.creators.ViewQuestionsUpdateAssembly;
+import ru.coffeecoders.questbot.keyboards.admins.creators.*;
 import ru.coffeecoders.questbot.keyboards.general.creators.ChatTypeSelectKeyboard;
-
-import static ru.coffeecoders.questbot.commands.Commands.Attribute.ADMIN;
 
 @Component
 public class KeyboardFactory {
@@ -21,11 +16,7 @@ public class KeyboardFactory {
         QUESTIONS_MENU,
         ADDQUESTION,
         SHOWQUESTIONS,
-        SHOWLASTQUESTIONS,
-
-        DELETEQUESTION,
-
-        EDITQUESTION
+        EDITKEYBOARD
 
     }
 
@@ -42,21 +33,17 @@ public class KeyboardFactory {
         return keyboardSender;
     }
 
-    //TODO String replyText = "Это технический чат, вы можете посетить наше сообщество";
-    //TODO String reply String replyText = "Выберите действие:";
     public void createKeyboard(KeyboardType keyboardType, Update update) {
         switch (keyboardType) {
             case START -> keyboardSender.sendKeyboard(ChatTypeSelectKeyboard.createChatTypeSelectKeyboard(), update);
             case NEW_GAME -> keyboardSender.sendKeyboard(NewGameKeyboardCreator.newGameKeyboardCreate(), update);
-            case QUESTIONS_MENU -> keyboardSender.sendKeyboard(KeyboardRESTCreator.createQuestionKeyboard(), update);
-            case MAIN_ADMIN -> keyboardSender.sendKeyboard(MainAdminsKeyboardCreator.MainKeyboardCreate(), update);
+            case QUESTIONS_MENU -> keyboardSender.sendKeyboard(AddKeyboardCreator.createQuestionKeyboard(), update);
+            case MAIN_ADMIN -> keyboardSender.sendKeyboard(MainAdminsKeyboardCreator.mainKeyboardCreate(), update);
+            case NEW_ADMIN -> keyboardSender.sendKeyboard(NewAdminKeyboardCreator.newAdminKeyboardCreate(), update);
 
-            case ADDQUESTION -> keyboardSender.sendKeyboard(KeyboardRESTCreator.addQuestions(), update);
-            case DELETEQUESTION -> (KeyboardRESTCreator.deleteQuestions(), update)
-            case EDITQUESTION -> (KeyboardRESTCreator.editQuestions(), update)
 
-            case SHOWQUESTIONS -> keyboardSender.sendTextAndKeyboard(ViewQuestionsUpdateAssembly.pager(),  update, ViewQuestionsUpdateAssembly.getQuestionsFromIndex()); //  им же переходим на следующую страницу
-            case SHOWLASTQUESTIONS -> keyboardSender.sendTextAndKeyboard(ViewQuestionsUpdateAssembly.lastPager(),  update, ViewQuestionsUpdateAssembly.getQuestionsFromIndex());
+            case SHOWQUESTIONS -> keyboardSender.sendKeyboard(ViewQuestionsUpdateCreator.viewKeyboardCreate(),  update);
+            case EDITKEYBOARD -> keyboardSender.sendKeyboard(EditDeleteKeyboardCreator.createQuestionKeyboard(),  update);
 
         }
     }

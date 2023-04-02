@@ -16,9 +16,8 @@ public class KeyboardSender {
         msgSender.sendMessage(keyboard, update);
     }
 
-    public void sendTextAndKeyboard(Keyboard keyboard, Update update, String updatedText) {
-        msgSender.sendMessage(keyboard, update, updatedText);
-    }
+
+
 
 
 }

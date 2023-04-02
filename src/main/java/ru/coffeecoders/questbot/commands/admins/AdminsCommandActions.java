@@ -7,9 +7,6 @@ import ru.coffeecoders.questbot.keyboards.KeyboardFactory;
 @Component
 public class AdminsCommandActions {
 
-// 2.TODO логика открытия и закрытия клавиатур
-    //1. TODO new ReplyKeyboardRemove()
-
     private final KeyboardFactory keyboardFactory;
 
     public AdminsCommandActions(KeyboardFactory keyboardFactory) {
@@ -17,7 +14,7 @@ public class AdminsCommandActions {
     }
 
     public void performNewAdminCmd(Update update) {
-//    TODO Factory -> NewAdminKB
+        keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.NEW_ADMIN,update);
     }
 
     public void performNewGameCmd(Update update) {
@@ -42,5 +39,9 @@ public class AdminsCommandActions {
 
     public void performQuestionMenuCmd(Update update) {
         keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.QUESTIONS_MENU, update);
+    }
+
+    public void performEditQuestionCmd(Update update) {
+        keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.EDITKEYBOARD, update);
     }
 }

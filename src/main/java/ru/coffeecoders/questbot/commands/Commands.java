@@ -17,7 +17,8 @@ public class Commands {
         DELETEQUESTION(ADMIN),
         EDITQUESTION(ADMIN),
         ADMINON(GLOBALADMIN),
-        START(PLAYER);
+        START(PLAYER),
+        EDITKEYBOARD (ADMIN);
 
         private final Attribute attribute;
 

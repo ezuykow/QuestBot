@@ -24,6 +24,7 @@ public class AdminsCommandsManager {
             case QUESTIONSMENU -> cmdActions.performQuestionMenuCmd(update);
             case ADDQUESTION -> cmdActions.performNewAddQuestionCmd(update);
             case SHOWQUESTIONS ->  cmdActions.performShowQuestionCmd(update);
+            case EDITKEYBOARD ->cmdActions.performEditQuestionCmd(update);
         }
     }
 }

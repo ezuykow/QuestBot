@@ -27,7 +27,7 @@ public class MainAdminsKeyboardCreator {
         return mainAdminsKeyboardCreator;
     }
 
-    public static Keyboard MainKeyboardCreate() {
+    public static Keyboard mainKeyboardCreate() {
         KeyboardButton[] buttonArray = makeButtonArray();
         KeyboardButton[][] buttonRows = makeRows(buttonArray);
         ReplyKeyboardMarkup keyboardMarkup = makeKeyboard(buttonRows);
