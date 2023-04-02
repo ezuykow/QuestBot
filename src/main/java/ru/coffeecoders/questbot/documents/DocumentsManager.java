@@ -37,11 +37,12 @@ public class DocumentsManager {
      * @param update апдейт с документом
      */
     public void manageDocument(Update update) {
+        long chatId = update.message().chat().id();
         if (validate(update)) {
-            parser.parse(downloader.downloadDocument(update.message().document()));
-            //TODO msgSender.successfulAddQuestions();
+            parser.parse(downloader.downloadDocument(update.message().document()), chatId);
+            //TODO msgSender.successfulAddQuestions(chatId);
         } else {
-            //TODO msgSender.wrongDocumentType();
+            //TODO msgSender.wrongDocumentType(chatId);
         }
     }
 
