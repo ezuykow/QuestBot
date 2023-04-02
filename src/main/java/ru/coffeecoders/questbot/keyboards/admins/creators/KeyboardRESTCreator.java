@@ -21,6 +21,9 @@ public class KeyboardRESTCreator {
         this.keyboardRESTCreator = keyboardRESTCreator;
     }
 
+
+
+
     public KeyboardRESTCreator getQuestionKeyboardCreator() {
         return keyboardRESTCreator;
     }
@@ -56,5 +59,11 @@ public class KeyboardRESTCreator {
 // добавляем сразу в базу данных
     public static void addQuestions() {
     // возможно парсить по блокам через инлайн "вопрос" - "ответ" - "группа" - "показать"? введите вопрос /вопрос: Кто обитает на дне океана введите ответ /ответ: Спанч боб
+    }
+    public static void deleteQuestions() {
+    }
+
+    public static void editQuestions() {
+        return ;
     }
 }

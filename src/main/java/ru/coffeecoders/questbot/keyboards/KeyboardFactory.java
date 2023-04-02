@@ -8,6 +8,8 @@ import ru.coffeecoders.questbot.keyboards.admins.creators.KeyboardRESTCreator;
 import ru.coffeecoders.questbot.keyboards.admins.creators.ViewQuestionsUpdateAssembly;
 import ru.coffeecoders.questbot.keyboards.general.creators.ChatTypeSelectKeyboard;
 
+import static ru.coffeecoders.questbot.commands.Commands.Attribute.ADMIN;
+
 @Component
 public class KeyboardFactory {
 
@@ -20,6 +22,10 @@ public class KeyboardFactory {
         ADDQUESTION,
         SHOWQUESTIONS,
         SHOWLASTQUESTIONS,
+
+        DELETEQUESTION,
+
+        EDITQUESTION
 
     }
 
@@ -44,7 +50,10 @@ public class KeyboardFactory {
             case NEW_GAME -> keyboardSender.sendKeyboard(NewGameKeyboardCreator.newGameKeyboardCreate(), update);
             case QUESTIONS_MENU -> keyboardSender.sendKeyboard(KeyboardRESTCreator.createQuestionKeyboard(), update);
             case MAIN_ADMIN -> keyboardSender.sendKeyboard(MainAdminsKeyboardCreator.MainKeyboardCreate(), update);
+
             case ADDQUESTION -> keyboardSender.sendKeyboard(KeyboardRESTCreator.addQuestions(), update);
+            case DELETEQUESTION -> (KeyboardRESTCreator.deleteQuestions(), update)
+            case EDITQUESTION -> (KeyboardRESTCreator.editQuestions(), update)
 
             case SHOWQUESTIONS -> keyboardSender.sendTextAndKeyboard(ViewQuestionsUpdateAssembly.pager(),  update, ViewQuestionsUpdateAssembly.getQuestionsFromIndex()); //  им же переходим на следующую страницу
             case SHOWLASTQUESTIONS -> keyboardSender.sendTextAndKeyboard(ViewQuestionsUpdateAssembly.lastPager(),  update, ViewQuestionsUpdateAssembly.getQuestionsFromIndex());
