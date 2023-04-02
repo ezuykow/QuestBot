@@ -10,4 +10,5 @@ import ru.coffeecoders.questbot.entities.Task;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Integer> {
 
+    void deleteByTaskId(int taskId);
 }
