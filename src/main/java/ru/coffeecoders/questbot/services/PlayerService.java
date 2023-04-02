@@ -21,21 +21,13 @@ public class PlayerService {
 
     public List<Player> findAll() {
         List<Player> list = playerRepository.findAll();
-        if (!list.isEmpty()) {
-            logger.info("Players are displaying");
-        } else {
-            logger.warn("No players found");
-        }
+        logger.info("Players {} displaying", list.isEmpty() ? "are not" : "are");
         return list;
     }
 
-    public Optional<Player> findById(Long id) {
+    public Optional<Player> findById(long id) {
         Optional<Player> player = playerRepository.findByTgUserId(id);
-        if (player.isPresent()) {
-            logger.info("Player found with id = {}", id);
-        } else {
-            logger.warn("Player not found with id = {}", id);
-        }
+        logger.info("Player {} with id = {}", player.isPresent() ? "found" : "not found", id);
         return player;
     }
 

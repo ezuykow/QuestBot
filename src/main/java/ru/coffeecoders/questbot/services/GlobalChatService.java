@@ -25,7 +25,7 @@ public class GlobalChatService {
         return list;
     }
 
-    public Optional<GlobalChat> findById(Long id) {
+    public Optional<GlobalChat> findById(long id) {
         Optional<GlobalChat> globalChat = globalChatRepository.findByTgChatId(id);
         logger.info("GlobalChat {} with id = {}", globalChat.isPresent() ? "found" : "not found", id);
         return globalChat;

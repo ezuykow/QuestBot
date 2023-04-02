@@ -20,24 +20,19 @@ public class TaskService {
     }
 
     public List<Task> findAll() {
-        List<Task> taskList = taskRepository.findAll();
-        if (!taskList.isEmpty()) {
-            logger.info("Tasks are displaying");
-        } else {
-            logger.warn("No tasks found");
-        }
-        return taskList;
+        List<Task> list = taskRepository.findAll();
+        logger.info("Tasks {} displaying", list.isEmpty() ? "are not" : "are");
+        return list;
     }
 
-    //TODO Integer или int? void?
-    public void deleteById(Integer id) {
+    public boolean deleteById(int id) {
         if (taskRepository.existsById(id)) {
             logger.info("Task with id = {} has been deleted", id);
             taskRepository.deleteByTaskId(id);
-            return;
+            return true;
         }
         logger.warn("There is no task with id = {}", id);
-        throw new IllegalArgumentException("Task with id = " + id + " not found");
+        return false;
     }
 
     public Task save(Task task) {

@@ -12,5 +12,5 @@ import java.util.Optional;
 @Repository
 public interface AdminChatRepository extends JpaRepository<AdminChat, Long> {
 
-    Optional<AdminChat> findByTgAdminChatId(Long tgAdminChatId);
+    Optional<AdminChat> findByTgAdminChatId(long tgAdminChatId);
 }
