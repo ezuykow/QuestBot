@@ -29,6 +29,3 @@ public class AdminsCommandsManager {
     }
 }
 
-//TODO уточнить как приходят CBQ
-// case DELETEQUESTION -> cmdActions.performDeleteQuestionCmd(update);
-// case EDITQUESTION -> cmdActions.performEditeQuestionCmd(update);
