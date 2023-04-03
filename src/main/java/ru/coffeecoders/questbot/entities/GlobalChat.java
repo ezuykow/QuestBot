@@ -1,7 +1,3 @@
-/**
- * Author: ezuykow
- */
-
 package ru.coffeecoders.questbot.entities;
 
 import jakarta.persistence.Column;
@@ -11,6 +7,9 @@ import jakarta.persistence.Table;
 
 import java.util.Objects;
 
+/**
+ * @author ezuykow
+ */
 @Entity
 @Table(name = "global_chats")
 public class GlobalChat {

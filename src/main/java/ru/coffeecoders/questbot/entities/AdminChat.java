@@ -1,13 +1,12 @@
-/**
- * Author: ezuykow
- */
-
 package ru.coffeecoders.questbot.entities;
 
 import jakarta.persistence.*;
 
 import java.util.Objects;
 
+/**
+ * @author ezuykow
+ */
 @Entity
 @Table(name = "admin_chats")
 public class AdminChat {

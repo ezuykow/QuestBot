@@ -2,15 +2,13 @@ package ru.coffeecoders.questbot.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.coffeecoders.questbot.entities.Game;
-
-import java.util.Optional;
+import ru.coffeecoders.questbot.entities.Task;
 
 /**
  * @author ezuykow
  */
 @Repository
-public interface GameRepository extends JpaRepository<Game, String> {
+public interface TaskRepository extends JpaRepository<Task, Integer> {
 
-    Optional<Game> findByGameName(String gameName);
+    void deleteByTaskId(int taskId);
 }
