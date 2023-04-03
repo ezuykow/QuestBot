@@ -42,7 +42,7 @@ public class KeyboardFactory {
             case NEW_ADMIN -> keyboardSender.sendKeyboard(NewAdminKeyboardCreator.newAdminKeyboardCreate(), update);
 
 
-            case SHOWQUESTIONS -> keyboardSender.sendKeyboard(ViewQuestionsUpdateCreator.viewKeyboardCreate(),  update);
+            case SHOWQUESTIONS -> keyboardSender.sendKeyboard(ViewQuestionsUpdateCreator.viewKeyboardCreate(update.message().messageId()),  update);
             case EDITKEYBOARD -> keyboardSender.sendKeyboard(EditDeleteKeyboardCreator.createQuestionKeyboard(),  update);
 
         }

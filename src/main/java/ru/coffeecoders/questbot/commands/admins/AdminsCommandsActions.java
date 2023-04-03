@@ -5,11 +5,11 @@ import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.keyboards.KeyboardFactory;
 
 @Component
-public class AdminsCommandActions {
+public class AdminsCommandsActions {
 
     private final KeyboardFactory keyboardFactory;
 
-    public AdminsCommandActions(KeyboardFactory keyboardFactory) {
+    public AdminsCommandsActions(KeyboardFactory keyboardFactory) {
         this.keyboardFactory = keyboardFactory;
     }
 

@@ -7,9 +7,9 @@ import ru.coffeecoders.questbot.commands.Commands;
 @Component
 public class AdminsCommandsManager {
 
-    private final AdminsCommandActions cmdActions;
+    private final AdminsCommandsActions cmdActions;
 
-    public AdminsCommandsManager(AdminsCommandActions cmdActions) {
+    public AdminsCommandsManager(AdminsCommandsActions cmdActions) {
         this.cmdActions = cmdActions;
     }
 
