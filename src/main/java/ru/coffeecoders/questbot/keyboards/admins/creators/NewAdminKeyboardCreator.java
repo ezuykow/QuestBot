@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -11,31 +12,24 @@ public class NewAdminKeyboardCreator {
 
 
     private static List<String[]> users;
-
-    private static InlineKeyboardButton[] buttons = new InlineKeyboardButton[0];
+    private static List<InlineKeyboardButton> buttons = new ArrayList<>();
 
     public static InlineKeyboardButton newAdminButtonCreate(String firstName, String lastName, String username) {
-        List<String[]> users;
-
         StringBuilder builderName = new StringBuilder().append(firstName).append(" ").append(lastName).append(" - ").append(username);
-        InlineKeyboardButton button = new InlineKeyboardButton( builderName.toString());
+        InlineKeyboardButton button = new InlineKeyboardButton(builderName.toString());
         StringBuilder builderCallback = new StringBuilder().append("newadmin_").append(username);
         button.callbackData(builderCallback.toString());
         return button;
     }
 
     public static void addButton(InlineKeyboardButton button) {
-        InlineKeyboardButton[] newButtons = new InlineKeyboardButton[buttons.length + 1];
-
-        System.arraycopy(buttons, 0, newButtons, 0, buttons.length);
-        newButtons[buttons.length] = button;
-        buttons = newButtons;
+        buttons.add(button);
     }
 
     public static InlineKeyboardMarkup createKeyboard() {
-        InlineKeyboardButton[][] keyboardButtons = new InlineKeyboardButton[buttons.length][1];
-        for (int i = 0; i < buttons.length; i++) {
-            keyboardButtons[i][0] = buttons[i];
+        InlineKeyboardButton[][] keyboardButtons = new InlineKeyboardButton[buttons.size()][1];
+        for (int i = 0; i < buttons.size(); i++) {
+            keyboardButtons[i][0] = buttons.get(i);
         }
         return new InlineKeyboardMarkup(keyboardButtons);
     }
@@ -49,12 +43,7 @@ public class NewAdminKeyboardCreator {
         }
         return createKeyboard();
     }
-
-
 }
-    //TODO создавать инлайн клаву с текстом "Выберите нового админа" и кнопками - Имя+username
-    // метод принимает FirstName LastName, и Имя пользователя
-    //CallbackQuery: "newadmin <user_id>"
 
 
 
