@@ -16,7 +16,7 @@ public class AdminsCommandsManager {
     public void manageCommand(Update update, Commands.Command cmd) {
 
         switch (cmd) {
-            case NEWADMIN -> cmdActions.performNewAdminCmd(update);
+            case NEWADMIN -> cmdActions.performNewAdminCmd(update);//callback
             case NEWGAME -> cmdActions.performNewGameCmd(update);
             case START -> cmdActions.performStartCmd(update);
             case MAIN -> cmdActions.performMainCmd(update);

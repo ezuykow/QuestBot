@@ -33,8 +33,6 @@ public class NewGameKeyboardCreator {
         KeyboardButton[][] buttonRows = makeRows(buttonArray);
         ReplyKeyboardMarkup keyboardMarkup = makeKeyboard(buttonRows);
         return keyboardMarkup;
-        //перенести в менеджер: создать клаву - > отправить логику.
-
     }
 
     private static KeyboardButton[] makeButtonArray() {
