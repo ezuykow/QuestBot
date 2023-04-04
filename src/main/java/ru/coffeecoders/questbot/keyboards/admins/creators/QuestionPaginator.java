@@ -5,6 +5,8 @@ import ru.coffeecoders.questbot.entities.Question;
 import java.util.*;
 
 public class QuestionPaginator {
+
+    //TODO определить где находится мапа и лист
     private static List<Question> questionsList = new ArrayList<>();
     private static Map<Integer, List<Integer>> parameters = new HashMap<>();
 

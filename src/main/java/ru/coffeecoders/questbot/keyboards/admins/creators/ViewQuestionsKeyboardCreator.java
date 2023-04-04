@@ -7,7 +7,7 @@ import ru.coffeecoders.questbot.entities.Question;
 import java.util.*;
 
 public class ViewQuestionsKeyboardCreator {
-
+//TODO определить где находится мапа и лист
     // для клавиатуры нужно передать в updateParameters(int userId, int firstNumber, int numberOfButton)
     // int userId чтобы можно было правильно отработать нажатие другим админом (заигнорить)
 
