@@ -37,6 +37,7 @@ public class CommandsManager {
      * Инициализирует поле chatId;
      * Проверяет, существует ли команда и если это так, создает объект {@link Commands.Command}
      * Иначе вызывет метод {@link CommandsManagerMsgSender#sendInvalidCmdMsg}, оповещающий об ошибке
+     *
      * @param update - апдейт (текст команды)
      */
     public void manageCommand(Update update) {
@@ -52,8 +53,9 @@ public class CommandsManager {
 
     /**
      * Получает поле {@link Commands.Command#attribute} и пробрасывает апдейт в соответствующий класс
+     *
      * @param update - апдейт (текст команды)
-     * @param cmd - команда (объект {@link Commands.Command})
+     * @param cmd    - команда (объект {@link Commands.Command})
      */
     private void manageCommandByAttribute(Update update, Commands.Command cmd) {
         Commands.Attribute attribute = cmd.getAttribute();
@@ -64,41 +66,25 @@ public class CommandsManager {
         }
     }
 
-    /**
-     * Проверяет, что команда получена в игровом чате, и передает ее {@link PlayersCommandsManager}
-     * Иначе вызывет метод {@link CommandsManagerMsgSender#sendAdminCmdInGlobalChatMsg}, оповещающий об ошибке
-     * @param update - апдейт (текст команды)
-     * @param cmd - команда (объект {@link Commands.Command})
-     */
     private void checkAndSendPlayersCommand(Update update, Commands.Command cmd) {
         if (globalChatService.findById(chatId).isPresent()) {
-            //TODO playersCommandsManager.doSome(update, command);
+            //TODO playersCommandsManager.doSome(update, cmd);
         } else {
-             managerMsgSender.sendAdminCmdInGlobalChatMsg(chatId);
+            managerMsgSender.sendAdminCmdInGlobalChatMsg(chatId);
         }
     }
-    /**
-     * Проверяет, что команда получена в админском чате, и передает ее {@link CommandsManager#checkAndSendGlobalAdminsCommand}
-     * Иначе вызывет метод {@link CommandsManagerMsgSender#sendGameCmdInAdminChatMsg}, оповещающий об ошибке
-     * @param update - апдейт (текст команды)
-     * @param cmd - команда (объект {@link Commands.Command})
-     */
+
     private void checkAndSendAdminsCommand(Update update, Commands.Command cmd) {
         if (adminChatService.findById(chatId).isPresent()) {
-            checkAndSendGlobalAdminsCommand(update, command);
+            checkAndSendGlobalAdminsCommand(update, cmd);
         } else {
             managerMsgSender.sendGameCmdInAdminChatMsg(chatId);
         }
     }
-    /**
-     * Проверяет, что команда получена в админском чате, и передает ее {@link AdminsCommandsManager# }
-     * Иначе вызывет метод {@link CommandsManagerMsgSender#sendNotAdminMsg}, оповещающий об ошибке
-     * @param update - апдейт (текст команды)
-     * @param cmd - команда (объект {@link Commands.Command})
-     */
+
     private void checkAndSendGlobalAdminsCommand(Update update, Commands.Command cmd) {
         if (adminService.findById(update.message().from().id()).isPresent()) {
-            //TODO adminsCommandsManager.doSome(update, command);
+            //TODO adminsCommandsManager.doSome(update, cmd);
         } else {
             managerMsgSender.sendNotAdminMsg(chatId);
         }
