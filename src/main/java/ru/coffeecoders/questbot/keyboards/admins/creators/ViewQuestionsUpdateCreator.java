@@ -73,5 +73,10 @@ public class ViewQuestionsUpdateCreator {
     public static void updateParameters(int userId, int firstNumber, int numberOfButton) {
         parameters.put(userId, Arrays.asList(firstNumber, numberOfButton));
     }
-}
 
+    public static List<Question> questionPaginator(int firstItem, int numberOfItem) {
+        int lastItem = firstItem + numberOfItem;
+        lastItem = Math.min(lastItem, questionsList.size());
+        return questionsList.subList(firstItem, lastItem);
+    }
+}
