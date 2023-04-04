@@ -11,3 +11,9 @@ databaseChangeLog:
       file: db/changelog/scripts/question_groups.sql
   - include:
       file: db/changelog/scripts/games.sql
+  - include:
+      file: db/changelog/scripts/tasks.sql
+  - include:
+      file: db/changelog/scripts/teams.sql
+  - include:
+      file: db/changelog/scripts/players.sql

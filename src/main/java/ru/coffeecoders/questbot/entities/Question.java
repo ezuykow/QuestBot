@@ -1,7 +1,3 @@
-/**
- * Author: ezuykow
- */
-
 package ru.coffeecoders.questbot.entities;
 
 import jakarta.persistence.*;
@@ -9,6 +5,9 @@ import jakarta.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
+/**
+ * @author ezuykow
+ */
 @Entity
 @Table(name = "questions")
 public class Question {
@@ -16,7 +15,7 @@ public class Question {
     @Id
     @Column(name = "question_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long questionId;
+    private int questionId;
 
     @Column(name = "question")
     private String question;
@@ -36,11 +35,11 @@ public class Question {
     @Column(name = "group")
     private String group;
 
-    public long getQuestionId() {
+    public int getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(long questionId) {
+    public void setQuestionId(int questionId) {
         this.questionId = questionId;
     }
 

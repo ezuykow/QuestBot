@@ -1,11 +1,28 @@
-package ru.coffeecoders.questbot.models;
+package ru.coffeecoders.questbot.entities;
+
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
+/**
+ * @author ezuykow
+ */
+@Entity
+@Table(name = "tasks")
 public class Task {
 
+    @Id
+    @Column(name = "task_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int taskId;
-    private long questionId;
+
+    @Column(name = "game_name")
+    private String gameName;
+
+    @Column(name = "question_id")
+    private int questionId;
+
+    @Column(name = "performed_team_name")
     private String performedTeamName;
 
     public int getTaskId() {
@@ -16,11 +33,19 @@ public class Task {
         this.taskId = taskId;
     }
 
-    public long getQuestionId() {
+    public String getGameName() {
+        return gameName;
+    }
+
+    public void setGameName(String gameName) {
+        this.gameName = gameName;
+    }
+
+    public int getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(long questionId) {
+    public void setQuestionId(int questionId) {
         this.questionId = questionId;
     }
 
@@ -49,6 +74,7 @@ public class Task {
     public String toString() {
         return "Task{" +
                 "taskId=" + taskId +
+                ", gameName='" + gameName + '\'' +
                 ", questionId=" + questionId +
                 ", performedTeamName='" + performedTeamName + '\'' +
                 '}';
