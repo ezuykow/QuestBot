@@ -5,8 +5,6 @@ import com.pengrad.telegrambot.model.request.Keyboard;
 import org.springframework.stereotype.Component;
 
 @Component
-
-
 public class KeyboardSender {
 
     //TODO сборка для ответа в messageSender
@@ -15,7 +13,10 @@ public class KeyboardSender {
         msgSender.sendMessage(keyboard, chatId);
     }
 
+    public void sendTextAndKeyboard(Keyboard keyboard, String text, Long chatId) {
+        msgSender.sendMessage(keyboard,text, chatId);
 
+    }
 
 
 

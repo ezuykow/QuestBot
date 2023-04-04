@@ -6,7 +6,7 @@ import ru.coffeecoders.questbot.entities.Question;
 
 import java.util.*;
 
-public class ViewQuestionsUpdateCreator {
+public class ViewQuestionsKeyboardCreator {
 
     // для клавиатуры нужно передать в updateParameters(int userId, int firstNumber, int numberOfButton)
     // int userId чтобы можно было правильно отработать нажатие другим админом (заигнорить)
@@ -21,8 +21,8 @@ public class ViewQuestionsUpdateCreator {
         return makeNumbersKeyboard(buttonRows);
     }
 
-    public static InlineKeyboardMarkup viewKeyboardCreate(int userId) {
-        List<Integer> userParams = parameters.getOrDefault(userId, Arrays.asList(0, 1));
+    public static InlineKeyboardMarkup viewKeyboardCreate(int messageId) {
+        List<Integer> userParams = parameters.getOrDefault(messageId, Arrays.asList(0, 1));
         int firstNumber = userParams.get(0);
         int numberOfButton = userParams.get(1);
         boolean isFirst = (firstNumber == 0);
@@ -70,11 +70,11 @@ public class ViewQuestionsUpdateCreator {
     }
 
     public static void updateQuestionsList(List<Question> questionsList) {
-        ViewQuestionsUpdateCreator.questionsList = questionsList;
+        ViewQuestionsKeyboardCreator.questionsList = questionsList;
     }
 
-    public static void updateParameters(int userId, int firstNumber, int numberOfButton) {
-        parameters.put(userId, Arrays.asList(firstNumber, numberOfButton));
+    public static void updateParameters(int messageId, int firstNumber, int numberOfButton) {
+        parameters.put(messageId, Arrays.asList(firstNumber, numberOfButton));
     }
 
     public static List<Question> questionPaginator(int firstItem, int numberOfItem) {

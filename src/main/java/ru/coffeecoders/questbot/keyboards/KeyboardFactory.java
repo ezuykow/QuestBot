@@ -42,7 +42,11 @@ public class KeyboardFactory {
             case NEW_ADMIN -> keyboardSender.sendKeyboard(NewAdminKeyboardCreator.newAdminKeyboardCreate(), update.message().chat().id());
 
 
-            case SHOWQUESTIONS -> keyboardSender.sendKeyboard(ViewQuestionsUpdateCreator.viewKeyboardCreate(update.message().messageId()),  update.message().chat().id());
+            case SHOWQUESTIONS -> {
+                keyboardSender.sendTextAndKeyboard(ViewQuestionsKeyboardCreator.viewKeyboardCreate(update.message().messageId()), QuestionPaginator.updateQuestions(update.message().messageId()), update.message().chat().id());
+            //TODO метод обновления параметров в мапе
+            }
+
             case EDITKEYBOARD -> keyboardSender.sendKeyboard(EditDeleteKeyboardCreator.createQuestionKeyboard(),  update.message().chat().id());
 
         }
