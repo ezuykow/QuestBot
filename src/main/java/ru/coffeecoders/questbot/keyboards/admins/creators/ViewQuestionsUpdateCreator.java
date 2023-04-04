@@ -15,7 +15,7 @@ public class ViewQuestionsUpdateCreator {
     private static List<Question> questionsList = new ArrayList<>();
 
     private static InlineKeyboardMarkup createKeyboard(int firstNumber, int numberOfButton, boolean isFirst, boolean isLast) {
-        InlineKeyboardButton[] buttonArrows = makeButtonArrows(isFirst, isLast);
+        InlineKeyboardButton[] buttonArrows = makeButtonArrows(firstNumber, numberOfButton, isFirst, isLast);
         InlineKeyboardButton[] buttonNumbers = createButtonNumber(firstNumber, numberOfButton);
         InlineKeyboardButton[][] buttonRows = makeRows(buttonNumbers, buttonArrows);
         return makeNumbersKeyboard(buttonRows);
@@ -30,24 +30,27 @@ public class ViewQuestionsUpdateCreator {
         return createKeyboard(firstNumber, numberOfButton, isFirst, isLast);
     }
 
-    private static InlineKeyboardButton[] makeButtonArrows(boolean isLast, boolean isFirst) {
+    private static InlineKeyboardButton[] makeButtonArrows(int firstNumber, int numberOfButton, boolean isLast, boolean isFirst) {
 
         InlineKeyboardButton left = null;
         InlineKeyboardButton right = null;
 
         if (isFirst && !isLast) {
             right = new InlineKeyboardButton("\t→");
+            right.callbackData("next_page_from_"+ (firstNumber + numberOfButton));
         }
         if (!isFirst && isLast) {
             left = new InlineKeyboardButton("\t←");
+            left.callbackData("last_page_from_"+ (firstNumber - numberOfButton));
         }
         if (!isFirst && !isLast) {
             left = new InlineKeyboardButton("\t←");
+            left.callbackData("last_page_from_"+ (firstNumber - numberOfButton));
             right = new InlineKeyboardButton("\t→");
+            right.callbackData("next_page_from_"+ (firstNumber + numberOfButton));
         }
         return new InlineKeyboardButton[]{left, right};
     }
-
     private static InlineKeyboardButton[] createButtonNumber(int firstNumber, int numberOfButton) {
         InlineKeyboardButton[] buttons = new InlineKeyboardButton[numberOfButton];
         for (int i = 0; i < numberOfButton; i++) {

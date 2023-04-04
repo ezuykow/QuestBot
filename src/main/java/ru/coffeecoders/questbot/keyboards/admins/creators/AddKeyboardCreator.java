@@ -32,9 +32,9 @@ public class AddKeyboardCreator {
     }
 
     private static KeyboardButton[] makeButtonArray() {
-        KeyboardButton returnKb = new KeyboardButton(addNewQuestion);
-        KeyboardButton toGroup = new KeyboardButton(showQuestions);
-        return new KeyboardButton[] {toGroup, returnKb};
+        KeyboardButton addQuestion = new KeyboardButton(addNewQuestion);
+        KeyboardButton questionBank = new KeyboardButton(showQuestions);
+        return new KeyboardButton[] {questionBank, addQuestion};
     }
 
     private static KeyboardButton[][] makeRows(KeyboardButton[] buttonArray) {

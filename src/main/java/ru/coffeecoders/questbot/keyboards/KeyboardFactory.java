@@ -35,15 +35,15 @@ public class KeyboardFactory {
 
     public void createKeyboard(KeyboardType keyboardType, Update update) {
         switch (keyboardType) {
-            case START -> keyboardSender.sendKeyboard(ChatTypeSelectKeyboard.createChatTypeSelectKeyboard(), update);
-            case NEW_GAME -> keyboardSender.sendKeyboard(NewGameKeyboardCreator.newGameKeyboardCreate(), update);
-            case QUESTIONS_MENU -> keyboardSender.sendKeyboard(AddKeyboardCreator.createQuestionKeyboard(), update);
-            case MAIN_ADMIN -> keyboardSender.sendKeyboard(MainAdminsKeyboardCreator.mainKeyboardCreate(), update);
-            case NEW_ADMIN -> keyboardSender.sendKeyboard(NewAdminKeyboardCreator.newAdminKeyboardCreate(), update);
+            case START -> keyboardSender.sendKeyboard(ChatTypeSelectKeyboard.createChatTypeSelectKeyboard(), update.message().chat().id());
+            case NEW_GAME -> keyboardSender.sendKeyboard(NewGameKeyboardCreator.newGameKeyboardCreate(), update.message().chat().id());
+            case QUESTIONS_MENU -> keyboardSender.sendKeyboard(AddKeyboardCreator.createQuestionKeyboard(), update.message().chat().id());
+            case MAIN_ADMIN -> keyboardSender.sendKeyboard(MainAdminsKeyboardCreator.mainKeyboardCreate(), update.message().chat().id());
+            case NEW_ADMIN -> keyboardSender.sendKeyboard(NewAdminKeyboardCreator.newAdminKeyboardCreate(), update.message().chat().id());
 
 
-            case SHOWQUESTIONS -> keyboardSender.sendKeyboard(ViewQuestionsUpdateCreator.viewKeyboardCreate(update.message().messageId()),  update);
-            case EDITKEYBOARD -> keyboardSender.sendKeyboard(EditDeleteKeyboardCreator.createQuestionKeyboard(),  update);
+            case SHOWQUESTIONS -> keyboardSender.sendKeyboard(ViewQuestionsUpdateCreator.viewKeyboardCreate(update.message().messageId()),  update.message().chat().id());
+            case EDITKEYBOARD -> keyboardSender.sendKeyboard(EditDeleteKeyboardCreator.createQuestionKeyboard(),  update.message().chat().id());
 
         }
     }
