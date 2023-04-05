@@ -43,7 +43,7 @@ public class KeyboardFactory {
 
 
             case SHOWQUESTIONS -> {
-                keyboardSender.sendTextAndKeyboard(ViewQuestionsKeyboardCreator.viewKeyboardCreate(update.message().messageId()), QuestionPaginator.updateQuestions(update.message().messageId()), update.message().chat().id());
+                keyboardSender.sendKeyboard(ViewQuestionsKeyboardCreator.createQuestionsKeyboard(update.message().messageId()), QuestionPaginator.updateQuestions(update.message().messageId()), update.message().chat().id());
             //TODO метод обновления параметров в мапе
             }
 

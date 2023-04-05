@@ -14,7 +14,10 @@ public class KeyboardSender {
     }
 
     //TODO тут или в месенджере
-    public void sendTextAndKeyboard(Keyboard keyboard, String text, Long chatId) {
+    public void sendKeyboard(Keyboard keyboard, String text, Long chatId) {
         msgSender.sendMessage(keyboard,text, chatId);
+    }
+    public void sendKeyboard(Keyboard keyboard, String text, Long chatId, Long  messageId) {
+        msgSender.sendMessage(keyboard,text, chatId, messageId);
     }
 }
