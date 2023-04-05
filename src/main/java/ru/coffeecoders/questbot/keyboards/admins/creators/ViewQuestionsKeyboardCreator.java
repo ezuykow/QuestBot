@@ -1,5 +1,7 @@
 package ru.coffeecoders.questbot.keyboards.admins.creators;
 
+import com.pengrad.telegrambot.model.request.Keyboard;
+
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import org.springframework.data.domain.Page;
@@ -7,7 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import ru.coffeecoders.questbot.entities.Question;
 
-import java.util.Arrays;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +29,7 @@ public class ViewQuestionsKeyboardCreator {
         this.questionPaginationRepository = questionPaginationRepository;
     }
 
-    public static InlineKeyboardMarkup createQuestionsKeyboard(int messageId) {
+    public static Keyboard createQuestionsKeyboard(Integer messageId) {
         int page = userPageMap.getOrDefault(messageId, 0);
         PageRequest pageRequest = createPageRequest(page);
         Page<Question> questionsPage = questionPaginationRepository.findAll(pageRequest);
@@ -68,5 +70,11 @@ public class ViewQuestionsKeyboardCreator {
         } else {
             return List.of(previousButton, nextButton);
         }
+    }
+
+    public static void updateUserViewer(int messageId) {
+        int currentPage = userPageMap.getOrDefault(messageId, 0);
+        int nextPage = currentPage + 1;
+        userPageMap.put(messageId, nextPage);
     }
 }

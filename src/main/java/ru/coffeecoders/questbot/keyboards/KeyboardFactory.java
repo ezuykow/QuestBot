@@ -41,10 +41,9 @@ public class KeyboardFactory {
             case MAIN_ADMIN -> keyboardSender.sendKeyboard(MainAdminsKeyboardCreator.mainKeyboardCreate(), update.message().chat().id());
             case NEW_ADMIN -> keyboardSender.sendKeyboard(NewAdminKeyboardCreator.newAdminKeyboardCreate(), update.message().chat().id());
 
-
             case SHOWQUESTIONS -> {
-                keyboardSender.sendKeyboard(ViewQuestionsKeyboardCreator.createQuestionsKeyboard(update.message().messageId()), QuestionPaginator.updateQuestions(update.message().messageId()), update.message().chat().id());
-            //TODO метод обновления параметров в мапе
+                keyboardSender.sendKeyboard(ViewQuestionsKeyboardCreator.createQuestionsKeyboard(update.message().messageId()), ViewQuestionsTextCreator.createQuestionText(update.message().messageId()), update.message().chat().id(),update.message().messageId());
+                ViewQuestionsKeyboardCreator.updateUserViewer(update.message().messageId());
             }
 
             case EDITKEYBOARD -> keyboardSender.sendKeyboard(EditDeleteKeyboardCreator.createQuestionKeyboard(),  update.message().chat().id());

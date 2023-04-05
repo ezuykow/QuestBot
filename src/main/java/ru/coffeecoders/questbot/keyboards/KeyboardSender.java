@@ -17,7 +17,7 @@ public class KeyboardSender {
     public void sendKeyboard(Keyboard keyboard, String text, Long chatId) {
         msgSender.sendMessage(keyboard,text, chatId);
     }
-    public void sendKeyboard(Keyboard keyboard, String text, Long chatId, Long  messageId) {
+    public void sendKeyboard(Keyboard keyboard, String text, Long chatId, Integer messageId) {
         msgSender.sendMessage(keyboard,text, chatId, messageId);
     }
 }
