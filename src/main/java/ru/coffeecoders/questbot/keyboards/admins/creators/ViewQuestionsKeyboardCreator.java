@@ -15,21 +15,20 @@ import java.util.stream.Collectors;
 
 public class ViewQuestionsKeyboardCreator {
 //TODO определить где находится мапа и лист
-    // для клавиатуры нужно передать в updateParameters(int userId, int firstNumber, int numberOfButton)
-    // int userId чтобы можно было правильно отработать нажатие другим админом (заигнорить)
 
-    private static int pageSize = 5;
-    private static Sort.Direction sortDirection = Sort.Direction.ASC;
 
-    private static QuestionPaginationRepository questionPaginationRepository;
+    private static final int pageSize = 5;
+    private static final Sort.Direction sortDirection = Sort.Direction.ASC;
 
-    public static void setQuestionPaginationRepository(QuestionPaginationRepository questionPaginationRepository) {
-        ViewQuestionsKeyboardCreator.questionPaginationRepository = questionPaginationRepository;
+    private static final QuestionPaginationRepository questionPaginationRepository;
+    protected static final Map<Integer, Integer> userPageMap = new HashMap<>();
+
+    public ViewQuestionsKeyboardCreator(QuestionPaginationRepository questionPaginationRepository) {
+        this.questionPaginationRepository = questionPaginationRepository;
     }
 
-    private static Map<Integer, Integer> userPageMap = new HashMap<>();
-    public static InlineKeyboardMarkup createQuestionsKeyboard(int userId) {
-        int page = userPageMap.getOrDefault(userId, 0);
+    public static InlineKeyboardMarkup createQuestionsKeyboard(int messageId) {
+        int page = userPageMap.getOrDefault(messageId, 0);
         PageRequest pageRequest = createPageRequest(page);
         Page<Question> questionsPage = questionPaginationRepository.findAll(pageRequest);
 
@@ -37,18 +36,17 @@ public class ViewQuestionsKeyboardCreator {
 
         List<InlineKeyboardButton> navigationButtons = createNavigationButtons(questionsPage);
 
-        InlineKeyboardButton[][] keyboardRows = { questionButtons.toArray(new InlineKeyboardButton[0]), navigationButtons.toArray(new InlineKeyboardButton[0]) };
+        InlineKeyboardButton[][] keyboardRows = {questionButtons.toArray(new InlineKeyboardButton[0]), navigationButtons.toArray(new InlineKeyboardButton[0])};
         return new InlineKeyboardMarkup(keyboardRows);
     }
 
-    private static PageRequest createPageRequest(int page) {
-        Sort.Direction sortDirection = Sort.Direction.ASC;
+    protected static PageRequest createPageRequest(int page) {
         return PageRequest.of(page, pageSize, sortDirection, "id");
     }
 
     private static List<InlineKeyboardButton> createQuestionButtons(Page<Question> questionsPage) {
         return questionsPage.getContent().stream()
-                .map(question -> new InlineKeyboardButton(String.valueOf(question.getQuestionId()))
+                .map(question -> new InlineKeyboardButton(String.valueOf(question.getQuestion()))
                         .callbackData("view_question_" + question.getQuestionId()))
                 .collect(Collectors.toList());
     }
@@ -57,8 +55,8 @@ public class ViewQuestionsKeyboardCreator {
         int currentPage = questionsPage.getNumber();
         int totalPages = questionsPage.getTotalPages();
 
-        InlineKeyboardButton previousButton = new InlineKeyboardButton("<< Previous").callbackData("previous_page");
-        InlineKeyboardButton nextButton = new InlineKeyboardButton("Next >>")
+        InlineKeyboardButton previousButton = new InlineKeyboardButton("\t←").callbackData("previous_page");
+        InlineKeyboardButton nextButton = new InlineKeyboardButton("\t→")
                 .callbackData("next_page");
 
         if (totalPages <= 1) {
