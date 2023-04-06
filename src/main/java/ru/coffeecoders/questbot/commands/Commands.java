@@ -18,7 +18,10 @@ public class Commands {
         EDITQUESTION(ADMIN),
         ADMINON(GLOBALADMIN),
         START(PLAYER),
-        EDITKEYBOARD (ADMIN);
+        EDITKEYBOARD (ADMIN),
+        STARTGAME (ADMIN),
+        STOPTGAME(ADMIN),
+        STARTTEAMMAKER(ADMIN) ;
 
         private final Attribute attribute;
 

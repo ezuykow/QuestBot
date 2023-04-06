@@ -44,4 +44,16 @@ public class AdminsCommandsActions {
     public void performEditQuestionCmd(Update update) {
         keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.EDITKEYBOARD, update);
     }
+
+    public void performStartGameCmd (Long chatId){
+        //TODO метод для запуска распределения на команды
+    };
+    public void  performStarTeamMakerCmd (Long chatId){
+        //TODO метод для запуска распределения на команды
+    };
+
+    public void performStopGameCmd (Long chatId){
+        //TODO метод для запуска игры распределения на команды
+    };
+
 }
