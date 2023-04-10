@@ -22,7 +22,6 @@ public class AdminsCommandsManager {
             case MAIN -> cmdActions.performMainCmd(update);
 
             case QUESTIONSMENU -> cmdActions.performQuestionMenuCmd(update);
-            //TODO добавление вопросов в List (где храним?)
             case ADDQUESTION -> cmdActions.performNewAddQuestionCmd(update);
             case SHOWQUESTIONS ->  cmdActions.performShowQuestionCmd(update);
             case EDITKEYBOARD ->cmdActions.performEditQuestionCmd(update);

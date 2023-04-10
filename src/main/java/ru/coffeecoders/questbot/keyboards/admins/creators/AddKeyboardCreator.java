@@ -33,6 +33,7 @@ public class AddKeyboardCreator {
 
     private static KeyboardButton[] makeButtonArray() {
         KeyboardButton addQuestion = new KeyboardButton(addNewQuestion);
+        addQuestion.
         KeyboardButton questionBank = new KeyboardButton(showQuestions);
         return new KeyboardButton[] {questionBank, addQuestion};
     }
