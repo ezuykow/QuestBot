@@ -11,7 +11,7 @@ import ru.coffeecoders.questbot.managers.UpdateManager;
 import java.util.List;
 
 @Service
-public class QuestBotUpdatesListener {
+public class QuestBotUpdatesListener implements UpdatesListener{
     private final Logger logger = LoggerFactory.getLogger(QuestBotUpdatesListener.class);
     private final TelegramBot telegramBot;
     private final UpdateManager updateManager;
@@ -21,6 +21,7 @@ public class QuestBotUpdatesListener {
         this.updateManager = updateManager;
     }
 
+    @Override
     public int process(List<Update> updates) {
         updates.forEach(updateManager::performUpdate);
 
