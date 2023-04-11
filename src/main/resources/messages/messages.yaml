@@ -11,3 +11,9 @@ messages:
     cmdSendByNotAdmin: Эту команду может использовать только админ бота
     adminCmdInGlobalChat: Админ оставил сообщение в игровом чате
     gameCmdInAdminChat: В админском чате оставлена игровая команда
+keyboards:
+  headers:
+   typeChat: выберите тип чата
+   action: выберите действие
+   actionForQuestion: выберите действие для вопроса
+   selectNewAdmin: выбкрите нового админа
