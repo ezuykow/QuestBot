@@ -21,3 +21,8 @@ telegram:
   file:
     api:
       prefix: https://api.telegram.org/file/bot
+
+viewer:
+  questions:
+    page:
+      size: 5
