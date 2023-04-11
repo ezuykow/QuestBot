@@ -9,7 +9,6 @@ import com.pengrad.telegrambot.model.request.Keyboard;
  */
 public class QuestionViewerKeyboardCreator {
 
-
     private QuestionViewerKeyboardCreator() {}
 
     public static Keyboard createKeyboard(
