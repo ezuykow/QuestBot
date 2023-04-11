@@ -2,7 +2,6 @@ package ru.coffeecoders.questbot.keyboards.viewers;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.model.request.Keyboard;
 
 /**
  * @author ezuykow
@@ -11,7 +10,7 @@ public class QuestionViewerKeyboardCreator {
 
     private QuestionViewerKeyboardCreator() {}
 
-    public static Keyboard createKeyboard(
+    public static InlineKeyboardMarkup createKeyboard(
             int pageSize, boolean leftArrowNeed, int startIndex, int lastIndex, boolean rightArrowNeed) {
 
         InlineKeyboardButton[] buttons = new InlineKeyboardButton[pageSize + 2];

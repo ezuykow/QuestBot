@@ -61,7 +61,7 @@ public class QuestionsViewerPage {
     }
 
     private void createKeyboard() {
-        keyboard = (InlineKeyboardMarkup) QuestionViewerKeyboardCreator.createKeyboard(
+        keyboard = QuestionViewerKeyboardCreator.createKeyboard(
                 pageSize, leftArrowNeed, startIndex, lastIndex, rightArrowNeed);
     }
 }
