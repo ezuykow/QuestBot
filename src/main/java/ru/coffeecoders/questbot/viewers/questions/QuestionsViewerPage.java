@@ -2,6 +2,7 @@ package ru.coffeecoders.questbot.viewers.questions;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import ru.coffeecoders.questbot.entities.Question;
+import ru.coffeecoders.questbot.keyboards.viewers.QuestionViewerKeyboardCreator;
 
 import java.util.List;
 
@@ -60,6 +61,7 @@ public class QuestionsViewerPage {
     }
 
     private void createKeyboard() {
-        //TODO keyboard = KeyboardFactory...
+        keyboard = (InlineKeyboardMarkup) QuestionViewerKeyboardCreator.createKeyboard(
+                pageSize, leftArrowNeed, startIndex, lastIndex, rightArrowNeed);
     }
 }
