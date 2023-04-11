@@ -1,5 +1,6 @@
 package ru.coffeecoders.questbot.validators;
 
+import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.services.AdminService;
 import ru.coffeecoders.questbot.services.GlobalChatService;
@@ -7,6 +8,7 @@ import ru.coffeecoders.questbot.services.GlobalChatService;
 /**
  * @author anna
  */
+@Component
 public class ChatAndUserIdValidator {
     private final AdminService adminService;
     private final AdminChatService adminChatService;
