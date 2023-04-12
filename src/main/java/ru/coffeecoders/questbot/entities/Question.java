@@ -111,7 +111,7 @@ public class Question {
                 ", question='" + question + '\'' +
                 ", answerFormat='" + answerFormat + '\'' +
                 ", answer='" + answer + '\'' +
-                ", mapUrl present='" + (mapUrl == null) + '\'' +
+                ", mapUrl present='" + !(mapUrl == null) + '\'' +
                 ", lastUsage=" + lastUsage +
                 ", group='" + group + '\'' +
                 '}';
