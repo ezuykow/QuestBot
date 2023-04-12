@@ -32,7 +32,7 @@ public class Question {
     @Column(name = "last_usage")
     private Date lastUsage;
 
-    @Column(name = "group")
+    @Column(name = "question_group")
     private String group;
 
     public int getQuestionId() {
