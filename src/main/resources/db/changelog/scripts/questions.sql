@@ -17,3 +17,15 @@ ALTER TABLE questions
 -- changeset ezuykow:3
 ALTER TABLE questions
     ALTER COLUMN question_id TYPE INT;
+
+-- changeset ezuykow:4
+ALTER TABLE questions
+DROP COLUMN "group";
+ALTER TABLE  questions
+    ADD COLUMN question_group TEXT NOT NULL DEFAULT 'General';
+
+-- changeset ezuykow:5
+ALTER TABLE questions
+DROP COLUMN question_group;
+ALTER TABLE  questions
+    ADD COLUMN question_group TEXT;
