@@ -31,7 +31,12 @@ public class EditDeleteKeyboardCreator {
 
     public static Keyboard createQuestionKeyboard() {
 
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(makeKeyboard(makeRows(makeButtonArray())));
+        
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(
+                makeKeyboard
+                        (makeRows
+                                (makeButtonArray()))
+        );
         return keyboardMarkup;
     }
 
@@ -41,7 +46,7 @@ public class EditDeleteKeyboardCreator {
         return new KeyboardButton[]{toGroup, returnKb};
     }
 
-    private  KeyboardButton[][] makeRows(KeyboardButton[] buttonArray) {
+    private KeyboardButton[][] makeRows(KeyboardButton[] buttonArray) {
         KeyboardButton[] firstRow = new KeyboardButton[]{buttonArray[0]};
         KeyboardButton[] secondRow = new KeyboardButton[]{buttonArray[1]};
         return new KeyboardButton[][]{firstRow, secondRow};

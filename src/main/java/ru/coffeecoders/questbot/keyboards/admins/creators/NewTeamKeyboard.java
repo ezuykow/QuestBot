@@ -9,17 +9,19 @@ import java.util.List;
 public class NewTeamKeyboard {
 
     public static InlineKeyboardMarkup createKeyboardFromTeams(List<String> teams) {
-
         List<InlineKeyboardButton> buttons = new ArrayList<>();
-        teams.stream().map(x -> {new InlineKeyboardButton(x),})
+        for (String team : teams) {
+            InlineKeyboardButton button = new InlineKeyboardButton(team).callbackData("team_" + team);
+            buttons.add(button);
+        }
 
-    }
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        for (InlineKeyboardButton button : buttons) {
+            List<InlineKeyboardButton> row = new ArrayList<>();
+            row.add(button);
+            rows.add(row);
+        }
 
-
-
-    private InlineKeyboardButton apply(String team) {
-        InlineKeyboardButton button = new InlineKeyboardButton(team);
-        button.callbackData("team_" + team);
-        return button;
+        return new InlineKeyboardMarkup((InlineKeyboardButton[]) rows.toArray());
     }
 }

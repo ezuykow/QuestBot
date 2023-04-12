@@ -10,7 +10,7 @@ import java.util.List;
 @Component
 public class NewAdminKeyboardCreator {
 
-    private List<String[]> users;
+    private List<String[]> users = new ArrayList<>();
     private List<InlineKeyboardButton> buttons = new ArrayList<>();
 
     public InlineKeyboardButton newAdminButtonCreate(String firstName, String lastName, String username) {

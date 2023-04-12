@@ -5,7 +5,10 @@ import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.keyboards.KeyboardSender;
 import ru.coffeecoders.questbot.keyboards.admins.creators.EditDeleteKeyboardCreator;
 import ru.coffeecoders.questbot.keyboards.admins.creators.NewAdminKeyboardCreator;
+import ru.coffeecoders.questbot.keyboards.admins.creators.NewTeamKeyboard;
 import ru.coffeecoders.questbot.keyboards.general.creators.ChatTypeSelectKeyboard;
+
+import java.util.List;
 
 @Component
 public class AdminsCommandsActions {
@@ -59,8 +62,8 @@ public class AdminsCommandsActions {
     public void performStartGameCmd (Long chatId){
         //TODO метод для запуска распределения на команды
     };
-    public void  performStarTeamMakerCmd (Long chatId){
-        //TODO метод для запуска распределения на команды
+    public void  performStarTeamMakerCmd (Long chatId, List<String> teams){
+        keyboardSender.sendKeyboard(NewTeamKeyboard.createKeyboardFromTeams(teams), chatId);
     };
 
     public void performStopGameCmd (Long chatId){
