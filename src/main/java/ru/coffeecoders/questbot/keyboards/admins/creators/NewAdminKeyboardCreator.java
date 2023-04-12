@@ -2,7 +2,6 @@ package ru.coffeecoders.questbot.keyboards.admins.creators;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.model.request.Keyboard;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -13,10 +12,9 @@ public class NewAdminKeyboardCreator {
 
     private static List<InlineKeyboardButton> buttons = new ArrayList<>();
 
-    public static Keyboard newAdminKeyboardCreate() {
-    }
 
-    private InlineKeyboardButton newAdminButtonCreate(String firstName, String lastName, String username) {
+
+    private static InlineKeyboardButton newAdminButtonCreate(String firstName, String lastName, String username) {
         StringBuilder builderName = new StringBuilder().append(firstName).append(" ").append(lastName).append(" - ").append(username);
         InlineKeyboardButton button = new InlineKeyboardButton(builderName.toString());
         StringBuilder builderCallback = new StringBuilder().append("newadmin_").append(username);
@@ -26,7 +24,7 @@ public class NewAdminKeyboardCreator {
 
 
 
-    private InlineKeyboardMarkup createKeyboard(List<InlineKeyboardButton> buttons) {
+    private static InlineKeyboardMarkup createKeyboard(List<InlineKeyboardButton> buttons) {
         InlineKeyboardButton[][] keyboardButtons = new InlineKeyboardButton[NewAdminKeyboardCreator.buttons.size()][1];
         for (int i = 0; i < NewAdminKeyboardCreator.buttons.size(); i++) {
             keyboardButtons[i][0] = NewAdminKeyboardCreator.buttons.get(i);
@@ -34,7 +32,7 @@ public class NewAdminKeyboardCreator {
         return new InlineKeyboardMarkup(keyboardButtons);
     }
 
-    public InlineKeyboardMarkup newAdminKeyboardCreate(List<String[]> users) {
+    public static InlineKeyboardMarkup newAdminKeyboardCreate(List<String[]> users) {
 
         for (String[] user : users) {
             String firstName = user[0];

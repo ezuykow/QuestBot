@@ -20,9 +20,13 @@ public class AdminsCommandsActions {
     }
 
     // добавление нового админа
-    public void performNewAdminCmd(Update update) {
-        keyboardSender.sendKeyboard(NewAdminKeyboardCreator.newAdminKeyboardCreate(), update.message().chat().id());
+    public void performNewAdminCmd(Update update, List<String[]> users) {
+        keyboardSender.sendKeyboard(NewAdminKeyboardCreator.newAdminKeyboardCreate(users), update.message().chat().id());
     }
+
+    public void  performStarTeamMakerCmd (Long chatId, List<String[]> teams){
+        keyboardSender.sendKeyboard(NewTeamKeyboard.createKeyboardFromTeams(teams), chatId);
+    };
 
     // удалить/редактировать
     public void performEditQuestionCmd(Update update) {
@@ -61,9 +65,6 @@ public class AdminsCommandsActions {
 
     public void performStartGameCmd (Long chatId){
         //TODO метод для запуска распределения на команды
-    };
-    public void  performStarTeamMakerCmd (Long chatId, List<String> teams){
-        keyboardSender.sendKeyboard(NewTeamKeyboard.createKeyboardFromTeams(teams), chatId);
     };
 
     public void performStopGameCmd (Long chatId){

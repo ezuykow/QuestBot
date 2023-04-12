@@ -8,10 +8,10 @@ import java.util.List;
 
 public class NewTeamKeyboard {
 
-    public static InlineKeyboardMarkup createKeyboardFromTeams(List<String> teams) {
+    public static InlineKeyboardMarkup createKeyboardFromTeams(List<String[]> teams) {
         List<InlineKeyboardButton> buttons = new ArrayList<>();
-        for (String team : teams) {
-            InlineKeyboardButton button = new InlineKeyboardButton(team).callbackData("team_" + team);
+        for (String[] team : teams) {
+            InlineKeyboardButton button = new InlineKeyboardButton(team.toString()).callbackData("team_" + team);
             buttons.add(button);
         }
 

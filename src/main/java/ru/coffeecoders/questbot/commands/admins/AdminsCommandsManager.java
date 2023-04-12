@@ -19,7 +19,7 @@ public class AdminsCommandsManager {
     public void manageCommand(Update update, Commands.Command cmd) {
 
         switch (cmd) {
-            case NEWADMIN -> cmdActions.performNewAdminCmd(update);
+
             case NEWGAME -> cmdActions.performNewGameCmd(update);
             case START -> cmdActions.performStartCmd(update);
             case MAIN -> cmdActions.performMainCmd(update);
@@ -34,9 +34,10 @@ public class AdminsCommandsManager {
 
         }
     }
-    public void manageCommand(Update update, List<String> parameters, Commands.Command cmd) {
+    public void manageCommand(Update update, List<String[]> parameters, Commands.Command cmd) {
         switch (cmd) {
             case STARTTEAMMAKER -> cmdActions.performStarTeamMakerCmd(update.message().chat().id(), parameters);
+            case NEWADMIN -> cmdActions.performNewAdminCmd(update, parameters);
         }
     }
 }
