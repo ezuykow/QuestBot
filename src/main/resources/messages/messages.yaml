@@ -4,6 +4,11 @@ messages:
     cmdSendByNotAdmin: Эту команду может использовать только админ бота
     adminCmdInGlobalChat: Админ оставил сообщение в игровом чате
     gameCmdInAdminChat: В админском чате оставлена игровая команда
+
+  documents:
+    emptyQuestionList: Вопросов в файле не обнаружено!
+    wrongDocumentType: Поддерживается добавление вопросов только с файла Excel
+
 keyboards:
   headers:
    typeChat: выберите тип чата

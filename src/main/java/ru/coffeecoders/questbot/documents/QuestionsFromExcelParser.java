@@ -7,8 +7,10 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Question;
+import ru.coffeecoders.questbot.msg.senders.MessageSender;
 import ru.coffeecoders.questbot.services.QuestionService;
 
 import java.io.File;
@@ -27,14 +29,17 @@ public class QuestionsFromExcelParser {
 
     Logger logger = LoggerFactory.getLogger(QuestionsFromExcelParser.class);
 
-    //TODO private final QuestionsFromExcelParserMsgSender msgSender;
+    private final MessageSender msgSender;
     private final QuestionService questionService;
+    private final Environment env;
 
     private List<Question> newQuestions;
     boolean blankQuestionsPresent;
 
-    public QuestionsFromExcelParser(QuestionService questionService) {
+    public QuestionsFromExcelParser(MessageSender msgSender, QuestionService questionService, Environment env) {
+        this.msgSender = msgSender;
         this.questionService = questionService;
+        this.env = env;
     }
 
     /**
@@ -49,7 +54,6 @@ public class QuestionsFromExcelParser {
             blankQuestionsPresent = false;
             searchQuestionsInSheet(workBook.getSheetAt(0)); //0 - берем только первую страницу
             saveQuestionsIfPresent(chatId);
-            //TODO проверка есть ли вопросы
         } catch (IOException e) {
             logger.error("Excel-файл не найден");
             throw new RuntimeException(e);
@@ -100,14 +104,27 @@ public class QuestionsFromExcelParser {
     }
 
     private void saveQuestionsIfPresent(long chatId) {
+        StringBuilder msgSB = new StringBuilder();
+
         if (blankQuestionsPresent) {
-            //TODO msgSender.blankQuestionInTable(chatId) "Не забывайте обязательно заполнять текст вопроса и ответ"
+            msgSB.append("Пустые вопросы не добавлены! (Без текста вопроса или ответа)\n\n");
         }
+
         if (newQuestions.isEmpty()) {
-            //TODO msgSender.emptyNewQuestionsList(chatId)
+            msgSender.send(chatId, env.getProperty("messages.documents.emptyQuestionList"));
         } else {
             //TODO questionService.saveAll(newQuestions);
-            //TODO msgSender.newQuestionsAdded(chatId, newQuestions);
+            msgSender.send(chatId, createNewQuestionsMsg(msgSB));
         }
+    }
+
+    private String createNewQuestionsMsg(StringBuilder sb) {
+        sb.append(String.format("Добавлены вопросы (%d):\n\n", newQuestions.size()));
+
+        newQuestions.forEach(question -> {
+            sb.append(Character.toString(0x2714)).append(" ")
+                    .append(question.getQuestion()).append("\n");
+        });
+        return sb.toString();
     }
 }
