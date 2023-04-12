@@ -2,48 +2,59 @@ package ru.coffeecoders.questbot.commands.admins;
 
 import com.pengrad.telegrambot.model.Update;
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.keyboards.KeyboardFactory;
+import ru.coffeecoders.questbot.keyboards.KeyboardSender;
+import ru.coffeecoders.questbot.keyboards.admins.creators.EditDeleteKeyboardCreator;
+import ru.coffeecoders.questbot.keyboards.admins.creators.NewAdminKeyboardCreator;
+import ru.coffeecoders.questbot.keyboards.general.creators.ChatTypeSelectKeyboard;
 
 @Component
 public class AdminsCommandsActions {
 
-    private final KeyboardFactory keyboardFactory;
+    private final KeyboardSender keyboardSender;
 
-    public AdminsCommandsActions(KeyboardFactory keyboardFactory) {
-        this.keyboardFactory = keyboardFactory;
+    private AdminsCommandsActions(KeyboardSender keyboardSender) {
+        this.keyboardSender = keyboardSender;
     }
 
+    // добавление нового админа
     public void performNewAdminCmd(Update update) {
-        keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.NEW_ADMIN,update);
+        keyboardSender.sendKeyboard(NewAdminKeyboardCreator.newAdminKeyboardCreate(), update.message().chat().id());
     }
 
-    public void performNewGameCmd(Update update) {
-        keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.NEW_GAME, update);
+    // удалить/редактировать
+    public void performEditQuestionCmd(Update update) {
+        keyboardSender.sendKeyboard(EditDeleteKeyboardCreator.createQuestionKeyboard(),  update.message().chat().id());
     }
 
+
+    //Выбор вида чата.
     public void performStartCmd(Update update) {
-        keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.START, update);
+        keyboardSender.sendKeyboard(ChatTypeSelectKeyboard.createChatTypeSelectKeyboard(), update.message().chat().id());
     }
 
+    public void performNewTeamKeyboard() {
+
+    }
+    public void performNewGameCmd(Update update) {
+        // TODO keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.NEW_GAME, update);
+    }
    public void performMainCmd(Update update) {
-        keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.MAIN_ADMIN, update);
+       // TODO keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.MAIN_ADMIN, update);
     }
 
     public void performNewAddQuestionCmd(Update update) {
-        keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.ADDQUESTION, update);
+        // TODO   keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.ADDQUESTION, update);
     }
 
     public void performShowQuestionCmd(Update update) {
-        keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.SHOWQUESTIONS, update);
+        // TODO   keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.SHOWQUESTIONS, update);
     }
 
     public void performQuestionMenuCmd(Update update) {
-        keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.QUESTIONS_MENU, update);
+        // TODO  keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.QUESTIONS_MENU, update);
     }
 
-    public void performEditQuestionCmd(Update update) {
-        keyboardFactory.createKeyboard(KeyboardFactory.KeyboardType.EDITKEYBOARD, update);
-    }
+
 
     public void performStartGameCmd (Long chatId){
         //TODO метод для запуска распределения на команды

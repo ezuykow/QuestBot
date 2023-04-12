@@ -10,11 +10,10 @@ import java.util.List;
 @Component
 public class NewAdminKeyboardCreator {
 
+    private List<String[]> users;
+    private List<InlineKeyboardButton> buttons = new ArrayList<>();
 
-    private static List<String[]> users;
-    private static List<InlineKeyboardButton> buttons = new ArrayList<>();
-
-    public static InlineKeyboardButton newAdminButtonCreate(String firstName, String lastName, String username) {
+    public InlineKeyboardButton newAdminButtonCreate(String firstName, String lastName, String username) {
         StringBuilder builderName = new StringBuilder().append(firstName).append(" ").append(lastName).append(" - ").append(username);
         InlineKeyboardButton button = new InlineKeyboardButton(builderName.toString());
         StringBuilder builderCallback = new StringBuilder().append("newadmin_").append(username);
@@ -22,11 +21,11 @@ public class NewAdminKeyboardCreator {
         return button;
     }
 
-    public static void addButton(InlineKeyboardButton button) {
+    public void addButton(InlineKeyboardButton button) {
         buttons.add(button);
     }
 
-    public static InlineKeyboardMarkup createKeyboard() {
+    public InlineKeyboardMarkup createKeyboard() {
         InlineKeyboardButton[][] keyboardButtons = new InlineKeyboardButton[buttons.size()][1];
         for (int i = 0; i < buttons.size(); i++) {
             keyboardButtons[i][0] = buttons.get(i);
@@ -34,7 +33,7 @@ public class NewAdminKeyboardCreator {
         return new InlineKeyboardMarkup(keyboardButtons);
     }
 
-    public static InlineKeyboardMarkup newAdminKeyboardCreate() {
+    public InlineKeyboardMarkup newAdminKeyboardCreate() {
         for (String[] user : users) {
             String firstName = user[0];
             String lastName = user[1];
@@ -44,6 +43,3 @@ public class NewAdminKeyboardCreator {
         return createKeyboard();
     }
 }
-
-
-
