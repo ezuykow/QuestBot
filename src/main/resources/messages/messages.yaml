@@ -5,6 +5,12 @@ messages:
     adminCmdInGlobalChat: Админ оставил сообщение в игровом чате
     gameCmdInAdminChat: В админском чате оставлена игровая команда
 
+  players:
+    noCurrentGame: игра не запущена
+    enterTeamName: введите название своей команды
+    noTeamsRegisteredYet: пока не зарегистрировано ни одной команды
+    chooseYourTeam: выберите команду
+
   documents:
     emptyQuestionList: Вопросов в файле не обнаружено!
     wrongDocumentType: Поддерживается добавление вопросов только с файла Excel
