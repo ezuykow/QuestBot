@@ -37,12 +37,11 @@ public class DocumentsManager {
      * и пробрасывает скачанный файл в {@link QuestionsFromExcelParser}
      * @param update апдейт с документом
      */
-    public void manageDocument(Update update) {
-        ExtendedUpdate exUpdate = new ExtendedUpdate(update);
-        long chatId = exUpdate.getMessageChatId();
+    public void manageDocument(ExtendedUpdate update) {
+        long chatId = update.getMessageChatId();
 
-        if (validate(exUpdate)) {
-            parser.parse(downloader.downloadDocument(exUpdate.getDocument()), chatId);
+        if (validate(update)) {
+            parser.parse(downloader.downloadDocument(update.getDocument()), chatId);
         }
     }
 

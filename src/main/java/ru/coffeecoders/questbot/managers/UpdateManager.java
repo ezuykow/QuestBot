@@ -20,8 +20,8 @@ public class UpdateManager {
         ExtendedUpdate exUpdate = new ExtendedUpdate(update);
 
         switch (exUpdate.getUpdateType()) {
-            case COMMAND -> commandsManager.manageCommand(update);
-            case DOCUMENT -> documentsManager.manageDocument(update);
+            case COMMAND -> commandsManager.manageCommand(exUpdate);
+            case DOCUMENT -> documentsManager.manageDocument(exUpdate);
             case UNKNOWN -> {} //TODO msgSender.unknownUpdateType(chatId);
         }
     }

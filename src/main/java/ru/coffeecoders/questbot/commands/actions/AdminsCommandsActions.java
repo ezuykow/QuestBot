@@ -3,6 +3,7 @@ package ru.coffeecoders.questbot.commands.actions;
 import com.pengrad.telegrambot.model.Update;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.viewers.questions.QuestionsViewer;
 
@@ -19,11 +20,11 @@ public class AdminsCommandsActions {
         this.env = env;
     }
 
-    public void performStartCmd(Update update) {
-        msgSender.send(update.message().chat().id(), env.getProperty("messages.welcome"));
+    public void performStartCmd(ExtendedUpdate update) {
+        msgSender.send(update.getMessageChatId(), env.getProperty("messages.welcome"));
     }
 
-    public void performShowQuestionsCmd(Update update) {
-        questionsViewer.viewQuestions(update.message().chat().id());
+    public void performShowQuestionsCmd(ExtendedUpdate update) {
+        questionsViewer.viewQuestions(update.getMessageChatId());
     }
 }

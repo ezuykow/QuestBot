@@ -24,6 +24,14 @@ public class ExtendedUpdate{
     }
 
     /**
+     * @return {@code true}, если апдейт содержит {@code message()},
+     * {@code false} - в противном случае
+     */
+    public boolean hasMessage() {
+        return tryToGetMessage().isPresent();
+    }
+
+    /**
      * @return {@code true}, если апдейт содержит {@code message().text()},
      * {@code false} - в противном случае
      */
@@ -67,7 +75,10 @@ public class ExtendedUpdate{
      * {@link Chat#id()}
      */
     public long getMessageChatId() {
-        return update.message().chat().id();
+        if (hasMessage()) {
+            return update.message().chat().id();
+        }
+        throw new RuntimeException("Update haven't message!");
     }
 
     /**
@@ -76,7 +87,22 @@ public class ExtendedUpdate{
      * {@link Message#document()}
      */
     public Document getDocument() {
-        return update.message().document();
+        if (hasDocument()) {
+            return update.message().document();
+        }
+        throw new RuntimeException("Update haven't document!");
+    }
+
+    /**
+     * @return text из message из апдейта <br>
+     * Использя {@link Update#message()} <br>
+     * {@link Message#text()}
+     */
+    public String getMessageText() {
+        if (hasMessageText()) {
+            return update.message().text();
+        }
+        throw new RuntimeException("Update haven't message text!");
     }
 
     /**
@@ -86,7 +112,18 @@ public class ExtendedUpdate{
      * {@link User#id()}
      */
     public long getMessageFromUserId() {
-        return update.message().from().id();
+        if (hasMessage()) {
+            return update.message().from().id();
+        }
+        throw new RuntimeException("Update haven't message");
+    }
+
+    private Optional<Message> tryToGetMessage() {
+        try {
+            return Optional.of(update.message());
+        } catch (NullPointerException e) {
+            return Optional.empty();
+        }
     }
 
     private Optional<String> tryToGetMessageText() {
