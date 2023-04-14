@@ -36,7 +36,7 @@ public class GameService {
         return gameRepository.save(game);
     }
 
-    public Optional<Game> findByChatId(int chatId) {
+    public Optional<Game> findByChatId(long chatId) {
         Optional<Game> optional = gameRepository.findByGlobalChatId(chatId);
         logger.info("Game {} with id = {}", optional.isPresent() ? "found" : "not found", chatId);
         return optional;
