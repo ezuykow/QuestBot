@@ -13,4 +13,6 @@ import java.util.Optional;
 public interface GameRepository extends JpaRepository<Game, String> {
 
     Optional<Game> findByGameName(String gameName);
+
+    Optional<Game> findByGlobalChatId(long globalChatId);
 }
