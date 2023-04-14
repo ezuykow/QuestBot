@@ -3,6 +3,7 @@ package ru.coffeecoders.questbot.listener;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,11 @@ public class QuestBotUpdatesListener implements UpdatesListener{
     public QuestBotUpdatesListener(TelegramBot telegramBot, UpdateManager updateManager) {
         this.telegramBot = telegramBot;
         this.updateManager = updateManager;
+    }
+
+    @PostConstruct
+    public void init() {
+        telegramBot.setUpdatesListener(this);
     }
 
     @Override
