@@ -21,19 +21,31 @@ public class QuestionService {
 
     public List<Question> findAll() {
         List<Question> list = questionRepository.findAll();
-        logger.info("Questions {} displaying", list.isEmpty() ? "are not" : "are");
+        if (!list.isEmpty()) {
+            logger.info("Questions are displaying");
+        } else {
+            logger.warn("No questions found");
+        }
         return list;
     }
 
     public Optional<Question> findById(int id) {
         Optional<Question> question = questionRepository.findByQuestionId(id);
-        logger.info("Question {} with id = {}", question.isPresent() ? "found" : "not found", id);
+        if (question.isPresent()) {
+            logger.info("Question found with id = {}", id);
+        } else {
+            logger.warn("Question not found with id = {}", id);
+        }
         return question;
     }
 
     public List<Question> findByGroup(String group) {
         List<Question> list = questionRepository.findByGroup(group);
-        logger.info("Questions by group {} displaying", list.isEmpty() ? "are not" : "are");
+        if (!list.isEmpty()) {
+            logger.info("Questions are displaying");
+        } else {
+            logger.warn("No question found");
+        }
         return list;
     }
 

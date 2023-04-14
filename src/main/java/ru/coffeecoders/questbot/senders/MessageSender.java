@@ -1,4 +1,4 @@
-package ru.coffeecoders.questbot.msg.senders;
+package ru.coffeecoders.questbot.senders;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
