@@ -9,6 +9,12 @@ messages:
     adminCmdInGlobalChat: Админ оставил сообщение в игровом чате
     gameCmdInAdminChat: В админском чате оставлена игровая команда
 
+  players:
+    haventStartedGame: Запущенных игр нет
+    enterTeamName: введите название своей команды
+    noTeamsRegisteredYet: Пока не зарегистрировано ни одной команды
+    chooseYourTeam: Выберите команду, в которую хотите вступить
+
   documents:
     emptyQuestionList: Вопросов в файле не обнаружено!
     fromNotAdmin: Добавлять вопросы может только администратор

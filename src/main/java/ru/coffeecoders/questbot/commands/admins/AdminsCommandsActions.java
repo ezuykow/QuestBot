@@ -3,7 +3,7 @@ package ru.coffeecoders.questbot.commands.admins;
 import com.pengrad.telegrambot.model.Update;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.msg.senders.MessageSender;
+import ru.coffeecoders.questbot.senders.MessageSender;
 
 import java.util.List;
 
