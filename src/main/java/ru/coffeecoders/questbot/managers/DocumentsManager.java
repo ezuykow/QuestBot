@@ -43,19 +43,25 @@ public class DocumentsManager {
 
         if (validate(exUpdate)) {
             parser.parse(downloader.downloadDocument(exUpdate.getDocument()), chatId);
-        } else {
-            msgSender.send(chatId, env.getProperty("messages.documents.wrongDocumentType"));
         }
     }
 
     private boolean validate(ExtendedUpdate exUpdate) {
-        return validator.isAdmin(exUpdate.getMessageFromUserId())
-                && validator.isAdminChat(exUpdate.getMessageChatId())
-                && isExcelFile(exUpdate.getDocument());
+        if (validator.isAdminChat(exUpdate.getMessageChatId())) {
+            if (validator.isAdmin(exUpdate.getMessageFromUserId())) {
+                if (isExcelFile(exUpdate.getDocument())) {
+                    return true;
+                } else {
+                    msgSender.send(exUpdate.getMessageChatId(), env.getProperty("messages.documents.wrongDocumentType"));
+                }
+            } else {
+                msgSender.send(exUpdate.getMessageChatId(), env.getProperty("messages.documents.fromNotAdmin"));
+            }
+        }
+        return false;
     }
 
     private boolean isExcelFile(Document doc) {
-        return doc.mimeType()
-                .equals(env.getProperty("document.excel.mimeType"));
+        return doc.mimeType().equals(env.getProperty("document.excel.mimeType"));
     }
 }

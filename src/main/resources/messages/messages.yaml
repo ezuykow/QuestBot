@@ -11,6 +11,7 @@ messages:
 
   documents:
     emptyQuestionList: Вопросов в файле не обнаружено!
+    fromNotAdmin: Добавлять вопросы может только администратор
     wrongDocumentType: Поддерживается добавление вопросов только с файла Excel
 
 keyboards:
