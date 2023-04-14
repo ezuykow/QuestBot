@@ -41,4 +41,8 @@ public class QuestionService {
         logger.info("Question = {} has been saved", question);
         return questionRepository.save(question);
     }
+
+    public List<Question> saveAll(List<Question> questionList) {
+        return questionRepository.saveAll(questionList);
+    }
 }
