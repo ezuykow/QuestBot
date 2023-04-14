@@ -4,33 +4,30 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import jakarta.annotation.PostConstruct;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.coffeecoders.questbot.managers.UpdateManager;
 
 import java.util.List;
 
 @Service
-public class QuestBotUpdatesListener implements UpdatesListener{
-    private final Logger logger = LoggerFactory.getLogger(QuestBotUpdatesListener.class);
-    private final TelegramBot telegramBot;
-    private final UpdateManager updateManager;
+public class QuestBotUpdatesListener implements UpdatesListener {
 
-    public QuestBotUpdatesListener(TelegramBot telegramBot, UpdateManager updateManager) {
-        this.telegramBot = telegramBot;
+    private final UpdateManager updateManager;
+    private final TelegramBot bot;
+
+    public QuestBotUpdatesListener(UpdateManager updateManager, TelegramBot bot) {
         this.updateManager = updateManager;
+        this.bot = bot;
     }
 
     @PostConstruct
     public void init() {
-        telegramBot.setUpdatesListener(this);
+        bot.setUpdatesListener(this);
     }
 
     @Override
     public int process(List<Update> updates) {
         updates.forEach(updateManager::performUpdate);
-
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 }
