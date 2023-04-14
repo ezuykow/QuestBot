@@ -17,19 +17,19 @@ import ru.coffeecoders.questbot.validators.ChatAndUserIdValidator;
 @Component
 public class CommandsManager {
     private final AdminsCommandsManager adminsCommandsManager;
-    //    private final PlayersCommandsManager playersCommandsManager;
+    private final PlayersCommandsManager playersCommandsManager;
     private final ChatAndUserIdValidator validator;
     private final MessageSender msgSender;
     private final Environment env;
     private long chatId;
 
     public CommandsManager(AdminsCommandsManager adminsCommandsManager,
-//                           PlayersCommandsManager playersCommandsManager,
+                           PlayersCommandsManager playersCommandsManager,
                            ChatAndUserIdValidator validator,
                            MessageSender msgSender,
                            Environment env) {
         this.adminsCommandsManager = adminsCommandsManager;
-//        this.playersCommandsManager = playersCommandsManager;
+        this.playersCommandsManager = playersCommandsManager;
         this.validator = validator;
         this.msgSender = msgSender;
         this.env = env;
@@ -70,7 +70,7 @@ public class CommandsManager {
 
     private void checkAndSendPlayersCommand(Update update, Commands.Command cmd) {
         if (validator.isGlobalChat(chatId)) {
-//            playersCommandsManager.manageCommand(update, cmd);
+            playersCommandsManager.manageCommand(update, cmd);
         } else {
             msgSender.send(chatId, env.getProperty("messages.admins.gameCmdInAdminChat"));
         }

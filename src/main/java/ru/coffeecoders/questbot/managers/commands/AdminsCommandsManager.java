@@ -17,19 +17,8 @@ public class AdminsCommandsManager {
     public void manageCommand(Update update, Commands.Command cmd) {
 
         switch (cmd) {
-
-            case NEWGAME -> cmdActions.performNewGameCmd(update);
             case START -> cmdActions.performStartCmd(update);
-            case MAIN -> cmdActions.performMainCmd(update);
-
-            case QUESTIONSMENU -> cmdActions.performQuestionMenuCmd(update);
-            case ADDQUESTION -> cmdActions.performNewAddQuestionCmd(update);
-            case SHOWQUESTIONS ->  cmdActions.performShowQuestionCmd(update);
-            case EDITKEYBOARD ->cmdActions.performEditQuestionCmd(update);
-
-            case STARTGAME -> cmdActions.performStartGameCmd(update.message().chat().id());
-            case STOPTGAME -> cmdActions.performStopGameCmd(update.message().chat().id());
-
+            case SHOWQUESTIONS -> cmdActions.performShowQuestionsCmd(update);
         }
     }
 }

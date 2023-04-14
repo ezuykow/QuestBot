@@ -7,21 +7,10 @@ import static ru.coffeecoders.questbot.commands.Commands.Attribute.*;
 @Component
 public class Commands {
     public enum Command {
-        NEWADMIN(ADMIN),
-        NEWGAME(ADMIN),
-        PLAYING(ADMIN),
-        QUESTIONSMENU(ADMIN),
-        ADDQUESTION(ADMIN),
-        SHOWQUESTIONS(ADMIN),
-        MAIN(ADMIN),
-        DELETEQUESTION(ADMIN),
-        EDITQUESTION(ADMIN),
-        ADMINON(GLOBALADMIN),
         START(GLOBALADMIN),
-        EDITKEYBOARD (ADMIN),
-        STARTGAME (ADMIN),
-        STOPTGAME(ADMIN),
-        STARTTEAMMAKER(ADMIN),
+
+        SHOWQUESTIONS(ADMIN),
+
         SCORE(PLAYER),
         TASKS(PLAYER),
         REGTEAM(PLAYER),
