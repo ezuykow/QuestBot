@@ -10,11 +10,7 @@ import java.util.Optional;
 @Component
 public class UpdateManager {
 
-      private final CommandsManager commandsManager;
-
-//    public UpdateManager(CommandsManager commandsManager) {
-//        this.commandsManager = commandsManager;
-//    }
+    private final CommandsManager commandsManager;
 
     public void performUpdate(Update update) {
         ExtendedUpdate exUpdate = new ExtendedUpdate(update);
