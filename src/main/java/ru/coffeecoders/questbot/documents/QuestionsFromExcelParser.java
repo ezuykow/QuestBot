@@ -107,19 +107,20 @@ public class QuestionsFromExcelParser {
         StringBuilder msgSB = new StringBuilder();
 
         if (blankQuestionsPresent) {
-            msgSB.append("Пустые вопросы не добавлены! (Без текста вопроса или ответа)\n\n");
+            msgSB.append(env.getProperty("messages.documents.emptyQuestionsNotAdded"));
         }
 
         if (newQuestions.isEmpty()) {
             msgSender.send(chatId, env.getProperty("messages.documents.emptyQuestionList"));
         } else {
-            //TODO questionService.saveAll(newQuestions);
+            questionService.saveAll(newQuestions);
             msgSender.send(chatId, createNewQuestionsMsg(msgSB));
         }
     }
 
     private String createNewQuestionsMsg(StringBuilder sb) {
-        sb.append(String.format("Добавлены вопросы (%d):\n\n", newQuestions.size()));
+        sb.append(String.format(env.getProperty("messages.documents.questionsAdded", "%d"),
+                newQuestions.size()));
 
         newQuestions.forEach(question -> {
             sb.append(Character.toString(0x2714)).append(" ")
