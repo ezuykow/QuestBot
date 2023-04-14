@@ -39,4 +39,11 @@ public class TaskService {
         logger.info("Task = {} has been saved", task);
         return taskRepository.save(task);
     }
+
+    public List<Task> findByGameName(String gameName) {
+        List<Task> list = taskRepository.findByGameName(gameName);
+        logger.info("Tasks {} displaying", list.isEmpty() ? "are not" : "are");
+        return list;
+    }
+
 }
