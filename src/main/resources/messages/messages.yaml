@@ -10,10 +10,10 @@ messages:
     gameCmdInAdminChat: В админском чате оставлена игровая команда
 
   players:
-    noCurrentGame: игра не запущена
+    haventStartedGame: Запущенных игр нет
     enterTeamName: введите название своей команды
-    noTeamsRegisteredYet: пока не зарегистрировано ни одной команды
-    chooseYourTeam: выберите команду
+    noTeamsRegisteredYet: Пока не зарегистрировано ни одной команды
+    chooseYourTeam: Выберите команду, в которую хотите вступить
 
   documents:
     emptyQuestionList: Вопросов в файле не обнаружено!
