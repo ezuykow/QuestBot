@@ -17,7 +17,7 @@ public class Commands {
         DELETEQUESTION(ADMIN),
         EDITQUESTION(ADMIN),
         ADMINON(GLOBALADMIN),
-        START(PLAYER),
+        START(GLOBALADMIN),
         EDITKEYBOARD (ADMIN),
         STARTGAME (ADMIN),
         STOPTGAME(ADMIN),
