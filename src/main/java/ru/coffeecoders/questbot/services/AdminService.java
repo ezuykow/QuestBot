@@ -25,7 +25,7 @@ public class AdminService {
         return list;
     }
 
-    public Optional<Admin> findById(long id) {
+    public Optional<Admin> findById(Long id) {
         Optional<Admin> admin = adminRepository.findByTgAdminUserId(id);
         logger.info("Admin {} with id = {}", admin.isPresent() ? "found" : "not found", id);
         return admin;
