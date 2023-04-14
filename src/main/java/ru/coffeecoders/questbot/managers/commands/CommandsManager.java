@@ -5,9 +5,7 @@ import com.pengrad.telegrambot.model.Update;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.commands.Commands;
-//import ru.coffeecoders.questbot.commands.players.PlayersCommandsManager;
-import ru.coffeecoders.questbot.msg.senders.CommandsManagerMsgSender;
-import ru.coffeecoders.questbot.msg.senders.MessageSender;
+import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.validators.ChatAndUserIdValidator;
 
 
@@ -28,7 +26,6 @@ public class CommandsManager {
     public CommandsManager(AdminsCommandsManager adminsCommandsManager,
 //                           PlayersCommandsManager playersCommandsManager,
                            ChatAndUserIdValidator validator,
-                           CommandsManagerMsgSender managerMsgSender,
                            MessageSender msgSender,
                            Environment env) {
         this.adminsCommandsManager = adminsCommandsManager;
@@ -41,7 +38,7 @@ public class CommandsManager {
     /**
      * Инициализирует поле chatId;
      * Проверяет, существует ли команда и если это так, создает объект {@link Commands.Command}
-     * Иначе вызывет метод {@link CommandsManagerMsgSender#sendInvalidCmdMsg}, оповещающий об ошибке
+     * Иначе выведет сообщение, оповещающее об ошибке
      *
      * @param update - апдейт (текст команды)
      */

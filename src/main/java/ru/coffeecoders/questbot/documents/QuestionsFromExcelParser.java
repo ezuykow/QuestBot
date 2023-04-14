@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Question;
-import ru.coffeecoders.questbot.msg.senders.MessageSender;
+import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.services.QuestionService;
 
 import java.io.File;
