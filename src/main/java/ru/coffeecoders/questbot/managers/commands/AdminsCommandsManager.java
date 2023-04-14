@@ -1,8 +1,9 @@
-package ru.coffeecoders.questbot.commands.admins;
+package ru.coffeecoders.questbot.managers.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.commands.Commands;
+import ru.coffeecoders.questbot.commands.admins.AdminsCommandsActions;
 
 import java.util.List;
 
@@ -32,12 +33,6 @@ public class AdminsCommandsManager {
             case STARTGAME -> cmdActions.performStartGameCmd(update.message().chat().id());
             case STOPTGAME -> cmdActions.performStopGameCmd(update.message().chat().id());
 
-        }
-    }
-    public void manageCommand(Update update, List<String[]> parameters, Commands.Command cmd) {
-        switch (cmd) {
-            case STARTTEAMMAKER -> cmdActions.performStarTeamMakerCmd(update.message().chat().id(), parameters);
-            case NEWADMIN -> cmdActions.performNewAdminCmd(update, parameters);
         }
     }
 }
