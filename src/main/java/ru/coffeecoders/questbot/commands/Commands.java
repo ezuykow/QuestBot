@@ -8,6 +8,7 @@ import static ru.coffeecoders.questbot.commands.Commands.Attribute.*;
 public class Commands {
     public enum Command {
         START(GLOBALADMIN),
+        ADMINON(GLOBALADMIN),
 
         SHOWQUESTIONS(ADMIN),
 

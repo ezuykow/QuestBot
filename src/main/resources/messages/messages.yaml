@@ -6,8 +6,9 @@ messages:
   admins:
     invalidMsg: Введена неверная команда
     cmdSendByNotAdmin: Эту команду может использовать только админ бота
-    adminCmdInGlobalChat: Админ оставил сообщение в игровом чате
+    adminCmdInGlobalChat: Эту команду можно использовать только в администраторском чате
     gameCmdInAdminChat: В админском чате оставлена игровая команда
+    chatIsAdminNow: Теперь этот чат - администраторский
 
   players:
     haventStartedGame: Запущенных игр нет

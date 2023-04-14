@@ -18,7 +18,6 @@ public class UpdateManager {
 
     public void performUpdate(Update update) {
         ExtendedUpdate exUpdate = new ExtendedUpdate(update);
-
         switch (exUpdate.getUpdateType()) {
             case COMMAND -> commandsManager.manageCommand(exUpdate);
             case DOCUMENT -> documentsManager.manageDocument(exUpdate);
