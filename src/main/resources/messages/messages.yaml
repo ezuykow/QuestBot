@@ -1,4 +1,8 @@
 messages:
+  welcome: > 
+    Привет, я QuestBot) Если вы хотите назначить этот чат админским -
+    выберите соответсвующую команду в меню
+
   admins:
     invalidMsg: Введена неверная команда
     cmdSendByNotAdmin: Эту команду может использовать только админ бота
@@ -7,6 +11,7 @@ messages:
 
   documents:
     emptyQuestionList: Вопросов в файле не обнаружено!
+    fromNotAdmin: Добавлять вопросы может только администратор
     wrongDocumentType: Поддерживается добавление вопросов только с файла Excel
 
 keyboards:

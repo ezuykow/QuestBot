@@ -25,7 +25,7 @@ public class AdminChatService {
         return list;
     }
 
-    public Optional<AdminChat> findById(long id) {
+    public Optional<AdminChat> findById(Long id) {
         Optional<AdminChat> adminChat = adminChatRepository.findByTgAdminChatId(id);
         logger.info("AdminChat {} with id = {}", adminChat.isPresent() ? "found" : "not found", id);
         return adminChat;

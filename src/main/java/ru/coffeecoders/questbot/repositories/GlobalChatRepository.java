@@ -12,5 +12,5 @@ import java.util.Optional;
 @Repository
 public interface GlobalChatRepository extends JpaRepository<GlobalChat, Long> {
 
-    Optional<GlobalChat> findByTgChatId(long tgChatId);
+    Optional<GlobalChat> findByTgChatId(Long tgChatId);
 }

@@ -7,6 +7,7 @@ import ru.coffeecoders.questbot.entities.Team;
 import ru.coffeecoders.questbot.repositories.TeamRepository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -20,15 +21,22 @@ public class TeamService {
     }
 
     public List<Team> findAll() {
-        List<Team> list = teamRepository.findAll();
-        logger.info("Teams {} displaying", list.isEmpty() ? "are not" : "are");
-        return list;
+        List<Team> teamList = teamRepository.findAll();
+        if (!teamList.isEmpty()) {
+            logger.info("Teams are displayed");
+        } else {
+            logger.warn("No teams found");
+        }
+        return teamList;
     }
 
     public Optional<Team> findByTeamName(String teamName) {
-        Optional<Team> team = teamRepository.findByTeamName(teamName);
-        logger.info("Team {} with id = {}", team.isPresent() ? "found" : "not found", teamName);
-        return team;
+        Optional<Team> optionalTeam = teamRepository.findByTeamName(teamName);
+        return Optional.ofNullable(optionalTeam
+                .orElseThrow(() -> {
+                    logger.warn("Team not found with teamName = {}", teamName);
+                    throw new NoSuchElementException("Team not found with teamName" + teamName);
+                }));
     }
 
     public Team save(Team team) {

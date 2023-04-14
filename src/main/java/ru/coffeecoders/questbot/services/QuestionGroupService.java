@@ -7,6 +7,7 @@ import ru.coffeecoders.questbot.entities.QuestionGroup;
 import ru.coffeecoders.questbot.repositories.QuestionGroupRepository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -21,18 +22,21 @@ public class QuestionGroupService {
 
     public List<QuestionGroup> findAll() {
         List<QuestionGroup> list = questionGroupRepository.findAll();
-        logger.info("QuestionGroups {} displaying", list.isEmpty() ? "are not" : "are");
+        if (!list.isEmpty()) {
+            logger.info("QuestionGroups are displaying");
+        } else {
+            logger.warn("No questionGroups found");
+        }
         return list;
     }
 
+    //TODO Integer или int?
     public Optional<QuestionGroup> findById(int id) {
-        Optional<QuestionGroup> questionGroup = questionGroupRepository.findByGroupId(id);
-        logger.info("QuestionGroup {} with id = {}", questionGroup.isPresent() ? "found" : "not found", id);
-        return questionGroup;
-    }
-
-    public QuestionGroup save(QuestionGroup questionGroup) {
-        logger.info("QuestionGroup = {} has been saved", questionGroup);
-        return questionGroupRepository.save(questionGroup);
+        Optional<QuestionGroup> optional = questionGroupRepository.findByGroupId(id);
+        return Optional.ofNullable(optional
+                .orElseThrow(() -> {
+                    logger.warn("QuestionGroup not found with groupId = {}", id);
+                    throw new NoSuchElementException("QuestionGroup not found with groupId" + id);
+                }));
     }
 }
