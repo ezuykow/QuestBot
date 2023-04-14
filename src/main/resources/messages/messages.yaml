@@ -1,12 +1,9 @@
 messages:
+  welcome: | 
+    Привет, я QuestBot) Если вы хотите назначить этот чат админским -
+    выберите соответсвующую команду в меню
+
   admins:
-    invalidMessage: Введена неверная команда
-    commandSentByNonAdmin: Эту команду может использовать только админ бота
-    sendAdminsMsgAdminCmdGameChat: Админ оставил сообщение в игровом чате
-    sendGamesMsgAdminChat: В админском чате оставлена игровая команда
-
-
-
     invalidMsg: Введена неверная команда
     cmdSendByNotAdmin: Эту команду может использовать только админ бота
     adminCmdInGlobalChat: Админ оставил сообщение в игровом чате

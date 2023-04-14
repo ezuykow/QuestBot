@@ -1,12 +1,13 @@
 package ru.coffeecoders.questbot.commands.admins;
 
 import com.pengrad.telegrambot.model.Update;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.keyboards.KeyboardSender;
 import ru.coffeecoders.questbot.keyboards.admins.creators.EditDeleteKeyboardCreator;
 import ru.coffeecoders.questbot.keyboards.admins.creators.NewAdminKeyboardCreator;
 import ru.coffeecoders.questbot.keyboards.admins.creators.NewTeamKeyboard;
-import ru.coffeecoders.questbot.keyboards.general.creators.ChatTypeSelectKeyboard;
+import ru.coffeecoders.questbot.msg.senders.MessageSender;
 
 import java.util.List;
 
@@ -14,9 +15,13 @@ import java.util.List;
 public class AdminsCommandsActions {
 
     private final KeyboardSender keyboardSender;
+    private final MessageSender msgSender;
+    private final Environment env;
 
-    private AdminsCommandsActions(KeyboardSender keyboardSender) {
+    private AdminsCommandsActions(KeyboardSender keyboardSender, MessageSender msgSender, Environment env) {
         this.keyboardSender = keyboardSender;
+        this.msgSender = msgSender;
+        this.env = env;
     }
 
     // добавление нового админа
@@ -36,7 +41,7 @@ public class AdminsCommandsActions {
 
     //Выбор вида чата.
     public void performStartCmd(Update update) {
-        keyboardSender.sendKeyboard(ChatTypeSelectKeyboard.createChatTypeSelectKeyboard(), update.message().chat().id());
+        msgSender.send(update.message().chat().id(), env.getProperty("messages.welcome"));
     }
 
     public void performNewTeamKeyboard() {
