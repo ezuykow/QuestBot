@@ -21,7 +21,11 @@ public class Commands {
         EDITKEYBOARD (ADMIN),
         STARTGAME (ADMIN),
         STOPTGAME(ADMIN),
-        STARTTEAMMAKER(ADMIN) ;
+        STARTTEAMMAKER(ADMIN),
+        SCORE(PLAYER),
+        TASKS(PLAYER),
+        REGTEAM(PLAYER),
+        JOINTEAM(PLAYER);
 
         private final Attribute attribute;
 
