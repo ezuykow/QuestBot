@@ -45,7 +45,7 @@ public class CommandsManager {
      */
     public void manageCommand(ExtendedUpdate update) {
         chatId = update.getMessageChatId();
-        String textCommand = update.getMessageText().trim().substring(1).toUpperCase();
+        String textCommand = getTextCommand(update);
         try {
             Commands.Command cmd = Commands.Command.valueOf(textCommand);
             manageCommandByAttribute(update, cmd);
@@ -91,5 +91,12 @@ public class CommandsManager {
         } else {
             msgSender.send(chatId, env.getProperty("messages.admins.cmdSendByNotAdmin"));
         }
+    }
+
+    private String getTextCommand(ExtendedUpdate update) {
+        String text = update.getMessageText();
+        return text.trim().
+                substring(1, (text.contains("@") ? text.indexOf("@") : text.length()))
+                .toUpperCase();
     }
 }

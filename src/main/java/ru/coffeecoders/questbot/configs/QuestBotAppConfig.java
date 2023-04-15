@@ -17,8 +17,6 @@ public class QuestBotAppConfig {
 
     @Bean
     public TelegramBot telegramBot() {
-        TelegramBot bot = new TelegramBot(token);
-        bot.execute(new DeleteMyCommands());
-        return bot;
+        return new TelegramBot(token);
     }
 }

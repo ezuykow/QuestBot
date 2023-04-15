@@ -14,6 +14,7 @@ public class ExtendedUpdate{
     public enum UpdateType {
         COMMAND,
         DOCUMENT,
+        CALLBACK,
         UNKNOWN
     }
 
@@ -48,6 +49,14 @@ public class ExtendedUpdate{
     }
 
     /**
+     * @return {@code true}, если апдейт содержит {@code callbackQuery()},
+     *      * {@code false} - в противном случае
+     */
+    public boolean hasCallbackQuery() {
+        return tryToGetCallbackQuery().isPresent();
+    }
+
+    /**
      * @return {@code true}, если апдейт является командой (т.е. начинается с "/"),
      * {@code false} в противном случае
      */
@@ -65,12 +74,15 @@ public class ExtendedUpdate{
         if (hasDocument()) {
             return UpdateType.DOCUMENT;
         }
+        if (hasCallbackQuery()) {
+            return UpdateType.CALLBACK;
+        }
         return UpdateType.UNKNOWN;
     }
 
     /**
      * @return id чата, с которого пришел апдейт <br>
-     * Использя {@link Update#message()} <br>
+     * Используя {@link Update#message()} <br>
      * {@link Message#chat()} <br>
      * {@link Chat#id()}
      */
@@ -83,7 +95,7 @@ public class ExtendedUpdate{
 
     /**
      * @return document из апдейта <br>
-     * Использя {@link Update#message()} <br>
+     * Используя {@link Update#message()} <br>
      * {@link Message#document()}
      */
     public Document getDocument() {
@@ -107,7 +119,7 @@ public class ExtendedUpdate{
 
     /**
      * @return id юзера, от которого пришел апдейт <br>
-     * Использя {@link Update#message()} <br>
+     * Используя {@link Update#message()} <br>
      * {@link Message#from()} <br>
      * {@link User#id()}
      */
@@ -116,6 +128,45 @@ public class ExtendedUpdate{
             return update.message().from().id();
         }
         throw new RuntimeException("Update haven't message");
+    }
+
+    /**
+     * @return данные из CallbackQuery<br>
+     * Используя {@link Update#callbackQuery()} <br>
+     * {@link CallbackQuery#data()}
+     */
+    public String getCallbackQueryData() {
+        if (hasCallbackQuery()) {
+            return update.callbackQuery().data();
+        }
+        throw new RuntimeException("Update haven't callbackQuery!");
+    }
+
+    /**
+     * @return id чата, с которого пришел калбак <br>
+     * Используя {@link Update#callbackQuery()} <br>
+     * {@link CallbackQuery#message()} <br>
+     * {@link Message#chat()} <br>
+     * {@link Chat#id()}
+     */
+    public long getCallbackMessageChatId() {
+        if (hasCallbackQuery()) {
+            return update.callbackQuery().message().chat().id();
+        }
+        throw new RuntimeException("Update haven't callbackQuery!");
+    }
+
+    /**
+     * @return id сообщения, с которого пришел калбак <br>
+     * Используя {@link Update#callbackQuery()} <br>
+     * {@link CallbackQuery#message()} <br>
+     * {@link Message#messageId()} ()}
+     */
+    public int getCallbackMessageId() {
+        if (hasCallbackQuery()) {
+            return update.callbackQuery().message().messageId();
+        }
+        throw new RuntimeException("Update haven't callbackQuery!");
     }
 
     private Optional<Message> tryToGetMessage() {
@@ -137,6 +188,14 @@ public class ExtendedUpdate{
     private Optional<Document> tryToGetDocument() {
         try {
             return Optional.of(update.message().document());
+        } catch (NullPointerException e) {
+            return Optional.empty();
+        }
+    }
+
+    private Optional<CallbackQuery> tryToGetCallbackQuery() {
+        try {
+            return Optional.of(update.callbackQuery());
         } catch (NullPointerException e) {
             return Optional.empty();
         }
