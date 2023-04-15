@@ -21,3 +21,7 @@ ALTER TABLE games
 -- changeset ezuykow:3
 ALTER TABLE games
     RENAME COLUMN groups_id TO groups_ids;
+
+-- changeset ezuykow:4
+ALTER TABLE  games
+    ADD COLUMN start_count_tasks INT CHECK ( start_count_tasks > 0 );

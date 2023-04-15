@@ -40,8 +40,19 @@ public class Game {
     @Column(name = "questions_count_to_add")
     private int questionsCountToAdd;
 
+    @Column(name = "start_count_tasks")
+    private int startCountTasks;
+
     public String getGameName() {
         return gameName;
+    }
+
+    public int getStartCountTasks() {
+        return startCountTasks;
+    }
+
+    public void setStartCountTasks(int startCountTasks) {
+        this.startCountTasks = startCountTasks;
     }
 
     public void setGameName(String gameName) {
@@ -128,6 +139,7 @@ public class Game {
                 ", maxPerformedQuestionsCount=" + maxPerformedQuestionsCount +
                 ", minQuestionsCountInGame=" + minQuestionsCountInGame +
                 ", questionsCountToAdd=" + questionsCountToAdd +
+                ", startCountTasks=" + startCountTasks +
                 '}';
     }
 }
