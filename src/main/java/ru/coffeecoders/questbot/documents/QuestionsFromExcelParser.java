@@ -54,10 +54,11 @@ public class QuestionsFromExcelParser {
             blankQuestionsPresent = false;
             searchQuestionsInSheet(workBook.getSheetAt(0)); //0 - берем только первую страницу
             saveQuestionsIfPresent(chatId);
-            deleteTempFile(excelFile);
         } catch (IOException e) {
             logger.error("Excel-файл не найден");
             throw new RuntimeException(e);
+        } finally {
+            deleteTempFile(excelFile);
         }
 
     }
@@ -123,16 +124,18 @@ public class QuestionsFromExcelParser {
         sb.append(String.format(env.getProperty("messages.documents.questionsAdded", "%d"),
                 newQuestions.size()));
 
-        newQuestions.forEach(question -> {
-            sb.append(Character.toString(0x2714)).append(" ")
-                    .append(question.getQuestion()).append("\n");
-        });
+        newQuestions.forEach(question -> sb.append(Character.toString(0x2714)).append(" ")
+                .append(question.getQuestion()).append("\n"));
         return sb.toString();
     }
 
     private void deleteTempFile(File tempFile) {
         try {
-            tempFile.delete();
+            if (tempFile.delete()) {
+                logger.warn("Temp excel-file was deleted");
+            } else {
+                logger.warn("Temp excel-file was not deleted");
+            }
         } catch (SecurityException e) {
             logger.error("Security Manager blocked deleting of temp file!");
         }
