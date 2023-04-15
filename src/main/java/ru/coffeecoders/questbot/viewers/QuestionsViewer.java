@@ -24,6 +24,7 @@ public class QuestionsViewer {
     private final MessageSender msgSender;
 
     private List<Question> questions;
+    private int lastShowedFirsIndex;
 
     public QuestionsViewer(QuestionService questionService, QuestionInfoViewer questionInfoViewer, MessageSender msgSender) {
         this.questionService = questionService;
@@ -32,7 +33,8 @@ public class QuestionsViewer {
     }
 
     public void viewQuestions(long chatId) {
-        questions = questionService.findAll();
+        refreshQuestionsList();
+        lastShowedFirsIndex = 0;
         int pageSize = Math.min(defaultPageSize, questions.size());
         QuestionsViewerPage page = QuestionsViewerPage.createPage(questions, pageSize, 0);
         msgSender.send(chatId, page.getText(), page.getKeyboard());
@@ -56,6 +58,14 @@ public class QuestionsViewer {
     }
 
     public void showQuestionInfo(ExtendedUpdate update, String data) {
-        questionInfoViewer.showQuestionInfo(update, );
+        String[] parts = data.split("\\.");
+        lastShowedFirsIndex = Integer.parseInt(parts[parts.length - 1]);
+        int targetQuestionIdx = Integer.parseInt(parts[2]) - 1;
+
+        questionInfoViewer.showQuestionInfo(update, questions.get(targetQuestionIdx));
+    }
+
+    private void refreshQuestionsList() {
+        questions = questionService.findAll();
     }
 }

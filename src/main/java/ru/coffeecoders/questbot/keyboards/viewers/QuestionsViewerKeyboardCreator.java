@@ -9,12 +9,12 @@ import java.util.Arrays;
 /**
  * @author ezuykow
  */
-public class QuestionViewerKeyboardCreator {
+public class QuestionsViewerKeyboardCreator {
 
     private InlineKeyboardButton[] buttons;
     private final InlineKeyboardMarkup keyboard;
 
-    private QuestionViewerKeyboardCreator(
+    private QuestionsViewerKeyboardCreator(
             int pageSize, boolean leftArrowNeed, int startIndex, int lastIndex, boolean rightArrowNeed) {
 
         buttons = new InlineKeyboardButton[pageSize + 2];
@@ -37,7 +37,7 @@ public class QuestionViewerKeyboardCreator {
     public static InlineKeyboardMarkup createKeyboard(
             int pageSize, boolean leftArrowNeed, int startIndex, int lastIndex, boolean rightArrowNeed) {
 
-        return new QuestionViewerKeyboardCreator(pageSize, leftArrowNeed, startIndex, lastIndex, rightArrowNeed)
+        return new QuestionsViewerKeyboardCreator(pageSize, leftArrowNeed, startIndex, lastIndex, rightArrowNeed)
                 .keyboard;
     }
 
