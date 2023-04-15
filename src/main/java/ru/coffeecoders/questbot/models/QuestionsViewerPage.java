@@ -1,4 +1,4 @@
-package ru.coffeecoders.questbot.viewers.questions;
+package ru.coffeecoders.questbot.models;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import ru.coffeecoders.questbot.entities.Question;

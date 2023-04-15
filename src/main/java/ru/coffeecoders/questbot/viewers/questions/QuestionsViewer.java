@@ -3,6 +3,7 @@ package ru.coffeecoders.questbot.viewers.questions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Question;
+import ru.coffeecoders.questbot.models.QuestionsViewerPage;
 import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.services.QuestionService;
 
