@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.Keyboard;
 import com.pengrad.telegrambot.request.BaseRequest;
+import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.BaseResponse;
@@ -39,6 +40,11 @@ public class MessageSender {
     public void edit(long chatId, int msgId, String text, InlineKeyboardMarkup kb) {
         checkResponse(bot.execute(
                 new EditMessageText(chatId, msgId, text).replyMarkup(kb)));
+    }
+
+    public void delete(long chatId, int msgId) {
+        checkResponse(bot.execute(
+                new DeleteMessage(chatId, msgId)));
     }
 
     private void checkResponse(BaseResponse response) {

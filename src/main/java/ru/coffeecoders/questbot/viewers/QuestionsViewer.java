@@ -72,6 +72,10 @@ public class QuestionsViewer {
                 page.getText(), page.getKeyboard());
     }
 
+    public void deleteView(ExtendedUpdate update) {
+        msgSender.delete(update.getCallbackMessageChatId(), update.getCallbackMessageId());
+    }
+
     private void refreshQuestionsList() {
         questions = questionService.findAll();
     }
