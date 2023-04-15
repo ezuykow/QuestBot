@@ -54,6 +54,7 @@ public class QuestionsFromExcelParser {
             blankQuestionsPresent = false;
             searchQuestionsInSheet(workBook.getSheetAt(0)); //0 - берем только первую страницу
             saveQuestionsIfPresent(chatId);
+            deleteTempFile(excelFile);
         } catch (IOException e) {
             logger.error("Excel-файл не найден");
             throw new RuntimeException(e);
@@ -127,5 +128,13 @@ public class QuestionsFromExcelParser {
                     .append(question.getQuestion()).append("\n");
         });
         return sb.toString();
+    }
+
+    private void deleteTempFile(File tempFile) {
+        try {
+            tempFile.delete();
+        } catch (SecurityException e) {
+            logger.error("Security Manager blocked deleting of temp file!");
+        }
     }
 }
