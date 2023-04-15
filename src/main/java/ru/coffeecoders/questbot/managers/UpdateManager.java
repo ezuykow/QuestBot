@@ -10,10 +10,12 @@ public class UpdateManager {
 
     private final CommandsManager commandsManager;
     private final DocumentsManager documentsManager;
+    private final CallbackQueryManager callbackManager;
 
-    public UpdateManager(CommandsManager commandsManager, DocumentsManager documentsManager) {
+    public UpdateManager(CommandsManager commandsManager, DocumentsManager documentsManager, CallbackQueryManager callbackManager) {
         this.commandsManager = commandsManager;
         this.documentsManager = documentsManager;
+        this.callbackManager = callbackManager;
     }
 
     public void performUpdate(Update update) {
@@ -21,7 +23,8 @@ public class UpdateManager {
         switch (exUpdate.getUpdateType()) {
             case COMMAND -> commandsManager.manageCommand(exUpdate);
             case DOCUMENT -> documentsManager.manageDocument(exUpdate);
-            case UNKNOWN -> {} //TODO msgSender.unknownUpdateType(chatId);
+            case CALLBACK -> callbackManager.manageCallback(exUpdate);
+            case UNKNOWN -> {} //Игнорировать апдейт
         }
     }
 }

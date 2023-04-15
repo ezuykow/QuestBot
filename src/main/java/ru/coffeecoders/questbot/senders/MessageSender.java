@@ -3,7 +3,10 @@ package ru.coffeecoders.questbot.senders;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.Keyboard;
+import com.pengrad.telegrambot.request.BaseRequest;
+import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,21 +27,23 @@ public class MessageSender {
     }
 
     public void send(long chatId, String text) {
-        exec(new SendMessage(chatId, text));
+        checkResponse(bot.execute(
+                new SendMessage(chatId, text)));
     }
 
     public void send(long chatId, String text, Keyboard kb) {
-        exec(new SendMessage(chatId, text).replyMarkup(kb));
+        checkResponse(bot.execute(
+                new SendMessage(chatId, text).replyMarkup(kb)));
     }
 
-    public void edit(long chatId, long msgId, String text, InlineKeyboardMarkup kb) {
-        //TODO
+    public void edit(long chatId, int msgId, String text, InlineKeyboardMarkup kb) {
+        checkResponse(bot.execute(
+                new EditMessageText(chatId, msgId, text).replyMarkup(kb)));
     }
 
-    private void exec(SendMessage msg) {
-        SendResponse response = bot.execute(msg);
+    private void checkResponse(BaseResponse response) {
         if (!response.isOk()) {
-            logger.warn("Unsent msg! {}", response.message().text());
+            logger.warn("Unsent msg! Error code: {}", response.errorCode());
         }
     }
 }

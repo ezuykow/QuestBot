@@ -20,13 +20,13 @@ public class QuestionViewerKeyboardCreator {
 
         buttons[currentButtonIdx++] = leftArrowNeed
                 ? new InlineKeyboardButton("\u25C0")
-                .callbackData("Switch page to previous. First element index: " + startIndex)
+                .callbackData("QuestionViewer.Switch page to previous.First element index." + startIndex)
                 : new InlineKeyboardButton("\u274C")
-                .callbackData("Delete message");
+                .callbackData("QuestionViewer.Delete message");
 
         for (int i = startIndex; i <= lastIndex; i++) {
             buttons[currentButtonIdx++] = new InlineKeyboardButton(String.valueOf(i + 1))
-                    .callbackData("Taken index: " + (i + 1));
+                    .callbackData("QuestionViewer.Taken index." + (i + 1));
         }
 
         if (!leftArrowNeed) {
@@ -38,12 +38,12 @@ public class QuestionViewerKeyboardCreator {
             }
         } else {
             buttons[currentButtonIdx] = rightArrowNeed
-                ? new InlineKeyboardButton("\u25B6")
-                .callbackData("Switch page to next. Last element index: " + lastIndex)
-                : new InlineKeyboardButton("\u274C")
-                .callbackData("Delete message");
+                    ? new InlineKeyboardButton("\u25B6")
+                    .callbackData("QuestionViewer.Switch page to next.Last element index." + lastIndex)
+                    : new InlineKeyboardButton("\u274C")
+                    .callbackData("QuestionViewer.Delete message");
         }
-        // TODO попробовать упростить
+            // TODO попробовать упростить
 //        buttons[currentButtonIdx] = rightArrowNeed
 //                ? new InlineKeyboardButton("\u25B6")
 //                .callbackData("Switch page to next. Last element index: " + lastIndex)
