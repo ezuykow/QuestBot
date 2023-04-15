@@ -1,4 +1,4 @@
-package ru.coffeecoders.questbot.viewers.questions;
+package ru.coffeecoders.questbot.viewers;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
