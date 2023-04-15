@@ -20,19 +20,23 @@ public class QuestionsViewer {
     private int defaultPageSize;
 
     private final QuestionService questionService;
+    private final QuestionInfoViewer questionInfoViewer;
     private final MessageSender msgSender;
 
     private List<Question> questions;
+    private int lastShowedFirstIndex;
 
-    public QuestionsViewer(QuestionService questionService, MessageSender msgSender) {
+    public QuestionsViewer(QuestionService questionService, QuestionInfoViewer questionInfoViewer, MessageSender msgSender) {
         this.questionService = questionService;
+        this.questionInfoViewer = questionInfoViewer;
         this.msgSender = msgSender;
     }
 
     public void viewQuestions(long chatId) {
-        questions = questionService.findAll();
+        refreshQuestionsList();
+        lastShowedFirstIndex = 0;
         int pageSize = Math.min(defaultPageSize, questions.size());
-        QuestionsViewerPage page = QuestionsViewerPage.createPage(questions, pageSize, 0);
+        QuestionsViewerPage page = QuestionsViewerPage.createPage(questions, pageSize, lastShowedFirstIndex);
         msgSender.send(chatId, page.getText(), page.getKeyboard());
     }
 
@@ -51,5 +55,24 @@ public class QuestionsViewer {
                 lastIndexShowed + 1);
         msgSender.edit(update.getCallbackMessageChatId(), update.getCallbackMessageId(),
                 newPage.getText(), newPage.getKeyboard());
+    }
+
+    public void showQuestionInfo(ExtendedUpdate update, String data) {
+        String[] parts = data.split("\\.");
+        lastShowedFirstIndex = Integer.parseInt(parts[parts.length - 1]);
+        int targetQuestionIdx = Integer.parseInt(parts[2]);
+        questionInfoViewer.showQuestionInfo(update, questions.get(targetQuestionIdx));
+    }
+
+    public void backFromQuestionInfo(ExtendedUpdate update) {
+        refreshQuestionsList();
+        int pageSize = Math.min(defaultPageSize, questions.size() - lastShowedFirstIndex);
+        QuestionsViewerPage page = QuestionsViewerPage.createPage(questions, pageSize, lastShowedFirstIndex);
+        msgSender.edit(update.getCallbackMessageChatId(), update.getCallbackMessageId(),
+                page.getText(), page.getKeyboard());
+    }
+
+    private void refreshQuestionsList() {
+        questions = questionService.findAll();
     }
 }
