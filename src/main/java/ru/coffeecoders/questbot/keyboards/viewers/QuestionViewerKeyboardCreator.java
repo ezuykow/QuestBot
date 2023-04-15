@@ -53,7 +53,7 @@ public class QuestionViewerKeyboardCreator {
         int currentButtonIdx = 1;
         for (int i = startIndex; i <= lastIndex; i++) {
             buttons[currentButtonIdx++] = new InlineKeyboardButton(String.valueOf(i + 1))
-                    .callbackData("QuestionViewer.Taken index." + (i + 1));
+                    .callbackData("QuestionViewer.Taken index." + (i + 1) + ".Showed first index." + startIndex);
         }
     }
 

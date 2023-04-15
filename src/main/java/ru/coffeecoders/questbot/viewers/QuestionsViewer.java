@@ -20,12 +20,14 @@ public class QuestionsViewer {
     private int defaultPageSize;
 
     private final QuestionService questionService;
+    private final QuestionInfoViewer questionInfoViewer;
     private final MessageSender msgSender;
 
     private List<Question> questions;
 
-    public QuestionsViewer(QuestionService questionService, MessageSender msgSender) {
+    public QuestionsViewer(QuestionService questionService, QuestionInfoViewer questionInfoViewer, MessageSender msgSender) {
         this.questionService = questionService;
+        this.questionInfoViewer = questionInfoViewer;
         this.msgSender = msgSender;
     }
 
@@ -51,5 +53,9 @@ public class QuestionsViewer {
                 lastIndexShowed + 1);
         msgSender.edit(update.getCallbackMessageChatId(), update.getCallbackMessageId(),
                 newPage.getText(), newPage.getKeyboard());
+    }
+
+    public void showQuestionInfo(ExtendedUpdate update, String data) {
+        questionInfoViewer.showQuestionInfo(update, );
     }
 }
