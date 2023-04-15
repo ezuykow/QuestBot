@@ -13,6 +13,7 @@ public class QuestionViewerCallbackManager {
     private static final String PREVIOUS_PAGE_REGEXP = "QuestionViewer.Switch page to previous.*";
     private static final String NEXT_PAGE_REGEXP = "QuestionViewer.Switch page to next.*";
     private static final String SHOW_QUESTION_REGEXP = "QuestionViewer.Taken index.*";
+    private static final String QUESTION_INFO_BACK_REGEXP = "QuestionViewer.QuestionInfo.Back";
 
     private final QuestionsViewer questionsViewer;
 
@@ -29,6 +30,9 @@ public class QuestionViewerCallbackManager {
         }
         if (data.matches(SHOW_QUESTION_REGEXP)) {
             questionsViewer.showQuestionInfo(update, data);
+        }
+        if (data.matches(QUESTION_INFO_BACK_REGEXP)) {
+            questionsViewer.backFromQuestionInfo(update);
         }
     }
 }

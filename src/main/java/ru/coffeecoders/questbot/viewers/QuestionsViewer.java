@@ -24,7 +24,7 @@ public class QuestionsViewer {
     private final MessageSender msgSender;
 
     private List<Question> questions;
-    private int lastShowedFirsIndex;
+    private int lastShowedFirstIndex;
 
     public QuestionsViewer(QuestionService questionService, QuestionInfoViewer questionInfoViewer, MessageSender msgSender) {
         this.questionService = questionService;
@@ -34,9 +34,9 @@ public class QuestionsViewer {
 
     public void viewQuestions(long chatId) {
         refreshQuestionsList();
-        lastShowedFirsIndex = 0;
+        lastShowedFirstIndex = 0;
         int pageSize = Math.min(defaultPageSize, questions.size());
-        QuestionsViewerPage page = QuestionsViewerPage.createPage(questions, pageSize, 0);
+        QuestionsViewerPage page = QuestionsViewerPage.createPage(questions, pageSize, lastShowedFirstIndex);
         msgSender.send(chatId, page.getText(), page.getKeyboard());
     }
 
@@ -59,10 +59,17 @@ public class QuestionsViewer {
 
     public void showQuestionInfo(ExtendedUpdate update, String data) {
         String[] parts = data.split("\\.");
-        lastShowedFirsIndex = Integer.parseInt(parts[parts.length - 1]);
-        int targetQuestionIdx = Integer.parseInt(parts[2]) - 1;
-
+        lastShowedFirstIndex = Integer.parseInt(parts[parts.length - 1]);
+        int targetQuestionIdx = Integer.parseInt(parts[2]);
         questionInfoViewer.showQuestionInfo(update, questions.get(targetQuestionIdx));
+    }
+
+    public void backFromQuestionInfo(ExtendedUpdate update) {
+        refreshQuestionsList();
+        int pageSize = Math.min(defaultPageSize, questions.size() - lastShowedFirstIndex);
+        QuestionsViewerPage page = QuestionsViewerPage.createPage(questions, pageSize, lastShowedFirstIndex);
+        msgSender.edit(update.getCallbackMessageChatId(), update.getCallbackMessageId(),
+                page.getText(), page.getKeyboard());
     }
 
     private void refreshQuestionsList() {
