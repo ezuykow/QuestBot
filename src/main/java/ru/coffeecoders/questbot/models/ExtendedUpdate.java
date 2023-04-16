@@ -18,7 +18,7 @@ public class ExtendedUpdate{
         UNKNOWN
     }
 
-    private Update update;
+    private final Update update;
 
     public ExtendedUpdate(Update update) {
         this.update = update;
@@ -29,7 +29,7 @@ public class ExtendedUpdate{
      * {@code false} - в противном случае
      */
     public boolean hasMessage() {
-        return tryToGetMessage().isPresent();
+        return getMessageOpt().isPresent();
     }
 
     /**
@@ -37,7 +37,7 @@ public class ExtendedUpdate{
      * {@code false} - в противном случае
      */
     public boolean hasMessageText() {
-        return tryToGetMessageText().isPresent();
+        return hasMessage() && getMessageTextOpt().isPresent();
     }
 
     /**
@@ -45,7 +45,7 @@ public class ExtendedUpdate{
      *      * {@code false} - в противном случае
      */
     public boolean hasDocument() {
-        return tryToGetDocument().isPresent();
+        return hasMessage() && getDocumentOpt().isPresent();
     }
 
     /**
@@ -53,7 +53,7 @@ public class ExtendedUpdate{
      *      * {@code false} - в противном случае
      */
     public boolean hasCallbackQuery() {
-        return tryToGetCallbackQuery().isPresent();
+        return getCallbackQueryOpt().isPresent();
     }
 
     /**
@@ -169,35 +169,19 @@ public class ExtendedUpdate{
         throw new RuntimeException("Update haven't callbackQuery!");
     }
 
-    private Optional<Message> tryToGetMessage() {
-        try {
-            return Optional.of(update.message());
-        } catch (NullPointerException e) {
-            return Optional.empty();
-        }
+    private Optional<Message> getMessageOpt() {
+        return Optional.ofNullable(update.message());
     }
 
-    private Optional<String> tryToGetMessageText() {
-        try {
-            return Optional.of(update.message().text());
-        } catch (NullPointerException e) {
-            return Optional.empty();
-        }
+    private Optional<String> getMessageTextOpt() {
+        return Optional.ofNullable(update.message().text());
     }
 
-    private Optional<Document> tryToGetDocument() {
-        try {
-            return Optional.of(update.message().document());
-        } catch (NullPointerException e) {
-            return Optional.empty();
-        }
+    private Optional<Document> getDocumentOpt() {
+        return Optional.ofNullable(update.message().document());
     }
 
-    private Optional<CallbackQuery> tryToGetCallbackQuery() {
-        try {
-            return Optional.of(update.callbackQuery());
-        } catch (NullPointerException e) {
-            return Optional.empty();
-        }
+    private Optional<CallbackQuery> getCallbackQueryOpt() {
+        return Optional.ofNullable(update.callbackQuery());
     }
 }
