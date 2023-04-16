@@ -18,6 +18,12 @@ public class QuestionInfoViewer {
         this.msgSender = msgSender;
     }
 
+    /**
+     * Собирает "страницу" отображения вопроса {@link QuestionInfoPage} и отправляет
+     * в метод {@link MessageSender#edit} для отображения вопроса
+     * @param update апдейт с CallbackQuery
+     * @param question вопрос, который необходимо отобразить
+     */
     public void showQuestionInfo(ExtendedUpdate update, Question question) {
         QuestionInfoPage page = QuestionInfoPage.createPage(question);
         msgSender.edit(update.getCallbackMessageChatId(), update.getCallbackMessageId(),

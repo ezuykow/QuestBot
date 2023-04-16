@@ -22,6 +22,16 @@ public class QuestionsViewerPage {
 
     private QuestionsViewerPage() {}
 
+    /**
+     * Собирает "страницу" отображения всех вопросов {@code questions}, включающую непосредственно текст
+     * сообщения {@link QuestionsViewerPage#text} и Inline-клавиатуру {@link QuestionsViewerPage#keyboard}.
+     * Собирается "постранично", количество вопросов на "странице" - {@code pageSize}, начиная с вопроса
+     * {@code startIndex}
+     * @param questions вопросы, который нужно отобразить
+     * @param pageSize количество вопросов на "странице"
+     * @param startIndex индекс вопроса из {@code questions}, который будет первым на "странице"
+     * @return собранную страницу {@link QuestionsViewerPage}
+     */
     public static QuestionsViewerPage createPage(List<Question> questions, int pageSize, int startIndex) {
         QuestionsViewerPage page = new QuestionsViewerPage();
         page.questions = questions;

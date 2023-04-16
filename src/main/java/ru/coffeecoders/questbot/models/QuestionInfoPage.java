@@ -17,6 +17,12 @@ public class QuestionInfoPage {
 
     private QuestionInfoPage() {}
 
+    /**
+     * Собирает "страницу" отображения вопроса {@code question}, включающую непосредственно текст
+     * сообщения {@link QuestionInfoPage#text} и Inline-клавиатуру {@link QuestionInfoPage#keyboard}
+     * @param question вопрос, который нужно отобразить
+     * @return собранную страницу {@link QuestionInfoPage}
+     */
     public static QuestionInfoPage createPage(Question question) {
         QuestionInfoPage page = new QuestionInfoPage();
         page.question = question;

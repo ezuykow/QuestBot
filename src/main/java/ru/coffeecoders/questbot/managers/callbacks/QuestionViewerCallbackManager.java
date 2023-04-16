@@ -22,6 +22,11 @@ public class QuestionViewerCallbackManager {
         this.questionsViewer = questionsViewer;
     }
 
+    /**
+     * Вызывает необходимый метод {@link QuestionsViewer}, исходя из {@code data}
+     * @param update апдейт с CallbackQuery
+     * @param data данные CallbackQuery
+     */
     public void manageCallback(ExtendedUpdate update, String data) {
         if (data.matches(PREVIOUS_PAGE_REGEXP)) {
             questionsViewer.switchPageToPrevious(update, data);

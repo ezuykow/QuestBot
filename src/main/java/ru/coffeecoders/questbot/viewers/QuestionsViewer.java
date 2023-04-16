@@ -32,6 +32,11 @@ public class QuestionsViewer {
         this.msgSender = msgSender;
     }
 
+    /**
+     * Собирает "страницу" {@link QuestionsViewerPage} и вызывает метод
+     * {@link MessageSender#send} для отображения "страницы" вопросов
+     * @param chatId id чата, в который отобразить вопросы
+     */
     public void viewQuestions(long chatId) {
         refreshQuestionsList();
         lastShowedFirstIndex = 0;
@@ -40,6 +45,11 @@ public class QuestionsViewer {
         msgSender.send(chatId, page.getText(), page.getKeyboard());
     }
 
+    /**
+     * "Перелистывает" страницу отображения вопросов на предыдущую
+     * @param update апдейт с CallbackQuery
+     * @param data данные из CallbackQuery
+     */
     public void switchPageToPrevious(ExtendedUpdate update, String data) {
         final int firstIndexShowed = Integer.parseInt(data.substring(data.lastIndexOf(".") + 1));
         QuestionsViewerPage newPage = QuestionsViewerPage.createPage(questions, defaultPageSize,
@@ -48,6 +58,11 @@ public class QuestionsViewer {
                 newPage.getText(), newPage.getKeyboard());
     }
 
+    /**
+     * "Перелистывает" страницу отображения вопросов на следующую
+     * @param update апдейт с CallbackQuery
+     * @param data данные из CallbackQuery
+     */
     public void switchPageToNext(ExtendedUpdate update, String data) {
         final int lastIndexShowed = Integer.parseInt(data.substring(data.lastIndexOf(".") + 1));
         final int newPageSize = Math.min(defaultPageSize, questions.size() - (lastIndexShowed + 1));
@@ -57,6 +72,11 @@ public class QuestionsViewer {
                 newPage.getText(), newPage.getKeyboard());
     }
 
+    /**
+     * Вызывает метод {@link QuestionInfoViewer#showQuestionInfo} для отображения информации о вопросе
+     * @param update апдейт с CallbackQuery
+     * @param data данные из CallbackQuery
+     */
     public void showQuestionInfo(ExtendedUpdate update, String data) {
         String[] parts = data.split("\\.");
         lastShowedFirstIndex = Integer.parseInt(parts[parts.length - 1]);
@@ -64,6 +84,10 @@ public class QuestionsViewer {
         questionInfoViewer.showQuestionInfo(update, questions.get(targetQuestionIdx));
     }
 
+    /**
+     * Возвращает отображение "страницы" с вопросами из "страницы" с отображением информации о вопросе
+     * @param update апдейт с CallbackQuery
+     */
     public void backFromQuestionInfo(ExtendedUpdate update) {
         refreshQuestionsList();
         int pageSize = Math.min(defaultPageSize, questions.size() - lastShowedFirstIndex);
@@ -72,6 +96,10 @@ public class QuestionsViewer {
                 page.getText(), page.getKeyboard());
     }
 
+    /**
+     * "Закрывает" "страницу" с вопросами - т.е. удаляет сообщение из чата
+     * @param update апдейт с CallbackQuery
+     */
     public void deleteView(ExtendedUpdate update) {
         msgSender.delete(update.getCallbackMessageChatId(), update.getCallbackMessageId());
     }

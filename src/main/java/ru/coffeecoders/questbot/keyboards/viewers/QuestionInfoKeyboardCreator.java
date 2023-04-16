@@ -2,6 +2,7 @@ package ru.coffeecoders.questbot.keyboards.viewers;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import ru.coffeecoders.questbot.viewers.QuestionInfoViewer;
 
 /**
  * @author ezuykow
@@ -16,6 +17,12 @@ public class QuestionInfoKeyboardCreator {
         keyboard = new InlineKeyboardMarkup(buttons);
     }
 
+    /**
+     * Создает Inline-клавиатуру для {@link QuestionInfoViewer}
+     * @param questionId id отображаемого вопроса
+     * @return собранный InlineKeyboardMarkup
+     * @see InlineKeyboardMarkup
+     */
     public static InlineKeyboardMarkup createKeyboard(int questionId) {
         return new QuestionInfoKeyboardCreator(questionId).keyboard;
     }
