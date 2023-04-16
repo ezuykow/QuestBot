@@ -10,6 +10,8 @@ import ru.coffeecoders.questbot.models.ExtendedUpdate;
 @Component
 public class CallbackQueryManager {
 
+    //TODO Заменить константы и развилки на private enum и switch как в QuestionViewerCallbackManager
+
     private static final String QUESTION_VIEWER_CALLBACK_REGEXP = "QuestionViewer.*";
 
     private final QuestionViewerCallbackManager questionViewerCallbackManager;
