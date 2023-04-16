@@ -10,11 +10,20 @@ import ru.coffeecoders.questbot.viewers.QuestionsViewer;
 @Component
 public class QuestionViewerCallbackManager {
 
-    private static final String PREVIOUS_PAGE_REGEXP = "QuestionViewer.Switch page to previous.*";
-    private static final String NEXT_PAGE_REGEXP = "QuestionViewer.Switch page to next.*";
-    private static final String SHOW_QUESTION_REGEXP = "QuestionViewer.Taken index.*";
-    private static final String DELETE_MESSAGE_REGEXP = "QuestionViewer.Delete message";
-    private static final String QUESTION_INFO_BACK_REGEXP = "QuestionViewer.QuestionInfo.Back";
+    private enum Action {
+        PREVIOUS_PAGE("QuestionViewer.Switch page to previous.*"),
+        NEXT_PAGE("QuestionViewer.Switch page to next.*"),
+        SHOW_QUESTION("QuestionViewer.Taken index.*"),
+        DELETE_MESSAGE("QuestionViewer.Delete message"),
+        BACK_FROM_QUESTION_INFO("QuestionViewer.QuestionInfo.Back"),
+        UNKNOWN("");
+
+        private final String dataRegexp;
+
+        Action(String dataRegexp) {
+            this.dataRegexp = dataRegexp;
+        }
+    }
 
     private final QuestionsViewer questionsViewer;
 
@@ -28,20 +37,22 @@ public class QuestionViewerCallbackManager {
      * @param data данные CallbackQuery
      */
     public void manageCallback(ExtendedUpdate update, String data) {
-        if (data.matches(PREVIOUS_PAGE_REGEXP)) {
-            questionsViewer.switchPageToPrevious(update, data);
+        switch (findAction(data)) {
+            case PREVIOUS_PAGE -> questionsViewer.switchPageToPrevious(update, data);
+            case NEXT_PAGE -> questionsViewer.switchPageToNext(update, data);
+            case SHOW_QUESTION -> questionsViewer.showQuestionInfo(update, data);
+            case DELETE_MESSAGE -> questionsViewer.deleteView(update);
+            case BACK_FROM_QUESTION_INFO -> questionsViewer.backFromQuestionInfo(update);
+            case UNKNOWN -> {} //Игнорируем неизвестный калбак
         }
-        if (data.matches(NEXT_PAGE_REGEXP)) {
-            questionsViewer.switchPageToNext(update, data);
+    }
+
+    private Action findAction(String data) {
+        for (Action a : Action.values()) {
+            if (data.matches(a.dataRegexp)) {
+                return a;
+            }
         }
-        if (data.matches(SHOW_QUESTION_REGEXP)) {
-            questionsViewer.showQuestionInfo(update, data);
-        }
-        if (data.matches(DELETE_MESSAGE_REGEXP)) {
-            questionsViewer.deleteView(update);
-        }
-        if (data.matches(QUESTION_INFO_BACK_REGEXP)) {
-            questionsViewer.backFromQuestionInfo(update);
-        }
+        return Action.UNKNOWN;
     }
 }
