@@ -42,12 +42,12 @@ public class QuestionInfoPage {
     }
 
     private void createText() {
-        text = "Вопрос: " + question.getQuestion() + "\n" +
-                "Формат ответа: " + answerFormat() + "\n" +
-                "Ответ: " + question.getAnswer() + "\n" +
-                "Карта: " + mapUrl() + "\n" +
-                "Дата последнего использования: " + lastUsage() + "\n" +
-                "Группа: " + group();
+        text = Character.toString(0x2753) + " Вопрос: " + question.getQuestion() + "\n" +
+                Character.toString(0x270F) + " Формат ответа: " + answerFormat() + "\n" +
+                Character.toString(0x2757) + " Ответ: " + question.getAnswer() + "\n" +
+                Character.toString(0X1F5FA) + " Карта: " + mapUrl() + "\n" +
+                Character.toString(0x23F1) + " Дата последнего использования: " + lastUsage() + "\n" +
+                Character.toString(0x1F4A0) + " Группа: " + group();
     }
 
     private void createKeyboard() {
