@@ -55,8 +55,8 @@ public class MessageSender {
 
     public void send(long chatId, String text, int replyToMessageId) {
         checkResponse(bot.execute(
-               new SendMessage(chatId, text).replyMarkup(new ForceReply()).replyToMessageId(replyToMessageId)
-        ));
+               new SendMessage(chatId, text).replyMarkup(new ForceReply(true))
+                       .replyToMessageId(replyToMessageId)));
     }
 
     /**

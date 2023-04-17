@@ -12,7 +12,7 @@ messages:
 
   players:
     haventStartedGame: Запущенных игр нет
-    enterTeamName: введите название своей команды
+    enterTeamName: В ответ на это сообщение введите название своей команды
     noTeamsRegisteredYet: Пока не зарегистрировано ни одной команды
     chooseYourTeam: ", выберите команду, в которую хотите вступить"
 

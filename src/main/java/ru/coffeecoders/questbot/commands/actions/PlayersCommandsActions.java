@@ -74,10 +74,11 @@ public class PlayersCommandsActions {
     /**
      * Отправляет в {@link  MessageSender} строку с предложением ввести название команды
      *
-     * @param chatId id чата
+     * @param update апдейт
      */
-    public void regTeam(ExtendedUpdate chatId) {
-//        msgSender.send(chatId, env.getProperty("messages.players.enterTeamName"));
+    public void regTeam(ExtendedUpdate update) {
+        msgSender.send(update.getMessageChatId(), env.getProperty("messages.players.enterTeamName"),
+                update.getMessageId());
     }
 
     /**
