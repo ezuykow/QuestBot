@@ -75,10 +75,6 @@ class QuestionViewerCallbackManagerTest {
         final String data = "Some data!";
 
         questionViewerCallbackManager.manageCallback(new ExtendedUpdate(new Update()), data);
-        verify(questionsViewer, never()).switchPageToPrevious(any(), eq(data));
-        verify(questionsViewer, never()).switchPageToNext(any(), eq(data));
-        verify(questionsViewer, never()).showQuestionInfo(any(), eq(data));
-        verify(questionsViewer, never()).deleteView(any());
-        verify(questionsViewer, never()).backFromQuestionInfo(any());
+        verifyNoInteractions(questionsViewer);
     }
 }

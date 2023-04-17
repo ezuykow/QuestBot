@@ -73,9 +73,9 @@ class DocumentsManagerTest {
         when(validator.isAdminChat(anyLong())).thenReturn(false);
 
         manager.manageDocument(update);
-        verify(downloader, never()).downloadDocument(any());
-        verify(parser, never()).parse(any(), anyLong());
-        verify(msgSender, never()).send(anyLong(), any());
+        verifyNoInteractions(downloader);
+        verifyNoInteractions(parser);
+        verifyNoInteractions(msgSender);
     }
 
     @Test
@@ -87,8 +87,8 @@ class DocumentsManagerTest {
         when(env.getProperty("messages.documents.fromNotAdmin")).thenReturn(msg);
 
         manager.manageDocument(update);
-        verify(downloader, never()).downloadDocument(any());
-        verify(parser, never()).parse(any(), anyLong());
+        verifyNoInteractions(downloader);
+        verifyNoInteractions(parser);
         verify(msgSender).send(anyLong(), eq(msg));
     }
 
@@ -106,8 +106,8 @@ class DocumentsManagerTest {
         when(env.getProperty("messages.documents.wrongDocumentType")).thenReturn(msg);
 
         manager.manageDocument(update);
-        verify(downloader, never()).downloadDocument(any());
-        verify(parser, never()).parse(any(), anyLong());
+        verifyNoInteractions(downloader);
+        verifyNoInteractions(parser);
         verify(msgSender).send(anyLong(), eq(msg));
     }
 }
