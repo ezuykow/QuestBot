@@ -43,6 +43,17 @@ public class Game {
     @Column(name = "start_count_tasks")
     private int startCountTasks;
 
+    @Column(name = "is_started")
+    private boolean isStarted;
+
+    public boolean isStarted() {
+        return isStarted;
+    }
+
+    public void setStarted(boolean started) {
+        isStarted = started;
+    }
+
     public String getGameName() {
         return gameName;
     }
@@ -140,6 +151,7 @@ public class Game {
                 ", minQuestionsCountInGame=" + minQuestionsCountInGame +
                 ", questionsCountToAdd=" + questionsCountToAdd +
                 ", startCountTasks=" + startCountTasks +
+                ", isStarted=" + isStarted +
                 '}';
     }
 }

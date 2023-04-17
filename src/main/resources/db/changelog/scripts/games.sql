@@ -25,3 +25,7 @@ ALTER TABLE games
 -- changeset ezuykow:4
 ALTER TABLE  games
     ADD COLUMN start_count_tasks INT CHECK ( start_count_tasks > 0 );
+
+-- changeset ezuykow:5
+ALTER TABLE  games
+    ADD COLUMN is_started BOOLEAN;
