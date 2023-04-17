@@ -42,38 +42,37 @@ public class SimpleMessageActions {
                 .ifPresentOrElse(
                         team -> msgSender.send(update.getMessageChatId(),
                                 "Команда \"" + team.getTeamName() + "\" уже существует!"),
-                        () -> {
-                            teamService.save(newTeam);
-                            msgSender.send(update.getMessageChatId(),
-                                    "@" + update.getUsernameFromMessage() +
-                                            " создал команду \"" + newTeam.getTeamName() + "\"");
-                            addPlayersWithTeam(
-                                    update.getMessageFromUserId(),
-                                    gameService.findByChatId(update.getMessageChatId()).get().getGameName(),
-                                    newTeam.getTeamName(),
-                                    update
-                            );
-                        }
+                        () -> saveNewTeam(newTeam, update)
                 );
     }
 
-    public void joinTeam(ExtendedUpdate update) {
-        addPlayersWithTeam(
-                update.getMessageFromUserId(),
+    public void joinTeam(ExtendedUpdate update, String teamName) {
+        Player newPlayer = createNewPlayer(update.getMessageFromUserId(),
                 gameService.findByChatId(update.getMessageChatId()).get().getGameName(),
-                update.getMessageText(),
-                update
-        );
+                teamName);
+        addPlayersWithTeam(newPlayer, update);
     }
 
-    private void addPlayersWithTeam(long tgUserId, String gameName, String teamName, ExtendedUpdate update) {
+    private void addPlayersWithTeam(Player player, ExtendedUpdate update) {
+        playerService.save(player);
+        msgSender.send(update.getMessageChatId(),
+                "Игрок @" + update.getUsernameFromMessage() + " вступил в команду \"" +
+                        update.getMessageText() + "\"");
+    }
+
+    private Player createNewPlayer(long tgUserId, String gameName, String teamName) {
         Player newPlayer = new Player();
         newPlayer.setTgUserId(tgUserId);
         newPlayer.setGameName(gameName);
         newPlayer.setTeamName(teamName);
-        playerService.save(newPlayer);
+        return newPlayer;
+    }
+
+    private void saveNewTeam(Team newTeam, ExtendedUpdate update) {
+        teamService.save(newTeam);
         msgSender.send(update.getMessageChatId(),
-                "Игрок @" + update.getUsernameFromMessage() + " вступил в команду \"" +
-                        update.getMessageText() + "\"");
+                "@" + update.getUsernameFromMessage() +
+                        " создал команду \"" + newTeam.getTeamName() + "\"");
+        joinTeam(update, newTeam.getTeamName());
     }
 }

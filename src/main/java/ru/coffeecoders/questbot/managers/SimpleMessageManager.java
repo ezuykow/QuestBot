@@ -35,7 +35,7 @@ public class SimpleMessageManager {
                 actions.registerNewTeam(update);
             }
             if (replyMsgText.contains(env.getProperty("messages.players.chooseYourTeam"))) {
-                actions.joinTeam(update);
+                actions.joinTeam(update, update.getMessageText());
             }
         }
     }
