@@ -1,7 +1,6 @@
 package ru.coffeecoders.questbot.managers;
 
 import com.pengrad.telegrambot.model.Document;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -40,11 +39,6 @@ class DocumentsManagerTest {
 
     @InjectMocks
     private DocumentsManager manager;
-
-    @BeforeEach
-    public void setUp() {
-
-    }
 
     @Test
     public void shouldDownloadAndParseDocumentWhenAllCorrect() {
