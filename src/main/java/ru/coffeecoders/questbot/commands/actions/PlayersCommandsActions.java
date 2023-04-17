@@ -76,8 +76,8 @@ public class PlayersCommandsActions {
      *
      * @param chatId id чата
      */
-    public void regTeam(long chatId) {
-        msgSender.send(chatId, env.getProperty("messages.players.enterTeamName"));
+    public void regTeam(ExtendedUpdate chatId) {
+//        msgSender.send(chatId, env.getProperty("messages.players.enterTeamName"));
     }
 
     /**

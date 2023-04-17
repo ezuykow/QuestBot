@@ -27,7 +27,7 @@ public class PlayersCommandsManager {
         switch (cmd) {
             case SCORE -> playersCommandsActions.showScores(chatId);
             case TASKS -> playersCommandsActions.showTasks(chatId);
-            case REGTEAM -> playersCommandsActions.regTeam(chatId);
+            case REGTEAM -> playersCommandsActions.regTeam(update);
             case JOINTEAM -> playersCommandsActions.joinTeam(update);
         }
     }
