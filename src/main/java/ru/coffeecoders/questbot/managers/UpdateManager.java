@@ -11,11 +11,13 @@ public class UpdateManager {
     private final CommandsManager commandsManager;
     private final DocumentsManager documentsManager;
     private final CallbackQueryManager callbackManager;
+    private final SimpleMessageManager simpleMessageManager;
 
-    public UpdateManager(CommandsManager commandsManager, DocumentsManager documentsManager, CallbackQueryManager callbackManager) {
+    public UpdateManager(CommandsManager commandsManager, DocumentsManager documentsManager, CallbackQueryManager callbackManager, SimpleMessageManager simpleMessageManager) {
         this.commandsManager = commandsManager;
         this.documentsManager = documentsManager;
         this.callbackManager = callbackManager;
+        this.simpleMessageManager = simpleMessageManager;
     }
 
     public void performUpdate(Update update) {
@@ -24,6 +26,7 @@ public class UpdateManager {
             case COMMAND -> commandsManager.manageCommand(exUpdate);
             case DOCUMENT -> documentsManager.manageDocument(exUpdate);
             case CALLBACK -> callbackManager.manageCallback(exUpdate);
+            case SIMPLE_MESSAGE -> simpleMessageManager.manageMessage(exUpdate);
             case UNKNOWN -> {} //Игнорировать апдейт
         }
     }

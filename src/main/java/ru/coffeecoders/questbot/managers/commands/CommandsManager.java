@@ -1,10 +1,8 @@
 
 package ru.coffeecoders.questbot.managers.commands;
 
-import com.pengrad.telegrambot.model.Update;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.commands.Commands;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.validators.ChatAndUserIdValidator;
@@ -38,7 +36,7 @@ public class CommandsManager {
 
     /**
      * Инициализирует поле chatId;
-     * Проверяет, существует ли команда и если это так, создает объект {@link Commands.Command}
+     * Проверяет, существует ли команда и если это так, создает объект {@link Command}
      * Иначе выведет сообщение, оповещающее об ошибке
      *
      * @param update - апдейт (текст команды)
@@ -47,7 +45,7 @@ public class CommandsManager {
         chatId = update.getMessageChatId();
         String textCommand = getTextCommand(update);
         try {
-            Commands.Command cmd = Commands.Command.valueOf(textCommand);
+            Command cmd = Command.valueOf(textCommand);
             manageCommandByAttribute(update, cmd);
         } catch (IllegalArgumentException e) {
             msgSender.send(chatId, env.getProperty("messages.admins.invalidMsg"));
@@ -58,10 +56,10 @@ public class CommandsManager {
      * Получает атрибут команды и пробрасывает апдейт в соответствующий класс
      *
      * @param update апдейт (текст команды)
-     * @param cmd    команда (объект {@link Commands.Command})
+     * @param cmd    команда (объект {@link Command})
      */
-    private void manageCommandByAttribute(ExtendedUpdate update, Commands.Command cmd) {
-        Commands.Attribute attribute = cmd.getAttribute();
+    private void manageCommandByAttribute(ExtendedUpdate update, Command cmd) {
+        Command.Attribute attribute = cmd.getAttribute();
         switch (attribute) {
             case GLOBALADMIN -> checkAndSendGlobalAdminsCommand(update, cmd);
             case PLAYER -> checkAndSendPlayersCommand(update, cmd);
@@ -69,7 +67,7 @@ public class CommandsManager {
         }
     }
 
-    private void checkAndSendPlayersCommand(ExtendedUpdate update, Commands.Command cmd) {
+    private void checkAndSendPlayersCommand(ExtendedUpdate update, Command cmd) {
         if (validator.isGlobalChat(chatId)) {
             playersCommandsManager.manageCommand(update, cmd);
         } else {
@@ -77,7 +75,7 @@ public class CommandsManager {
         }
     }
 
-    private void checkAndSendAdminsCommand(ExtendedUpdate update, Commands.Command cmd) {
+    private void checkAndSendAdminsCommand(ExtendedUpdate update, Command cmd) {
         if (validator.isAdminChat(chatId)) {
             checkAndSendGlobalAdminsCommand(update, cmd);
         } else {
@@ -85,7 +83,7 @@ public class CommandsManager {
         }
     }
 
-    private void checkAndSendGlobalAdminsCommand(ExtendedUpdate update, Commands.Command cmd) {
+    private void checkAndSendGlobalAdminsCommand(ExtendedUpdate update, Command cmd) {
         if (validator.isAdmin(update.getMessageFromUserId())) {
             adminsCommandsManager.manageCommand(update, cmd);
         } else {

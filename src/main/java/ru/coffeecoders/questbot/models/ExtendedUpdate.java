@@ -1,6 +1,7 @@
 package ru.coffeecoders.questbot.models;
 
 import com.pengrad.telegrambot.model.*;
+import ru.coffeecoders.questbot.managers.commands.Command;
 
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ public class ExtendedUpdate{
     private static final String TEXT_COMMAND_REGEXP = "/.+";
 
     public enum UpdateType {
+        SIMPLE_MESSAGE,
         COMMAND,
         DOCUMENT,
         CALLBACK,
@@ -64,6 +66,21 @@ public class ExtendedUpdate{
         return hasMessageText() && update.message().text().matches(TEXT_COMMAND_REGEXP);
     }
 
+    public Optional<Command> isReplyToCommand() {
+        if (hasMessage()) {
+            try {
+                String text = update.message().replyToMessage().replyToMessage().text();
+                String textCmd = text.trim().
+                        substring(1, (text.contains("@") ? text.indexOf("@") : text.length()))
+                        .toUpperCase();
+                return Optional.of(Command.valueOf(textCmd));
+            } catch (NullPointerException | IllegalArgumentException e) {
+                return Optional.empty();
+            }
+        }
+        throw new RuntimeException("Update haven't message!");
+    }
+
     /**
      * @return тип апдейта - объект {@link UpdateType}
      */
@@ -76,6 +93,9 @@ public class ExtendedUpdate{
         }
         if (hasCallbackQuery()) {
             return UpdateType.CALLBACK;
+        }
+        if (hasMessageText()) {
+            return UpdateType.SIMPLE_MESSAGE;
         }
         return UpdateType.UNKNOWN;
     }

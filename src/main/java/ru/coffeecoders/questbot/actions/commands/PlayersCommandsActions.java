@@ -1,4 +1,4 @@
-package ru.coffeecoders.questbot.commands.actions;
+package ru.coffeecoders.questbot.actions.commands;
 
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -77,8 +77,10 @@ public class PlayersCommandsActions {
      * @param update апдейт
      */
     public void regTeam(ExtendedUpdate update) {
-        msgSender.send(update.getMessageChatId(), env.getProperty("messages.players.enterTeamName"),
-                update.getMessageId());
+        if (gameCreated() && !gameStarted()) {
+            msgSender.send(update.getMessageChatId(), env.getProperty("messages.players.enterTeamName"),
+                    update.getMessageId());
+        }
     }
 
     /**

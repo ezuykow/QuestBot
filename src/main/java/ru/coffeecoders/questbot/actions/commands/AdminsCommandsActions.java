@@ -1,4 +1,4 @@
-package ru.coffeecoders.questbot.commands.actions;
+package ru.coffeecoders.questbot.actions.commands;
 
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;

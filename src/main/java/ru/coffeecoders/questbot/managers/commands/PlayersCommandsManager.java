@@ -1,8 +1,7 @@
 package ru.coffeecoders.questbot.managers.commands;
 
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.commands.Commands;
-import ru.coffeecoders.questbot.commands.actions.PlayersCommandsActions;
+import ru.coffeecoders.questbot.actions.commands.PlayersCommandsActions;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
 
 /**
@@ -22,7 +21,7 @@ public class PlayersCommandsManager {
      * @param update - апдейт
      * @param cmd - команда (enum)
      */
-    public void manageCommand(ExtendedUpdate update, Commands.Command cmd) {
+    public void manageCommand(ExtendedUpdate update, Command cmd) {
         long chatId = update.getMessageChatId();
         switch (cmd) {
             case SCORE -> playersCommandsActions.showScores(chatId);
