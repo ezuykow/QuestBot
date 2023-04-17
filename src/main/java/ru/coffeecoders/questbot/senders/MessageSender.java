@@ -1,6 +1,7 @@
 package ru.coffeecoders.questbot.senders;
 
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.request.ForceReply;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.Keyboard;
 import com.pengrad.telegrambot.request.DeleteMessage;
@@ -50,6 +51,12 @@ public class MessageSender {
     public void send(long chatId, String text, Keyboard kb, int replyToMessageId) {
         checkResponse(bot.execute(
                 new SendMessage(chatId, text).replyMarkup(kb).replyToMessageId(replyToMessageId)));
+    }
+
+    public void send(long chatId, String text, int replyToMessageId) {
+        checkResponse(bot.execute(
+               new SendMessage(chatId, text).replyMarkup(new ForceReply()).replyToMessageId(replyToMessageId)
+        ));
     }
 
     /**
