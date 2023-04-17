@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.entities.Task;
 import ru.coffeecoders.questbot.entities.Team;
+import ru.coffeecoders.questbot.keyboards.JoinTeamKeyboard;
+import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.services.GameService;
 import ru.coffeecoders.questbot.services.QuestionService;
@@ -82,14 +84,16 @@ public class PlayersCommandsActions {
      * Получает названия всех команд (Проверяет, что хотябы одна команда существует), и передает в {@link MessageSender}
      * клавиатуру с этими названиями
      *
-     * @param chatId id чата
+     //* @param chatId id чата
      */
-    public void joinTeam(long chatId) {
-        List<String> teams = teamService.findAll().stream().map(Team::getTeamName).toList();
-        if (teams.isEmpty()) {
-            msgSender.send(chatId, env.getProperty("messages.players.noTeamsRegisteredYet"));
+    public void joinTeam(ExtendedUpdate update) {
+        List<String> teamsNames = teamService.findAll().stream().map(Team::getTeamName).toList();
+        if (teamsNames.isEmpty()) {
+            msgSender.send(update.getMessageChatId(), env.getProperty("messages.players.noTeamsRegisteredYet"));
         } else {
-            //TODO msgSender.send(chatId, env.getProperty("messages.players.chooseYourTeam"), JoinTeamKeyboard.create(teams)
+            msgSender.send(update.getMessageChatId(),
+                    "@" + update.getUsernameFromMessage() + env.getProperty("messages.players.chooseYourTeam"),
+                    JoinTeamKeyboard.createKeyboard(teamsNames), update.getMessageId());
         }
     }
 

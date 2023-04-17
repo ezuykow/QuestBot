@@ -1,4 +1,4 @@
-package ru.coffeecoders.questbot.keyboards.admins.creators;
+package ru.coffeecoders.questbot.keyboards;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;

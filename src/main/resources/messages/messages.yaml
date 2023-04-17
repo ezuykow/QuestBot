@@ -14,7 +14,7 @@ messages:
     haventStartedGame: Запущенных игр нет
     enterTeamName: введите название своей команды
     noTeamsRegisteredYet: Пока не зарегистрировано ни одной команды
-    chooseYourTeam: Выберите команду, в которую хотите вступить
+    chooseYourTeam: ", выберите команду, в которую хотите вступить"
 
   documents:
     emptyQuestionList: Вопросов в файле не обнаружено!
@@ -22,10 +22,3 @@ messages:
     wrongDocumentType: Поддерживается добавление вопросов только с файла Excel
     emptyQuestionsNotAdded: "Пустые вопросы не добавлены! (Без текста вопроса или ответа)\n\n"
     questionsAdded: "Добавлены вопросы (%d):\n\n"
-
-keyboards:
-  headers:
-   typeChat: выберите тип чата
-   action: выберите действие
-   actionForQuestion: выберите действие для вопроса
-   selectNewAdmin: выбкрите нового админа

@@ -1,6 +1,5 @@
 package ru.coffeecoders.questbot.managers.commands;
 
-import com.pengrad.telegrambot.model.Update;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.commands.Commands;
 import ru.coffeecoders.questbot.commands.actions.PlayersCommandsActions;
@@ -29,7 +28,7 @@ public class PlayersCommandsManager {
             case SCORE -> playersCommandsActions.showScores(chatId);
             case TASKS -> playersCommandsActions.showTasks(chatId);
             case REGTEAM -> playersCommandsActions.regTeam(chatId);
-            case JOINTEAM -> playersCommandsActions.joinTeam(chatId);
+            case JOINTEAM -> playersCommandsActions.joinTeam(update);
         }
     }
 }

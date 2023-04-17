@@ -47,6 +47,11 @@ public class MessageSender {
                 new SendMessage(chatId, text).replyMarkup(kb)));
     }
 
+    public void send(long chatId, String text, Keyboard kb, int replyToMessageId) {
+        checkResponse(bot.execute(
+                new SendMessage(chatId, text).replyMarkup(kb).replyToMessageId(replyToMessageId)));
+    }
+
     /**
      * Редактирует сообщение с id {@code msgId} в чате с id {@code chatId} - меняет текст на
      * {@code text}, клавиатуру на {@code kb}, или приклепляет клавиатуру, если ее не было
@@ -59,6 +64,13 @@ public class MessageSender {
         checkResponse(bot.execute(
                 new EditMessageText(chatId, msgId, text).replyMarkup(kb)));
     }
+
+    /*public void reply(long messageChatId, int messageId, ReplyKeyboardMarkup keyboard) {
+        checkResponse(bot.execute(new EditMessageReplyMarkup(messageChatId, messageId).replyMarkup(keyboard)));
+        new EditMessageReplyMarkup().replyMarkup();
+        new SendMessage();
+        new ForceReply().
+    }*/
 
     /**
      * Удаляет сообщение с id {@code msgId} в чате с id {@code chatId}

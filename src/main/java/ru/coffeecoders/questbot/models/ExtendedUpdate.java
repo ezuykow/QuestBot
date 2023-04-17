@@ -105,6 +105,20 @@ public class ExtendedUpdate{
         throw new RuntimeException("Update haven't document!");
     }
 
+    public int getMessageId() {
+        if (hasMessage()) {
+            return update.message().messageId();
+        }
+        throw new RuntimeException("Update haven't message!");
+    }
+
+    public String getUsernameFromMessage() {
+        if (hasMessage()) {
+            return update.message().from().username();
+        }
+        throw new RuntimeException("Update haven't message!");
+    }
+
     /**
      * @return text из message из апдейта <br>
      * Использя {@link Update#message()} <br>
