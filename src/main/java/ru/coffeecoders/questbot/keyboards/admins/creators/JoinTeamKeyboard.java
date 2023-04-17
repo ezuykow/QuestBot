@@ -6,7 +6,7 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewTeamKeyboard {
+public class JoinTeamKeyboard {
 
     public static InlineKeyboardMarkup createKeyboardFromTeams(List<String[]> teams) {
         List<InlineKeyboardButton> buttons = new ArrayList<>();

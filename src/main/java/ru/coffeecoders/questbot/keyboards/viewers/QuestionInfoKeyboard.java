@@ -7,12 +7,12 @@ import ru.coffeecoders.questbot.viewers.QuestionInfoViewer;
 /**
  * @author ezuykow
  */
-public class QuestionInfoKeyboardCreator {
+public class QuestionInfoKeyboard {
 
     private InlineKeyboardButton[] buttons;
     private final InlineKeyboardMarkup keyboard;
 
-    private QuestionInfoKeyboardCreator(int questionId) {
+    private QuestionInfoKeyboard(int questionId) {
         createButtons(questionId);
         keyboard = new InlineKeyboardMarkup(buttons);
     }
@@ -24,7 +24,7 @@ public class QuestionInfoKeyboardCreator {
      * @see InlineKeyboardMarkup
      */
     public static InlineKeyboardMarkup createKeyboard(int questionId) {
-        return new QuestionInfoKeyboardCreator(questionId).keyboard;
+        return new QuestionInfoKeyboard(questionId).keyboard;
     }
 
     private void createButtons(int questionId) {

@@ -2,7 +2,7 @@ package ru.coffeecoders.questbot.models;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import ru.coffeecoders.questbot.entities.Question;
-import ru.coffeecoders.questbot.keyboards.viewers.QuestionsViewerKeyboardCreator;
+import ru.coffeecoders.questbot.keyboards.viewers.QuestionsViewerKeyboard;
 
 import java.util.List;
 
@@ -71,7 +71,7 @@ public class QuestionsViewerPage {
     }
 
     private void createKeyboard() {
-        keyboard = QuestionsViewerKeyboardCreator.createKeyboard(
+        keyboard = QuestionsViewerKeyboard.createKeyboard(
                 pageSize, leftArrowNeed, startIndex, lastIndex, rightArrowNeed);
     }
 }
