@@ -116,6 +116,7 @@ class CommandsManagerTest {
         String cmd = "/showquestions";
         when(exUpdate.getMessageChatId()).thenReturn(12L);
         when(exUpdate.getMessageText()).thenReturn(cmd);
+        Mockito.lenient().when(validator.isGlobalChat(exUpdate.getMessageChatId())).thenReturn(true);
         commandsManager.manageCommand(exUpdate);
         Mockito.verify(msgSender).send(exUpdate.getMessageChatId(),
                 env.getProperty("gameCmdInAdminChat"));
