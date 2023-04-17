@@ -20,6 +20,7 @@ public class QuestBotUpdatesListener implements UpdatesListener {
     public QuestBotUpdatesListener(UpdateManager updateManager, TelegramBot bot) {
         this.updateManager = updateManager;
         bot.execute(new SetMyCommands(
+                new BotCommand("regteam", "(Игрок) Создать команду"),
                 new BotCommand("jointeam", "(Игрок) Вступить в команду"),
                 new BotCommand("start", "(Админ) Запустить бота"),
                 new BotCommand("adminon", "(Админ) Сделать текущий чат администраторским")
