@@ -77,7 +77,7 @@ public class PlayersCommandsActions {
      * @param update апдейт
      */
     public void regTeam(ExtendedUpdate update) {
-        if (gameCreated() && !gameStarted()) {
+        if (gameCreated(update) && !gameStarted(update)) {
             msgSender.send(update.getMessageChatId(), env.getProperty("messages.players.enterTeamName"),
                     update.getMessageId());
         }
@@ -90,13 +90,15 @@ public class PlayersCommandsActions {
      //* @param chatId id чата
      */
     public void joinTeam(ExtendedUpdate update) {
-        List<String> teamsNames = teamService.findAll().stream().map(Team::getTeamName).toList();
-        if (teamsNames.isEmpty()) {
-            msgSender.send(update.getMessageChatId(), env.getProperty("messages.players.noTeamsRegisteredYet"));
-        } else {
-            msgSender.send(update.getMessageChatId(),
-                    "@" + update.getUsernameFromMessage() + env.getProperty("messages.players.chooseYourTeam"),
-                    JoinTeamKeyboard.createKeyboard(teamsNames), update.getMessageId());
+        if (gameCreated(update) && !gameStarted(update)) {
+            List<String> teamsNames = teamService.findAll().stream().map(Team::getTeamName).toList();
+            if (teamsNames.isEmpty()) {
+                msgSender.send(update.getMessageChatId(), env.getProperty("messages.players.noTeamsRegisteredYet"));
+            } else {
+                msgSender.send(update.getMessageChatId(),
+                        "@" + update.getUsernameFromMessage() + env.getProperty("messages.players.chooseYourTeam"),
+                        JoinTeamKeyboard.createKeyboard(teamsNames), update.getMessageId());
+            }
         }
     }
 
@@ -114,5 +116,14 @@ public class PlayersCommandsActions {
                                 .append(q.getMapUrl())
                                 .append("\n")));
         return sb.toString();
+    }
+
+    private boolean gameCreated(ExtendedUpdate update) {
+        return gameService.findByChatId(update.getMessageChatId()).isPresent();
+    }
+
+    private boolean gameStarted(ExtendedUpdate update) {
+        Optional<Game> game = gameService.findByChatId(update.getMessageChatId());
+        return game.map(Game::isStarted).orElse(false);
     }
 }

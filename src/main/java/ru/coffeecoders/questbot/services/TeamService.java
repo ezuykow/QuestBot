@@ -31,12 +31,7 @@ public class TeamService {
     }
 
     public Optional<Team> findByTeamName(String teamName) {
-        Optional<Team> optionalTeam = teamRepository.findByTeamName(teamName);
-        return Optional.ofNullable(optionalTeam
-                .orElseThrow(() -> {
-                    logger.warn("Team not found with teamName = {}", teamName);
-                    throw new NoSuchElementException("Team not found with teamName" + teamName);
-                }));
+        return teamRepository.findByTeamName(teamName);
     }
 
     public Team save(Team team) {

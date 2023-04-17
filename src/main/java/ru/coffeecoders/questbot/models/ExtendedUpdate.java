@@ -58,6 +58,10 @@ public class ExtendedUpdate{
         return getCallbackQueryOpt().isPresent();
     }
 
+    public boolean hasReplyToMessage() {
+        return update.message().replyToMessage() != null;
+    }
+
     /**
      * @return {@code true}, если апдейт является командой (т.е. начинается с "/"),
      * {@code false} в противном случае
@@ -66,19 +70,11 @@ public class ExtendedUpdate{
         return hasMessageText() && update.message().text().matches(TEXT_COMMAND_REGEXP);
     }
 
-    public Optional<Command> isReplyToCommand() {
-        if (hasMessage()) {
-            try {
-                String text = update.message().replyToMessage().replyToMessage().text();
-                String textCmd = text.trim().
-                        substring(1, (text.contains("@") ? text.indexOf("@") : text.length()))
-                        .toUpperCase();
-                return Optional.of(Command.valueOf(textCmd));
-            } catch (NullPointerException | IllegalArgumentException e) {
-                return Optional.empty();
-            }
+    public Message getReplyToMessage() {
+        if (hasReplyToMessage()) {
+            return update.message().replyToMessage();
         }
-        throw new RuntimeException("Update haven't message!");
+        throw new RuntimeException("Update haven't replyToMessage!");
     }
 
     /**

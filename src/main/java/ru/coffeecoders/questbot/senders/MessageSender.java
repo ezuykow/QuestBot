@@ -1,6 +1,7 @@
 package ru.coffeecoders.questbot.senders;
 
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.ForceReply;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.Keyboard;
