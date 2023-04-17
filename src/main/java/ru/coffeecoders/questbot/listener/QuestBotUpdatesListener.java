@@ -2,7 +2,9 @@ package ru.coffeecoders.questbot.listener;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
+import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.SetMyCommands;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 import ru.coffeecoders.questbot.managers.UpdateManager;
@@ -17,6 +19,11 @@ public class QuestBotUpdatesListener implements UpdatesListener {
 
     public QuestBotUpdatesListener(UpdateManager updateManager, TelegramBot bot) {
         this.updateManager = updateManager;
+        bot.execute(new SetMyCommands(
+                new BotCommand("jointeam", "(Игрок) Вступить в команду"),
+                new BotCommand("start", "(Админ) Запустить бота"),
+                new BotCommand("adminon", "(Админ) Сделать текущий чат администраторским")
+        ));
         this.bot = bot;
     }
 
