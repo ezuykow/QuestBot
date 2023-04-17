@@ -1,6 +1,5 @@
 package ru.coffeecoders.questbot.managers.commands;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,15 +30,8 @@ class CommandsManagerTest {
     private ExtendedUpdate exUpdate;
     @Mock
     private Environment env;
-
-    @BeforeEach
-    void setUp() {
-
-    }
-
     @InjectMocks
     private CommandsManager commandsManager;
-
 
     @Test
     void manageInvalidCommand() {
@@ -49,7 +41,6 @@ class CommandsManagerTest {
         when(env.getProperty("messages.admins.invalidMsg")).thenReturn("Введена неверная команда");
         commandsManager.manageCommand(exUpdate);
         Mockito.verify(msgSender).send(exUpdate.getMessageChatId(), env.getProperty("messages.admins.invalidMsg"));
-
     }
 
     @Test
