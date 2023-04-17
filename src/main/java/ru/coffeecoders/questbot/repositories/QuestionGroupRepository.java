@@ -12,5 +12,4 @@ import java.util.Optional;
 @Repository
 public interface QuestionGroupRepository extends JpaRepository<QuestionGroup, Integer> {
 
-    Optional<QuestionGroup> findByGroupId(int groupId);
 }

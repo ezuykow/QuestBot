@@ -15,7 +15,7 @@ public class Question {
     @Id
     @Column(name = "question_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int questionId;
+    private long questionId;
 
     @Column(name = "question")
     private String question;
@@ -35,7 +35,7 @@ public class Question {
     @Column(name = "question_group")
     private String group;
 
-    public int getQuestionId() {
+    public long getQuestionId() {
         return questionId;
     }
 

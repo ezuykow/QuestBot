@@ -11,10 +11,8 @@ import java.util.Optional;
 
 @Service
 public class GlobalChatService {
-
     Logger logger = LoggerFactory.getLogger(GlobalChatService.class);
     private final GlobalChatRepository globalChatRepository;
-
     public GlobalChatService(GlobalChatRepository globalChatRepository) {
         this.globalChatRepository = globalChatRepository;
     }
@@ -26,7 +24,7 @@ public class GlobalChatService {
     }
 
     public Optional<GlobalChat> findById(Long id) {
-        Optional<GlobalChat> globalChat = globalChatRepository.findByTgChatId(id);
+        Optional<GlobalChat> globalChat = globalChatRepository.findById(id);
         logger.info("GlobalChat {} with id = {}", globalChat.isPresent() ? "found" : "not found", id);
         return globalChat;
     }

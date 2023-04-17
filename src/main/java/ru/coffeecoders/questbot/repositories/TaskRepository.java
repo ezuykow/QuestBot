@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Integer> {
 
-    void deleteByTaskId(int taskId);
+//    void deleteByTaskId(int taskId);
 
     List<Task> findByGameName(String gameName);
 }

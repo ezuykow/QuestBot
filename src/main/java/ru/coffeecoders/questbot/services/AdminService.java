@@ -11,10 +11,8 @@ import java.util.Optional;
 
 @Service
 public class AdminService {
-
     Logger logger = LoggerFactory.getLogger(AdminService.class);
     private final AdminRepository adminRepository;
-
     public AdminService(AdminRepository adminRepository) {
         this.adminRepository = adminRepository;
     }
@@ -26,7 +24,7 @@ public class AdminService {
     }
 
     public Optional<Admin> findById(Long id) {
-        Optional<Admin> admin = adminRepository.findByTgAdminUserId(id);
+        Optional<Admin> admin = adminRepository.findById(id);
         logger.info("Admin {} with id = {}", admin.isPresent() ? "found" : "not found", id);
         return admin;
     }

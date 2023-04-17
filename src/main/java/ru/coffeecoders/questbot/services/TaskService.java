@@ -29,11 +29,10 @@ public class TaskService {
         return taskList;
     }
 
-    //TODO Integer или int? void?
-    public void deleteById(Integer id) {
+    public void deleteById(int id) {
         if (taskRepository.existsById(id)) {
             logger.info("Task with id = {} has been deleted", id);
-            taskRepository.deleteByTaskId(id);
+            taskRepository.deleteById(id);
             return;
         }
         logger.warn("There is no task with id = {}", id);

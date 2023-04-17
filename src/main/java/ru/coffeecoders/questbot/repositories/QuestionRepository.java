@@ -12,8 +12,5 @@ import java.util.Optional;
  */
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
-
     List<Question> findByGroup(String group);
-
-    Optional<Question> findByQuestionId(int questionId);
 }
