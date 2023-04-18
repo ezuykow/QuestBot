@@ -46,7 +46,7 @@ public class AdminsCommandsActions {
     }
 
     /**
-     * Удаляет чат по chatId из апдейта из админских сатов и добавляет его в глобальные чаты
+     * Удаляет чат по chatId из апдейта из админских чатов и добавляет его в глобальные чаты
      * @param update апдейт с chatId
      * @author ezuykow
      */
