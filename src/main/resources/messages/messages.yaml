@@ -9,6 +9,7 @@ messages:
     adminCmdInGlobalChat: Эту команду можно использовать только в администраторском чате
     gameCmdInAdminChat: В админском чате оставлена игровая команда
     chatIsAdminNow: Теперь этот чат - администраторский
+    chatIsGlobalNow: Теперь этот чат - не администраторский
 
   players:
     haventStartedGame: Запущенных игр нет

@@ -40,9 +40,20 @@ public class AdminsCommandsActions {
 
     public void performAdminOnCmd(ExtendedUpdate update) {
         final long chatId = update.getMessageChatId();
-        final AdminChat adminChat = new AdminChat();
-        adminChat.setTgAdminChatId(chatId);
+        final AdminChat adminChat = new AdminChat(chatId);
         adminChatService.save(adminChat);
         msgSender.send(chatId, env.getProperty("messages.admins.chatIsAdminNow"));
+    }
+
+    /**
+     * @author ezuykow
+     * Удаляет чат по chatId из апдейта из админских сатов и добавляет его в глобальные чаты
+     * @param update апдейт с chatId
+     */
+    public void performAdminOffCmd(ExtendedUpdate update) {
+        final long chatId = update.getMessageChatId();
+        adminChatService.findById(chatId).ifPresent(adminChatService::delete);
+        globalChatService.save(new GlobalChat(chatId));
+        msgSender.send(chatId, env.getProperty("messages.admins.chatIsGlobalNow"));
     }
 }

@@ -33,4 +33,13 @@ public class AdminChatService {
         logger.info("AdminChat = {} has been saved", adminChat);
         return adminChatRepository.save(adminChat);
     }
+
+    /**
+     * @author ezuykow
+     * Удаляет админский чат с БД
+     * @param adminChat удаляемый чат
+     */
+    public void delete(AdminChat adminChat) {
+        adminChatRepository.delete(adminChat);
+    }
 }

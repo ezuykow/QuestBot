@@ -15,6 +15,13 @@ public class AdminChat {
     @Column(name = "tg_admin_chat_id")
     private long tgAdminChatId;
 
+    public AdminChat() {
+    }
+
+    public AdminChat(long tgAdminChatId) {
+        this.tgAdminChatId = tgAdminChatId;
+    }
+
     public long getTgAdminChatId() {
         return tgAdminChatId;
     }

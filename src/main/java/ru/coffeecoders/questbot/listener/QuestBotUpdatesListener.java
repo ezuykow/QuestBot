@@ -27,6 +27,7 @@ public class QuestBotUpdatesListener implements UpdatesListener {
                 new BotCommand("jointeam", "(Игрок) Вступить в команду"),
                 new BotCommand("start", "(Админ) Запустить бота"),
                 new BotCommand("adminon", "(Админ) Сделать текущий чат администраторским"),
+                new BotCommand("adminoff", "(Админ) Сделать текущий чат не администраторским"),
                 new BotCommand("showquestions", "(Админ) Показать все вопросы")
         ));
         this.bot = bot;

@@ -7,6 +7,7 @@ public enum Command {
     ADMINON(GLOBALADMIN),
 
     SHOWQUESTIONS(ADMIN),
+    ADMINOFF(ADMIN),
 
     SCORE(PLAYER),
     TASKS(PLAYER),

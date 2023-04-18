@@ -18,6 +18,13 @@ public class GlobalChat {
     @Column(name = "tg_chat_id")
     private long tgChatId;
 
+    public GlobalChat() {
+    }
+
+    public GlobalChat(long tgChatId) {
+        this.tgChatId = tgChatId;
+    }
+
     public long getTgChatId() {
         return tgChatId;
     }
