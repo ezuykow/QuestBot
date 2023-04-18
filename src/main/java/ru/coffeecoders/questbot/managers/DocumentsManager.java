@@ -1,7 +1,6 @@
 package ru.coffeecoders.questbot.managers;
 
 import com.pengrad.telegrambot.model.Document;
-import com.pengrad.telegrambot.model.Update;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.documents.DocumentDownloader;
@@ -41,6 +40,7 @@ public class DocumentsManager {
         long chatId = update.getMessageChatId();
 
         if (validator.isAdminChat(chatId) && validate(update)) {
+            deleteMessageWithNewQuestionsDocument(update);
             parser.parse(downloader.downloadDocument(update.getDocument()), chatId);
         }
     }
@@ -62,5 +62,9 @@ public class DocumentsManager {
 
     private boolean isExcelFile(Document doc) {
         return doc.mimeType().equals(env.getProperty("document.excel.mimeType"));
+    }
+
+    private void deleteMessageWithNewQuestionsDocument(ExtendedUpdate update) {
+        msgSender.sendDelete(update.getMessageChatId(), update.getMessageId());
     }
 }
