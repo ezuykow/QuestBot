@@ -12,7 +12,7 @@ public class QuestionInfoKeyboardCreator {
     private InlineKeyboardButton[] buttons;
     private final InlineKeyboardMarkup keyboard;
 
-    private QuestionInfoKeyboardCreator(int questionId) {
+    private QuestionInfoKeyboardCreator(long questionId) {
         createButtons(questionId);
         keyboard = new InlineKeyboardMarkup(buttons);
     }
@@ -23,11 +23,11 @@ public class QuestionInfoKeyboardCreator {
      * @return собранный InlineKeyboardMarkup
      * @see InlineKeyboardMarkup
      */
-    public static InlineKeyboardMarkup createKeyboard(int questionId) {
+    public static InlineKeyboardMarkup createKeyboard(long questionId) {
         return new QuestionInfoKeyboardCreator(questionId).keyboard;
     }
 
-    private void createButtons(int questionId) {
+    private void createButtons(long questionId) {
         buttons = new InlineKeyboardButton[3];
 
         buttons[0] = new InlineKeyboardButton("Редактировать")

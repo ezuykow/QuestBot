@@ -7,36 +7,26 @@ import ru.coffeecoders.questbot.entities.Team;
 import ru.coffeecoders.questbot.repositories.TeamRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
 public class TeamService {
-
     Logger logger = LoggerFactory.getLogger(TeamService.class);
     private final TeamRepository teamRepository;
-
     public TeamService(TeamRepository teamRepository) {
         this.teamRepository = teamRepository;
     }
 
     public List<Team> findAll() {
-        List<Team> teamList = teamRepository.findAll();
-        if (!teamList.isEmpty()) {
-            logger.info("Teams are displayed");
-        } else {
-            logger.warn("No teams found");
-        }
-        return teamList;
+        List<Team> list = teamRepository.findAll();
+        logger.info("Teams {} displaying", list.isEmpty() ? "are not" : "are");
+        return list;
     }
 
     public Optional<Team> findByTeamName(String teamName) {
-        Optional<Team> optionalTeam = teamRepository.findByTeamName(teamName);
-        return Optional.ofNullable(optionalTeam
-                .orElseThrow(() -> {
-                    logger.warn("Team not found with teamName = {}", teamName);
-                    throw new NoSuchElementException("Team not found with teamName" + teamName);
-                }));
+        Optional<Team> optional = teamRepository.findById(teamName);
+        logger.info("Team {} with name = {} displaying", optional.isEmpty() ? "are not" : "are", teamName);
+        return optional;
     }
 
     public Team save(Team team) {

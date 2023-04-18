@@ -23,7 +23,7 @@ public class AdminService {
         return list;
     }
 
-    public Optional<Admin> findById(Long id) {
+    public Optional<Admin> findById(long id) {
         Optional<Admin> admin = adminRepository.findById(id);
         logger.info("Admin {} with id = {}", admin.isPresent() ? "found" : "not found", id);
         return admin;

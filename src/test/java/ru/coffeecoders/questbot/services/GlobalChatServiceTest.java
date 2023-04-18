@@ -51,17 +51,17 @@ class GlobalChatServiceTest {
 
     @Test
     void findById() {
-        when(globalChatRepository.findByTgChatId(any(Long.class))).thenReturn(Optional.of(globalChat));
+        when(globalChatRepository.findById(any(Long.class))).thenReturn(Optional.of(globalChat));
         assertTrue(globalChatService.findById(id).isPresent());
         assertEquals(globalChat, globalChatService.findById(id).get());
-        Mockito.verify(globalChatRepository, times(2)).findByTgChatId(id);
+        Mockito.verify(globalChatRepository, times(2)).findById(id);
     }
 
     @Test
     void findByIdEmpty() {
-        when(globalChatRepository.findByTgChatId(any(Long.class))).thenReturn(Optional.empty());
+        when(globalChatRepository.findById(any(Long.class))).thenReturn(Optional.empty());
         assertTrue(globalChatService.findById(id).isEmpty());
-        Mockito.verify(globalChatRepository).findByTgChatId(id);
+        Mockito.verify(globalChatRepository).findById(id);
     }
 
     @Test

@@ -37,8 +37,8 @@ class PlayerServiceTest {
     void findAll() {
         player.setTgUserId(id);
         when(playerRepository.findAll()).thenReturn(List.of(player, new Player(), new Player()));
-        assertEquals(3, playerService.findAll().size());
         assertTrue(playerService.findAll().contains(player));
+        assertEquals(3, playerService.findAll().size());
         Mockito.verify(playerRepository, times(2)).findAll();
     }
 
@@ -51,17 +51,17 @@ class PlayerServiceTest {
 
     @Test
     void findById() {
-        when(playerRepository.findByTgUserId(any(Long.class))).thenReturn(Optional.of(player));
+        when(playerRepository.findById(any(Long.class))).thenReturn(Optional.of(player));
         assertTrue(playerService.findById(id).isPresent());
         assertEquals(player, playerService.findById(id).get());
-        Mockito.verify(playerRepository, times(2)).findByTgUserId(id);
+        Mockito.verify(playerRepository, times(2)).findById(id);
     }
 
     @Test
     void findByIdEmpty() {
-        when(playerRepository.findByTgUserId(any(Long.class))).thenReturn(Optional.empty());
+        when(playerRepository.findById(any(Long.class))).thenReturn(Optional.empty());
         assertTrue(playerService.findById(id).isEmpty());
-        Mockito.verify(playerRepository).findByTgUserId(id);
+        Mockito.verify(playerRepository).findById(id);
     }
 
     @Test

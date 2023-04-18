@@ -23,7 +23,7 @@ public class PlayerService {
         return list;
     }
 
-    public Optional<Player> findById(Long id) {
+    public Optional<Player> findById(long id) {
         Optional<Player> player = playerRepository.findById(id);
         logger.info("Player {} with id = {}", player.isPresent() ? "found" : "not found", id);
         return player;

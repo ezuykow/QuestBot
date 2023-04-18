@@ -10,6 +10,6 @@ import java.util.Optional;
  * @author ezuykow
  */
 @Repository
-public interface QuestionGroupRepository extends JpaRepository<QuestionGroup, Integer> {
+public interface QuestionGroupRepository extends JpaRepository<QuestionGroup, Long> {
 
 }

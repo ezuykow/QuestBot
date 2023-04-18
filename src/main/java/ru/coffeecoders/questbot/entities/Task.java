@@ -14,22 +14,22 @@ public class Task {
     @Id
     @Column(name = "task_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int taskId;
+    private long taskId;
 
     @Column(name = "game_name")
     private String gameName;
 
     @Column(name = "question_id")
-    private int questionId;
+    private long questionId;
 
     @Column(name = "performed_team_name")
     private String performedTeamName;
 
-    public int getTaskId() {
+    public long getTaskId() {
         return taskId;
     }
 
-    public void setTaskId(int taskId) {
+    public void setTaskId(long taskId) {
         this.taskId = taskId;
     }
 
@@ -41,11 +41,11 @@ public class Task {
         this.gameName = gameName;
     }
 
-    public int getQuestionId() {
+    public long getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(int questionId) {
+    public void setQuestionId(long questionId) {
         this.questionId = questionId;
     }
 

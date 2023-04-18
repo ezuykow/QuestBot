@@ -15,7 +15,6 @@ import java.util.Optional;
 public class QuestionGroupService {
     Logger logger = LoggerFactory.getLogger(QuestionGroupService.class);
     private final QuestionGroupRepository questionGroupRepository;
-
     public QuestionGroupService(QuestionGroupRepository questionGroupRepository) {
         this.questionGroupRepository = questionGroupRepository;
     }
@@ -26,7 +25,7 @@ public class QuestionGroupService {
         return list;
     }
 
-    public Optional<QuestionGroup> findById(int id) {
+    public Optional<QuestionGroup> findById(long id) {
         Optional<QuestionGroup> optional = questionGroupRepository.findById(id);
         logger.info("Player {} with id = {}", optional.isPresent() ? "found" : "not found", id);
         return optional;

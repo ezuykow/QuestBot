@@ -41,8 +41,8 @@ public class GameServiceTest {
     void findAll() {
         game.setGameName(name);
         when(gameRepository.findAll()).thenReturn(List.of(game, new Game(), new Game()));
-        assertEquals(3, gameService.findAll().size());
         assertTrue(gameService.findAll().contains(game));
+        assertEquals(3, gameService.findAll().size());
         Mockito.verify(gameRepository, times(2)).findAll();
     }
 
@@ -55,17 +55,17 @@ public class GameServiceTest {
 
     @Test
     void findByName() {
-        when(gameRepository.findByGameName(any(String.class))).thenReturn(Optional.of(game));
+        when(gameRepository.findById(any(String.class))).thenReturn(Optional.of(game));
         assertTrue(gameService.findByName(name).isPresent());
         assertEquals(game, gameService.findByName(name).get());
-        Mockito.verify(gameRepository, times(2)).findByGameName(name);
+        Mockito.verify(gameRepository, times(2)).findById(name);
     }
 
     @Test
     void findByNameEmpty() {
-        when(gameRepository.findByGameName(any(String.class))).thenReturn(Optional.empty());
+        when(gameRepository.findById(any(String.class))).thenReturn(Optional.empty());
         assertTrue(gameService.findByName(name).isEmpty());
-        Mockito.verify(gameRepository).findByGameName(name);
+        Mockito.verify(gameRepository).findById(name);
     }
 
     @Test

@@ -13,7 +13,6 @@ import java.util.Optional;
 public class QuestionService {
     Logger logger = LoggerFactory.getLogger(QuestionService.class);
     private final QuestionRepository questionRepository;
-
     public QuestionService(QuestionRepository questionRepository) {
         this.questionRepository = questionRepository;
     }
@@ -42,6 +41,7 @@ public class QuestionService {
     }
 
     public List<Question> saveAll(List<Question> questionList) {
+        logger.info("Questions = {} has been saved", questionList);
         return questionRepository.saveAll(questionList);
     }
 }

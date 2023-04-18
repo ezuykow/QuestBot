@@ -52,17 +52,17 @@ class AdminServiceTest {
 
     @Test
     void findById() {
-        when(repository.findByTgAdminUserId(any(Long.class))).thenReturn(Optional.of(admin));
+        when(repository.findById(any(Long.class))).thenReturn(Optional.of(admin));
         assertTrue(service.findById(id).isPresent());
         assertEquals(admin, service.findById(id).get());
-        Mockito.verify(repository, times(2)).findByTgAdminUserId(id);
+        Mockito.verify(repository, times(2)).findById(id);
     }
 
     @Test
     void findByIdEmpty() {
-        when(repository.findByTgAdminUserId(any(Long.class))).thenReturn(Optional.empty());
+        when(repository.findById(any(Long.class))).thenReturn(Optional.empty());
         assertTrue(service.findById(id).isEmpty());
-        Mockito.verify(repository).findByTgAdminUserId(id);
+        Mockito.verify(repository).findById(id);
     }
 
     @Test
