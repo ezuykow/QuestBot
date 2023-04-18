@@ -11,26 +11,29 @@ import java.util.Optional;
 
 @Service
 public class AdminService {
+
     Logger logger = LoggerFactory.getLogger(AdminService.class);
-    private final AdminRepository adminRepository;
-    public AdminService(AdminRepository adminRepository) {
-        this.adminRepository = adminRepository;
+
+    private final AdminRepository repository;
+
+    public AdminService(AdminRepository repository) {
+        this.repository = repository;
     }
 
     public List<Admin> findAll() {
-        List<Admin> list = adminRepository.findAll();
+        List<Admin> list = repository.findAll();
         logger.info("Admins {} displaying", list.isEmpty() ? "are not" : "are");
         return list;
     }
 
     public Optional<Admin> findById(long id) {
-        Optional<Admin> admin = adminRepository.findById(id);
+        Optional<Admin> admin = repository.findById(id);
         logger.info("Admin {} with id = {}", admin.isPresent() ? "found" : "not found", id);
         return admin;
     }
 
     public Admin save(Admin admin) {
         logger.info("Admin = {} has been saved", admin);
-        return adminRepository.save(admin);
+        return repository.save(admin);
     }
 }

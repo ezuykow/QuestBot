@@ -11,27 +11,30 @@ import java.util.Optional;
 
 @Service
 public class AdminChatService {
+
     Logger logger = LoggerFactory.getLogger(AdminChatService.class);
-    private final AdminChatRepository adminChatRepository;
-    public AdminChatService(AdminChatRepository adminChatRepository) {
-        this.adminChatRepository = adminChatRepository;
+
+    private final AdminChatRepository repository;
+
+    public AdminChatService(AdminChatRepository repository) {
+        this.repository = repository;
     }
 
     public List<AdminChat> findAll() {
-        List<AdminChat> list = adminChatRepository.findAll();
+        List<AdminChat> list = repository.findAll();
         logger.info("AdminChats {} displaying", list.isEmpty() ? "are not" : "are");
         return list;
     }
 
     public Optional<AdminChat> findById(long id) {
-        Optional<AdminChat> adminChat = adminChatRepository.findById(id);
-        logger.info("AdminChat {} with id = {}", adminChat.isPresent() ? "found" : "not found", id);
-        return adminChat;
+        Optional<AdminChat> optional = repository.findById(id);
+        logger.info("AdminChat {} with id = {}", optional.isPresent() ? "found" : "not found", id);
+        return optional;
     }
 
     public AdminChat save(AdminChat adminChat) {
         logger.info("AdminChat = {} has been saved", adminChat);
-        return adminChatRepository.save(adminChat);
+        return repository.save(adminChat);
     }
 
     /**
@@ -40,6 +43,7 @@ public class AdminChatService {
      * @param adminChat удаляемый чат
      */
     public void delete(AdminChat adminChat) {
-        adminChatRepository.delete(adminChat);
+        logger.info("AdminChat = {} has been deleted", adminChat);
+        repository.delete(adminChat);
     }
 }

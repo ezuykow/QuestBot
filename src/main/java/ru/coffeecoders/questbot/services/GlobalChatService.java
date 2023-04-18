@@ -11,26 +11,29 @@ import java.util.Optional;
 
 @Service
 public class GlobalChatService {
+
     Logger logger = LoggerFactory.getLogger(GlobalChatService.class);
-    private final GlobalChatRepository globalChatRepository;
-    public GlobalChatService(GlobalChatRepository globalChatRepository) {
-        this.globalChatRepository = globalChatRepository;
+
+    private final GlobalChatRepository repository;
+
+    public GlobalChatService(GlobalChatRepository repository) {
+        this.repository = repository;
     }
 
     public List<GlobalChat> findAll() {
-        List<GlobalChat> list = globalChatRepository.findAll();
+        List<GlobalChat> list = repository.findAll();
         logger.info("GlobalChats {} displaying", list.isEmpty() ? "are not" : "are");
         return list;
     }
 
     public Optional<GlobalChat> findById(long id) {
-        Optional<GlobalChat> globalChat = globalChatRepository.findById(id);
-        logger.info("GlobalChat {} with id = {}", globalChat.isPresent() ? "found" : "not found", id);
-        return globalChat;
+        Optional<GlobalChat> optional = repository.findById(id);
+        logger.info("GlobalChat {} with id = {}", optional.isPresent() ? "found" : "not found", id);
+        return optional;
     }
 
     public GlobalChat save(GlobalChat globalChat) {
         logger.info("GlobalChat = {} has been saved", globalChat);
-        return globalChatRepository.save(globalChat);
+        return repository.save(globalChat);
     }
 }

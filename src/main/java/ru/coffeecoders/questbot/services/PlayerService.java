@@ -11,8 +11,11 @@ import java.util.Optional;
 
 @Service
 public class PlayerService {
+
     Logger logger = LoggerFactory.getLogger(PlayerService.class);
+
     private final PlayerRepository playerRepository;
+
     public PlayerService(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
     }
