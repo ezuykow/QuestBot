@@ -46,9 +46,9 @@ public class AdminsCommandsActions {
     }
 
     /**
-     * @author ezuykow
      * Удаляет чат по chatId из апдейта из админских сатов и добавляет его в глобальные чаты
      * @param update апдейт с chatId
+     * @author ezuykow
      */
     public void performAdminOffCmd(ExtendedUpdate update) {
         final long chatId = update.getMessageChatId();
