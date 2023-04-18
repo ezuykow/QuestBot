@@ -11,10 +11,8 @@ import java.util.Optional;
 
 @Service
 public class AdminChatService {
-
     Logger logger = LoggerFactory.getLogger(AdminChatService.class);
     private final AdminChatRepository adminChatRepository;
-
     public AdminChatService(AdminChatRepository adminChatRepository) {
         this.adminChatRepository = adminChatRepository;
     }
@@ -25,8 +23,8 @@ public class AdminChatService {
         return list;
     }
 
-    public Optional<AdminChat> findById(Long id) {
-        Optional<AdminChat> adminChat = adminChatRepository.findByTgAdminChatId(id);
+    public Optional<AdminChat> findById(long id) {
+        Optional<AdminChat> adminChat = adminChatRepository.findById(id);
         logger.info("AdminChat {} with id = {}", adminChat.isPresent() ? "found" : "not found", id);
         return adminChat;
     }

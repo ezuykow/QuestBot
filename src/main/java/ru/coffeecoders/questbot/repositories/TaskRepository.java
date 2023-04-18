@@ -10,9 +10,9 @@ import java.util.List;
  * @author ezuykow
  */
 @Repository
-public interface TaskRepository extends JpaRepository<Task, Integer> {
+public interface TaskRepository extends JpaRepository<Task, Long> {
 
-    void deleteByTaskId(int taskId);
+//    void deleteByTaskId(int taskId);
 
     List<Task> findByGameName(String gameName);
 }

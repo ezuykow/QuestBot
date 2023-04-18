@@ -11,10 +11,8 @@ import java.util.Optional;
 
 @Service
 public class GameService {
-
     Logger logger = LoggerFactory.getLogger(GameService.class);
     private final GameRepository gameRepository;
-
     public GameService(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
     }
@@ -26,7 +24,7 @@ public class GameService {
     }
 
     public Optional<Game> findByName(String gameName) {
-        Optional<Game> game = gameRepository.findByGameName(gameName);
+        Optional<Game> game = gameRepository.findById(gameName);
         logger.info("Game {} with id = {}", game.isPresent() ? "found" : "not found", gameName);
         return game;
     }

@@ -7,7 +7,6 @@ import ru.coffeecoders.questbot.entities.Team;
 import ru.coffeecoders.questbot.repositories.TeamRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -21,13 +20,9 @@ public class TeamService {
     }
 
     public List<Team> findAll() {
-        List<Team> teamList = teamRepository.findAll();
-        if (!teamList.isEmpty()) {
-            logger.info("Teams are displayed");
-        } else {
-            logger.warn("No teams found");
-        }
-        return teamList;
+        List<Team> list = teamRepository.findAll();
+        logger.info("Teams {} displaying", list.isEmpty() ? "are not" : "are");
+        return list;
     }
 
     public Optional<Team> findByTeamName(String teamName) {

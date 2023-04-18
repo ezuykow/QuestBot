@@ -14,16 +14,16 @@ public class QuestionGroup {
     @Id
     @Column(name = "group_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int groupId;
+    private long groupId;
 
     @Column(name = "group_name")
     private String groupName;
 
-    public int getGroupId() {
+    public long getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(int groupId) {
+    public void setGroupId(long groupId) {
         this.groupId = groupId;
     }
 
