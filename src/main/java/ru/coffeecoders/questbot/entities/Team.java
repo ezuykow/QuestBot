@@ -24,6 +24,15 @@ public class Team {
     @Column(name = "score")
     private int score;
 
+    public Team() {
+    }
+
+    public Team(String teamName, String gameName, int score) {
+        this.teamName = teamName;
+        this.gameName = gameName;
+        this.score = score;
+    }
+
     public String getTeamName() {
         return teamName;
     }

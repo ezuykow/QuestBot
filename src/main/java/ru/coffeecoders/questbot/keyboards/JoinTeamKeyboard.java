@@ -4,6 +4,9 @@ import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 
 import java.util.List;
 
+/**
+ * @author ezuykow
+ */
 public class JoinTeamKeyboard {
 
     private final ReplyKeyboardMarkup keyboard;
@@ -15,6 +18,11 @@ public class JoinTeamKeyboard {
                 .selective(true);
     }
 
+    /**
+     * Возвразает {@link ReplyKeyboardMarkup} с кнопками - именами команд
+     * @param teamsNames список имен команд
+     * @return {@link ReplyKeyboardMarkup} клавиатуру
+     */
     public static ReplyKeyboardMarkup createKeyboard(List<String> teamsNames) {
         return new JoinTeamKeyboard(teamsNames).keyboard;
     }

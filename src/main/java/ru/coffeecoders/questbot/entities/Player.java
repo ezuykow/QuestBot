@@ -24,6 +24,15 @@ public class Player {
     @Column(name = "team_name")
     private String teamName;
 
+    public Player() {
+    }
+
+    public Player(long tgUserId, String gameName, String teamName) {
+        this.tgUserId = tgUserId;
+        this.gameName = gameName;
+        this.teamName = teamName;
+    }
+
     public long getTgUserId() {
         return tgUserId;
     }

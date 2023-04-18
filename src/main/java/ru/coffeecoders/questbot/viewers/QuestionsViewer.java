@@ -101,7 +101,7 @@ public class QuestionsViewer {
      * @param update апдейт с CallbackQuery
      */
     public void deleteView(ExtendedUpdate update) {
-        msgSender.delete(update.getCallbackMessageChatId(), update.getCallbackMessageId());
+        msgSender.sendDelete(update.getCallbackMessageChatId(), update.getCallbackMessageId());
     }
 
     private void refreshQuestionsList() {

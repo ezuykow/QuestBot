@@ -1,17 +1,14 @@
 package ru.coffeecoders.questbot.actions.commands;
 
+import com.pengrad.telegrambot.response.SendResponse;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.entities.Game;
-import ru.coffeecoders.questbot.entities.Task;
-import ru.coffeecoders.questbot.entities.Team;
+import ru.coffeecoders.questbot.entities.*;
 import ru.coffeecoders.questbot.keyboards.JoinTeamKeyboard;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
+import ru.coffeecoders.questbot.repositories.MessageToDeleteRepository;
 import ru.coffeecoders.questbot.senders.MessageSender;
-import ru.coffeecoders.questbot.services.GameService;
-import ru.coffeecoders.questbot.services.QuestionService;
-import ru.coffeecoders.questbot.services.TaskService;
-import ru.coffeecoders.questbot.services.TeamService;
+import ru.coffeecoders.questbot.services.*;
 
 import java.util.*;
 
@@ -25,6 +22,7 @@ public class PlayersCommandsActions {
     private final GameService gameService;
     private final MessageSender msgSender;
     private final QuestionService questionService;
+    private final MessageToDeleteService messageToDeleteService;
     private final Environment env;
 
     public PlayersCommandsActions(TeamService teamService,
@@ -32,12 +30,13 @@ public class PlayersCommandsActions {
                                   GameService gameService,
                                   MessageSender msgSender,
                                   QuestionService questionService,
-                                  Environment env) {
+                                  MessageToDeleteService messageToDeleteService, Environment env, MessageToDeleteRepository mtdRepository) {
         this.teamService = teamService;
         this.taskService = taskService;
         this.gameService = gameService;
         this.msgSender = msgSender;
         this.questionService = questionService;
+        this.messageToDeleteService = messageToDeleteService;
         this.env = env;
     }
 
@@ -53,7 +52,8 @@ public class PlayersCommandsActions {
                 .append(t.getTeamName())
                 .append(": ")
                 .append(t.getScore())
-                .append(";\n"));
+                .append(";\n")
+        );
         msgSender.send(chatId, sb.toString());
     }
 
@@ -78,8 +78,12 @@ public class PlayersCommandsActions {
      */
     public void regTeam(ExtendedUpdate update) {
         if (gameCreated(update) && !gameStarted(update)) {
-            msgSender.send(update.getMessageChatId(), env.getProperty("messages.players.enterTeamName"),
-                    update.getMessageId());
+            SendResponse response =
+                    msgSender.send(update.getMessageChatId(), env.getProperty("messages.players.enterTeamName"),
+                            update.getMessageId()
+                    );
+            saveToMessageToDelete(update.getMessageId(), update, "REGTEAM", true);
+            saveToMessageToDelete(response.message().messageId(), update, "REGTEAM", true);
         }
     }
 
@@ -91,13 +95,15 @@ public class PlayersCommandsActions {
      */
     public void joinTeam(ExtendedUpdate update) {
         if (gameCreated(update) && !gameStarted(update)) {
-            List<String> teamsNames = teamService.findAll().stream().map(Team::getTeamName).toList();
+            List<String> teamsNames = teamService.findAll()
+                    .stream().map(Team::getTeamName).toList();
             if (teamsNames.isEmpty()) {
                 msgSender.send(update.getMessageChatId(), env.getProperty("messages.players.noTeamsRegisteredYet"));
             } else {
                 msgSender.send(update.getMessageChatId(),
                         "@" + update.getUsernameFromMessage() + env.getProperty("messages.players.chooseYourTeam"),
-                        JoinTeamKeyboard.createKeyboard(teamsNames), update.getMessageId());
+                        JoinTeamKeyboard.createKeyboard(teamsNames), update.getMessageId()
+                );
             }
         }
     }
@@ -105,16 +111,13 @@ public class PlayersCommandsActions {
     private String getActualTasks(String gameName) {
         StringBuilder sb = new StringBuilder();
         taskService.findByGameName(gameName)
-                .stream().filter(t -> t.getPerformedTeamName() == null).map(Task::getQuestionId).toList()
+                .stream()
+                .filter(t -> t.getPerformedTeamName() == null)
+                .map(Task::getQuestionId).toList()
                 .forEach(id -> questionService.findById(id).ifPresent(
-                        q -> sb.append(Character.toString(0x2753))
-                                .append(" Вопрос:")
-                                .append(q.getQuestion())
-                                .append("\nФормат ответа: ")
-                                .append(q.getAnswerFormat())
-                                .append("\n На карте: ")
-                                .append(q.getMapUrl())
-                                .append("\n")));
+                                q -> sb.append(createQuestionInfoMsg(q))
+                        )
+                );
         return sb.toString();
     }
 
@@ -125,5 +128,24 @@ public class PlayersCommandsActions {
     private boolean gameStarted(ExtendedUpdate update) {
         Optional<Game> game = gameService.findByChatId(update.getMessageChatId());
         return game.map(Game::isStarted).orElse(false);
+    }
+
+    private void saveToMessageToDelete(int msgId, ExtendedUpdate update, String relateTo, boolean active) {
+        messageToDeleteService.save(
+                new MessageToDelete(
+                        msgId,
+                        update.getMessageFromUserId(),
+                        relateTo,
+                        update.getMessageChatId(),
+                        active
+                )
+        );
+    }
+
+    private String createQuestionInfoMsg(Question q) {
+        return Character.toString(0x2753) +
+                " Вопрос:" + q.getQuestion() +
+                "\nФормат ответа: " + q.getAnswerFormat() +
+                "\n На карте: " + q.getMapUrl() + "\n";
     }
 }

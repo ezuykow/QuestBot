@@ -8,6 +8,7 @@ import com.pengrad.telegrambot.request.SetMyCommands;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 import ru.coffeecoders.questbot.managers.UpdateManager;
+import ru.coffeecoders.questbot.senders.MessageSender;
 
 import java.util.List;
 
@@ -16,9 +17,11 @@ public class QuestBotUpdatesListener implements UpdatesListener {
 
     private final UpdateManager updateManager;
     private final TelegramBot bot;
+    private final MessageSender msgSender;
 
-    public QuestBotUpdatesListener(UpdateManager updateManager, TelegramBot bot) {
+    public QuestBotUpdatesListener(UpdateManager updateManager, TelegramBot bot, MessageSender msgSender) {
         this.updateManager = updateManager;
+        this.msgSender = msgSender;
         bot.execute(new SetMyCommands(
                 new BotCommand("regteam", "(Игрок) Создать команду"),
                 new BotCommand("jointeam", "(Игрок) Вступить в команду"),
@@ -36,6 +39,7 @@ public class QuestBotUpdatesListener implements UpdatesListener {
     @Override
     public int process(List<Update> updates) {
         updates.forEach(updateManager::performUpdate);
+        msgSender.sendDeleteAllMessageToDelete();
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 }

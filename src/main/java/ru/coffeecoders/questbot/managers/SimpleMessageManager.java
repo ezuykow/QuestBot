@@ -21,7 +21,7 @@ public class SimpleMessageManager {
         this.msgSender = msgSender;
         this.env = env;
     }
-
+//TODO JavaDoc, когда метод будет готов
     public void manageMessage(ExtendedUpdate update) {
         if (update.hasReplyToMessage()) {
             manageReplyToMessage(update);

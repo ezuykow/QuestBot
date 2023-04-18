@@ -122,10 +122,12 @@ public class QuestionsFromExcelParser {
 
     private String createNewQuestionsMsg(StringBuilder sb) {
         sb.append(String.format(env.getProperty("messages.documents.questionsAdded", "%d"),
-                newQuestions.size()));
+                newQuestions.size())
+        );
 
         newQuestions.forEach(question -> sb.append(Character.toString(0x2714)).append(" ")
-                .append(question.getQuestion()).append("\n"));
+                .append(question.getQuestion()).append("\n")
+        );
         return sb.toString();
     }
 
