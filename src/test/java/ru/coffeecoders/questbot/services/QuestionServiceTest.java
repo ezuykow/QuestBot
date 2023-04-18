@@ -16,18 +16,23 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class QuestionServiceTest {
+
     @Mock
     private QuestionRepository questionRepository;
+
     @InjectMocks
     private QuestionService questionService;
+
     private Question question;
     private long id;
     private String name;
+
     @BeforeEach
     void setUp() {
         question = new Question();
@@ -68,10 +73,10 @@ class QuestionServiceTest {
 
     @Test
     void findByGroup() {
-        when(questionRepository.findByGroup(any(String.class))).thenReturn(List.of(question));
+        when(questionRepository.findByGroup(anyString())).thenReturn(List.of(question));
         assertTrue(questionService.findByGroup(name).contains(question));
-//        assertEquals(List.of(question), questionService.findByGroup(name));
-        Mockito.verify(questionRepository, times(1)).findByGroup(name);
+        assertEquals(List.of(question), questionService.findByGroup(name));
+        Mockito.verify(questionRepository, times(2)).findByGroup(name);
     }
 
     @Test

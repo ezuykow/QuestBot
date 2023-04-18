@@ -23,12 +23,16 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class QuestionGroupServiceTest {
+
     @Mock
     private QuestionGroupRepository questionGroupRepository;
+
     @InjectMocks
     private QuestionGroupService questionGroupService;
+
     private long id;
     private QuestionGroup questionGroup;
+
     @BeforeEach
     void setUp() {
         questionGroup = new QuestionGroup();
