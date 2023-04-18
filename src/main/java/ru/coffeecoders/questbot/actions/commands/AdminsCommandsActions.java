@@ -35,7 +35,7 @@ public class AdminsCommandsActions {
     }
 
     public void performShowQuestionsCmd(ExtendedUpdate update) {
-        questionsViewer.viewQuestions(update.getMessageChatId());
+        questionsViewer.viewQuestions(update);
     }
 
     public void performAdminOnCmd(ExtendedUpdate update) {

@@ -24,6 +24,7 @@ public class QuestionsViewer {
     private final MessageSender msgSender;
 
     private List<Question> questions;
+    private int pagesCount;
     private int lastShowedFirstIndex;
 
     public QuestionsViewer(QuestionService questionService, QuestionInfoViewer questionInfoViewer, MessageSender msgSender) {
@@ -35,14 +36,11 @@ public class QuestionsViewer {
     /**
      * Собирает "страницу" {@link QuestionsViewerPage} и вызывает метод
      * {@link MessageSender#send} для отображения "страницы" вопросов
-     * @param chatId id чата, в который отобразить вопросы
      */
-    public void viewQuestions(long chatId) {
+    public void viewQuestions(ExtendedUpdate update) {
         refreshQuestionsList();
-        lastShowedFirstIndex = 0;
-        int pageSize = Math.min(defaultPageSize, questions.size());
-        QuestionsViewerPage page = QuestionsViewerPage.createPage(questions, pageSize, lastShowedFirstIndex);
-        msgSender.send(chatId, page.getText(), page.getKeyboard());
+        QuestionsViewerPage page = createPage(update, defaultPageSize);
+        msgSender.send(update.getMessageChatId(), page.getText(), page.getKeyboard());
     }
 
     /**
@@ -53,7 +51,7 @@ public class QuestionsViewer {
     public void switchPageToPrevious(ExtendedUpdate update, String data) {
         final int firstIndexShowed = Integer.parseInt(data.substring(data.lastIndexOf(".") + 1));
         QuestionsViewerPage newPage = QuestionsViewerPage.createPage(questions, defaultPageSize,
-                firstIndexShowed - defaultPageSize);
+                firstIndexShowed - defaultPageSize, pagesCount);
         msgSender.edit(update.getCallbackMessageChatId(), update.getCallbackMessageId(),
                 newPage.getText(), newPage.getKeyboard());
     }
@@ -67,7 +65,7 @@ public class QuestionsViewer {
         final int lastIndexShowed = Integer.parseInt(data.substring(data.lastIndexOf(".") + 1));
         final int newPageSize = Math.min(defaultPageSize, questions.size() - (lastIndexShowed + 1));
         QuestionsViewerPage newPage = QuestionsViewerPage.createPage(questions, newPageSize,
-                lastIndexShowed + 1);
+                lastIndexShowed + 1, pagesCount);
         msgSender.edit(update.getCallbackMessageChatId(), update.getCallbackMessageId(),
                 newPage.getText(), newPage.getKeyboard());
     }
@@ -91,7 +89,7 @@ public class QuestionsViewer {
     public void backFromQuestionInfo(ExtendedUpdate update) {
         refreshQuestionsList();
         int pageSize = Math.min(defaultPageSize, questions.size() - lastShowedFirstIndex);
-        QuestionsViewerPage page = QuestionsViewerPage.createPage(questions, pageSize, lastShowedFirstIndex);
+        QuestionsViewerPage page = createPage(update, pageSize);
         msgSender.edit(update.getCallbackMessageChatId(), update.getCallbackMessageId(),
                 page.getText(), page.getKeyboard());
     }
@@ -106,5 +104,11 @@ public class QuestionsViewer {
 
     private void refreshQuestionsList() {
         questions = questionService.findAll();
+    }
+
+    private QuestionsViewerPage createPage(ExtendedUpdate update, int pageSize) {
+        pagesCount = questions.size() / defaultPageSize;
+        pagesCount = (questions.size() % defaultPageSize == 0) ? pagesCount : pagesCount + 1;
+        return QuestionsViewerPage.createPage(questions, pageSize, lastShowedFirstIndex, pagesCount);
     }
 }
