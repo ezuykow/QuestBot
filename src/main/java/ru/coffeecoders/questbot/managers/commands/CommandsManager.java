@@ -84,6 +84,7 @@ public class CommandsManager {
     }
 
     private void checkAndSendGlobalAdminsCommand(ExtendedUpdate update, Command cmd) {
+        deleteMessageWithCommand(update);
         if (validator.isAdmin(update.getMessageFromUserId())) {
             adminsCommandsManager.manageCommand(update, cmd);
         } else {
@@ -96,5 +97,9 @@ public class CommandsManager {
         return text.trim().
                 substring(1, (text.contains("@") ? text.indexOf("@") : text.length()))
                 .toUpperCase();
+    }
+
+    private void deleteMessageWithCommand(ExtendedUpdate update) {
+        msgSender.sendDelete(update.getMessageChatId(), update.getMessageId());
     }
 }
