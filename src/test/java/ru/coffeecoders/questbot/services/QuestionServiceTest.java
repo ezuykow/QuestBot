@@ -30,14 +30,14 @@ class QuestionServiceTest {
     private QuestionService questionService;
 
     private Question question;
-    private long id;
+    private int id;
     private String name;
 
     @BeforeEach
     void setUp() {
         question = new Question();
         name = "Test";
-        id = 111L;
+        id = 111;
     }
 
     @Test
@@ -61,14 +61,14 @@ class QuestionServiceTest {
         when(questionRepository.findById(any(Long.class))).thenReturn(Optional.of(question));
         assertTrue(questionService.findById(id).isPresent());
         assertEquals(question, questionService.findById(id).get());
-        Mockito.verify(questionRepository, times(2)).findById(id);
+        Mockito.verify(questionRepository, times(2)).findById((long) id);
     }
 
     @Test
     void findByIdEmpty() {
         when(questionRepository.findById(any(Long.class))).thenReturn(Optional.empty());
         assertTrue(questionService.findById(id).isEmpty());
-        Mockito.verify(questionRepository).findById(id);
+        Mockito.verify(questionRepository).findById((long) id);
     }
 
     @Test

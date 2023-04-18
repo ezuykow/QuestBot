@@ -26,7 +26,7 @@ public class TeamService {
     }
 
     public Optional<Team> findByTeamName(String teamName) {
-        return teamRepository.findByTeamName(teamName);
+        return teamRepository.findById(teamName);
     }
 
     public Team save(Team team) {
