@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.coffeecoders.questbot.actions.commands.PlayersCommandsActions;
 import ru.coffeecoders.questbot.managers.commands.Command;
+import ru.coffeecoders.questbot.managers.commands.PlayersCommandsManager;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
 
 import static org.mockito.Mockito.when;

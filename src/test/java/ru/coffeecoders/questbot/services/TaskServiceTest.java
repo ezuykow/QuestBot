@@ -22,13 +22,17 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TaskServiceTest {
+
     @Mock
     private TaskRepository taskRepository;
+
     @InjectMocks
     private TaskService taskService;
+
     private Task task;
     private long id;
     private String name;
+
     @BeforeEach
     void setUp() {
         task = new Task();
@@ -65,9 +69,9 @@ class TaskServiceTest {
 
     @Test
     void findByGameName() {
-        when(taskRepository.findByGameName(any(String.class))).thenReturn(List.of());
-//        assertTrue(taskService.findByGameName(name).contains(task));
-//        assertEquals(List.of(task), taskService.findByGameName(name));
-        Mockito.verify(taskRepository, times(1)).findByGameName(name);
+        when(taskRepository.findByGameName(any(String.class))).thenReturn(List.of(task));
+        assertTrue(taskService.findByGameName(name).contains(task));
+        assertEquals(List.of(task), taskService.findByGameName(name));
+        Mockito.verify(taskRepository, times(2)).findByGameName(name);
     }
 }

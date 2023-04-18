@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -53,7 +54,7 @@ class TeamServiceTest {
 
     @Test
     void findByTeamName() {
-        when(teamRepository.findById(any(String.class))).thenReturn(Optional.of(team));
+        when(teamRepository.findById(name)).thenReturn(Optional.of(team));
         assertTrue(teamService.findByTeamName(name).isPresent());
         assertEquals(team, teamService.findByTeamName(name).get());
         Mockito.verify(teamRepository, times(2)).findById(name);
@@ -61,7 +62,7 @@ class TeamServiceTest {
 
     @Test
     void findByTeamNameEmpty() {
-        when(teamRepository.findById(any(String.class))).thenReturn(Optional.empty());
+        when(teamRepository.findById(name)).thenReturn(Optional.empty());
         assertTrue(teamService.findByTeamName(name).isEmpty());
         Mockito.verify(teamRepository).findById(name);
     }
