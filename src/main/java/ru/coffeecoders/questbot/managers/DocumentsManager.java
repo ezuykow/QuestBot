@@ -40,7 +40,7 @@ public class DocumentsManager {
     public void manageDocument(ExtendedUpdate update) {
         long chatId = update.getMessageChatId();
 
-        if (validate(update)) {
+        if (validator.isAdminChat(chatId) && validate(update)) {
             parser.parse(downloader.downloadDocument(update.getDocument()), chatId);
         }
     }
