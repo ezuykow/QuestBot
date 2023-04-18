@@ -11,6 +11,7 @@ import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.MessageToDelete;
 import ru.coffeecoders.questbot.repositories.MessageToDeleteRepository;
@@ -29,7 +30,7 @@ public class MessageSender {
     private final TelegramBot bot;
     private final MessageToDeleteService messageToDeleteService;
 
-    public MessageSender(TelegramBot bot, MessageToDeleteService messageToDeleteService, MessageToDeleteRepository mtdRepository) {
+    public MessageSender(TelegramBot bot, MessageToDeleteService messageToDeleteService) {
         this.bot = bot;
         this.messageToDeleteService = messageToDeleteService;
     }
