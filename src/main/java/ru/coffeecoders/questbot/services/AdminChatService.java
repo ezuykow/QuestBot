@@ -35,9 +35,9 @@ public class AdminChatService {
     }
 
     /**
-     * @author ezuykow
      * Удаляет админский чат с БД
      * @param adminChat удаляемый чат
+     * @author ezuykow
      */
     public void delete(AdminChat adminChat) {
         adminChatRepository.delete(adminChat);
