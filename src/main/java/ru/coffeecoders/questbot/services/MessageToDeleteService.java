@@ -3,12 +3,10 @@ package ru.coffeecoders.questbot.services;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import ru.coffeecoders.questbot.entities.GlobalChat;
 import ru.coffeecoders.questbot.entities.MessageToDelete;
 import ru.coffeecoders.questbot.repositories.MessageToDeleteRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author ezuykow
@@ -59,7 +57,7 @@ public class MessageToDeleteService {
      */
     public List<MessageToDelete> findByUserId(long userId) {
         List<MessageToDelete> list = repository.findByUserId(userId);
-        logger.info("GlobalChat {} with id = {}", list.isPresent() ? "found" : "not found", userId);
+        logger.info("GlobalChat {} with id = {}", list.isEmpty() ? "not found" : "found", userId);
         return list;
     }
 
@@ -68,6 +66,7 @@ public class MessageToDeleteService {
      * @param messageToDelete объект, который необходимо удалить
      */
     public void delete(MessageToDelete messageToDelete) {
+        logger.info("MessageToDelete = {} has been deleted", messageToDelete);
         repository.delete(messageToDelete);
     }
 
@@ -76,6 +75,7 @@ public class MessageToDeleteService {
      * @param mtds {@link List} объектов, которые необходимо удалить
      */
     public void  deleteAll(List<MessageToDelete> mtds) {
+        logger.info("List<MessageToDelete> = {} has been deleted", mtds);
         repository.deleteAll(mtds);
     }
 }
