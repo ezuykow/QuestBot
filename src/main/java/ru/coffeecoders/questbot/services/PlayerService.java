@@ -22,13 +22,13 @@ public class PlayerService {
 
     public List<Player> findAll() {
         List<Player> list = repository.findAll();
-        logger.info("Players {} displaying", list.isEmpty() ? "are not" : "are");
+        logger.info("Players are {} displaying", list.isEmpty() ? "not" : "");
         return list;
     }
 
     public Optional<Player> findById(long id) {
         Optional<Player> optional = repository.findById(id);
-        logger.info("Player {} with id = {}", optional.isPresent() ? "found" : "not found", id);
+        logger.info("Player with id = {} {} found", id, optional.isPresent() ? "" : "not");
         return optional;
     }
 

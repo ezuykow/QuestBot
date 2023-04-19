@@ -39,7 +39,7 @@ public class GameService {
 
     public Optional<Game> findByChatId(long chatId) {
         Optional<Game> optional = repository.findByGlobalChatId(chatId);
-        logger.info("Game {} with id = {}", optional.isPresent() ? "found" : "not found", chatId);
+        logger.info("Game with id = {} {} found", chatId, optional.isPresent() ? "" : "not");
         return optional;
     }
 }

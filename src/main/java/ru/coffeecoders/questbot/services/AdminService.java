@@ -22,13 +22,13 @@ public class AdminService {
 
     public List<Admin> findAll() {
         List<Admin> list = repository.findAll();
-        logger.info("Admins {} displaying", list.isEmpty() ? "are not" : "are");
+        logger.info("Admins are {} displaying", list.isEmpty() ? "not" : "");
         return list;
     }
 
     public Optional<Admin> findById(long id) {
         Optional<Admin> admin = repository.findById(id);
-        logger.info("Admin {} with id = {}", admin.isPresent() ? "found" : "not found", id);
+        logger.info("Admin with id = {} {} found", id, admin.isPresent() ? "" : "not");
         return admin;
     }
 

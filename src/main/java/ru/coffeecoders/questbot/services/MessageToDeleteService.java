@@ -46,7 +46,7 @@ public class MessageToDeleteService {
      */
     public List<MessageToDelete> findAll() {
         List<MessageToDelete> list = repository.findAll();
-        logger.info("List<MessageToDelete> {} displaying", list.isEmpty() ? "are not" : "are");
+        logger.info("List<MessageToDelete> are {} displaying", list.isEmpty() ? "not" : "");
         return list;
     }
 
@@ -57,7 +57,7 @@ public class MessageToDeleteService {
      */
     public List<MessageToDelete> findByUserId(long userId) {
         List<MessageToDelete> list = repository.findByUserId(userId);
-        logger.info("GlobalChat {} with id = {}", list.isEmpty() ? "not found" : "found", userId);
+        logger.info("MessageToDelete with user_id = {} {} found", userId, list.isEmpty() ? "not" : "");
         return list;
     }
 

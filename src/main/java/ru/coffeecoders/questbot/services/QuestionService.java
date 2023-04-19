@@ -22,19 +22,19 @@ public class QuestionService {
 
     public List<Question> findAll() {
         List<Question> list = repository.findAll();
-        logger.info("Questions {} displaying", list.isEmpty() ? "are not" : "are");
+        logger.info("Questions are {} displaying", list.isEmpty() ? "not" : "");
         return list;
     }
 
     public Optional<Question> findById(long id) {
         Optional<Question> optional = repository.findById(id);
-        logger.info("Question with id = {} {}", id, optional.isPresent() ? "found" : "not found");
+        logger.info("Question with id = {} {} found", id, optional.isPresent() ? "" : "not");
         return optional;
     }
 
     public List<Question> findByGroup(String group) {
         List<Question> list = repository.findByGroup(group);
-        logger.info("Questions with group name = {} {} displaying", group, list.isEmpty() ? "are not" : "are");
+        logger.info("Questions with group name = {} are {} displaying", group, list.isEmpty() ? "not" : "");
         return list;
     }
 
@@ -42,7 +42,7 @@ public class QuestionService {
         logger.info("Question = {} has been saved", question);
         return repository.save(question);
     }
-
+//TODO зачем возвращать List<Question>
     public List<Question> saveAll(List<Question> questionList) {
         logger.info("Questions = {} has been saved", questionList);
         return repository.saveAll(questionList);

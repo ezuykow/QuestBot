@@ -22,13 +22,13 @@ public class AdminChatService {
 
     public List<AdminChat> findAll() {
         List<AdminChat> list = repository.findAll();
-        logger.info("AdminChats {} displaying", list.isEmpty() ? "are not" : "are");
+        logger.info("AdminChats are {} displaying", list.isEmpty() ? "not" : "");
         return list;
     }
 
     public Optional<AdminChat> findById(long id) {
         Optional<AdminChat> optional = repository.findById(id);
-        logger.info("AdminChat {} with id = {}", optional.isPresent() ? "found" : "not found", id);
+        logger.info("AdminChat with id = {} {} found", id, optional.isPresent() ? "" : "not");
         return optional;
     }
 

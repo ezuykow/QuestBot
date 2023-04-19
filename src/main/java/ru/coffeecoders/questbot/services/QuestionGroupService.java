@@ -22,13 +22,13 @@ public class QuestionGroupService {
 
     public List<QuestionGroup> findAll() {
         List<QuestionGroup> list = repository.findAll();
-        logger.info("QuestionGroups {} displaying", list.isEmpty() ? "are not" : "are");
+        logger.info("QuestionGroups are {} displaying", list.isEmpty() ? "not" : "");
         return list;
     }
 
     public Optional<QuestionGroup> findById(long id) {
         Optional<QuestionGroup> optional = repository.findById(id);
-        logger.info("Player {} with id = {}", optional.isPresent() ? "found" : "not found", id);
+        logger.info("QuestionGroup with id = {} {} found", id, optional.isPresent() ? "" : "not");
         return optional;
     }
 

@@ -28,7 +28,7 @@ public class GlobalChatService {
 
     public Optional<GlobalChat> findById(long id) {
         Optional<GlobalChat> optional = repository.findById(id);
-        logger.info("GlobalChat {} with id = {}", optional.isPresent() ? "found" : "not found", id);
+        logger.info("GlobalChat with id = {} {} found", id, optional.isPresent() ? "" : "not");
         return optional;
     }
 

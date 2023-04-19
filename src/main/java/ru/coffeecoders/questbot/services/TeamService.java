@@ -13,24 +13,27 @@ import java.util.Optional;
 public class TeamService {
 
     Logger logger = LoggerFactory.getLogger(TeamService.class);
-    private final TeamRepository teamRepository;
 
-    public TeamService(TeamRepository teamRepository) {
-        this.teamRepository = teamRepository;
+    private final TeamRepository repository;
+
+    public TeamService(TeamRepository repository) {
+        this.repository = repository;
     }
 
     public List<Team> findAll() {
-        List<Team> list = teamRepository.findAll();
-        logger.info("Teams {} displaying", list.isEmpty() ? "are not" : "are");
+        List<Team> list = repository.findAll();
+        logger.info("Teams are {} displaying", list.isEmpty() ? "not" : "");
         return list;
     }
 
     public Optional<Team> findByTeamName(String teamName) {
-        return teamRepository.findById(teamName);
+        Optional<Team> optional = repository.findById(teamName);
+        logger.info("Team with teamName = {} {} found", teamName, optional.isPresent() ? "" : "not");
+        return optional;
     }
 
     public Team save(Team team) {
         logger.info("Team = {} has been saved", team);
-        return teamRepository.save(team);
+        return repository.save(team);
     }
 }
