@@ -9,6 +9,7 @@ import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.repositories.MessageToDeleteRepository;
 import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.services.*;
+import ru.coffeecoders.questbot.validators.GameValidator;
 
 import java.util.*;
 
@@ -19,25 +20,27 @@ import java.util.*;
 public class PlayersCommandsActions {
     private final TeamService teamService;
     private final TaskService taskService;
-    private final GameService gameService;
+    private final GlobalChatService globalChatService;
     private final MessageSender msgSender;
     private final QuestionService questionService;
     private final MessageToDeleteService messageToDeleteService;
+    private final GameValidator gameValidator;
     private final Environment env;
 
-    public PlayersCommandsActions(TeamService teamService,
-                                  TaskService taskService,
-                                  GameService gameService,
-                                  MessageSender msgSender,
-                                  QuestionService questionService,
-                                  MessageToDeleteService messageToDeleteService, Environment env, MessageToDeleteRepository mtdRepository) {
+    public PlayersCommandsActions(TeamService teamService, TaskService taskService,
+                                  GlobalChatService globalChatService, MessageSender msgSender,
+                                  QuestionService questionService, MessageToDeleteService messageToDeleteService,
+                                  MessageToDeleteRepository mtdRepository, GameValidator gameValidator,
+                                  Environment env)
+    {
         this.teamService = teamService;
         this.taskService = taskService;
-        this.gameService = gameService;
+        this.globalChatService = globalChatService;
         this.msgSender = msgSender;
         this.questionService = questionService;
         this.messageToDeleteService = messageToDeleteService;
         this.env = env;
+        this.gameValidator = gameValidator;
     }
 
     /**
@@ -61,13 +64,16 @@ public class PlayersCommandsActions {
      * Получает название текущей игры по chatId, передает в {@link MessageSender} список
      * актуальных вопросов
      * @param chatId id чата
+     * @author anna
+     * <br>Redact: ezuykow
      */
     public void showTasks(long chatId) {
-        final Optional<Game> game = gameService.findByChatId(chatId);
-        if (game.isEmpty()) {
-            msgSender.send(chatId, env.getProperty("messages.players.haventStartedGame"));
+        if (gameValidator.isGameStarted(chatId)) {
+            msgSender.send(chatId,
+                    getActualTasks(globalChatService.findById(chatId).map(GlobalChat::getCreatingGameName).get())
+            );
         } else {
-            msgSender.send(chatId, getActualTasks(game.get().getGameName()));
+            msgSender.send(chatId, env.getProperty("messages.players.haventStartedGame"));
         }
     }
 
@@ -75,11 +81,14 @@ public class PlayersCommandsActions {
      * Отправляет в {@link  MessageSender} строку с предложением ввести название команды
      *
      * @param update апдейт
+     * @author anna
+     * <br>Redact: ezuykow
      */
     public void regTeam(ExtendedUpdate update) {
-        if (gameCreated(update) && !gameStarted(update)) {
+        long chatId = update.getMessageChatId();
+        if (gameValidator.isGameCreating(chatId) && !gameValidator.isGameStarted(chatId)) {
             SendResponse response =
-                    msgSender.send(update.getMessageChatId(), env.getProperty("messages.players.enterTeamName"),
+                    msgSender.send(chatId, env.getProperty("messages.players.enterTeamName"),
                             update.getMessageId()
                     );
             saveToMessageToDelete(update.getMessageId(), update, "REGTEAM", true);
@@ -92,15 +101,18 @@ public class PlayersCommandsActions {
      * клавиатуру с этими названиями
      *
      //* @param chatId id чата
+     * @author anna
+     * <br>Redact: ezuykow
      */
     public void joinTeam(ExtendedUpdate update) {
-        if (gameCreated(update) && !gameStarted(update)) {
+        long chatId = update.getMessageChatId();
+        if (gameValidator.isGameCreating(chatId) && !gameValidator.isGameStarted(chatId)) {
             List<String> teamsNames = teamService.findAll()
                     .stream().map(Team::getTeamName).toList();
             if (teamsNames.isEmpty()) {
-                msgSender.send(update.getMessageChatId(), env.getProperty("messages.players.noTeamsRegisteredYet"));
+                msgSender.send(chatId, env.getProperty("messages.players.noTeamsRegisteredYet"));
             } else {
-                msgSender.send(update.getMessageChatId(),
+                msgSender.send(chatId,
                         "@" + update.getUsernameFromMessage() + env.getProperty("messages.players.chooseYourTeam"),
                         JoinTeamKeyboard.createKeyboard(teamsNames), update.getMessageId()
                 );
@@ -119,15 +131,6 @@ public class PlayersCommandsActions {
                         )
                 );
         return sb.toString();
-    }
-
-    private boolean gameCreated(ExtendedUpdate update) {
-        return gameService.findByChatId(update.getMessageChatId()).isPresent();
-    }
-
-    private boolean gameStarted(ExtendedUpdate update) {
-        Optional<Game> game = gameService.findByChatId(update.getMessageChatId());
-        return game.map(Game::isStarted).orElse(false);
     }
 
     private void saveToMessageToDelete(int msgId, ExtendedUpdate update, String relateTo, boolean active) {

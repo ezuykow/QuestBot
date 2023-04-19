@@ -106,28 +106,26 @@ public class QuestionsFromExcelParser {
     }
 
     private void saveQuestionsIfPresent(long chatId) {
-        StringBuilder msgSB = new StringBuilder();
-
-        if (blankQuestionsPresent) {
-            msgSB.append(env.getProperty("messages.documents.emptyQuestionsNotAdded"));
-        }
-
         if (newQuestions.isEmpty()) {
             msgSender.send(chatId, env.getProperty("messages.documents.emptyQuestionList"));
         } else {
+            StringBuilder msgSB = checkBlankAndRemoveEqualsQuestions();
             questionService.saveAll(newQuestions);
             msgSender.send(chatId, createNewQuestionsMsg(msgSB));
         }
     }
 
     private String createNewQuestionsMsg(StringBuilder sb) {
-        sb.append(String.format(env.getProperty("messages.documents.questionsAdded", "%d"),
-                newQuestions.size())
-        );
-
-        newQuestions.forEach(question -> sb.append(Character.toString(0x2714)).append(" ")
-                .append(question.getQuestion()).append("\n")
-        );
+        if (newQuestions.isEmpty()) {
+            sb.append(env.getProperty("messages.documents.noOneQuestionAdded"));
+        } else {
+            sb.append(String.format(env.getProperty("messages.documents.questionsAdded", "%d"),
+                    newQuestions.size())
+            );
+            newQuestions.forEach(question -> sb.append(Character.toString(0x2714)).append(" ")
+                    .append(question.getQuestion()).append("\n")
+            );
+        }
         return sb.toString();
     }
 
@@ -141,5 +139,29 @@ public class QuestionsFromExcelParser {
         } catch (SecurityException e) {
             logger.error("Security Manager blocked deleting of temp file!");
         }
+    }
+
+    private StringBuilder checkBlankAndRemoveEqualsQuestions() {
+        StringBuilder msgSB = new StringBuilder();
+        if (blankQuestionsPresent) {
+            msgSB.append(env.getProperty("messages.documents.emptyQuestionsNotAdded"));
+        }
+        if (findAndRemoveEqualsQuestions()) {
+            msgSB.append(env.getProperty("messages.documents.equalsQuestionsNotAdded"));
+        }
+        return msgSB;
+    }
+
+    private boolean findAndRemoveEqualsQuestions() {
+        boolean hasEquals = false;
+        List<String> questionsText = questionService.findAll().
+                stream().map(Question::getQuestion).toList();
+        for (int i = 0; i < newQuestions.size(); i++) {
+            if (questionsText.contains(newQuestions.get(i).getQuestion())) {
+                newQuestions.remove(i--);
+                hasEquals = true;
+            }
+        }
+        return hasEquals;
     }
 }

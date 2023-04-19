@@ -36,4 +36,13 @@ public class GlobalChatService {
         logger.info("GlobalChat = {} has been saved", globalChat);
         return repository.save(globalChat);
     }
+
+    /**
+     *
+     * @param chatId
+     * @author ezuykow
+     */
+    public void deleteById(long chatId) {
+        globalChatRepository.deleteById(chatId);
+    }
 }

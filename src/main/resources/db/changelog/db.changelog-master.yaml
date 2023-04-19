@@ -19,3 +19,5 @@ databaseChangeLog:
       file: db/changelog/scripts/players.sql
   - include:
       file: db/changelog/scripts/msg_to_delete.sql
+  - include:
+      file: db/changelog/scripts/admins_admin_chats.sql

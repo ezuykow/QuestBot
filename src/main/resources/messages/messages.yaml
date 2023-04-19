@@ -10,6 +10,7 @@ messages:
     gameCmdInAdminChat: В админском чате оставлена игровая команда
     chatIsAdminNow: Теперь этот чат - администраторский
     chatIsGlobalNow: Теперь этот чат - не администраторский
+    isOwnerCommand: Эту команду может использовать только владелец
 
   players:
     haventStartedGame: Запущенных игр нет
@@ -22,4 +23,6 @@ messages:
     fromNotAdmin: Добавлять вопросы может только администратор
     wrongDocumentType: Поддерживается добавление вопросов только с файла Excel
     emptyQuestionsNotAdded: "Пустые вопросы не добавлены! (Без текста вопроса или ответа)\n\n"
+    equalsQuestionsNotAdded: "Повторяющиеся вопросы не добавлены!\n\n"
     questionsAdded: "Добавлены вопросы (%d):\n\n"
+    noOneQuestionAdded: Ни одного вопроса не добавлено

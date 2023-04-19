@@ -1,6 +1,7 @@
 package ru.coffeecoders.questbot.models;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import org.springframework.beans.factory.annotation.Value;
 import ru.coffeecoders.questbot.entities.Question;
 import ru.coffeecoders.questbot.keyboards.viewers.QuestionsViewerKeyboard;
 
@@ -12,7 +13,9 @@ import java.util.List;
 public class QuestionsViewerPage {
 
     private List<Question> questions;
+    private int defaultPageSize;
     private int pageSize;
+    private int pagesCount;
     private int startIndex;
     private int lastIndex;
     private String text;
@@ -28,16 +31,18 @@ public class QuestionsViewerPage {
      * Собирается "постранично", количество вопросов на "странице" - {@code pageSize}, начиная с вопроса
      * {@code startIndex}
      * @param questions вопросы, который нужно отобразить
-     * @param pageSize количество вопросов на "странице"
+     * @param defaultPageSize дефолтное количество вопросов на "странице"
      * @param startIndex индекс вопроса из {@code questions}, который будет первым на "странице"
      * @return собранную страницу {@link QuestionsViewerPage}
      */
-    public static QuestionsViewerPage createPage(List<Question> questions, int pageSize, int startIndex) {
+    public static QuestionsViewerPage createPage(List<Question> questions, int defaultPageSize, int startIndex, int pagesCount) {
         QuestionsViewerPage page = new QuestionsViewerPage();
         page.questions = questions;
-        page.pageSize = pageSize;
+        page.defaultPageSize = defaultPageSize;
         page.startIndex = startIndex;
-        page.lastIndex = Math.min(startIndex + pageSize - 1, questions.size() - 1);
+        page.pageSize = Math.min(defaultPageSize, questions.size());
+        page.lastIndex = Math.min(startIndex + page.pageSize - 1, questions.size() - 1);
+        page.pagesCount = pagesCount;
 
         page.createText();
         page.checkArrowsNeed();
@@ -56,6 +61,7 @@ public class QuestionsViewerPage {
 
     private void createText() {
         StringBuilder sb = new StringBuilder();
+        sb.append(calcPage());
         for (int i = startIndex; i <= lastIndex; i++) {
             sb.append(i + 1)
                     .append(". ")
@@ -73,5 +79,10 @@ public class QuestionsViewerPage {
     private void createKeyboard() {
         keyboard = QuestionsViewerKeyboard.createKeyboard(
                 pageSize, leftArrowNeed, startIndex, lastIndex, rightArrowNeed);
+    }
+
+    private String calcPage() {
+        int currentPage = startIndex / defaultPageSize + 1;
+        return "Страница " + currentPage + " из " + pagesCount + "\n\n";
     }
 }

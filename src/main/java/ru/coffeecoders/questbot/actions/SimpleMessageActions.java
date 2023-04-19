@@ -7,7 +7,7 @@ import ru.coffeecoders.questbot.entities.Team;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.repositories.MessageToDeleteRepository;
 import ru.coffeecoders.questbot.senders.MessageSender;
-import ru.coffeecoders.questbot.services.GameService;
+import ru.coffeecoders.questbot.services.GlobalChatService;
 import ru.coffeecoders.questbot.services.MessageToDeleteService;
 import ru.coffeecoders.questbot.services.PlayerService;
 import ru.coffeecoders.questbot.services.TeamService;
@@ -20,16 +20,19 @@ import java.util.List;
 @Component
 public class SimpleMessageActions {
 
-    private final GameService gameService;
     private final TeamService teamService;
     private final PlayerService playerService;
+    private final GlobalChatService globalChatService;
     private final MessageSender msgSender;
     private final MessageToDeleteService messageToDeleteService;
 
-    public SimpleMessageActions(GameService gameService, TeamService teamService, PlayerService playerService, MessageSender msgSender, MessageToDeleteRepository mtdRepository, MessageToDeleteService messageToDeleteService) {
-        this.gameService = gameService;
+    public SimpleMessageActions(TeamService teamService, PlayerService playerService,
+                                GlobalChatService globalChatService, MessageSender msgSender,
+                                MessageToDeleteRepository mtdRepository,
+                                MessageToDeleteService messageToDeleteService) {
         this.teamService = teamService;
         this.playerService = playerService;
+        this.globalChatService = globalChatService;
         this.msgSender = msgSender;
         this.messageToDeleteService = messageToDeleteService;
     }
@@ -44,8 +47,7 @@ public class SimpleMessageActions {
         if (update.hasMessageText()) {
             Team newTeam = new Team(
                     update.getMessageText(),
-                    gameService.findByChatId(update.getMessageChatId()).get().getGameName(),
-                    0
+                    globalChatService.findById(update.getMessageChatId()).get().getCreatingGameName()
             );
             checkTeamForExistAndSave(update, newTeam);
         }
@@ -60,7 +62,7 @@ public class SimpleMessageActions {
      */
     public void joinTeam(ExtendedUpdate update, String teamName) {
         Player newPlayer = createNewPlayer(update.getMessageFromUserId(),
-                gameService.findByChatId(update.getMessageChatId()).get().getGameName(),
+                globalChatService.findById(update.getMessageChatId()).get().getCreatingGameName(),
                 teamName
         );
         addPlayersWithTeam(newPlayer, update);
