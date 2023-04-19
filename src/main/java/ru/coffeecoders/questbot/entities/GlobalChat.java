@@ -18,11 +18,29 @@ public class GlobalChat {
     @Column(name = "tg_chat_id")
     private long tgChatId;
 
+    @Column(name = "creating_game_name")
+    private String creatingGameName;
+
+    @Column(name = "is_game_started")
+    private boolean isGameStarted;
+
+    @Column(name = "minutes_since_start")
+    private int minutesSinceStart;
+
     public GlobalChat() {
     }
 
     public GlobalChat(long tgChatId) {
+        this(tgChatId, null, false, null);
+    }
+
+    public GlobalChat(long tgChatId, String creatingGameName, boolean isGameStarted, Integer minutesSinceStart) {
         this.tgChatId = tgChatId;
+        this.creatingGameName = creatingGameName;
+        this.isGameStarted = isGameStarted;
+        if (minutesSinceStart != null) {
+            this.minutesSinceStart = minutesSinceStart;
+        }
     }
 
     public long getTgChatId() {
@@ -31,6 +49,30 @@ public class GlobalChat {
 
     public void setTgChatId(long tgChatId) {
         this.tgChatId = tgChatId;
+    }
+
+    public String getCreatingGameName() {
+        return creatingGameName;
+    }
+
+    public void setCreatingGameName(String creatingGameName) {
+        this.creatingGameName = creatingGameName;
+    }
+
+    public boolean isGameStarted() {
+        return isGameStarted;
+    }
+
+    public void setGameStarted(boolean gameStarted) {
+        isGameStarted = gameStarted;
+    }
+
+    public int getMinutesSinceStart() {
+        return minutesSinceStart;
+    }
+
+    public void setMinutesSinceStart(int minutesSinceStart) {
+        this.minutesSinceStart = minutesSinceStart;
     }
 
     @Override
@@ -50,6 +92,9 @@ public class GlobalChat {
     public String toString() {
         return "GlobalChat{" +
                 "tgChatId=" + tgChatId +
+                ", creatingGameName='" + creatingGameName + '\'' +
+                ", isGameStarted=" + isGameStarted +
+                ", minutesSinceStart=" + minutesSinceStart +
                 '}';
     }
 }

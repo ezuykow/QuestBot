@@ -11,5 +11,4 @@ import java.util.Optional;
  */
 @Repository
 public interface GameRepository extends JpaRepository<Game, String> {
-    Optional<Game> findByGlobalChatId(long globalChatId);
 }

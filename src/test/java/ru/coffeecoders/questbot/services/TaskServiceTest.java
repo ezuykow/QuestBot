@@ -30,13 +30,13 @@ class TaskServiceTest {
     private TaskService taskService;
 
     private Task task;
-    private long id;
+    private int id;
     private String name;
 
     @BeforeEach
     void setUp() {
         task = new Task();
-        id = 111L;
+        id = 111;
         name = "Test";
     }
 

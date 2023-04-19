@@ -19,9 +19,6 @@ public class Game {
     @Column(name = "game_name")
     private String gameName;
 
-    @Column(name = "global_chat_id")
-    private long globalChatId;
-
     @Column(name = "groups_ids")
     private int[] groupsIds;
 
@@ -43,15 +40,29 @@ public class Game {
     @Column(name = "start_count_tasks")
     private int startCountTasks;
 
-    @Column(name = "is_started")
-    private boolean isStarted;
-
-    public boolean isStarted() {
-        return isStarted;
+    public Game() {
     }
 
-    public void setStarted(boolean started) {
-        isStarted = started;
+    public Game(String gameName, int maxTimeMinutes, int maxQuestionsCount, int maxPerformedQuestionsCount,
+                int minQuestionsCountInGame, int questionsCountToAdd, int startCountTasks)
+    {
+        this(gameName, null, maxTimeMinutes, maxQuestionsCount, maxPerformedQuestionsCount,
+                minQuestionsCountInGame, questionsCountToAdd, startCountTasks
+        );
+    }
+
+    public Game(String gameName, int[] groupsIds, int maxTimeMinutes, int maxQuestionsCount,
+                int maxPerformedQuestionsCount, int minQuestionsCountInGame, int questionsCountToAdd,
+                int startCountTasks)
+    {
+        this.gameName = gameName;
+        this.groupsIds = groupsIds;
+        this.maxTimeMinutes = maxTimeMinutes;
+        this.maxQuestionsCount = maxQuestionsCount;
+        this.maxPerformedQuestionsCount = maxPerformedQuestionsCount;
+        this.minQuestionsCountInGame = minQuestionsCountInGame;
+        this.questionsCountToAdd = questionsCountToAdd;
+        this.startCountTasks = startCountTasks;
     }
 
     public String getGameName() {
@@ -68,14 +79,6 @@ public class Game {
 
     public void setGameName(String gameName) {
         this.gameName = gameName;
-    }
-
-    public long getGlobalChatId() {
-        return globalChatId;
-    }
-
-    public void setGlobalChatId(long globalChatId) {
-        this.globalChatId = globalChatId;
     }
 
     public int[] getGroupsIds() {
@@ -143,7 +146,6 @@ public class Game {
     public String toString() {
         return "Game{" +
                 "gameName='" + gameName + '\'' +
-                ", globalChatId=" + globalChatId +
                 ", groupsIds=" + Arrays.toString(groupsIds) +
                 ", maxTimeMinutes=" + maxTimeMinutes +
                 ", maxQuestionsCount=" + maxQuestionsCount +
@@ -151,7 +153,6 @@ public class Game {
                 ", minQuestionsCountInGame=" + minQuestionsCountInGame +
                 ", questionsCountToAdd=" + questionsCountToAdd +
                 ", startCountTasks=" + startCountTasks +
-                ", isStarted=" + isStarted +
                 '}';
     }
 }

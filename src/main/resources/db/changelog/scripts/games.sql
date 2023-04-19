@@ -14,3 +14,9 @@ CREATE TABLE games
     is_started                    BOOLEAN,
     start_count_tasks             INT CHECK ( start_count_tasks > 0 )
 );
+
+-- changeset ezuykow:2
+ALTER TABLE games
+    DROP COLUMN global_chat_id;
+ALTER TABLE games
+    DROP COLUMN is_started;

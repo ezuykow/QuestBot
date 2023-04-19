@@ -2,7 +2,9 @@ package ru.coffeecoders.questbot.entities;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author ezuykow
@@ -14,6 +16,47 @@ public class Admin {
     @Id
     @Column(name = "tg_admin_user_id")
     private long tgAdminUserId;
+
+    @Column(name = "is_owner")
+    private boolean isOwner;
+
+    @ManyToMany(mappedBy = "admins")
+    private Set<AdminChat> adminChats = new HashSet<>();
+
+    public Admin() {
+    }
+
+    public Admin(long tgAdminUserId) {
+        this(tgAdminUserId, false, null);
+    }
+
+    public Admin(long tgAdminUserId, boolean isOwner) {
+        this(tgAdminUserId, isOwner, null);
+    }
+
+    public Admin(long tgAdminUserId, boolean isOwner, Set<AdminChat> adminChats) {
+        this.tgAdminUserId = tgAdminUserId;
+        this.isOwner = isOwner;
+        if (adminChats != null) {
+            this.adminChats = adminChats;
+        }
+    }
+
+    public boolean isOwner() {
+        return isOwner;
+    }
+
+    public void setOwner(boolean owner) {
+        isOwner = owner;
+    }
+
+    public Set<AdminChat> getAdminChats() {
+        return adminChats;
+    }
+
+    public void setAdminChats(Set<AdminChat> adminChats) {
+        this.adminChats = adminChats;
+    }
 
     public long getTgAdminUserId() {
         return tgAdminUserId;
@@ -40,6 +83,7 @@ public class Admin {
     public String toString() {
         return "Admin{" +
                 "tgAdminUserId=" + tgAdminUserId +
+                ", isOwner=" + isOwner +
                 '}';
     }
 }

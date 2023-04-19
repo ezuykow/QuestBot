@@ -33,4 +33,13 @@ public class AdminService {
         logger.info("Admin = {} has been saved", admin);
         return adminRepository.save(admin);
     }
+
+    /**
+     *
+     * @param admins
+     * @author ezuykow
+     */
+    public void deleteAll(List<Admin> admins) {
+        adminRepository.deleteAll(admins);
+    }
 }

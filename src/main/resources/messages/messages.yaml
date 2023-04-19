@@ -10,6 +10,7 @@ messages:
     gameCmdInAdminChat: В админском чате оставлена игровая команда
     chatIsAdminNow: Теперь этот чат - администраторский
     chatIsGlobalNow: Теперь этот чат - не администраторский
+    isOwnerCommand: Эту команду может использовать только владелец
 
   players:
     haventStartedGame: Запущенных игр нет

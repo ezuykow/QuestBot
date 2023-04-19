@@ -30,13 +30,13 @@ class QuestionGroupServiceTest {
     @InjectMocks
     private QuestionGroupService questionGroupService;
 
-    private long id;
+    private int id;
     private QuestionGroup questionGroup;
 
     @BeforeEach
     void setUp() {
         questionGroup = new QuestionGroup();
-        id = 111L;
+        id = 111;
     }
 
     @Test
@@ -60,14 +60,14 @@ class QuestionGroupServiceTest {
         when(questionGroupRepository.findById(any(Long.class))).thenReturn(Optional.of(questionGroup));
         assertTrue(questionGroupService.findById(id).isPresent());
         assertEquals(questionGroup, questionGroupService.findById(id).get());
-        Mockito.verify(questionGroupRepository, times(2)).findById(id);
+        Mockito.verify(questionGroupRepository, times(2)).findById((long) id);
     }
 
     @Test
     void findByIdEmpty() {
         when(questionGroupRepository.findById(any(Long.class))).thenReturn(Optional.empty());
         assertTrue(questionGroupService.findById(id).isEmpty());
-        Mockito.verify(questionGroupRepository).findById(id);
+        Mockito.verify(questionGroupRepository).findById((long) id);
     }
 
     @Test

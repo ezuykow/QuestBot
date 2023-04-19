@@ -27,6 +27,10 @@ public class Team {
     public Team() {
     }
 
+    public Team(String teamName, String gameName) {
+        this(teamName, gameName, 0);
+    }
+
     public Team(String teamName, String gameName, int score) {
         this.teamName = teamName;
         this.gameName = gameName;
