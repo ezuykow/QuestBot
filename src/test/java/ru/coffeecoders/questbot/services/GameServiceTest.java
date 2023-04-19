@@ -15,16 +15,19 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class GameServiceTest {
+
     @Mock
-    private GameRepository gameRepository;
+    private GameRepository repository;
+
     @InjectMocks
-    private GameService gameService;
+    private GameService service;
+
     private String name;
     private Game game;
     private long globalChatId;
@@ -36,57 +39,56 @@ public class GameServiceTest {
         globalChatId = 123L;
     }
 
-
     @Test
     void findAll() {
         game.setGameName(name);
-        when(gameRepository.findAll()).thenReturn(List.of(game, new Game(), new Game()));
-        assertTrue(gameService.findAll().contains(game));
-        assertEquals(3, gameService.findAll().size());
-        Mockito.verify(gameRepository, times(2)).findAll();
+        when(repository.findAll()).thenReturn(List.of(game, new Game(), new Game()));
+        assertTrue(service.findAll().contains(game));
+        assertEquals(3, service.findAll().size());
+        Mockito.verify(repository, times(2)).findAll();
     }
 
     @Test
     void findAllEmptyList() {
-        when(gameRepository.findAll()).thenReturn(List.of());
-        assertTrue(gameService.findAll().isEmpty());
-        Mockito.verify(gameRepository).findAll();
+        when(repository.findAll()).thenReturn(List.of());
+        assertTrue(service.findAll().isEmpty());
+        Mockito.verify(repository).findAll();
     }
 
     @Test
     void findByName() {
-        when(gameRepository.findById(any(String.class))).thenReturn(Optional.of(game));
-        assertTrue(gameService.findByName(name).isPresent());
-        assertEquals(game, gameService.findByName(name).get());
-        Mockito.verify(gameRepository, times(2)).findById(name);
+        when(repository.findById(anyString())).thenReturn(Optional.of(game));
+        assertTrue(service.findByName(name).isPresent());
+        assertEquals(game, service.findByName(name).get());
+        Mockito.verify(repository, times(2)).findById(name);
     }
 
     @Test
     void findByNameEmpty() {
-        when(gameRepository.findById(any(String.class))).thenReturn(Optional.empty());
-        assertTrue(gameService.findByName(name).isEmpty());
-        Mockito.verify(gameRepository).findById(name);
+        when(repository.findById(anyString())).thenReturn(Optional.empty());
+        assertTrue(service.findByName(name).isEmpty());
+        Mockito.verify(repository).findById(name);
     }
 
     @Test
     void save() {
-        when(gameRepository.save(any(Game.class))).thenReturn(game);
-        assertEquals(game, gameService.save(game));
-        Mockito.verify(gameRepository).save(game);
+        when(repository.save(any(Game.class))).thenReturn(game);
+        assertEquals(game, service.save(game));
+        Mockito.verify(repository).save(game);
     }
 
     @Test
     void findByChatId() {
-        when(gameRepository.findByGlobalChatId(any(Long.class))).thenReturn(Optional.of(game));
-        assertTrue(gameService.findByChatId(globalChatId).isPresent());
-        assertEquals(game, gameService.findByChatId(globalChatId).get());
-        Mockito.verify(gameRepository, times(2)).findByGlobalChatId(globalChatId);
+        when(repository.findByGlobalChatId(anyLong())).thenReturn(Optional.of(game));
+        assertTrue(service.findByChatId(globalChatId).isPresent());
+        assertEquals(game, service.findByChatId(globalChatId).get());
+        Mockito.verify(repository, times(2)).findByGlobalChatId(globalChatId);
     }
 
     @Test
     void findByChatIdEmpty() {
-        when(gameRepository.findByGlobalChatId(any(Long.class))).thenReturn(Optional.empty());
-        assertTrue(gameService.findByChatId(globalChatId).isEmpty());
-        Mockito.verify(gameRepository).findByGlobalChatId(globalChatId);
+        when(repository.findByGlobalChatId(anyLong())).thenReturn(Optional.empty());
+        assertTrue(service.findByChatId(globalChatId).isEmpty());
+        Mockito.verify(repository).findByGlobalChatId(globalChatId);
     }
 }

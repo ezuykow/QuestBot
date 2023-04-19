@@ -8,15 +8,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.coffeecoders.questbot.entities.Question;
-import ru.coffeecoders.questbot.entities.QuestionGroup;
 import ru.coffeecoders.questbot.repositories.QuestionRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -24,10 +22,10 @@ import static org.mockito.Mockito.when;
 class QuestionServiceTest {
 
     @Mock
-    private QuestionRepository questionRepository;
+    private QuestionRepository repository;
 
     @InjectMocks
-    private QuestionService questionService;
+    private QuestionService service;
 
     private Question question;
     private int id;
@@ -43,56 +41,56 @@ class QuestionServiceTest {
     @Test
     void findAll() {
         question.setQuestionId(id);
-        when(questionRepository.findAll()).thenReturn(List.of(question, new Question(), new Question()));
-        assertTrue(questionService.findAll().contains(question));
-        assertEquals(3, questionService.findAll().size());
-        Mockito.verify(questionRepository, times(2)).findAll();
+        when(repository.findAll()).thenReturn(List.of(question, new Question(), new Question()));
+        assertTrue(service.findAll().contains(question));
+        assertEquals(3, service.findAll().size());
+        Mockito.verify(repository, times(2)).findAll();
     }
 
     @Test
     void findAllEmptyList() {
-        when(questionRepository.findAll()).thenReturn(List.of());
-        assertTrue(questionService.findAll().isEmpty());
-        Mockito.verify(questionRepository).findAll();
+        when(repository.findAll()).thenReturn(List.of());
+        assertTrue(service.findAll().isEmpty());
+        Mockito.verify(repository).findAll();
     }
 
     @Test
     void findById() {
-        when(questionRepository.findById(any(Long.class))).thenReturn(Optional.of(question));
-        assertTrue(questionService.findById(id).isPresent());
-        assertEquals(question, questionService.findById(id).get());
-        Mockito.verify(questionRepository, times(2)).findById((long) id);
+        when(repository.findById(anyLong())).thenReturn(Optional.of(question));
+        assertTrue(service.findById(id).isPresent());
+        assertEquals(question, service.findById(id).get());
+        Mockito.verify(repository, times(2)).findById((long) id);
     }
 
     @Test
     void findByIdEmpty() {
-        when(questionRepository.findById(any(Long.class))).thenReturn(Optional.empty());
-        assertTrue(questionService.findById(id).isEmpty());
-        Mockito.verify(questionRepository).findById((long) id);
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
+        assertTrue(service.findById(id).isEmpty());
+        Mockito.verify(repository).findById((long) id);
     }
 
     @Test
     void findByGroup() {
-        when(questionRepository.findByGroup(anyString())).thenReturn(List.of(question));
-        assertTrue(questionService.findByGroup(name).contains(question));
-        assertEquals(List.of(question), questionService.findByGroup(name));
-        Mockito.verify(questionRepository, times(2)).findByGroup(name);
+        when(repository.findByGroup(anyString())).thenReturn(List.of(question));
+        assertTrue(service.findByGroup(name).contains(question));
+        assertEquals(List.of(question), service.findByGroup(name));
+        Mockito.verify(repository, times(2)).findByGroup(name);
     }
 
     @Test
     void findByGroupEmpty() {
-        when(questionRepository.findByGroup(any(String.class))).thenReturn(List.of());
-        assertTrue(questionService.findByGroup(name).isEmpty());
-        Mockito.verify(questionRepository).findByGroup(name);
+        when(repository.findByGroup(anyString())).thenReturn(List.of());
+        assertTrue(service.findByGroup(name).isEmpty());
+        Mockito.verify(repository).findByGroup(name);
     }
 
     @Test
     void save() {
-        when(questionRepository.save(any(Question.class))).thenReturn(question);
-        assertEquals(question, questionService.save(question));
-        Mockito.verify(questionRepository).save(question);
+        when(repository.save(any(Question.class))).thenReturn(question);
+        assertEquals(question, service.save(question));
+        Mockito.verify(repository).save(question);
     }
-
+//TODO
     @Test
     void saveAll() {
     }

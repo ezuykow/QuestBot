@@ -15,15 +15,19 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PlayerServiceTest {
+
     @Mock
-    private PlayerRepository playerRepository;
+    private PlayerRepository repository;
+
     @InjectMocks
-    private PlayerService playerService;
+    private PlayerService service;
+
     private Player player;
     private long id;
 
@@ -36,38 +40,38 @@ class PlayerServiceTest {
     @Test
     void findAll() {
         player.setTgUserId(id);
-        when(playerRepository.findAll()).thenReturn(List.of(player, new Player(), new Player()));
-        assertTrue(playerService.findAll().contains(player));
-        assertEquals(3, playerService.findAll().size());
-        Mockito.verify(playerRepository, times(2)).findAll();
+        when(repository.findAll()).thenReturn(List.of(player, new Player(), new Player()));
+        assertTrue(service.findAll().contains(player));
+        assertEquals(3, service.findAll().size());
+        Mockito.verify(repository, times(2)).findAll();
     }
 
     @Test
     void findAllEmptyList() {
-        when(playerRepository.findAll()).thenReturn(List.of());
-        assertTrue(playerService.findAll().isEmpty());
-        Mockito.verify(playerRepository).findAll();
+        when(repository.findAll()).thenReturn(List.of());
+        assertTrue(service.findAll().isEmpty());
+        Mockito.verify(repository).findAll();
     }
 
     @Test
     void findById() {
-        when(playerRepository.findById(any(Long.class))).thenReturn(Optional.of(player));
-        assertTrue(playerService.findById(id).isPresent());
-        assertEquals(player, playerService.findById(id).get());
-        Mockito.verify(playerRepository, times(2)).findById(id);
+        when(repository.findById(anyLong())).thenReturn(Optional.of(player));
+        assertTrue(service.findById(id).isPresent());
+        assertEquals(player, service.findById(id).get());
+        Mockito.verify(repository, times(2)).findById(id);
     }
 
     @Test
     void findByIdEmpty() {
-        when(playerRepository.findById(any(Long.class))).thenReturn(Optional.empty());
-        assertTrue(playerService.findById(id).isEmpty());
-        Mockito.verify(playerRepository).findById(id);
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
+        assertTrue(service.findById(id).isEmpty());
+        Mockito.verify(repository).findById(id);
     }
 
     @Test
     void save() {
-        when(playerRepository.save(any(Player.class))).thenReturn(player);
-        assertEquals(player, playerService.save(player));
-        Mockito.verify(playerRepository).save(player);
+        when(repository.save(any(Player.class))).thenReturn(player);
+        assertEquals(player, service.save(player));
+        Mockito.verify(repository).save(player);
     }
 }

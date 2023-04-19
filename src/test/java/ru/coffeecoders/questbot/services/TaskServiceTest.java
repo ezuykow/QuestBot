@@ -7,16 +7,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.coffeecoders.questbot.entities.Game;
-import ru.coffeecoders.questbot.entities.Question;
 import ru.coffeecoders.questbot.entities.Task;
 import ru.coffeecoders.questbot.repositories.TaskRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -24,10 +22,10 @@ import static org.mockito.Mockito.when;
 class TaskServiceTest {
 
     @Mock
-    private TaskRepository taskRepository;
+    private TaskRepository repository;
 
     @InjectMocks
-    private TaskService taskService;
+    private TaskService service;
 
     private Task task;
     private long id;
@@ -43,35 +41,42 @@ class TaskServiceTest {
     @Test
     void findAll() {
         task.setTaskId(id);
-        when(taskRepository.findAll()).thenReturn(List.of(task, new Task(), new Task()));
-        assertTrue(taskService.findAll().contains(task));
-        assertEquals(3, taskService.findAll().size());
-        Mockito.verify(taskRepository, times(2)).findAll();
+        when(repository.findAll()).thenReturn(List.of(task, new Task(), new Task()));
+        assertTrue(service.findAll().contains(task));
+        assertEquals(3, service.findAll().size());
+        Mockito.verify(repository, times(2)).findAll();
     }
 
     @Test
     void findAllEmptyList() {
-        when(taskRepository.findAll()).thenReturn(List.of());
-        assertTrue(taskService.findAll().isEmpty());
-        Mockito.verify(taskRepository).findAll();
+        when(repository.findAll()).thenReturn(List.of());
+        assertTrue(service.findAll().isEmpty());
+        Mockito.verify(repository).findAll();
     }
-
+    //TODO
     @Test
     void deleteById() {
     }
 
     @Test
     void save() {
-        when(taskRepository.save(any(Task.class))).thenReturn(task);
-        assertEquals(task, taskService.save(task));
-        Mockito.verify(taskRepository).save(task);
+        when(repository.save(any(Task.class))).thenReturn(task);
+        assertEquals(task, service.save(task));
+        Mockito.verify(repository).save(task);
     }
 
     @Test
     void findByGameName() {
-        when(taskRepository.findByGameName(any(String.class))).thenReturn(List.of(task));
-        assertTrue(taskService.findByGameName(name).contains(task));
-        assertEquals(List.of(task), taskService.findByGameName(name));
-        Mockito.verify(taskRepository, times(2)).findByGameName(name);
+        when(repository.findByGameName(anyString())).thenReturn(List.of(task));
+        assertTrue(service.findByGameName(name).contains(task));
+        assertEquals(List.of(task), service.findByGameName(name));
+        Mockito.verify(repository, times(2)).findByGameName(name);
+    }
+
+    @Test
+    void findByGameNameEmpty() {
+        when(repository.findByGameName(name)).thenReturn(List.of());
+        assertTrue(service.findByGameName(name).isEmpty());
+        Mockito.verify(repository).findByGameName(name);
     }
 }
