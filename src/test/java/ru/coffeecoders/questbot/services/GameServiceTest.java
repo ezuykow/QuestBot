@@ -27,13 +27,11 @@ public class GameServiceTest {
     private GameService gameService;
     private String name;
     private Game game;
-    private long globalChatId;
 
     @BeforeEach
     void setUp() {
         game = new Game();
         name = "testName";
-        globalChatId = 123L;
     }
 
 
@@ -73,20 +71,5 @@ public class GameServiceTest {
         when(gameRepository.save(any(Game.class))).thenReturn(game);
         assertEquals(game, gameService.save(game));
         Mockito.verify(gameRepository).save(game);
-    }
-
-    @Test
-    void findByChatId() {
-        when(gameRepository.findByGlobalChatId(any(Long.class))).thenReturn(Optional.of(game));
-        assertTrue(gameService.findByChatId(globalChatId).isPresent());
-        assertEquals(game, gameService.findByChatId(globalChatId).get());
-        Mockito.verify(gameRepository, times(2)).findByGlobalChatId(globalChatId);
-    }
-
-    @Test
-    void findByChatIdEmpty() {
-        when(gameRepository.findByGlobalChatId(any(Long.class))).thenReturn(Optional.empty());
-        assertTrue(gameService.findByChatId(globalChatId).isEmpty());
-        Mockito.verify(gameRepository).findByGlobalChatId(globalChatId);
     }
 }

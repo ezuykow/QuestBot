@@ -16,7 +16,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.liquibase:liquibase-core'
-    implementation 'com.github.pengrad:java-telegram-bot-api:5.7.0'
+    implementation 'com.github.pengrad:java-telegram-bot-api:6.6.1'
     implementation 'org.apache.poi:poi-ooxml:5.2.3'
     implementation 'com.vaadin.external.google:android-json:0.0.20131108.vaadin1'
     runtimeOnly 'org.postgresql:postgresql'
