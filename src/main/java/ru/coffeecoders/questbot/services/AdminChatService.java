@@ -46,4 +46,13 @@ public class AdminChatService {
         logger.info("AdminChat = {} has been deleted", adminChat);
         repository.delete(adminChat);
     }
+
+    /**
+     *
+     * @param chatId
+     * @author ezuykow
+     */
+    public void deleteByChatId(long chatId) {
+        adminChatRepository.deleteById(chatId);
+    }
 }

@@ -20,7 +20,7 @@ public class AdminChat {
     @Column(name = "blocked_by_admin_id")
     private long blockedByAdminId;
 
-    @ManyToMany(fetch = FetchType.LAZY,
+    @ManyToMany(fetch = FetchType.EAGER,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE}
     )
     @JoinTable(name = "admins_admin_chats",
@@ -30,14 +30,6 @@ public class AdminChat {
     private Set<Admin> admins = new HashSet<>();
 
     public AdminChat() {
-    }
-
-    public AdminChat(long tgAdminChatId) {
-        this(tgAdminChatId, null, null);
-    }
-
-    public AdminChat(long tgAdminChatId, long blockedByAdminId) {
-        this(tgAdminChatId, blockedByAdminId, null);
     }
 
     public AdminChat(long tgAdminChatId, Set<Admin> admins) {

@@ -1,9 +1,10 @@
 package ru.coffeecoders.questbot.models;
 
 import com.pengrad.telegrambot.model.*;
-import ru.coffeecoders.questbot.managers.commands.Command;
 
 import java.util.Optional;
+
+import static ru.coffeecoders.questbot.models.ExtendedUpdate.UpdateType.*;
 
 /**
  * @author ezuykow
@@ -17,6 +18,9 @@ public class ExtendedUpdate{
         COMMAND,
         DOCUMENT,
         CALLBACK,
+        NEW_CHAT_MEMBER,
+        LEFT_CHAT_MEMBER,
+        NEW_OR_LEFT_CHAT_MEMBERS_MESSAGE,
         UNKNOWN
     }
 
@@ -58,6 +62,18 @@ public class ExtendedUpdate{
         return getCallbackQueryOpt().isPresent();
     }
 
+    /**
+     * @author ezuykow
+     */
+    public boolean hasChatMemberUpdated() {
+        return update.chatMember() != null;
+    }
+
+    /**
+     *
+     * @return вав
+     * @author ezuykow
+     */
     public boolean hasReplyToMessage() {
         return update.message().replyToMessage() != null;
     }
@@ -70,6 +86,33 @@ public class ExtendedUpdate{
         return hasMessageText() && update.message().text().matches(TEXT_COMMAND_REGEXP);
     }
 
+    /**
+     * @author ezuykow
+     */
+    public boolean isMemberJoin() {
+        if (hasChatMemberUpdated()) {
+            return update.chatMember().oldChatMember().status().equals(ChatMember.Status.left)
+                    && update.chatMember().newChatMember().status().equals(ChatMember.Status.member);
+        }
+        return false;
+    }
+
+    /**
+     * @author ezuykow
+     */
+    public boolean isMemberLeft() {
+        if (hasChatMemberUpdated()) {
+            return update.chatMember().oldChatMember().status().equals(ChatMember.Status.member)
+                    && update.chatMember().newChatMember().status().equals(ChatMember.Status.left);
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @return ава
+     * @author ezuykow
+     */
     public Message getReplyToMessage() {
         if (hasReplyToMessage()) {
             return update.message().replyToMessage();
@@ -82,18 +125,27 @@ public class ExtendedUpdate{
      */
     public UpdateType getUpdateType() {
         if (isCommand()) {
-            return UpdateType.COMMAND;
+            return COMMAND;
+        }
+        if (messageWithNewOrLeftChatMember()) {
+            return NEW_OR_LEFT_CHAT_MEMBERS_MESSAGE;
+        }
+        if (isMemberJoin()) {
+            return NEW_CHAT_MEMBER;
+        }
+        if (isMemberLeft()) {
+            return LEFT_CHAT_MEMBER;
         }
         if (hasDocument()) {
-            return UpdateType.DOCUMENT;
+            return DOCUMENT;
         }
         if (hasCallbackQuery()) {
-            return UpdateType.CALLBACK;
+            return CALLBACK;
         }
         if (hasMessageText()) {
-            return UpdateType.SIMPLE_MESSAGE;
+            return SIMPLE_MESSAGE;
         }
-        return UpdateType.UNKNOWN;
+        return UNKNOWN;
     }
 
     /**
@@ -121,6 +173,11 @@ public class ExtendedUpdate{
         throw new RuntimeException("Update haven't document!");
     }
 
+    /**
+     *
+     * @return ваа
+     * @author ezuykow
+     */
     public int getMessageId() {
         if (hasMessage()) {
             return update.message().messageId();
@@ -128,6 +185,11 @@ public class ExtendedUpdate{
         throw new RuntimeException("Update haven't message!");
     }
 
+    /**
+     *
+     * @return ава
+     * @author ezuykow
+     */
     public String getUsernameFromMessage() {
         if (hasMessage()) {
             return update.message().from().username();
@@ -137,7 +199,7 @@ public class ExtendedUpdate{
 
     /**
      * @return text из message из апдейта <br>
-     * Использя {@link Update#message()} <br>
+     * Используя {@link Update#message()} <br>
      * {@link Message#text()}
      */
     public String getMessageText() {
@@ -199,19 +261,58 @@ public class ExtendedUpdate{
         throw new RuntimeException("Update haven't callbackQuery!");
     }
 
+    /**
+     * @author ezuykow
+     */
+    public User getUpdatedMemberUser() {
+        if (hasChatMemberUpdated()) {
+            return update.chatMember().newChatMember().user();
+        }
+        throw new RuntimeException("Update haven't ChatMemberUpdated!");
+    }
+
+    /**
+     * @author ezuykow
+     */
+    public long getUpdatedMemberChatId() {
+        if (hasChatMemberUpdated()) {
+            return update.chatMember().chat().id();
+        }
+        throw new RuntimeException("Update haven't ChatMemberUpdated!");
+    }
+
+    /**
+     * @author ezuykow
+     */
     private Optional<Message> getMessageOpt() {
         return Optional.ofNullable(update.message());
     }
 
+    /**
+     * @author ezuykow
+     */
     private Optional<String> getMessageTextOpt() {
         return Optional.ofNullable(update.message().text());
     }
 
+    /**
+     * @author ezuykow
+     */
     private Optional<Document> getDocumentOpt() {
         return Optional.ofNullable(update.message().document());
     }
 
+    /**
+     * @author ezuykow
+     */
     private Optional<CallbackQuery> getCallbackQueryOpt() {
         return Optional.ofNullable(update.callbackQuery());
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private boolean messageWithNewOrLeftChatMember() {
+        return hasMessage() && (update.message().newChatMembers() != null || update.message().leftChatMember() != null);
     }
 }
