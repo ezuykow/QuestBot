@@ -14,6 +14,8 @@ messages:
     chatIsAdminNow: Теперь этот чат - администраторский
     chatIsGlobalNow: Теперь этот чат - не администраторский
     isOwnerCommand: Эту команду может использовать только владелец
+    promote: "Назначить администратором бота:"
+    emptyPromotionList: Некого назначать админом
 
   players:
     haventStartedGame: Запущенных игр нет

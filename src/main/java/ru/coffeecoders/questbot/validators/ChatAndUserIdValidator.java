@@ -1,6 +1,7 @@
 package ru.coffeecoders.questbot.validators;
 
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.entities.Admin;
 import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.services.AdminService;
 import ru.coffeecoders.questbot.services.GlobalChatService;
@@ -28,6 +29,13 @@ public class ChatAndUserIdValidator {
      */
     public boolean isAdmin(long userId) {
         return adminService.findById(userId).isPresent();
+    }
+
+    /**
+     * @author ezuykow
+     */
+    public boolean isOwner(long userId) {
+        return adminService.findById(userId).filter(Admin::isOwner).isPresent();
     }
 
     /**

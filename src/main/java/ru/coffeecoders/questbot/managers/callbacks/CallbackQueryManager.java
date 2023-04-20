@@ -1,4 +1,4 @@
-package ru.coffeecoders.questbot.managers;
+package ru.coffeecoders.questbot.managers.callbacks;
 
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.managers.callbacks.QuestionViewerCallbackManager;

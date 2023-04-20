@@ -9,6 +9,7 @@ public enum Command {
 
     SHOWQUESTIONS(ADMIN),
     ADMINOFF(ADMIN),
+    PROMOTE(ADMIN),
 
     SCORE(PLAYER),
     TASKS(PLAYER),

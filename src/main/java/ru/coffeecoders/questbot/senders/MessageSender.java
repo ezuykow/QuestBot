@@ -1,14 +1,13 @@
 package ru.coffeecoders.questbot.senders;
 
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.ForceReply;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.Keyboard;
-import com.pengrad.telegrambot.request.DeleteMessage;
-import com.pengrad.telegrambot.request.EditMessageText;
-import com.pengrad.telegrambot.request.LeaveChat;
-import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.*;
 import com.pengrad.telegrambot.response.BaseResponse;
+import com.pengrad.telegrambot.response.GetChatMemberResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +22,7 @@ import ru.coffeecoders.questbot.services.MessageToDeleteService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author ezuykow
@@ -144,6 +144,18 @@ public class MessageSender {
         checkResponse(bot.execute(
                 new LeaveChat(chatId)
         ));
+    }
+
+    public User getChatMember(long chatId, long userId) {
+        GetChatMemberResponse response = bot.execute(
+                new GetChatMember(chatId, userId)
+        );
+        if (response.isOk()) {
+            return response.chatMember().user();
+        } else {
+            logger.error("GetChatMember failed! Error code: {}", response.errorCode());
+            return null;
+        }
     }
 
     /**

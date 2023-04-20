@@ -13,13 +13,17 @@ public class AdminsCommandsManager {
         this.cmdActions = cmdActions;
     }
 
+    /**
+     * @author anna
+     * <br>Redact ezuykow
+     */
     public void manageCommand(ExtendedUpdate update, Command cmd) {
-
         switch (cmd) {
             case START -> cmdActions.performStartCmd(update);
             case SHOWQUESTIONS -> cmdActions.performShowQuestionsCmd(update);
             case ADMINON -> cmdActions.performAdminOnCmd(update);
             case ADMINOFF -> cmdActions.performAdminOffCmd(update);
+            case PROMOTE -> cmdActions.performPromoteCmd(update);
             case STOPBOT -> cmdActions.performStopBotCmd();
         }
     }

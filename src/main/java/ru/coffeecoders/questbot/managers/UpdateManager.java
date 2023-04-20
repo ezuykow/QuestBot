@@ -2,6 +2,7 @@ package ru.coffeecoders.questbot.managers;
 
 import com.pengrad.telegrambot.model.Update;
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.managers.callbacks.CallbackQueryManager;
 import ru.coffeecoders.questbot.managers.commands.CommandsManager;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.senders.MessageSender;
