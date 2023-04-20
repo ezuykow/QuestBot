@@ -16,7 +16,7 @@ import ru.coffeecoders.questbot.services.AdminChatMembersService;
 import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.services.AdminService;
 import ru.coffeecoders.questbot.services.GlobalChatService;
-import ru.coffeecoders.questbot.validators.ChatAndUserIdValidator;
+import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 import ru.coffeecoders.questbot.viewers.QuestionsViewer;
 
 import java.util.*;
@@ -32,14 +32,14 @@ public class AdminsCommandsActions {
     private final GlobalChatService globalChatService;
     private final AdminChatMembersService adminChatMembersService;
     private final ApplicationShutdownManager applicationShutdownManager;
-    private final ChatAndUserIdValidator validator;
+    private final ChatAndUserValidator validator;
     private final Environment env;
 
     private AdminsCommandsActions(MessageSender msgSender, QuestionsViewer questionsViewer,
                                   AdminChatService adminChatService, AdminService adminService,
                                   GlobalChatService globalChatService, AdminChatMembersService adminChatMembersService,
                                   ApplicationShutdownManager applicationShutdownManager,
-                                  ChatAndUserIdValidator validator, Environment env)
+                                  ChatAndUserValidator validator, Environment env)
     {
         this.msgSender = msgSender;
         this.questionsViewer = questionsViewer;

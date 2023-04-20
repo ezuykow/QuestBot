@@ -11,7 +11,7 @@ import ru.coffeecoders.questbot.services.AdminChatMembersService;
 import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.services.AdminService;
 import ru.coffeecoders.questbot.services.GlobalChatService;
-import ru.coffeecoders.questbot.validators.ChatAndUserIdValidator;
+import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,12 +43,12 @@ public class ChatMembersActions {
     private final GlobalChatService globalChatService;
     private final AdminChatService adminChatService;
     private final AdminService adminService;
-    private final ChatAndUserIdValidator validator;
+    private final ChatAndUserValidator validator;
     private final MessageSender msgSender;
 
     public ChatMembersActions(AdminChatMembersService adminChatMembersService, GlobalChatService globalChatService,
                               AdminChatService adminChatService, AdminService adminService,
-                              ChatAndUserIdValidator validator, MessageSender msgSender)
+                              ChatAndUserValidator validator, MessageSender msgSender)
     {
         this.adminChatMembersService = adminChatMembersService;
         this.globalChatService = globalChatService;

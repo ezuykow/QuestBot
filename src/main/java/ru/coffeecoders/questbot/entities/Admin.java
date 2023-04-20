@@ -30,6 +30,10 @@ public class Admin {
         this(tgAdminUserId, false, null);
     }
 
+    public Admin(long tgAdminUserId, Set<AdminChat> adminChats) {
+        this(tgAdminUserId, false, adminChats);
+    }
+
     public Admin(long tgAdminUserId, boolean isOwner, Set<AdminChat> adminChats) {
         this.tgAdminUserId = tgAdminUserId;
         this.isOwner = isOwner;

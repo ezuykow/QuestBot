@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.env.Environment;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.senders.MessageSender;
-import ru.coffeecoders.questbot.validators.ChatAndUserIdValidator;
+import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 
 import static org.mockito.Mockito.when;
 
@@ -20,7 +20,7 @@ class CommandsManagerTest {
     @Mock
     private PlayersCommandsManager playersCommandsManager;
     @Mock
-    private ChatAndUserIdValidator validator;
+    private ChatAndUserValidator validator;
     @Mock
     private MessageSender msgSender;
     @Mock

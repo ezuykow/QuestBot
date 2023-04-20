@@ -29,9 +29,10 @@ public class PromoteUserKeyboard {
      */
     private void createButtons(Set<User> users) {
         for (User user : users) {
+            String name = getName(user);
             keyboard.addRow(
-                    new InlineKeyboardButton(getName(user))
-                            .callbackData("PromoteUser." + user.id())
+                    new InlineKeyboardButton(name)
+                            .callbackData("PromoteUser." + name + "." + user.id())
             );
         }
     }

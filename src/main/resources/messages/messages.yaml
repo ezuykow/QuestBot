@@ -16,6 +16,7 @@ messages:
     isOwnerCommand: Эту команду может использовать только владелец
     promote: "Назначить администратором бота:"
     emptyPromotionList: Некого назначать админом
+    userPromoted: " назначен администратором бота"
 
   players:
     haventStartedGame: Запущенных игр нет

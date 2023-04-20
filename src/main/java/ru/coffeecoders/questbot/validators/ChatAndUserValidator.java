@@ -10,14 +10,14 @@ import ru.coffeecoders.questbot.services.GlobalChatService;
  * @author anna
  */
 @Component
-public class ChatAndUserIdValidator {
+public class ChatAndUserValidator {
     private final AdminService adminService;
     private final AdminChatService adminChatService;
     private final GlobalChatService globalChatService;
 
-    public ChatAndUserIdValidator(AdminService adminService,
-                                  AdminChatService adminChatService,
-                                  GlobalChatService globalChatService) {
+    public ChatAndUserValidator(AdminService adminService,
+                                AdminChatService adminChatService,
+                                GlobalChatService globalChatService) {
         this.adminService = adminService;
         this.adminChatService = adminChatService;
         this.globalChatService = globalChatService;

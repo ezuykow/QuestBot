@@ -264,6 +264,16 @@ public class ExtendedUpdate{
     /**
      * @author ezuykow
      */
+    public long getCallbackFromUserId() {
+        if (hasCallbackQuery()) {
+            return update.callbackQuery().from().id();
+        }
+        throw new RuntimeException("Update haven't callbackQuery!");
+    }
+
+    /**
+     * @author ezuykow
+     */
     public User getUpdatedMemberUser() {
         if (hasChatMemberUpdated()) {
             return update.chatMember().newChatMember().user();

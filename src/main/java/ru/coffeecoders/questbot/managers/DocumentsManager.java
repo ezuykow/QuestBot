@@ -7,7 +7,7 @@ import ru.coffeecoders.questbot.documents.DocumentDownloader;
 import ru.coffeecoders.questbot.documents.QuestionsFromExcelParser;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.senders.MessageSender;
-import ru.coffeecoders.questbot.validators.ChatAndUserIdValidator;
+import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 
 /**
  * @author ezuykow
@@ -18,10 +18,10 @@ public class DocumentsManager {
     private final MessageSender msgSender;
     private final QuestionsFromExcelParser parser;
     private final DocumentDownloader downloader;
-    private final ChatAndUserIdValidator validator;
+    private final ChatAndUserValidator validator;
     private final Environment env;
 
-    public DocumentsManager(MessageSender msgSender, QuestionsFromExcelParser parser, DocumentDownloader downloader, ChatAndUserIdValidator validator, Environment env) {
+    public DocumentsManager(MessageSender msgSender, QuestionsFromExcelParser parser, DocumentDownloader downloader, ChatAndUserValidator validator, Environment env) {
         this.msgSender = msgSender;
         this.parser = parser;
         this.downloader = downloader;

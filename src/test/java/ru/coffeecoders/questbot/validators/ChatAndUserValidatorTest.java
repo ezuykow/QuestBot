@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ChatAndUserIdValidatorTest {
+class ChatAndUserValidatorTest {
     @Mock
     private AdminService adminService;
     @Mock
@@ -26,7 +26,7 @@ class ChatAndUserIdValidatorTest {
     @Mock
     private GlobalChatService globalChatService;
     @InjectMocks
-    ChatAndUserIdValidator validator;
+    ChatAndUserValidator validator;
 
     @Test
     public void isAdminTest() {

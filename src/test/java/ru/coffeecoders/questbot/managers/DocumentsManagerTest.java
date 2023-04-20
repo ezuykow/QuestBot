@@ -11,7 +11,7 @@ import ru.coffeecoders.questbot.documents.DocumentDownloader;
 import ru.coffeecoders.questbot.documents.QuestionsFromExcelParser;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.senders.MessageSender;
-import ru.coffeecoders.questbot.validators.ChatAndUserIdValidator;
+import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -27,7 +27,7 @@ class DocumentsManagerTest {
     @Mock
     private DocumentDownloader downloader;
     @Mock
-    private ChatAndUserIdValidator validator;
+    private ChatAndUserValidator validator;
     @Mock
     private MessageSender msgSender;
     @Mock

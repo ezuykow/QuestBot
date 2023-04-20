@@ -5,7 +5,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.senders.MessageSender;
-import ru.coffeecoders.questbot.validators.ChatAndUserIdValidator;
+import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 
 
 /**
@@ -17,14 +17,14 @@ import ru.coffeecoders.questbot.validators.ChatAndUserIdValidator;
 public class CommandsManager {
     private final AdminsCommandsManager adminsCommandsManager;
     private final PlayersCommandsManager playersCommandsManager;
-    private final ChatAndUserIdValidator validator;
+    private final ChatAndUserValidator validator;
     private final MessageSender msgSender;
     private final Environment env;
     private long chatId;
 
     public CommandsManager(AdminsCommandsManager adminsCommandsManager,
                            PlayersCommandsManager playersCommandsManager,
-                           ChatAndUserIdValidator validator,
+                           ChatAndUserValidator validator,
                            MessageSender msgSender,
                            Environment env) {
         this.adminsCommandsManager = adminsCommandsManager;
