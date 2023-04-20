@@ -4,9 +4,12 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Admin;
 import ru.coffeecoders.questbot.entities.AdminChat;
+import ru.coffeecoders.questbot.entities.AdminChatMembers;
 import ru.coffeecoders.questbot.entities.GlobalChat;
+import ru.coffeecoders.questbot.managers.ApplicationShutdownManager;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.services.AdminChatMembersService;
 import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.services.AdminService;
 import ru.coffeecoders.questbot.services.GlobalChatService;
@@ -22,14 +25,22 @@ public class AdminsCommandsActions {
     private final AdminChatService adminChatService;
     private final AdminService adminService;
     private final GlobalChatService globalChatService;
+    private final AdminChatMembersService adminChatMembersService;
+    private final ApplicationShutdownManager applicationShutdownManager;
     private final Environment env;
 
-    private AdminsCommandsActions(MessageSender msgSender, QuestionsViewer questionsViewer, AdminChatService adminChatService, AdminService adminService, GlobalChatService globalChatService, Environment env) {
+    private AdminsCommandsActions(MessageSender msgSender, QuestionsViewer questionsViewer,
+                                  AdminChatService adminChatService, AdminService adminService,
+                                  GlobalChatService globalChatService, AdminChatMembersService adminChatMembersService,
+                                  ApplicationShutdownManager applicationShutdownManager, Environment env)
+    {
         this.msgSender = msgSender;
         this.questionsViewer = questionsViewer;
         this.adminChatService = adminChatService;
         this.adminService = adminService;
         this.globalChatService = globalChatService;
+        this.adminChatMembersService = adminChatMembersService;
+        this.applicationShutdownManager = applicationShutdownManager;
         this.env = env;
     }
 
@@ -60,17 +71,10 @@ public class AdminsCommandsActions {
      */
     public void performAdminOnCmd(ExtendedUpdate update) {
         final long chatId = update.getMessageChatId();
-        final long userId = update.getMessageFromUserId();
-        Optional<Admin> owner = adminService.findById(update.getMessageFromUserId())
+        Optional<Admin> getUserIfOwner = adminService.findById(update.getMessageFromUserId())
                 .filter(Admin::isOwner);
-        if (owner.isPresent()) {
-            final AdminChat adminChat =
-                    new AdminChat(
-                            chatId,
-                            new HashSet<>(Collections.singleton(owner.get()))
-                    );
-            globalChatService.deleteById(chatId);
-            adminChatService.save(adminChat);
+        if (getUserIfOwner.isPresent()) {
+            createAdminChat(chatId, getUserIfOwner.get());
             msgSender.send(chatId, env.getProperty("messages.admins.chatIsAdminNow"));
         } else {
             msgSender.send(chatId, env.getProperty("messages.admins.isOwnerCommand"));
@@ -88,7 +92,7 @@ public class AdminsCommandsActions {
                 .filter(Admin::isOwner);
         if (owner.isPresent()) {
             adminChatService.findById(chatId)
-                    .ifPresent(adminChat -> deleteAdminChat(adminChat, chatId, update));
+                    .ifPresent(adminChat -> deleteAdminChat(adminChat, chatId));
         } else {
             msgSender.send(chatId, env.getProperty("messages.admins.isOwnerCommand"));
         }
@@ -96,28 +100,58 @@ public class AdminsCommandsActions {
 
     /**
      *
-     * @param adminChat
-     * @param chatId
-     * @param update
      * @author ezuykow
      */
-    private void deleteAdminChat(AdminChat adminChat, long chatId, ExtendedUpdate update) {
+    public void performStopBotCmd() {
+        msgSender.sendStopBot();
+        applicationShutdownManager.stopBot();
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void deleteAdminChat(AdminChat adminChat, long chatId) {
         adminChatService.delete(adminChat);
-        deleteAllUselessAdmins(update);
+        adminChatMembersService.deleteByChatId(chatId);
+        deleteAllUselessAdmins();
         globalChatService.save(new GlobalChat(chatId));
         msgSender.send(chatId, env.getProperty("messages.admins.chatIsGlobalNow"));
     }
 
     /**
-     *
-     * @param update
      * @author ezuykow
      */
-    private void deleteAllUselessAdmins(ExtendedUpdate update) {
+    private void deleteAllUselessAdmins() {
         List<Admin> adminsToDelete = adminService.findAll()
                 .stream()
                 .filter(admin -> !admin.isOwner() && admin.getAdminChats().isEmpty())
                 .toList();
         adminService.deleteAll(adminsToDelete);
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void createAdminChat(long chatId, Admin owner) {
+        final AdminChat adminChat =
+                new AdminChat(
+                        chatId,
+                        new HashSet<>(Collections.singleton(owner))
+                );
+        createAdminChatMembers(chatId, owner);
+        globalChatService.deleteById(chatId);
+        adminChatService.save(adminChat);
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void createAdminChatMembers(long chatId, Admin owner) {
+        final AdminChatMembers adminChatMembers =
+                new AdminChatMembers(
+                        chatId,
+                        new long[]{owner.getTgAdminUserId()}
+                );
+        adminChatMembersService.save(adminChatMembers);
     }
 }

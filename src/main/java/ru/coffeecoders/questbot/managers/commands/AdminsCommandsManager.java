@@ -20,6 +20,7 @@ public class AdminsCommandsManager {
             case SHOWQUESTIONS -> cmdActions.performShowQuestionsCmd(update);
             case ADMINON -> cmdActions.performAdminOnCmd(update);
             case ADMINOFF -> cmdActions.performAdminOffCmd(update);
+            case STOPBOT -> cmdActions.performStopBotCmd();
         }
     }
 }

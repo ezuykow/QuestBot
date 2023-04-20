@@ -6,15 +6,22 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.Keyboard;
 import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.EditMessageText;
+import com.pengrad.telegrambot.request.LeaveChat;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.entities.AdminChat;
+import ru.coffeecoders.questbot.entities.GlobalChat;
 import ru.coffeecoders.questbot.entities.MessageToDelete;
+import ru.coffeecoders.questbot.services.AdminChatService;
+import ru.coffeecoders.questbot.services.GlobalChatService;
 import ru.coffeecoders.questbot.services.MessageToDeleteService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,12 +32,21 @@ public class MessageSender {
 
     private final Logger logger = LoggerFactory.getLogger(MessageSender.class);
 
+    @Value("${messages.startUp}")
+    private String startUpMsg;
+    @Value("${messages.stopBot}")
+    private String stopBotMsg;
+
     private final TelegramBot bot;
     private final MessageToDeleteService messageToDeleteService;
+    private final AdminChatService adminChatService;
+    private final GlobalChatService globalChatService;
 
-    public MessageSender(TelegramBot bot, MessageToDeleteService messageToDeleteService) {
+    public MessageSender(TelegramBot bot, MessageToDeleteService messageToDeleteService, AdminChatService adminChatService, GlobalChatService globalChatService) {
         this.bot = bot;
         this.messageToDeleteService = messageToDeleteService;
+        this.adminChatService = adminChatService;
+        this.globalChatService = globalChatService;
     }
 
     /**
@@ -119,6 +135,46 @@ public class MessageSender {
         messageToDeleteService.deleteAll(mtds);
     }
 
+    /**
+     *
+     * @param chatId
+     * @author ezuykow
+     */
+    public void sendLeaveChat(long chatId) {
+        checkResponse(bot.execute(
+                new LeaveChat(chatId)
+        ));
+    }
+
+    /**
+     *
+     * @author ezuykow
+     */
+    public void sendStartUp() {
+        getAllChatIds().forEach(id -> send(id, startUpMsg + Character.toString(0x1FAE3)));
+    }
+
+    /**
+     *
+     * @author ezuykow
+     */
+    public void sendStopBot() {
+        getAllChatIds().forEach(id -> send(id, stopBotMsg + Character.toString(0x1FAE3)));
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private List<Long> getAllChatIds() {
+        List<Long> chatIds = new ArrayList<>(
+                adminChatService.findAll().stream().map(AdminChat::getTgAdminChatId).toList());
+        chatIds.addAll(globalChatService.findAll().stream().map(GlobalChat::getTgChatId).toList());
+        return chatIds;
+    }
+
+    /**
+     * @author ezuykow
+     */
     private void checkResponse(BaseResponse response) {
         if (!response.isOk()) {
             logger.warn("Unsent msg! Error code: {}", response.errorCode());

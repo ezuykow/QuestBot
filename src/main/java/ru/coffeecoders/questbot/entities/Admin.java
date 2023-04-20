@@ -20,7 +20,7 @@ public class Admin {
     @Column(name = "is_owner")
     private boolean isOwner;
 
-    @ManyToMany(mappedBy = "admins")
+    @ManyToMany(mappedBy = "admins", fetch = FetchType.EAGER)
     private Set<AdminChat> adminChats = new HashSet<>();
 
     public Admin() {
@@ -28,10 +28,6 @@ public class Admin {
 
     public Admin(long tgAdminUserId) {
         this(tgAdminUserId, false, null);
-    }
-
-    public Admin(long tgAdminUserId, boolean isOwner) {
-        this(tgAdminUserId, isOwner, null);
     }
 
     public Admin(long tgAdminUserId, boolean isOwner, Set<AdminChat> adminChats) {

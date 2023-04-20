@@ -42,4 +42,13 @@ public class AdminChatService {
     public void delete(AdminChat adminChat) {
         adminChatRepository.delete(adminChat);
     }
+
+    /**
+     *
+     * @param chatId
+     * @author ezuykow
+     */
+    public void deleteByChatId(long chatId) {
+        adminChatRepository.deleteById(chatId);
+    }
 }
