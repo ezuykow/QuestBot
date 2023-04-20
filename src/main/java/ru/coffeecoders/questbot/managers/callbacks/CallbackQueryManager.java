@@ -1,7 +1,6 @@
 package ru.coffeecoders.questbot.managers.callbacks;
 
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.managers.callbacks.QuestionViewerCallbackManager;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
 
 /**
