@@ -15,6 +15,8 @@ import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
  */
 @Component
 public class CommandsManager {
+
+    private final OwnerCommandsManager ownerCommandsManager;
     private final AdminsCommandsManager adminsCommandsManager;
     private final PlayersCommandsManager playersCommandsManager;
     private final ChatAndUserValidator validator;
@@ -22,11 +24,13 @@ public class CommandsManager {
     private final Environment env;
     private long chatId;
 
-    public CommandsManager(AdminsCommandsManager adminsCommandsManager,
+    public CommandsManager(OwnerCommandsManager ownerCommandsManager, AdminsCommandsManager adminsCommandsManager,
                            PlayersCommandsManager playersCommandsManager,
                            ChatAndUserValidator validator,
                            MessageSender msgSender,
-                           Environment env) {
+                           Environment env)
+    {
+        this.ownerCommandsManager = ownerCommandsManager;
         this.adminsCommandsManager = adminsCommandsManager;
         this.playersCommandsManager = playersCommandsManager;
         this.validator = validator;
@@ -61,9 +65,22 @@ public class CommandsManager {
     private void manageCommandByAttribute(ExtendedUpdate update, Command cmd) {
         Command.Attribute attribute = cmd.getAttribute();
         switch (attribute) {
+            case OWNER -> checkAndSendOwnersCommand(update, cmd);
+            case ADMIN -> checkAndSendAdminsCommand(update, cmd);
             case GLOBALADMIN -> checkAndSendGlobalAdminsCommand(update, cmd);
             case PLAYER -> checkAndSendPlayersCommand(update, cmd);
-            case ADMIN -> checkAndSendAdminsCommand(update, cmd);
+        }
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void checkAndSendOwnersCommand(ExtendedUpdate update, Command cmd){
+        deleteMessageWithCommand(update);
+        if (validator.isOwner(update.getMessageFromUserId())) {
+            ownerCommandsManager.manageCommand(update, cmd);
+        } else {
+            msgSender.send(chatId, env.getProperty("messages.admins.isOwnerCommand"));
         }
     }
 

@@ -6,13 +6,19 @@ messages:
   startUp: Бот запущен и слушает все, что вы скажете
   stopBot: Бот остановлен, больше не следит за вами
 
+  owner:
+    chatIsAdminNow: Теперь этот чат - администраторский
+    chatIsGlobalNow: Теперь этот чат - не администраторский
+    validation:
+      startCmdFailed: Этот чат уже добавлен в систему
+      adminOnCmdFailed: Этот чат уже администраторский
+      chatIsNotAdmin: Этот чат не администраторский
+
   admins:
     invalidMsg: Введена неверная команда
     cmdSendByNotAdmin: Эту команду может использовать только админ бота
     adminCmdInGlobalChat: Эту команду можно использовать только в администраторском чате
     gameCmdInAdminChat: В админском чате оставлена игровая команда
-    chatIsAdminNow: Теперь этот чат - администраторский
-    chatIsGlobalNow: Теперь этот чат - не администраторский
     isOwnerCommand: Эту команду может использовать только владелец
     promote: "Назначить администратором бота:"
     emptyPromotionList: Некого назначать админом

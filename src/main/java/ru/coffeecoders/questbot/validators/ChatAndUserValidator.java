@@ -53,4 +53,18 @@ public class ChatAndUserValidator {
     public boolean isGlobalChat(long chatId) {
         return globalChatService.findById(chatId).isPresent();
     }
+
+    /**
+     * @author ezuykow
+     */
+    public boolean chatAlreadyAdded(long chatId) {
+        return isAdminChat(chatId) || isGlobalChat(chatId);
+    }
+
+    /**
+     * @author ezuykow
+     */
+    public boolean chatNotAdded(long chatId) {
+        return !chatAlreadyAdded(chatId);
+    }
 }

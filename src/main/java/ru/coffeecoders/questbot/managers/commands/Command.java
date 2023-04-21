@@ -3,13 +3,15 @@ package ru.coffeecoders.questbot.managers.commands;
 import static ru.coffeecoders.questbot.managers.commands.Command.Attribute.*;
 
 public enum Command {
-    START(GLOBALADMIN),
-    ADMINON(GLOBALADMIN),
     STOPBOT(GLOBALADMIN),
 
     SHOWQUESTIONS(ADMIN),
-    ADMINOFF(ADMIN),
-    PROMOTE(ADMIN),
+
+    START(OWNER),
+    ADMINON(OWNER),
+    ADMINOFF(OWNER),
+    PROMOTE(OWNER),
+    DEMOTE(OWNER),
 
     SCORE(PLAYER),
     TASKS(PLAYER),
@@ -17,6 +19,7 @@ public enum Command {
     JOINTEAM(PLAYER),;
 
     public enum Attribute {
+        OWNER,
         GLOBALADMIN,
         ADMIN,
         PLAYER,

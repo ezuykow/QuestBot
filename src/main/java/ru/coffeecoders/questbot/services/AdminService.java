@@ -35,11 +35,33 @@ public class AdminService {
     }
 
     /**
-     *
-     * @param admins
      * @author ezuykow
      */
     public void deleteAll(List<Admin> admins) {
         adminRepository.deleteAll(admins);
+    }
+
+    /**
+     * @author ezuykow
+     */
+    public Admin getOwner() {
+        return findAll().stream().filter(Admin::isOwner).findAny()
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Этого никогда, конечно, не будет, но...." +
+                                        "типа владельца бота нет, лол"
+                        )
+                );
+    }
+
+    /**
+     * @author ezuykow
+     */
+    public void deleteUselessAdmins() {
+        adminRepository.deleteAll(
+                findAll().stream()
+                        .filter(admin -> !admin.isOwner() && admin.getAdminChats().isEmpty())
+                        .toList()
+        );
     }
 }

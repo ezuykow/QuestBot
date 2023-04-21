@@ -28,11 +28,12 @@ public class QuestBotUpdatesListener implements UpdatesListener {
         bot.execute(new SetMyCommands(
                 new BotCommand("regteam", "(Игрок) Создать команду"),
                 new BotCommand("jointeam", "(Игрок) Вступить в команду"),
-                new BotCommand("adminoff", "(Админ) Сделать текущий чат не администраторским"),
-                new BotCommand("adminon", "(Админ) Сделать текущий чат администраторским"),
-                new BotCommand("promote", "(Админ) Назначить администратором бота"),
                 new BotCommand("showquestions", "(Админ) Показать все вопросы"),
-                new BotCommand("stopbot", "(Админ) Остановить бота")
+                new BotCommand("stopbot", "(Админ) Остановить бота"),
+                new BotCommand("adminon", "(Владелец) Сделать текущий чат администраторским"),
+                new BotCommand("adminoff", "(Владелец) Сделать текущий чат не администраторским"),
+                new BotCommand("promote", "(Владелец) Назначить администратором бота"),
+                new BotCommand("demote", "(Владелец) Назначить администратором бота")
         ));
         this.bot = bot;
         startUp = true;
