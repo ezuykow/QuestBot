@@ -1,5 +1,6 @@
 package ru.coffeecoders.questbot.managers.commands;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,6 +21,8 @@ class CommandsManagerTest {
     @Mock
     private PlayersCommandsManager playersCommandsManager;
     @Mock
+    private OwnerCommandsManager ownerCommandsManager;
+    @Mock
     private ChatAndUserValidator validator;
     @Mock
     private MessageSender msgSender;
@@ -30,46 +33,51 @@ class CommandsManagerTest {
     @InjectMocks
     private CommandsManager commandsManager;
 
+    @BeforeEach
+    public void setUp() {
+//        when(exUpdate.getMessageChatId()).thenReturn(1L);
+//        when(exUpdate.getMessageFromUserId()).thenReturn(1L);
+
+    }
+
     @Test
     void manageInvalidCommand() {
-        String cmd = "/skkk";
-        when(exUpdate.getMessageChatId()).thenReturn(1L);
-        when(exUpdate.getMessageText()).thenReturn(cmd);
+        when(exUpdate.getMessageText()).thenReturn("/skkk");
         when(env.getProperty("messages.admins.invalidMsg")).thenReturn("Введена неверная команда");
+
         commandsManager.manageCommand(exUpdate);
-        Mockito.verify(msgSender).send(exUpdate.getMessageChatId(), env.getProperty("messages.admins.invalidMsg"));
+        Mockito.verify(msgSender).send(exUpdate.getMessageChatId(),
+                env.getProperty("messages.admins.invalidMsg"));
     }
 
     @Test
     void manageGlobalAdminCommand() {
         String cmd = "/start";
-        when(exUpdate.getMessageFromUserId()).thenReturn(1L);
         when(exUpdate.getMessageText()).thenReturn(cmd);
-        when(validator.isAdmin(exUpdate.getMessageFromUserId())).thenReturn(true);
+
+        when(validator.isOwner(exUpdate.getMessageFromUserId())).thenReturn(true);
         commandsManager.manageCommand(exUpdate);
-        Mockito.verify(adminsCommandsManager).manageCommand(exUpdate,
+        Mockito.verify(ownerCommandsManager).manageCommand(exUpdate,
                 Command.valueOf(cmd.substring(1).toUpperCase()));
     }
 
     @Test
     void manageGlobalAdminCommandFromNotAdmin() {
         String cmd = "/start";
-        when(exUpdate.getMessageFromUserId()).thenReturn(1L);
         when(exUpdate.getMessageText()).thenReturn(cmd);
-        when(validator.isAdmin(exUpdate.getMessageFromUserId())).thenReturn(false);
-        when(env.getProperty("messages.admins.cmdSendByNotAdmin"))
-                .thenReturn("Эту команду может использовать только админ бота");
+
+        when(env.getProperty("messages.admins.isOwnerCommand"))
+                .thenReturn("Эту команду может использовать только владелец");
         commandsManager.manageCommand(exUpdate);
         Mockito.verify(msgSender).send(exUpdate.getMessageChatId(),
-                env.getProperty("messages.admins.cmdSendByNotAdmin"));
+                env.getProperty("messages.admins.isOwnerCommand"));
     }
 
     @Test
     void manageAdminCommand() {
         String cmd = "/showquestions";
-        when(exUpdate.getMessageChatId()).thenReturn(12L);
-        when(exUpdate.getMessageFromUserId()).thenReturn(1L);
         when(exUpdate.getMessageText()).thenReturn(cmd);
+
         when(validator.isAdmin(exUpdate.getMessageFromUserId())).thenReturn(true);
         when(validator.isAdminChat(exUpdate.getMessageChatId())).thenReturn(true);
         commandsManager.manageCommand(exUpdate);
@@ -80,8 +88,8 @@ class CommandsManagerTest {
     @Test
     void manageAdminCommandInNotAdminChat() {
         String cmd = "/showquestions";
-        when(exUpdate.getMessageChatId()).thenReturn(12L);
         when(exUpdate.getMessageText()).thenReturn(cmd);
+
         when(validator.isAdminChat(exUpdate.getMessageChatId())).thenReturn(false);
         commandsManager.manageCommand(exUpdate);
         Mockito.verify(msgSender).send(exUpdate.getMessageChatId(),
@@ -91,8 +99,8 @@ class CommandsManagerTest {
     @Test
     void managePlayerCommand() {
         String cmd = "/score";
-        when(exUpdate.getMessageChatId()).thenReturn(12L);
         when(exUpdate.getMessageText()).thenReturn(cmd);
+
         when(validator.isGlobalChat(exUpdate.getMessageChatId())).thenReturn(true);
         commandsManager.manageCommand(exUpdate);
         Mockito.verify(playersCommandsManager).manageCommand(exUpdate,
@@ -102,8 +110,8 @@ class CommandsManagerTest {
     @Test
     void managePlayerCommandInNotGlobalChat() {
         String cmd = "/showquestions";
-        when(exUpdate.getMessageChatId()).thenReturn(12L);
         when(exUpdate.getMessageText()).thenReturn(cmd);
+
         Mockito.lenient().when(validator.isGlobalChat(exUpdate.getMessageChatId())).thenReturn(true);
         commandsManager.manageCommand(exUpdate);
         Mockito.verify(msgSender).send(exUpdate.getMessageChatId(),

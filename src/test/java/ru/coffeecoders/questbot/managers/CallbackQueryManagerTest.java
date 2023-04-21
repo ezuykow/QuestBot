@@ -9,8 +9,8 @@ import ru.coffeecoders.questbot.managers.callbacks.CallbackQueryManager;
 import ru.coffeecoders.questbot.managers.callbacks.QuestionViewerCallbackManager;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author ezuykow
@@ -28,11 +28,15 @@ class CallbackQueryManagerTest {
 
     @Test
     public void shouldCallQuestionViewerCallbackManagerThenDataMatch() {
-        when(exUpdate.getCallbackQueryData()).thenReturn("QuestionViewer.....");
-        doNothing().when(questionViewerCallbackManager).manageCallback(any(), any());
+        String data = "QuestionViewer.....";
+        long chatId = 1L;
+        int msgId = 1;
+        when(exUpdate.getCallbackQueryData()).thenReturn(data);
+        when(exUpdate.getCallbackMessageChatId()).thenReturn(chatId);
+        when(exUpdate.getCallbackMessageId()).thenReturn(msgId);
 
         callbackQueryManager.manageCallback(exUpdate);
-        verify(questionViewerCallbackManager).manageCallback(any(), any());
+        verify(questionViewerCallbackManager).manageCallback(chatId, msgId, data);
     }
 
 }

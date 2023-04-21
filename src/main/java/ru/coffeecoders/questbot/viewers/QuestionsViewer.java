@@ -3,7 +3,6 @@ package ru.coffeecoders.questbot.viewers;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Question;
-import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.models.QuestionsViewerPage;
 import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.services.QuestionService;
@@ -37,76 +36,68 @@ public class QuestionsViewer {
      * Собирает "страницу" {@link QuestionsViewerPage} и вызывает метод
      * {@link MessageSender#send} для отображения "страницы" вопросов
      */
-    public void viewQuestions(ExtendedUpdate update) {
+    public void viewQuestions(long chatId) {
         refreshQuestionsList();
-        QuestionsViewerPage page = createPage(update, defaultPageSize);
-        msgSender.send(update.getMessageChatId(), page.getText(), page.getKeyboard());
+        QuestionsViewerPage page = createPage(defaultPageSize);
+        msgSender.send(chatId, page.getText(), page.getKeyboard());
     }
 
     /**
      * "Перелистывает" страницу отображения вопросов на предыдущую
-     * @param update апдейт с CallbackQuery
      * @param data данные из CallbackQuery
      */
-    public void switchPageToPrevious(ExtendedUpdate update, String data) {
+    public void switchPageToPrevious(long chatId, int msgId, String data) {
         final int firstIndexShowed = Integer.parseInt(data.substring(data.lastIndexOf(".") + 1));
         QuestionsViewerPage newPage = QuestionsViewerPage.createPage(questions, defaultPageSize,
                 firstIndexShowed - defaultPageSize, pagesCount);
-        msgSender.edit(update.getCallbackMessageChatId(), update.getCallbackMessageId(),
-                newPage.getText(), newPage.getKeyboard());
+        msgSender.edit(chatId, msgId, newPage.getText(), newPage.getKeyboard());
     }
 
     /**
      * "Перелистывает" страницу отображения вопросов на следующую
-     * @param update апдейт с CallbackQuery
      * @param data данные из CallbackQuery
      */
-    public void switchPageToNext(ExtendedUpdate update, String data) {
+    public void switchPageToNext(long chatId, int msgId, String data) {
         final int lastIndexShowed = Integer.parseInt(data.substring(data.lastIndexOf(".") + 1));
         final int newPageSize = Math.min(defaultPageSize, questions.size() - (lastIndexShowed + 1));
         QuestionsViewerPage newPage = QuestionsViewerPage.createPage(questions, newPageSize,
                 lastIndexShowed + 1, pagesCount);
-        msgSender.edit(update.getCallbackMessageChatId(), update.getCallbackMessageId(),
-                newPage.getText(), newPage.getKeyboard());
+        msgSender.edit(chatId, msgId, newPage.getText(), newPage.getKeyboard());
     }
 
     /**
      * Вызывает метод {@link QuestionInfoViewer#showQuestionInfo} для отображения информации о вопросе
-     * @param update апдейт с CallbackQuery
      * @param data данные из CallbackQuery
      */
-    public void showQuestionInfo(ExtendedUpdate update, String data) {
+    public void showQuestionInfo(long chatId, int msgId, String data) {
         String[] parts = data.split("\\.");
         lastShowedFirstIndex = Integer.parseInt(parts[parts.length - 1]);
         int targetQuestionIdx = Integer.parseInt(parts[2]);
-        questionInfoViewer.showQuestionInfo(update, questions.get(targetQuestionIdx));
+        questionInfoViewer.showQuestionInfo(chatId, msgId, questions.get(targetQuestionIdx));
     }
 
     /**
      * Возвращает отображение "страницы" с вопросами из "страницы" с отображением информации о вопросе
-     * @param update апдейт с CallbackQuery
      */
-    public void backFromQuestionInfo(ExtendedUpdate update) {
+    public void backFromQuestionInfo(long chatId, int msgId) {
         refreshQuestionsList();
         int pageSize = Math.min(defaultPageSize, questions.size() - lastShowedFirstIndex);
-        QuestionsViewerPage page = createPage(update, pageSize);
-        msgSender.edit(update.getCallbackMessageChatId(), update.getCallbackMessageId(),
-                page.getText(), page.getKeyboard());
+        QuestionsViewerPage page = createPage(pageSize);
+        msgSender.edit(chatId, msgId, page.getText(), page.getKeyboard());
     }
 
     /**
      * "Закрывает" "страницу" с вопросами - т.е. удаляет сообщение из чата
-     * @param update апдейт с CallbackQuery
      */
-    public void deleteView(ExtendedUpdate update) {
-        msgSender.sendDelete(update.getCallbackMessageChatId(), update.getCallbackMessageId());
+    public void deleteView(long chatId, int msgId) {
+        msgSender.sendDelete(chatId, msgId);
     }
 
     private void refreshQuestionsList() {
         questions = questionService.findAll();
     }
 
-    private QuestionsViewerPage createPage(ExtendedUpdate update, int pageSize) {
+    private QuestionsViewerPage createPage(int pageSize) {
         pagesCount = questions.size() / defaultPageSize;
         pagesCount = (questions.size() % defaultPageSize == 0) ? pagesCount : pagesCount + 1;
         return QuestionsViewerPage.createPage(questions, pageSize, lastShowedFirstIndex, pagesCount);

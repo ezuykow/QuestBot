@@ -4,7 +4,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Admin;
 import ru.coffeecoders.questbot.entities.AdminChat;
-import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
@@ -33,19 +32,18 @@ public class PromoteUserCallbackManager {
     /**
      * @author ezuykow
      */
-    public void manageCallback(ExtendedUpdate update, String data) {
-        if (validator.isOwner(update.getCallbackFromUserId())) {
-            performPromotion(update, data);
+    public void manageCallback(long senderUserId, long chatId, int msgId, String data) {
+        if (validator.isOwner(senderUserId)) {
+            performPromotion(chatId, msgId, data);
         }
     }
 
     /**
      * @author ezuykow
      */
-    private void performPromotion(ExtendedUpdate update, String data) {
-        final long chatId = update.getCallbackMessageChatId();
+    private void performPromotion(long chatId, int msgId, String data) {
         final long newAdminId = Long.parseLong(data.substring(data.lastIndexOf(".") + 1));
-        deleteChooseUserMessage(chatId, update.getCallbackMessageId());
+        deleteChooseUserMessage(chatId, msgId);
         saveNewAdmin(chatId, newAdminId);
         sendPromotionMessage(chatId, data);
     }

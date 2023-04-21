@@ -2,7 +2,6 @@ package ru.coffeecoders.questbot.viewers;
 
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Question;
-import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.models.QuestionInfoPage;
 import ru.coffeecoders.questbot.senders.MessageSender;
 
@@ -21,12 +20,10 @@ public class QuestionInfoViewer {
     /**
      * Собирает "страницу" отображения вопроса {@link QuestionInfoPage} и отправляет
      * в метод {@link MessageSender#edit} для отображения вопроса
-     * @param update апдейт с CallbackQuery
      * @param question вопрос, который необходимо отобразить
      */
-    public void showQuestionInfo(ExtendedUpdate update, Question question) {
+    public void showQuestionInfo(long chatId, int msgId, Question question) {
         QuestionInfoPage page = QuestionInfoPage.createPage(question);
-        msgSender.edit(update.getCallbackMessageChatId(), update.getCallbackMessageId(),
-                page.getText(), page.getKeyboard());
+        msgSender.edit(chatId, msgId, page.getText(), page.getKeyboard());
     }
 }

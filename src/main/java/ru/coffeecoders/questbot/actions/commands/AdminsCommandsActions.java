@@ -25,7 +25,7 @@ public class AdminsCommandsActions {
      * @author ezuykow
      */
     public void performShowQuestionsCmd(ExtendedUpdate update) {
-        questionsViewer.viewQuestions(update);
+        questionsViewer.viewQuestions(update.getMessageChatId());
     }
 
     /**

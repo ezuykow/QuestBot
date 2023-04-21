@@ -1,7 +1,6 @@
 package ru.coffeecoders.questbot.managers.callbacks;
 
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.viewers.QuestionsViewer;
 
 /**
@@ -33,16 +32,15 @@ public class QuestionViewerCallbackManager {
 
     /**
      * Вызывает необходимый метод {@link QuestionsViewer}, исходя из {@code data}
-     * @param update апдейт с CallbackQuery
      * @param data данные CallbackQuery
      */
-    public void manageCallback(ExtendedUpdate update, String data) {
+    public void manageCallback(long chatId, int msgId, String data) {
         switch (findAction(data)) {
-            case PREVIOUS_PAGE -> questionsViewer.switchPageToPrevious(update, data);
-            case NEXT_PAGE -> questionsViewer.switchPageToNext(update, data);
-            case SHOW_QUESTION -> questionsViewer.showQuestionInfo(update, data);
-            case DELETE_MESSAGE -> questionsViewer.deleteView(update);
-            case BACK_FROM_QUESTION_INFO -> questionsViewer.backFromQuestionInfo(update);
+            case PREVIOUS_PAGE -> questionsViewer.switchPageToPrevious(chatId, msgId, data);
+            case NEXT_PAGE -> questionsViewer.switchPageToNext(chatId, msgId, data);
+            case SHOW_QUESTION -> questionsViewer.showQuestionInfo(chatId, msgId, data);
+            case DELETE_MESSAGE -> questionsViewer.deleteView(chatId, msgId);
+            case BACK_FROM_QUESTION_INFO -> questionsViewer.backFromQuestionInfo(chatId, msgId);
             case UNKNOWN -> {} //Игнорируем неизвестный калбак
         }
     }
