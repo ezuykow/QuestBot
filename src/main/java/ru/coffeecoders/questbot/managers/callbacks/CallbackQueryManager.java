@@ -40,7 +40,7 @@ public class CallbackQueryManager {
         final String data = update.getCallbackQueryData();
 
         if (data.matches(QUESTION_VIEWER_CALLBACK_REGEXP)) {
-            questionViewerCallbackManager.manageCallback(chatId, msgId, data);
+            questionViewerCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
         }
         if (data.matches(PROMOTE_USER_CALLBACK_REGEXP)) {
             promoteUserCallbackManager.manageCallback(senderUserId, chatId, msgId, data);

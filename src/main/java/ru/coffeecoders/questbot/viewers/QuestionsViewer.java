@@ -1,12 +1,17 @@
 package ru.coffeecoders.questbot.viewers;
 
+import com.pengrad.telegrambot.model.ChatPermissions;
+import com.pengrad.telegrambot.model.User;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Question;
 import ru.coffeecoders.questbot.models.QuestionsViewerPage;
 import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.services.AdminChatMembersService;
 import ru.coffeecoders.questbot.services.QuestionService;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,18 +23,22 @@ public class QuestionsViewer {
     @Value("${viewer.questions.page.size}")
     private int defaultPageSize;
 
+    private final AdminChatMembersService adminChatMembersService;
     private final QuestionService questionService;
     private final QuestionInfoViewer questionInfoViewer;
     private final MessageSender msgSender;
+    private final Environment env;
 
     private List<Question> questions;
     private int pagesCount;
     private int lastShowedFirstIndex;
 
-    public QuestionsViewer(QuestionService questionService, QuestionInfoViewer questionInfoViewer, MessageSender msgSender) {
+    public QuestionsViewer(AdminChatMembersService adminChatMembersService, QuestionService questionService, QuestionInfoViewer questionInfoViewer, MessageSender msgSender, Environment env) {
+        this.adminChatMembersService = adminChatMembersService;
         this.questionService = questionService;
         this.questionInfoViewer = questionInfoViewer;
         this.msgSender = msgSender;
+        this.env = env;
     }
 
     /**
@@ -89,7 +98,10 @@ public class QuestionsViewer {
     /**
      * "Закрывает" "страницу" с вопросами - т.е. удаляет сообщение из чата
      */
-    public void deleteView(long chatId, int msgId) {
+    public void deleteView(long senderUserId, long chatId, int msgId) {
+        msgSender.send(chatId,
+                buildName(chatId, senderUserId) + env.getProperty("messages.admins.endQuestionView"));
+        unRestrictAllMembers(chatId);
         msgSender.sendDelete(chatId, msgId);
     }
 
@@ -101,5 +113,21 @@ public class QuestionsViewer {
         pagesCount = questions.size() / defaultPageSize;
         pagesCount = (questions.size() % defaultPageSize == 0) ? pagesCount : pagesCount + 1;
         return QuestionsViewerPage.createPage(questions, pageSize, lastShowedFirstIndex, pagesCount);
+    }
+
+    private void unRestrictAllMembers(long chatId) {
+        ChatPermissions permissions = new ChatPermissions()
+                .canSendMessages(true)
+                .canSendOtherMessages(true);
+
+        Arrays.stream(adminChatMembersService.findByChatId(chatId).get().getMembers())
+                .forEach(id -> msgSender.sendRestrictChatMember(chatId, id, permissions));
+    }
+
+    private String buildName(long chatId, long senderAdminId) {
+        User user = msgSender.getChatMember(chatId, senderAdminId);
+        return (user.lastName() == null)
+                ? user.firstName()
+                : user.firstName() + " " + user.lastName();
     }
 }

@@ -18,8 +18,10 @@ public class AdminsCommandsManager {
      * <br>Redact ezuykow
      */
     public void manageCommand(ExtendedUpdate update, Command cmd) {
+        long senderAdminId = update.getMessageFromUserId();
+        long chatId = update.getMessageChatId();
         switch (cmd) {
-            case SHOWQUESTIONS -> cmdActions.performShowQuestionsCmd(update);
+            case SHOWQUESTIONS -> cmdActions.performShowQuestionsCmd(senderAdminId, chatId);
             case STOPBOT -> cmdActions.performStopBotCmd();
         }
     }
