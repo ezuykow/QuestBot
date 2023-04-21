@@ -1,6 +1,7 @@
 package ru.coffeecoders.questbot.senders;
 
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.ChatPermissions;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.ForceReply;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
@@ -155,6 +156,16 @@ public class MessageSender {
             logger.error("GetChatMember failed! Error code: {}", response.errorCode());
             return null;
         }
+    }
+
+    /**
+     *
+     * @param chatId
+     * @param userId
+     * @author ezuykow
+     */
+    public void sendRestrictChatMember(long chatId, long userId, ChatPermissions permissions) {
+        checkResponse(bot.execute(new RestrictChatMember(chatId, userId, permissions)));
     }
 
     /**
