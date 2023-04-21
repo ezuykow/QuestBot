@@ -1,6 +1,15 @@
 package ru.coffeecoders.questbot.managers.callbacks;
 
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.entities.Admin;
+import ru.coffeecoders.questbot.entities.AdminChat;
+import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.services.AdminChatService;
+import ru.coffeecoders.questbot.services.AdminService;
+import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
+
+import java.util.Set;
 
 /**
  * @author ezuykow
@@ -8,10 +17,65 @@ import org.springframework.stereotype.Component;
 @Component
 public class DemoteUserCallbackManager {
 
+    private final AdminChatService adminChatService;
+    private final AdminService adminService;
+    private final ChatAndUserValidator validator;
+    private final MessageSender msgSender;
+    private final Environment env;
+
+    public DemoteUserCallbackManager(AdminChatService adminChatService, AdminService adminService, ChatAndUserValidator validator, MessageSender msgSender, Environment env) {
+        this.adminChatService = adminChatService;
+        this.adminService = adminService;
+        this.validator = validator;
+        this.msgSender = msgSender;
+        this.env = env;
+    }
+
     /**
      * @author ezuykow
      */
-    public void manageCallback(String data) {
-//todo
+    public void manageCallback(long senderUserId, long chatId, int msgId, String data) {
+        if (validator.isOwner(senderUserId)) {
+            performDemotion(chatId, msgId, data);
+        }
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void performDemotion(long chatId, int msgId, String data) {
+        final long adminId = Long.parseLong(data.substring(data.lastIndexOf(".") + 1));
+        deleteChooseUserMessage(chatId, msgId);
+        deleteAdmin(chatId, adminId);
+        adminService.deleteUselessAdmins();
+        sendDemotionMessage(chatId, data);
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void deleteAdmin(long chatId, long adminId) {
+        AdminChat currentAdminChat = adminChatService.findById(chatId).get();
+        Set<Admin> admins = currentAdminChat.getAdmins();
+        admins.remove(admins.stream().filter(a -> a.getTgAdminUserId() == adminId).findAny().get());
+        currentAdminChat.setAdmins(admins);
+        adminChatService.save(currentAdminChat);
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void deleteChooseUserMessage(long chatId, int msgId) {
+        msgSender.sendDelete(chatId, msgId);
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void sendDemotionMessage(long chatId, String data) {
+        msgSender.send(chatId,
+                data.substring(data.indexOf(".") + 1, data.lastIndexOf("."))
+                        + env.getProperty("messages.owner.userPromoted")
+        );
     }
 }

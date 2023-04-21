@@ -46,7 +46,7 @@ public class CallbackQueryManager {
             promoteUserCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
         }
         if (data.matches(DEMOTE_USER_CALLBACK_REGEXP)) {
-            demoteUserCallbackManager.manageCallback(data);
+            demoteUserCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
         }
     }
 }
