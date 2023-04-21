@@ -72,7 +72,7 @@ public class PromoteUserCallbackManager {
     private void sendPromotionMessage(long chatId, String data) {
         msgSender.send(chatId,
                 data.substring(data.indexOf(".") + 1, data.lastIndexOf("."))
-                        + env.getProperty("messages.owner.userDemoted")
+                        + env.getProperty("messages.owner.userPromoted")
         );
     }
 }

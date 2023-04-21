@@ -5,10 +5,12 @@ import com.pengrad.telegrambot.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.entities.AdminChat;
 import ru.coffeecoders.questbot.entities.Question;
 import ru.coffeecoders.questbot.models.QuestionsViewerPage;
 import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.services.AdminChatMembersService;
+import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.services.QuestionService;
 
 import java.util.Arrays;
@@ -24,6 +26,7 @@ public class QuestionsViewer {
     private int defaultPageSize;
 
     private final AdminChatMembersService adminChatMembersService;
+    private final AdminChatService adminChatService;
     private final QuestionService questionService;
     private final QuestionInfoViewer questionInfoViewer;
     private final MessageSender msgSender;
@@ -33,8 +36,9 @@ public class QuestionsViewer {
     private int pagesCount;
     private int lastShowedFirstIndex;
 
-    public QuestionsViewer(AdminChatMembersService adminChatMembersService, QuestionService questionService, QuestionInfoViewer questionInfoViewer, MessageSender msgSender, Environment env) {
+    public QuestionsViewer(AdminChatMembersService adminChatMembersService, AdminChatService adminChatService, QuestionService questionService, QuestionInfoViewer questionInfoViewer, MessageSender msgSender, Environment env) {
         this.adminChatMembersService = adminChatMembersService;
+        this.adminChatService = adminChatService;
         this.questionService = questionService;
         this.questionInfoViewer = questionInfoViewer;
         this.msgSender = msgSender;
@@ -102,6 +106,7 @@ public class QuestionsViewer {
         msgSender.send(chatId,
                 buildName(chatId, senderUserId) + env.getProperty("messages.admins.endQuestionView"));
         unRestrictAllMembers(chatId);
+        removeBlockedByAdminOnAdminChat(chatId);
         msgSender.sendDelete(chatId, msgId);
     }
 
@@ -129,5 +134,11 @@ public class QuestionsViewer {
         return (user.lastName() == null)
                 ? user.firstName()
                 : user.firstName() + " " + user.lastName();
+    }
+
+    private void removeBlockedByAdminOnAdminChat(long chatId) {
+        AdminChat currentAdminChat = adminChatService.findById(chatId).get();
+        currentAdminChat.setBlockedByAdminId(0);
+        adminChatService.save(currentAdminChat);
     }
 }

@@ -75,7 +75,7 @@ public class AdminsCommandsActions {
                 .canSendOtherMessages(false);
 
         Arrays.stream(adminChatMembersService.findByChatId(chatId).get().getMembers())
-                .filter(id -> (id != senderAdminId) || (id != adminService.getOwner().getTgAdminUserId()))
+                .filter(id -> (id != senderAdminId) && (id != adminService.getOwner().getTgAdminUserId()))
                 .forEach(id -> msgSender.sendRestrictChatMember(chatId, id, permissions));
     }
 
