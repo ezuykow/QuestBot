@@ -27,16 +27,7 @@ public class OwnerCommandsManager {
             case ADMINON -> actions.validateAndPerformAdminOnCmd(chatId);
             case ADMINOFF -> actions.validateAndPerformAdminOffCmd(chatId);
             case PROMOTE -> actions.validateAndPerformPromoteCmd(chatId);
-            case DEMOTE -> validateAndPerformDemoteCmd();
+            case DEMOTE -> actions.validateAndPerformDemoteCmd(chatId);
         }
-    }
-
-
-
-
-
-
-    private void validateAndPerformDemoteCmd() {
-        //TODO проверить, что чат админский и есть админы не-владелец
     }
 }

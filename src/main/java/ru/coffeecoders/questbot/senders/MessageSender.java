@@ -162,7 +162,7 @@ public class MessageSender {
      * @author ezuykow
      */
     public void sendStartUp() {
-        getAllChatIds().forEach(id -> send(id, startUpMsg + Character.toString(0x1FAE3)));
+        getAllChatIds().forEach(id -> send(id, startUpMsg + Character.toString(0x1FAE1)));
     }
 
     /**

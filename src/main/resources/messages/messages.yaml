@@ -9,6 +9,11 @@ messages:
   owner:
     chatIsAdminNow: Теперь этот чат - администраторский
     chatIsGlobalNow: Теперь этот чат - не администраторский
+    emptyPromotionList: Некого назначать админом
+    promote: "Назначить администратором бота:"
+    demote: "Разжаловать администратора бота:"
+
+
     validation:
       startCmdFailed: Этот чат уже добавлен в систему
       adminOnCmdFailed: Этот чат уже администраторский
@@ -20,8 +25,6 @@ messages:
     adminCmdInGlobalChat: Эту команду можно использовать только в администраторском чате
     gameCmdInAdminChat: В админском чате оставлена игровая команда
     isOwnerCommand: Эту команду может использовать только владелец
-    promote: "Назначить администратором бота:"
-    emptyPromotionList: Некого назначать админом
     userPromoted: " назначен администратором бота"
 
   players:

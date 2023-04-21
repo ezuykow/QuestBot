@@ -8,7 +8,7 @@ import ru.coffeecoders.questbot.entities.Admin;
 import ru.coffeecoders.questbot.entities.AdminChat;
 import ru.coffeecoders.questbot.entities.AdminChatMembers;
 import ru.coffeecoders.questbot.entities.GlobalChat;
-import ru.coffeecoders.questbot.keyboards.PromoteUserKeyboard;
+import ru.coffeecoders.questbot.keyboards.PromoteOrDemoteUserKeyboard;
 import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.services.AdminChatMembersService;
 import ru.coffeecoders.questbot.services.AdminChatService;
@@ -96,6 +96,17 @@ public class OwnerCommandsActions {
     /**
      * @author ezuykow
      */
+    public void validateAndPerformDemoteCmd(long chatId) {
+        if (validator.isAdminChat(chatId)) {
+            validateAdminsInChatAndPerformDemoteCmd(chatId);
+        } else {
+            msgSender.send(chatId, env.getProperty("messages.owner.validation.chatIsNotAdmin"));
+        }
+    }
+
+    /**
+     * @author ezuykow
+     */
     private void performStartCmd(long chatId) {
         globalChatService.save(new GlobalChat(chatId));
         msgSender.send(chatId, env.getProperty("messages.welcome"));
@@ -127,10 +138,24 @@ public class OwnerCommandsActions {
     private void validateAdminChatMembersAndPerformPromoteCmd(long chatId) {
         Set<User> notAdminMembers = getNotAdminMembersInAdminChat(chatId);
         if (notAdminMembers.isEmpty()) {
-            msgSender.send(chatId, env.getProperty("messages.admins.emptyPromotionList"));
+            msgSender.send(chatId, env.getProperty("messages.owner.emptyPromotionList"));
         } else {
-            msgSender.send(chatId, env.getProperty("messages.admins.promote"),
-                    PromoteUserKeyboard.createKeyboard(notAdminMembers)
+            msgSender.send(chatId, env.getProperty("messages.owner.promote"),
+                    PromoteOrDemoteUserKeyboard.createKeyboard(notAdminMembers, "PromoteUser.")
+            );
+        }
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void validateAdminsInChatAndPerformDemoteCmd(long chatId) {
+        Set<User> admins = getAdminUsersFromChat(chatId);
+        if (admins.isEmpty()) {
+            msgSender.send(chatId, env.getProperty("messages.owner.emptyPromotionList"));
+        } else {
+            msgSender.send(chatId, env.getProperty("messages.owner.demote"),
+                    PromoteOrDemoteUserKeyboard.createKeyboard(admins, "DemoteUser.")
             );
         }
     }
@@ -173,8 +198,9 @@ public class OwnerCommandsActions {
      */
     private Set<User> getNotAdminMembersInAdminChat(long chatId) {
         Set<Long> membersIds = getAdminChatMembersIds(chatId);
-        membersIds.removeAll(getAdminsFromChat(chatId));
-        return membersIds.stream().map(id -> msgSender.getChatMember(chatId, id)).collect(Collectors.toSet());
+        membersIds.removeAll(getAdminsIdsFromChat(chatId));
+        return membersIds.stream().map(id -> msgSender.getChatMember(chatId, id))
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -188,7 +214,18 @@ public class OwnerCommandsActions {
     /**
      * @author ezuykow
      */
-    private Set<Long> getAdminsFromChat(long chatId) {
+    private Set<User> getAdminUsersFromChat(long chatId) {
+        Set<Long> adminsIdsFromChat = getAdminsIdsFromChat(chatId);
+        adminsIdsFromChat.remove(adminService.getOwner().getTgAdminUserId());
+        return  adminsIdsFromChat.stream()
+                .map(id -> msgSender.getChatMember(chatId, id))
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private Set<Long> getAdminsIdsFromChat(long chatId) {
         return adminChatService.findById(chatId).get().getAdmins()
                 .stream().map(Admin::getTgAdminUserId).collect(Collectors.toSet());
     }
