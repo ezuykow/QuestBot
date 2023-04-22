@@ -23,3 +23,5 @@ databaseChangeLog:
       file: db/changelog/scripts/admins_admin_chats.sql
   - include:
       file: db/changelog/scripts/admin_chats_members.sql
+  - include:
+      file: db/changelog/scripts/new_game_creating_state.sql

@@ -54,3 +54,6 @@ messages:
     equalsQuestionsNotAdded: "Повторяющиеся вопросы не добавлены!\n\n"
     questionsAdded: "Добавлены вопросы (%d):\n\n"
     noOneQuestionAdded: Ни одного вопроса не добавлено
+
+  game:
+    requestNewGameName: Введите название новой игры

@@ -2,7 +2,7 @@ package ru.coffeecoders.questbot.managers.commands;
 
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.actions.commands.AdminsCommandsActions;
-import ru.coffeecoders.questbot.managers.game.NewGameManager;
+import ru.coffeecoders.questbot.managers.NewGameManager;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
 
 @Component

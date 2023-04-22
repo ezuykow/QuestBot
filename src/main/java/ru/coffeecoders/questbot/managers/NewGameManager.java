@@ -1,4 +1,4 @@
-package ru.coffeecoders.questbot.managers.game;
+package ru.coffeecoders.questbot.managers;
 
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.utils.BlockAdminChat;
