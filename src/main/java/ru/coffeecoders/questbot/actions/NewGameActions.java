@@ -1,12 +1,16 @@
 package ru.coffeecoders.questbot.actions;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.NewGameCreatingState;
+import ru.coffeecoders.questbot.entities.QuestionGroup;
 import ru.coffeecoders.questbot.keyboards.QuestionsGroupsKeyboard;
 import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.services.NewGameCreatingStateService;
 import ru.coffeecoders.questbot.services.QuestionGroupService;
+
+import java.util.List;
 
 /**
  * @author ezuykow
@@ -42,6 +46,20 @@ public class NewGameActions {
         requestQuestionGroups(gameName, chatId, requestMsgId);
     }
 
+    public void addSelectedQuestionGroupAndRefreshMsg(long chatId, int msgId, int questionGroupId) {
+        int[] allStateGroupsIds = addQuestionGroupIdToState(chatId, questionGroupId);
+        String stateGroupsNames = getGroupsNames(allStateGroupsIds);
+        msgSender.edit(chatId, msgId,
+                String.format(env.getProperty("messages.game.addedQuestionGroup", "Error"),
+                        stateGroupsNames),
+                QuestionsGroupsKeyboard.createKeyboard(questionGroupService.findAll()
+                        .stream()
+                        .filter(g -> !ArrayUtils.contains(allStateGroupsIds, g.getGroupId()))
+                        .toList()
+                )
+        );
+    }
+
     public NewGameCreatingState getNewGameCreatingState(long chatId) {
         return newGameCreatingStateService.findById(chatId)
                 .orElseThrow(() ->
@@ -63,15 +81,37 @@ public class NewGameActions {
         );
     }
 
+
     /*private void requestStartCountTasks(String gameName, long chatId, int answerMsgId) {
         msgSender.edit(chatId, requestMsgId,
                 String.format(
                         env.getProperty("messages.game.requestStartCountTasks", "Error"), gameName),
                 null);
     }*/
-
     private int getRequestMsgIdAndDeleteAnswerMsg(long chatId, int answerMsgId) {
         msgSender.sendDelete(chatId, answerMsgId);
         return answerMsgId - 1;
+    }
+
+    private String getGroupsNames(int[] allStateGroupsIds) {
+        StringBuilder sb = new StringBuilder();
+        List<QuestionGroup> groups = questionGroupService.findAll();
+        for (int i = 0; i < allStateGroupsIds.length; i++) {
+            final int id = allStateGroupsIds[i];
+            groups.stream().filter(g -> g.getGroupId() == id).findAny()
+                    .ifPresent(g -> sb.append(g.getGroupName()));
+            if (i < allStateGroupsIds.length - 1) {
+                sb.append(", ");
+            }
+        }
+        return sb.toString();
+    }
+
+    private int[] addQuestionGroupIdToState(long chatId, int questionGroupId) {
+        NewGameCreatingState state = getNewGameCreatingState(chatId);
+        int[] groupsIds = ArrayUtils.add(state.getGroupsIds(), questionGroupId);
+        state.setGroupsIds(groupsIds);
+        newGameCreatingStateService.save(state);
+        return groupsIds;
     }
 }

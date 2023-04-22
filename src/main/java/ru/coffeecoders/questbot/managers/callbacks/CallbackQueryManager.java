@@ -14,18 +14,22 @@ public class CallbackQueryManager {
     private static final String QUESTION_VIEWER_CALLBACK_REGEXP = "QuestionViewer.*";
     private static final String PROMOTE_USER_CALLBACK_REGEXP = "PromoteUser.*";
     private static final String DEMOTE_USER_CALLBACK_REGEXP = "DemoteUser.*";
+    private static final String QUESTION_GROUP_SELECTED_REGEXP = "QuestionGroupSelected.*";
 
     private final QuestionViewerCallbackManager questionViewerCallbackManager;
     private final PromoteUserCallbackManager promoteUserCallbackManager;
     private final DemoteUserCallbackManager demoteUserCallbackManager;
+    private final NewGameCreatingCallbackManager newGameCreatingCallbackManager;
 
     public CallbackQueryManager(QuestionViewerCallbackManager questionViewerCallbackManager,
                                 PromoteUserCallbackManager promoteUserCallbackManager,
-                                DemoteUserCallbackManager demoteUserCallbackManager)
+                                DemoteUserCallbackManager demoteUserCallbackManager,
+                                NewGameCreatingCallbackManager newGameCreatingCallbackManager)
     {
         this.questionViewerCallbackManager = questionViewerCallbackManager;
         this.promoteUserCallbackManager = promoteUserCallbackManager;
         this.demoteUserCallbackManager = demoteUserCallbackManager;
+        this.newGameCreatingCallbackManager = newGameCreatingCallbackManager;
     }
 
     /**
@@ -47,6 +51,9 @@ public class CallbackQueryManager {
         }
         if (data.matches(DEMOTE_USER_CALLBACK_REGEXP)) {
             demoteUserCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
+        }
+        if (data.matches(QUESTION_GROUP_SELECTED_REGEXP)) {
+            newGameCreatingCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
         }
     }
 }
