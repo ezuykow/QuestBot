@@ -1,7 +1,7 @@
 package ru.coffeecoders.questbot.managers.callbacks;
 
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.actions.NewGameActions;
+import ru.coffeecoders.questbot.actions.newgame.NewGameActions;
 import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 

@@ -1,15 +1,9 @@
 package ru.coffeecoders.questbot.managers;
 
-import com.pengrad.telegrambot.model.ChatPermissions;
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.actions.NewGameActions;
+import ru.coffeecoders.questbot.actions.newgame.NewGameActions;
+import ru.coffeecoders.questbot.actions.newgame.utils.NewGameUtils;
 import ru.coffeecoders.questbot.entities.NewGameCreatingState;
-import ru.coffeecoders.questbot.senders.MessageSender;
-import ru.coffeecoders.questbot.services.AdminChatMembersService;
-import ru.coffeecoders.questbot.services.AdminService;
-import ru.coffeecoders.questbot.utils.BlockAdminChat;
-
-import java.util.Arrays;
 
 /**
  * @author ezuykow
@@ -17,85 +11,41 @@ import java.util.Arrays;
 @Component
 public class NewGameManager {
 
-    private enum NewGamePartType {
-        GAME_NAME,
-        START_COUNT_TASKS,
-        MAX_QUESTIONS_COUNT,
-        MAX_PERFORMED_QUESTIONS_COUNT,
-        MIN_QUESTIONS_COUNT_IN_GAME,
-        QUESTIONS_COUNT_TO_ADD,
-        MAX_TIME_MINUTES
-    }
-
     private final NewGameActions actions;
-    private final BlockAdminChat blockAdminChat;
-    private final AdminChatMembersService adminChatMembersService;
-    private final AdminService adminService;
-    private final MessageSender msgSender;
+    private final NewGameUtils utils;
+    private final BlockingManager blockingManager;
+    private final RestrictingManager restrictingManager;
 
-    public NewGameManager(NewGameActions actions, BlockAdminChat blockAdminChat, AdminChatMembersService adminChatMembersService, AdminService adminService, MessageSender msgSender) {
+    public NewGameManager(NewGameActions actions, NewGameUtils utils, BlockingManager blockingManager,
+                          RestrictingManager restrictingManager) {
         this.actions = actions;
-        this.blockAdminChat = blockAdminChat;
-        this.adminChatMembersService = adminChatMembersService;
-        this.adminService = adminService;
-        this.msgSender = msgSender;
+        this.utils = utils;
+        this.blockingManager = blockingManager;
+        this.restrictingManager = restrictingManager;
     }
 
     public void startCreatingGame(long senderAdminId, long chatId) {
-        blockAdminChat.validateAndBlockAdminChatByAdmin(chatId, senderAdminId);
-        restrictOtherChatMembers(senderAdminId, chatId);
+        blockingManager.blockAdminChatByAdmin(chatId, senderAdminId);
+        restrictingManager.restrictMembers(chatId, senderAdminId);
         actions.createNewGameCreatingState(chatId);
     }
 
     public void manageNewGamePart(long chatId, String text, int msgId) {
-        NewGameCreatingState state = actions.getNewGameCreatingState(chatId);
-        switch (getExpectedNewGamePartType(state)) {
-            case GAME_NAME ->
-                    actions.addGameNameToStateAndRequestNextPart(chatId, state, text, msgId);
-            case MAX_QUESTIONS_COUNT ->
-                    actions.addMaxQuestionsCountToStateAndRequestNextPart(chatId, state, text, msgId);
-            case START_COUNT_TASKS ->
-                    actions.addStartCountTaskToStateAndRequestNextPart(chatId, state, text, msgId);
-            case MAX_PERFORMED_QUESTIONS_COUNT ->
-                    actions.addMaxPerformedQuestionsCountToStateAndRequestNextPart(chatId, state, text, msgId);
-            case MIN_QUESTIONS_COUNT_IN_GAME ->
-                actions.addMinQuestionsCountInGameAndRequestNextPart(chatId, state, text, msgId);
-            case QUESTIONS_COUNT_TO_ADD ->
-                actions.addQuestionsCountToAddAndRequestNextPart(chatId, state, text, msgId);
-            case MAX_TIME_MINUTES ->
-                actions.addMaxTimeMinutesToStateAmdSaveNewGame(chatId, state, text, msgId);
-        }
-    }
-
-    private NewGamePartType getExpectedNewGamePartType(NewGameCreatingState state) {
+        NewGameCreatingState state = utils.getNewGameCreatingState(chatId);
         if (state.getGameName() == null) {
-            return NewGamePartType.GAME_NAME;
+            actions.validateGameNameToStateAndRequestNextPart(chatId, state, text, msgId);
+        } else if (state.getMaxQuestionsCount() == null) {
+            actions.validateMaxQuestionsCountToStateAndRequestNextPart(chatId, state, text, msgId);
+        } else if (state.getStartCountTasks() == null) {
+            actions.validateStartCountTaskToStateAndRequestNextPart(chatId, state, text, msgId);
+        } else if (state.getMaxPerformedQuestionsCount() == null) {
+            actions.validateMaxPerformedQuestionsCountToStateAndRequestNextPart(chatId, state, text, msgId);
+        } else if (state.getMinQuestionsCountInGame() == null) {
+            actions.validateMinQuestionsCountInGameAndRequestNextPart(chatId, state, text, msgId);
+        } else if (state.getQuestionsCountToAdd() == null) {
+            actions.validateQuestionsCountToAddAndRequestNextPart(chatId, state, text, msgId);
+        } else {
+            actions.validateMaxTimeMinutesToStateAmdSaveNewGame(chatId, state, text, msgId);
         }
-        if (state.getMaxQuestionsCount() == null) {
-            return NewGamePartType.MAX_QUESTIONS_COUNT;
-        }
-        if (state.getStartCountTasks() == null) {
-            return NewGamePartType.START_COUNT_TASKS;
-        }
-        if (state.getMaxPerformedQuestionsCount() == null) {
-            return NewGamePartType.MAX_PERFORMED_QUESTIONS_COUNT;
-        }
-        if (state.getMinQuestionsCountInGame() == null) {
-            return NewGamePartType.MIN_QUESTIONS_COUNT_IN_GAME;
-        }
-        if (state.getQuestionsCountToAdd() == null) {
-            return NewGamePartType.QUESTIONS_COUNT_TO_ADD;
-        }
-        return NewGamePartType.MAX_TIME_MINUTES;
-    }
-
-    private void restrictOtherChatMembers(long senderAdminId, long chatId) {
-        ChatPermissions permissions = new ChatPermissions()
-                .canSendMessages(false)
-                .canSendOtherMessages(false);
-
-        Arrays.stream(adminChatMembersService.findByChatId(chatId).get().getMembers())
-                .filter(id -> (id != senderAdminId) && (id != adminService.getOwner().getTgAdminUserId()))
-                .forEach(id -> msgSender.sendRestrictChatMember(chatId, id, permissions));
     }
 }
