@@ -27,6 +27,7 @@ public class NewGameActions {
         newGameCreatingStateService.save(
                 new NewGameCreatingState(chatId)
         );
+        requestNewGameName(chatId);
     }
 
 
