@@ -37,9 +37,14 @@ public class NewGameManager {
     public void manageNewGamePart(long chatId, String text, int msgId) {
         NewGameCreatingState state = actions.getNewGameCreatingState(chatId);
         switch (getExpectedNewGamePartType(state)) {
-            case GAME_NAME -> actions.addGameNameToStateAndRequestNextPart(chatId, state, text, msgId);
-            case START_COUNT_TASKS -> actions.addStartCountTaskToStateAndRequestNextPart(chatId, state, text, msgId);
-            case MAX_QUESTIONS_COUNT -> actions.addMaxQuestionsCountToStateAndRequestNextPart(chatId, state, text, msgId);
+            case GAME_NAME ->
+                    actions.addGameNameToStateAndRequestNextPart(chatId, state, text, msgId);
+            case MAX_QUESTIONS_COUNT ->
+                    actions.addMaxQuestionsCountToStateAndRequestNextPart(chatId, state, text, msgId);
+            case START_COUNT_TASKS ->
+                    actions.addStartCountTaskToStateAndRequestNextPart(chatId, state, text, msgId);
+            case MAX_PERFORMED_QUESTIONS_COUNT ->
+                    actions.addMaxPerformedQuestionsCountToStateAndRequestNextPart(chatId, state, text, msgId);
         }
     }
 
@@ -47,11 +52,11 @@ public class NewGameManager {
         if (state.getGameName() == null) {
             return NewGamePartType.GAME_NAME;
         }
-        if (state.getStartCountTasks() == null) {
-            return NewGamePartType.START_COUNT_TASKS;
-        }
         if (state.getMaxQuestionsCount() == null) {
             return NewGamePartType.MAX_QUESTIONS_COUNT;
+        }
+        if (state.getStartCountTasks() == null) {
+            return NewGamePartType.START_COUNT_TASKS;
         }
         if (state.getMaxPerformedQuestionsCount() == null) {
             return NewGamePartType.MAX_PERFORMED_QUESTIONS_COUNT;
