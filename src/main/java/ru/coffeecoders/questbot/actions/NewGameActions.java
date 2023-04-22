@@ -34,7 +34,7 @@ public class NewGameActions {
                                                      String gameName, int answerMsgId) {
         state.setGameName(gameName);
         newGameCreatingStateService.save(state);
-        requestStartCountTasks(gameName, chatId, answerMsgId);
+
     }
 
     public NewGameCreatingState getNewGameCreatingState(long chatId) {

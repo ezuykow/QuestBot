@@ -38,6 +38,7 @@ public class NewGameManager {
         NewGameCreatingState state = actions.getNewGameCreatingState(chatId);
         switch (getExpectedNewGamePartType(state)) {
             case GAME_NAME -> actions.addGameNameToStateAndRequestNextPart(chatId, state, text, msgId);
+            case START_COUNT_TASKS -> {}
         }
     }
 
