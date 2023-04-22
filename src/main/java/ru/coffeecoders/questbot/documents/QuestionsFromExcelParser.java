@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Question;
+import ru.coffeecoders.questbot.entities.QuestionGroup;
 import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.services.QuestionGroupService;
 import ru.coffeecoders.questbot.services.QuestionService;
 
 import java.io.File;
@@ -31,14 +33,16 @@ public class QuestionsFromExcelParser {
 
     private final MessageSender msgSender;
     private final QuestionService questionService;
+    private final QuestionGroupService questionGroupService;
     private final Environment env;
 
     private List<Question> newQuestions;
     boolean blankQuestionsPresent;
 
-    public QuestionsFromExcelParser(MessageSender msgSender, QuestionService questionService, Environment env) {
+    public QuestionsFromExcelParser(MessageSender msgSender, QuestionService questionService, QuestionGroupService questionGroupService, Environment env) {
         this.msgSender = msgSender;
         this.questionService = questionService;
+        this.questionGroupService = questionGroupService;
         this.env = env;
     }
 
@@ -65,7 +69,7 @@ public class QuestionsFromExcelParser {
 
     private void searchQuestionsInSheet(Sheet sheet) {
         StreamSupport.stream(((Iterable<Row>) sheet).spliterator(), false) //Разбираю страницу на ряды
-                .skip(1) //Пропускаю первый ряд (шапка таблицы)
+                .skip(15) //Пропускаю первые ряды (правила и шапка таблицы)
                 .forEach(this::searchQuestionInRow);
     }
 
@@ -78,13 +82,13 @@ public class QuestionsFromExcelParser {
         int cellNo = 1;
         for (Cell cell : row) {
             if (cell.getCellType() == CellType.STRING) {
-                if ((cellNo == 1) && (cell.getStringCellValue().equalsIgnoreCase("да"))) {
-                    return Optional.empty(); //Если в таблице стоит, что этот вопрос уже добавлялся ("да")
+                if ((cellNo == 1) && !(cell.getStringCellValue().equalsIgnoreCase("нет"))) {
+                    return Optional.empty(); //Если в таблице не стоит, что этот вопрос не добавлялся ("нет")
                 }
                 fillQuestionFieldFromCell(cellNo++, cell, newQuestion);
             }
         }
-        return validatedNewQuestion(newQuestion);
+        return validateAndReturnNewQuestion(newQuestion);
     }
 
     private void fillQuestionFieldFromCell(int cellNo, Cell cell, Question newQuestion) {
@@ -97,10 +101,20 @@ public class QuestionsFromExcelParser {
         }
     }
 
-    private Optional<Question> validatedNewQuestion(Question newQuestion) {
+    private Optional<Question> validateAndReturnNewQuestion(Question newQuestion) {
         if (newQuestion.getQuestion() == null || newQuestion.getAnswer() == null) {
             blankQuestionsPresent = true;
             return Optional.empty();
+        }
+        if (newQuestion.getMapUrl().equalsIgnoreCase("нет")) {
+            newQuestion.setMapUrl(null);
+        }
+        String group = newQuestion.getGroup();
+        if (group.equalsIgnoreCase("нет")) {
+            newQuestion.setGroup(env.getProperty("messages.documents.defaultQuestionGroup"));
+        } else {
+            questionGroupService.findByGroupName(group).ifPresentOrElse(g -> {},
+                    () -> questionGroupService.save(new QuestionGroup(group)));
         }
         return Optional.of(newQuestion);
     }

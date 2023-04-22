@@ -12,4 +12,8 @@ import java.util.Optional;
 @Repository
 public interface QuestionGroupRepository extends JpaRepository<QuestionGroup, Long> {
 
+    /**
+     * @author ezuykow
+     */
+    Optional<QuestionGroup> findQuestionGroupByGroupName(String groupName);
 }

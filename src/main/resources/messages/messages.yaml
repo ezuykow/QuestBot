@@ -54,7 +54,8 @@ messages:
     equalsQuestionsNotAdded: "Повторяющиеся вопросы не добавлены!\n\n"
     questionsAdded: "Добавлены вопросы (%d):\n\n"
     noOneQuestionAdded: Ни одного вопроса не добавлено
+    defaultQuestionGroup: Вопросы без группы
 
   game:
     requestNewGameName: Введите название новой игры
-    requestStartCountTasks: "Название игры - \"%s\"\n Введите количество вопросов, которые увидят игроки при старте игры"
+    requestQuestionsGroups: "Название игры - \"%s\"\n Выберите группы вопросов, которые включить в игру:"

@@ -3,12 +3,10 @@ package ru.coffeecoders.questbot.services;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import ru.coffeecoders.questbot.entities.GlobalChat;
 import ru.coffeecoders.questbot.entities.QuestionGroup;
 import ru.coffeecoders.questbot.repositories.QuestionGroupRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -34,5 +32,12 @@ public class QuestionGroupService {
     public QuestionGroup save(QuestionGroup questionGroup) {
         logger.info("QuestionGroup = {} has been saved", questionGroup);
         return questionGroupRepository.save(questionGroup);
+    }
+
+    /**
+     * @author ezuykow
+     */
+    public Optional<QuestionGroup> findByGroupName(String groupName) {
+        return questionGroupRepository.findQuestionGroupByGroupName(groupName);
     }
 }
