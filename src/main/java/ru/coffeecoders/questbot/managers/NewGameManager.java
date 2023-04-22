@@ -47,6 +47,8 @@ public class NewGameManager {
                     actions.addMaxPerformedQuestionsCountToStateAndRequestNextPart(chatId, state, text, msgId);
             case MIN_QUESTIONS_COUNT_IN_GAME ->
                 actions.addMinQuestionsCountInGameAndRequestNextPart(chatId, state, text, msgId);
+            case QUESTIONS_COUNT_TO_ADD ->
+                actions.addQuestionsCountToAddAndRequestNextPart(chatId, state, text, msgId);
         }
     }
 
