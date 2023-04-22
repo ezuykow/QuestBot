@@ -9,10 +9,6 @@ import org.springframework.stereotype.Component;
 public class NewGameManager {
 
     public void startCreatingGame(long senderAdminId, long chatId) {
-        blockAllOtherChatMembers(senderAdminId, chatId);
-    }
-
-    private void blockAllOtherChatMembers(long senderAdminId, long chatId) {
-
+//        blockAllOtherChatMembers(senderAdminId, chatId);
     }
 }
