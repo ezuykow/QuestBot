@@ -109,13 +109,12 @@ public class QuestionsFromExcelParser {
         if (newQuestion.getMapUrl().equalsIgnoreCase("нет")) {
             newQuestion.setMapUrl(null);
         }
-        String group = newQuestion.getGroup();
-        if (group.equalsIgnoreCase("нет")) {
+        if (newQuestion.getGroup().equalsIgnoreCase("нет")) {
             newQuestion.setGroup(env.getProperty("messages.documents.defaultQuestionGroup"));
-        } else {
-            questionGroupService.findByGroupName(group).ifPresentOrElse(g -> {},
-                    () -> questionGroupService.save(new QuestionGroup(group)));
         }
+        String group = newQuestion.getGroup();
+        questionGroupService.findByGroupName(group).ifPresentOrElse(g -> {},
+                () -> questionGroupService.save(new QuestionGroup(group)));
         return Optional.of(newQuestion);
     }
 
