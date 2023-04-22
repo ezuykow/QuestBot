@@ -1,7 +1,9 @@
 package ru.coffeecoders.questbot.validators;
 
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.entities.GlobalChat;
+import ru.coffeecoders.questbot.services.GameService;
 import ru.coffeecoders.questbot.services.GlobalChatService;
 import ru.coffeecoders.questbot.services.NewGameCreatingStateService;
 
@@ -13,10 +15,12 @@ public class GameValidator {
 
     private final GlobalChatService globalChatService;
     private final NewGameCreatingStateService newGameCreatingStateService;
+    private final GameService gameService;
 
-    public GameValidator(GlobalChatService globalChatService, NewGameCreatingStateService newGameCreatingStateService) {
+    public GameValidator(GlobalChatService globalChatService, NewGameCreatingStateService newGameCreatingStateService, GameService gameService) {
         this.globalChatService = globalChatService;
         this.newGameCreatingStateService = newGameCreatingStateService;
+        this.gameService = gameService;
     }
 
     /**
@@ -43,6 +47,13 @@ public class GameValidator {
 
     public boolean isNewGameCreating(long chatId) {
         return newGameCreatingStateService.findById(chatId).isPresent();
+    }
+
+    public boolean isGameNameAlreadyTaken(String gameName) {
+        return gameService.findAll()
+                .stream().anyMatch(g -> g.getGameName().equals(gameName))
+                || newGameCreatingStateService.findAll()
+                .stream().anyMatch(cg -> cg.getGameName() != null && cg.getGameName().equals(gameName));
     }
 
     /**
