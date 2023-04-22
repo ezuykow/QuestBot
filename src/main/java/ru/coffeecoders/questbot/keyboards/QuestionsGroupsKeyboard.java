@@ -29,6 +29,9 @@ public class QuestionsGroupsKeyboard {
                                     .callbackData("QuestionGroupSelected." + g.getGroupId())
                     )
         );
-
+        keyboard.addRow(
+                new InlineKeyboardButton(Character.toString(0x1F6D1) + "Закончить добавление")
+                        .callbackData("QuestionGroupSelected.Stop")
+        );
     }
 }

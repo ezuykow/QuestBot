@@ -29,7 +29,12 @@ public class NewGameCreatingCallbackManager {
     }
 
     private void performCallback(long chatId, int msgId, String data) {
-        int questionGroupId = Integer.parseInt(data.substring(data.indexOf(".") + 1));
-        newGameActions.addSelectedQuestionGroupAndRefreshMsg(chatId, msgId, questionGroupId);
+        String dataPart = data.substring(data.indexOf(".") + 1);
+        if (dataPart.equals("Stop")) {
+            newGameActions.stopSelectingQuestionsGroupsAndRequestNextPart(chatId, msgId);
+        } else {
+            int questionGroupId = Integer.parseInt(dataPart);
+            newGameActions.addSelectedQuestionGroupAndRefreshMsg(chatId, msgId, questionGroupId);
+        }
     }
 }

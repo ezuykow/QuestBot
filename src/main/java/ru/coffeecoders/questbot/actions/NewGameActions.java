@@ -60,6 +60,10 @@ public class NewGameActions {
         );
     }
 
+    public void stopSelectingQuestionsGroupsAndRequestNextPart(long chatId, int msgId) {
+        requestStartCountTasks(chatId, msgId);
+    }
+
     public NewGameCreatingState getNewGameCreatingState(long chatId) {
         return newGameCreatingStateService.findById(chatId)
                 .orElseThrow(() ->
@@ -82,12 +86,15 @@ public class NewGameActions {
     }
 
 
-    /*private void requestStartCountTasks(String gameName, long chatId, int answerMsgId) {
-        msgSender.edit(chatId, requestMsgId,
+    private void requestStartCountTasks(long chatId, int msgIdToEdit) {
+        msgSender.edit(chatId, msgIdToEdit,
                 String.format(
-                        env.getProperty("messages.game.requestStartCountTasks", "Error"), gameName),
+                        env.getProperty("messages.game.requestStartCountTasks", "Error"),
+                        getGroupsNames(getNewGameCreatingState(chatId).getGroupsIds())),
                 null);
-    }*/
+
+    }
+
     private int getRequestMsgIdAndDeleteAnswerMsg(long chatId, int answerMsgId) {
         msgSender.sendDelete(chatId, answerMsgId);
         return answerMsgId - 1;
