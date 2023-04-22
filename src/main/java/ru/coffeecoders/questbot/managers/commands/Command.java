@@ -6,6 +6,7 @@ public enum Command {
     STOPBOT(GLOBALADMIN),
 
     SHOWQUESTIONS(ADMIN),
+    NEWGAME(ADMIN),
 
     START(OWNER),
     ADMINON(OWNER),
