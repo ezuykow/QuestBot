@@ -29,9 +29,13 @@ public class QuestionService {
         return question;
     }
 
-    public List<Question> findByGroup(String group) {
-        List<Question> list = questionRepository.findByGroup(group);
-        logger.info("Questions {} with group = {} displaying", list.isEmpty() ? "are not" : "are",group);
+    /**
+     * @author anatoliy
+     * @Redact: ezuykow
+     */
+    public List<Question> findByGroupName(String groupName) {
+        List<Question> list = questionRepository.findByGroup(groupName);
+        logger.info("Questions {} with group = {} displaying", list.isEmpty() ? "are not" : "are",groupName);
         return list;
     }
 

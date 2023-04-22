@@ -9,6 +9,7 @@ import ru.coffeecoders.questbot.keyboards.QuestionsGroupsKeyboard;
 import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.services.NewGameCreatingStateService;
 import ru.coffeecoders.questbot.services.QuestionGroupService;
+import ru.coffeecoders.questbot.validators.QuestionsValidator;
 
 import java.util.List;
 
@@ -20,13 +21,15 @@ public class NewGameActions {
 
     private final NewGameCreatingStateService newGameCreatingStateService;
     private final QuestionGroupService questionGroupService;
+    private final QuestionsValidator questionsValidator;
     private final MessageSender msgSender;
     private final Environment env;
 
     public NewGameActions(NewGameCreatingStateService newGameCreatingStateService,
-                          QuestionGroupService questionGroupService, MessageSender msgSender, Environment env) {
+                          QuestionGroupService questionGroupService, QuestionsValidator questionsValidator, MessageSender msgSender, Environment env) {
         this.newGameCreatingStateService = newGameCreatingStateService;
         this.questionGroupService = questionGroupService;
+        this.questionsValidator = questionsValidator;
         this.msgSender = msgSender;
         this.env = env;
     }
@@ -64,6 +67,31 @@ public class NewGameActions {
         requestStartCountTasks(chatId, msgId);
     }
 
+    public void addStartCountTaskToStateAndRequestNextPart(long chatId, NewGameCreatingState state,
+                                                           String text, int msgId) {
+        Integer startCountTask = parseTextToInteger(text);
+        int requestMsgId = getRequestMsgIdAndDeleteAnswerMsg(chatId, msgId);
+        if (startCountTask == null) {
+            msgSender.edit(chatId, requestMsgId,
+                    env.getProperty("messages.game.invalidNumber")
+                            + env.getProperty("messages.game.requestStartCountTasksSimple"),
+                    null
+            );
+        } else {
+            if (questionsValidator.isRequestedQuestionCountNotMoreThanWeHaveByGroups(
+                    startCountTask, state.getGroupsIds())) {
+                state.setStartCountTasks(startCountTask);
+                requestMaxQuestionsCount(chatId, requestMsgId, startCountTask);
+            } else {
+                msgSender.edit(chatId, requestMsgId,
+                        env.getProperty("messages.game.invalidQuestionCount")
+                                + env.getProperty("messages.game.requestStartCountTasksSimple"),
+                        null
+                );
+            }
+        }
+    }
+
     public NewGameCreatingState getNewGameCreatingState(long chatId) {
         return newGameCreatingStateService.findById(chatId)
                 .orElseThrow(() ->
@@ -85,14 +113,20 @@ public class NewGameActions {
         );
     }
 
-
     private void requestStartCountTasks(long chatId, int msgIdToEdit) {
         msgSender.edit(chatId, msgIdToEdit,
                 String.format(
                         env.getProperty("messages.game.requestStartCountTasks", "Error"),
                         getGroupsNames(getNewGameCreatingState(chatId).getGroupsIds())),
                 null);
+    }
 
+    private void requestMaxQuestionsCount(long chatId, int msgIdToEdit, int startCountTask) {
+        msgSender.edit(chatId, msgIdToEdit,
+                String.format(
+                        env.getProperty("messages.game.requestMaxQuestionsCount", "Error"),
+                        startCountTask),
+                null);
     }
 
     private int getRequestMsgIdAndDeleteAnswerMsg(long chatId, int answerMsgId) {
@@ -120,5 +154,13 @@ public class NewGameActions {
         state.setGroupsIds(groupsIds);
         newGameCreatingStateService.save(state);
         return groupsIds;
+    }
+
+    private Integer parseTextToInteger(String text) {
+        try {
+            return Integer.valueOf(text);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }

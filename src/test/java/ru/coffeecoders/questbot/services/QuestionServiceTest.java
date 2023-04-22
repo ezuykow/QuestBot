@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.coffeecoders.questbot.entities.Question;
-import ru.coffeecoders.questbot.entities.QuestionGroup;
 import ru.coffeecoders.questbot.repositories.QuestionRepository;
 
 import java.util.List;
@@ -74,15 +73,15 @@ class QuestionServiceTest {
     @Test
     void findByGroup() {
         when(questionRepository.findByGroup(anyString())).thenReturn(List.of(question));
-        assertTrue(questionService.findByGroup(name).contains(question));
-        assertEquals(List.of(question), questionService.findByGroup(name));
+        assertTrue(questionService.findByGroupName(name).contains(question));
+        assertEquals(List.of(question), questionService.findByGroupName(name));
         Mockito.verify(questionRepository, times(2)).findByGroup(name);
     }
 
     @Test
     void findByGroupEmpty() {
         when(questionRepository.findByGroup(any(String.class))).thenReturn(List.of());
-        assertTrue(questionService.findByGroup(name).isEmpty());
+        assertTrue(questionService.findByGroupName(name).isEmpty());
         Mockito.verify(questionRepository).findByGroup(name);
     }
 

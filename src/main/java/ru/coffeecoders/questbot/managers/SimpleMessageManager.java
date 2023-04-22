@@ -26,11 +26,10 @@ public class SimpleMessageManager {
 //TODO JavaDoc, когда метод будет готов
     public void manageMessage(ExtendedUpdate update) {
         long chatId = update.getMessageChatId();
-        int msgId = update.getMessageId();
 
         if (gameValidator.isNewGameCreating(chatId)) {
             String text = update.getMessageText();
-            newGameManager.manageNewGamePart(chatId, text, msgId);
+            newGameManager.manageNewGamePart(chatId, text, update.getMessageId());
         }
 
         if (update.hasReplyToMessage()) {
