@@ -1,9 +1,15 @@
 package ru.coffeecoders.questbot.managers;
 
+import com.pengrad.telegrambot.model.ChatPermissions;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.actions.NewGameActions;
 import ru.coffeecoders.questbot.entities.NewGameCreatingState;
+import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.services.AdminChatMembersService;
+import ru.coffeecoders.questbot.services.AdminService;
 import ru.coffeecoders.questbot.utils.BlockAdminChat;
+
+import java.util.Arrays;
 
 /**
  * @author ezuykow
@@ -23,14 +29,21 @@ public class NewGameManager {
 
     private final NewGameActions actions;
     private final BlockAdminChat blockAdminChat;
+    private final AdminChatMembersService adminChatMembersService;
+    private final AdminService adminService;
+    private final MessageSender msgSender;
 
-    public NewGameManager(NewGameActions actions, BlockAdminChat blockAdminChat) {
+    public NewGameManager(NewGameActions actions, BlockAdminChat blockAdminChat, AdminChatMembersService adminChatMembersService, AdminService adminService, MessageSender msgSender) {
         this.actions = actions;
         this.blockAdminChat = blockAdminChat;
+        this.adminChatMembersService = adminChatMembersService;
+        this.adminService = adminService;
+        this.msgSender = msgSender;
     }
 
     public void startCreatingGame(long senderAdminId, long chatId) {
         blockAdminChat.validateAndBlockAdminChatByAdmin(chatId, senderAdminId);
+        restrictOtherChatMembers(senderAdminId, chatId);
         actions.createNewGameCreatingState(chatId);
     }
 
@@ -49,6 +62,8 @@ public class NewGameManager {
                 actions.addMinQuestionsCountInGameAndRequestNextPart(chatId, state, text, msgId);
             case QUESTIONS_COUNT_TO_ADD ->
                 actions.addQuestionsCountToAddAndRequestNextPart(chatId, state, text, msgId);
+            case MAX_TIME_MINUTES ->
+                actions.addMaxTimeMinutesToStateAmdSaveNewGame(chatId, state, text, msgId);
         }
     }
 
@@ -72,5 +87,15 @@ public class NewGameManager {
             return NewGamePartType.QUESTIONS_COUNT_TO_ADD;
         }
         return NewGamePartType.MAX_TIME_MINUTES;
+    }
+
+    private void restrictOtherChatMembers(long senderAdminId, long chatId) {
+        ChatPermissions permissions = new ChatPermissions()
+                .canSendMessages(false)
+                .canSendOtherMessages(false);
+
+        Arrays.stream(adminChatMembersService.findByChatId(chatId).get().getMembers())
+                .filter(id -> (id != senderAdminId) && (id != adminService.getOwner().getTgAdminUserId()))
+                .forEach(id -> msgSender.sendRestrictChatMember(chatId, id, permissions));
     }
 }

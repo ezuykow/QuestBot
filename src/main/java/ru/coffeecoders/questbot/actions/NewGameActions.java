@@ -1,16 +1,19 @@
 package ru.coffeecoders.questbot.actions;
 
+import com.pengrad.telegrambot.model.ChatPermissions;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.entities.AdminChat;
+import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.entities.NewGameCreatingState;
 import ru.coffeecoders.questbot.entities.QuestionGroup;
 import ru.coffeecoders.questbot.keyboards.QuestionsGroupsKeyboard;
 import ru.coffeecoders.questbot.senders.MessageSender;
-import ru.coffeecoders.questbot.services.NewGameCreatingStateService;
-import ru.coffeecoders.questbot.services.QuestionGroupService;
+import ru.coffeecoders.questbot.services.*;
 import ru.coffeecoders.questbot.validators.QuestionsValidator;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -22,14 +25,20 @@ public class NewGameActions {
     private final NewGameCreatingStateService newGameCreatingStateService;
     private final QuestionGroupService questionGroupService;
     private final QuestionsValidator questionsValidator;
+    private final GameService gameService;
+    private final AdminChatService adminChatService;
+    private final AdminChatMembersService adminChatMembersService;
     private final MessageSender msgSender;
     private final Environment env;
 
     public NewGameActions(NewGameCreatingStateService newGameCreatingStateService,
-                          QuestionGroupService questionGroupService, QuestionsValidator questionsValidator, MessageSender msgSender, Environment env) {
+                          QuestionGroupService questionGroupService, QuestionsValidator questionsValidator, GameService gameService, AdminChatService adminChatService, AdminChatMembersService adminChatMembersService, MessageSender msgSender, Environment env) {
         this.newGameCreatingStateService = newGameCreatingStateService;
         this.questionGroupService = questionGroupService;
         this.questionsValidator = questionsValidator;
+        this.gameService = gameService;
+        this.adminChatService = adminChatService;
+        this.adminChatMembersService = adminChatMembersService;
         this.msgSender = msgSender;
         this.env = env;
     }
@@ -177,7 +186,7 @@ public class NewGameActions {
                                                          String text, int msgId) {
         Integer questionsToAdd = parseTextToInteger(text);
         int requestMsgId = getRequestMsgIdAndDeleteAnswerMsg(chatId, msgId);
-        int minInGame = state.getMaxPerformedQuestionsCount();
+        int minInGame = state.getMinQuestionsCountInGame();
         if (questionsToAdd != null && questionsToAdd >= 0) {
             state.setQuestionsCountToAdd(questionsToAdd);
             newGameCreatingStateService.save(state);
@@ -188,6 +197,27 @@ public class NewGameActions {
                             + String.format(
                             env.getProperty("messages.game.requestQuestionsCountToAdd", "Error"),
                             minInGame),
+                    null);
+        }
+    }
+
+    public void addMaxTimeMinutesToStateAmdSaveNewGame(long chatId, NewGameCreatingState state,
+                                                       String text, int msgId) {
+        Integer minutes = parseTextToInteger(text);
+        int requestMsgId = getRequestMsgIdAndDeleteAnswerMsg(chatId, msgId);
+        int toAdd = state.getQuestionsCountToAdd();
+        if (minutes != null && minutes > 0) {
+            msgSender.sendDelete(chatId, requestMsgId);
+            saveNewGame(state);
+            newGameCreatingStateService.delete(state);
+            removeBlockedByAdminOnAdminChat(chatId);
+            unRestrictAllMembers(chatId);
+        } else {
+            msgSender.edit(chatId, requestMsgId,
+                    env.getProperty("messages.game.invalidNumber")
+                            + String.format(
+                            env.getProperty("messages.game.requestMaxTimeMinutes", "Error"),
+                            toAdd),
                     null);
         }
     }
@@ -294,5 +324,35 @@ public class NewGameActions {
         } catch (NumberFormatException e) {
             return null;
         }
+    }
+
+    private void saveNewGame(NewGameCreatingState state) {
+        gameService.save(
+                new Game(
+                        state.getGameName(),
+                        state.getGroupsIds(),
+                        state.getMaxTimeMinutes(),
+                        state.getMaxQuestionsCount(),
+                        state.getMaxPerformedQuestionsCount(),
+                        state.getMinQuestionsCountInGame(),
+                        state.getQuestionsCountToAdd(),
+                        state.getStartCountTasks()
+                )
+        );
+    }
+
+    private void removeBlockedByAdminOnAdminChat(long chatId) {
+        AdminChat currentAdminChat = adminChatService.findById(chatId).get();
+        currentAdminChat.setBlockedByAdminId(0);
+        adminChatService.save(currentAdminChat);
+    }
+
+    private void unRestrictAllMembers(long chatId) {
+        ChatPermissions permissions = new ChatPermissions()
+                .canSendMessages(true)
+                .canSendOtherMessages(true);
+
+        Arrays.stream(adminChatMembersService.findByChatId(chatId).get().getMembers())
+                .forEach(id -> msgSender.sendRestrictChatMember(chatId, id, permissions));
     }
 }

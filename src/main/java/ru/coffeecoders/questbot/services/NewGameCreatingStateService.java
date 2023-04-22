@@ -31,7 +31,7 @@ public class NewGameCreatingStateService {
         return repository.findById(initiatorChatId);
     }
 
-    public void deleteById(long initiatorChatId) {
-        repository.deleteById(initiatorChatId);
+    public void delete(NewGameCreatingState state) {
+        repository.delete(state);
     }
 }
