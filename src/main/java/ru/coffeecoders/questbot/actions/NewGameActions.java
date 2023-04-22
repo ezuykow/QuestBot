@@ -71,16 +71,11 @@ public class NewGameActions {
                                                            String text, int msgId) {
         Integer startCountTask = parseTextToInteger(text);
         int requestMsgId = getRequestMsgIdAndDeleteAnswerMsg(chatId, msgId);
-        if (startCountTask == null) {
-            msgSender.edit(chatId, requestMsgId,
-                    env.getProperty("messages.game.invalidNumber")
-                            + env.getProperty("messages.game.requestStartCountTasksSimple"),
-                    null
-            );
-        } else {
+        if (startCountTask != null) {
             if (questionsValidator.isRequestedQuestionCountNotMoreThanWeHaveByGroups(
                     startCountTask, state.getGroupsIds())) {
                 state.setStartCountTasks(startCountTask);
+                newGameCreatingStateService.save(state);
                 requestMaxQuestionsCount(chatId, requestMsgId, startCountTask);
             } else {
                 msgSender.edit(chatId, requestMsgId,
@@ -89,6 +84,49 @@ public class NewGameActions {
                         null
                 );
             }
+        } else {
+            msgSender.edit(chatId, requestMsgId,
+                    env.getProperty("messages.game.invalidNumber")
+                            + env.getProperty("messages.game.requestStartCountTasksSimple"),
+                    null
+            );
+        }
+    }
+
+    public void addMaxQuestionsCountToStateAndRequestNextPart(long chatId, NewGameCreatingState state,
+                                                              String text, int msgId) {
+        Integer maxQuestionCount = parseTextToInteger(text);
+        int requestMsgId = getRequestMsgIdAndDeleteAnswerMsg(chatId, msgId);
+        int startCountTask = state.getStartCountTasks();
+        if (maxQuestionCount != null) {
+            if (maxQuestionCount >= startCountTask) {
+                if (questionsValidator.isRequestedQuestionCountNotMoreThanWeHaveByGroups(
+                        maxQuestionCount, state.getGroupsIds())) {
+                    state.setMaxQuestionsCount(maxQuestionCount);
+                    newGameCreatingStateService.save(state);
+                    requestMaxPerformedQuestionCount(chatId, requestMsgId, maxQuestionCount);
+                } else {
+                    msgSender.edit(chatId, requestMsgId,
+                            env.getProperty("messages.game.invalidQuestionCount")
+                                    + env.getProperty("messages.game.requestMaxQuestionsCountSimple"),
+                            null
+                    );
+                }
+            } else {
+                msgSender.edit(chatId, requestMsgId,
+                        env.getProperty("messages.game.maxQLowerStartQ")
+                                + String.format(
+                                    env.getProperty("messages.game.requestMaxQuestionsCount", "Error"),
+                                    startCountTask),
+                        null
+                );
+            }
+        } else {
+            msgSender.edit(chatId, requestMsgId,
+                    env.getProperty("messages.game.invalidNumber")
+                            + env.getProperty("messages.game.requestMaxQuestionsCountSimple"),
+                    null
+            );
         }
     }
 
@@ -126,6 +164,14 @@ public class NewGameActions {
                 String.format(
                         env.getProperty("messages.game.requestMaxQuestionsCount", "Error"),
                         startCountTask),
+                null);
+    }
+
+    private void requestMaxPerformedQuestionCount(long chatId, int msgIdToEdit, Integer maxQuestionCount) {
+        msgSender.edit(chatId, msgIdToEdit,
+                String.format(
+                        env.getProperty("messages.game.requestMaxPerformedQuestionCount", "Error"),
+                        maxQuestionCount),
                 null);
     }
 

@@ -39,6 +39,7 @@ public class NewGameManager {
         switch (getExpectedNewGamePartType(state)) {
             case GAME_NAME -> actions.addGameNameToStateAndRequestNextPart(chatId, state, text, msgId);
             case START_COUNT_TASKS -> actions.addStartCountTaskToStateAndRequestNextPart(chatId, state, text, msgId);
+            case MAX_QUESTIONS_COUNT -> actions.addMaxQuestionsCountToStateAndRequestNextPart(chatId, state, text, msgId);
         }
     }
 
