@@ -57,3 +57,4 @@ messages:
 
   game:
     requestNewGameName: Введите название новой игры
+    requestStartCountTasks: "Название игры - \"%s\"\n Введите количество вопросов, которые увидят игроки при старте игры"

@@ -30,8 +30,32 @@ public class NewGameActions {
         requestNewGameName(chatId);
     }
 
+    public void addGameNameToStateAndRequestNextPart(long chatId, NewGameCreatingState state,
+                                                     String gameName, int answerMsgId) {
+        state.setGameName(gameName);
+        newGameCreatingStateService.save(state);
+        requestStartCountTasks(gameName, chatId, answerMsgId);
+    }
+
+    public NewGameCreatingState getNewGameCreatingState(long chatId) {
+        return newGameCreatingStateService.findById(chatId)
+                .orElseThrow(() ->
+                {
+                    msgSender.send(chatId, env.getProperty("messages.somethingWrong"));
+                    return new RuntimeException("Этого, конечно, никогда не будет, нооо... пиздец, короче");
+                });
+    }
 
     private void requestNewGameName(long chatId) {
         msgSender.send(chatId, env.getProperty("messages.game.requestNewGameName"));
+    }
+
+    private void requestStartCountTasks(String gameName, long chatId, int answerMsgId) {
+        msgSender.sendDelete(chatId, answerMsgId);
+        int requestMsgId = answerMsgId - 1;
+        msgSender.edit(chatId, requestMsgId,
+                String.format(
+                        env.getProperty("messages.game.requestStartCountTasks", "Error"), gameName),
+                null);
     }
 }
