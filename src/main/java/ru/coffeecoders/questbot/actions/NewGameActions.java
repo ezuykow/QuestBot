@@ -52,10 +52,11 @@ public class NewGameActions {
 
     public void addGameNameToStateAndRequestNextPart(long chatId, NewGameCreatingState state,
                                                      String gameName, int answerMsgId) {
+        msgSender.sendDelete(chatId, answerMsgId);
         state.setGameName(gameName);
+        state.setRequestMsgId(answerMsgId - 1);
         newGameCreatingStateService.save(state);
-        int requestMsgId = getRequestMsgIdAndDeleteAnswerMsg(chatId, answerMsgId);
-        requestQuestionGroups(gameName, chatId, requestMsgId);
+        requestQuestionGroups(gameName, chatId, answerMsgId - 1);
     }
 
     public void addSelectedQuestionGroupAndRefreshMsg(long chatId, int msgId, int questionGroupId) {
@@ -63,6 +64,7 @@ public class NewGameActions {
         String stateGroupsNames = getGroupsNames(allStateGroupsIds);
         msgSender.edit(chatId, msgId,
                 String.format(env.getProperty("messages.game.addedQuestionGroup", "Error"),
+                        getNewGameCreatingState(chatId).getGameName(),
                         stateGroupsNames),
                 QuestionsGroupsKeyboard.createKeyboard(questionGroupService.findAll()
                         .stream()
@@ -73,32 +75,39 @@ public class NewGameActions {
     }
 
     public void stopSelectingQuestionsGroupsAndRequestNextPart(long chatId, int msgId) {
-        requestMaxQuestionsCount(chatId, msgId);
+        if (getNewGameCreatingState(chatId).getGroupsIds() != null) {
+            requestMaxQuestionsCount(chatId, msgId);
+        }
     }
 
     public void addMaxQuestionsCountToStateAndRequestNextPart(long chatId, NewGameCreatingState state,
                                                               String text, int msgId) {
         Integer maxQuestionCount = parseTextToInteger(text);
-        int requestMsgId = getRequestMsgIdAndDeleteAnswerMsg(chatId, msgId);
+        msgSender.sendDelete(chatId, msgId);
+        int requestMsgId = state.getRequestMsgId();
         if (maxQuestionCount != null && maxQuestionCount > 0) {
             if (questionsValidator.isRequestedQuestionCountNotMoreThanWeHaveByGroups(
                     maxQuestionCount, state.getGroupsIds())) {
 
                 state.setMaxQuestionsCount(maxQuestionCount);
                 newGameCreatingStateService.save(state);
-                requestStartCountTasks(chatId, requestMsgId, maxQuestionCount);
+                requestStartCountTasks(chatId, requestMsgId, maxQuestionCount, state);
             } else {
                 msgSender.edit(chatId, requestMsgId,
                         env.getProperty("messages.game.invalidQuestionCount")
-                                + env.getProperty("messages.game.requestMaxQuestionsCountSimple"),
-                        null
+                                + String.format(
+                                env.getProperty("messages.game.requestMaxQuestionsCount", "Error"),
+                                state.getGameName(),
+                                getGroupsNames(state.getGroupsIds()))
                 );
             }
         } else {
             msgSender.edit(chatId, requestMsgId,
                     env.getProperty("messages.game.invalidNumber")
-                            + env.getProperty("messages.game.requestMaxQuestionsCountSimple"),
-                    null
+                            + String.format(
+                            env.getProperty("messages.game.requestMaxQuestionsCount", "Error"),
+                            state.getGameName(),
+                            getGroupsNames(state.getGroupsIds()))
             );
         }
     }
@@ -106,29 +115,33 @@ public class NewGameActions {
     public void addStartCountTaskToStateAndRequestNextPart(long chatId, NewGameCreatingState state,
                                                            String text, int msgId) {
         Integer startCountTask = parseTextToInteger(text);
-        int requestMsgId = getRequestMsgIdAndDeleteAnswerMsg(chatId, msgId);
+        msgSender.sendDelete(chatId, msgId);
+        int requestMsgId = state.getRequestMsgId();
         int maxQuestionCount = state.getMaxQuestionsCount();
         if (startCountTask != null && startCountTask > 0) {
             if (startCountTask <= maxQuestionCount) {
                 state.setStartCountTasks(startCountTask);
                 newGameCreatingStateService.save(state);
-                requestMaxPerformedQuestionCount(chatId, requestMsgId, startCountTask);
+                requestMaxPerformedQuestionCount(chatId, requestMsgId, startCountTask, state);
             } else {
                 msgSender.edit(chatId, requestMsgId,
                         env.getProperty("messages.game.startQMoreMaxQ")
                                 + String.format(
                                 env.getProperty("messages.game.requestStartCountTasks", "Error"),
-                                maxQuestionCount),
-                        null
+                                state.getGameName(),
+                                getGroupsNames(state.getGroupsIds()),
+                                state.getMaxQuestionsCount())
                 );
+
             }
         } else {
             msgSender.edit(chatId, requestMsgId,
                     env.getProperty("messages.game.invalidNumber")
                             + String.format(
-                                env.getProperty("messages.game.requestStartCountTasks", "Error"),
-                                maxQuestionCount),
-                    null
+                            env.getProperty("messages.game.requestStartCountTasks", "Error"),
+                            state.getGameName(),
+                            getGroupsNames(state.getGroupsIds()),
+                            state.getMaxQuestionsCount())
             );
         }
     }
@@ -136,29 +149,33 @@ public class NewGameActions {
     public void addMaxPerformedQuestionsCountToStateAndRequestNextPart(long chatId, NewGameCreatingState state,
                                                                        String text, int msgId) {
         Integer maxPerformedQuestionsCount = parseTextToInteger(text);
-        int requestMsgId = getRequestMsgIdAndDeleteAnswerMsg(chatId, msgId);
-        int startQuestions = state.getStartCountTasks();
+        msgSender.sendDelete(chatId, msgId);
+        int requestMsgId = state.getRequestMsgId();
         if (maxPerformedQuestionsCount != null && maxPerformedQuestionsCount > 0) {
             if (maxPerformedQuestionsCount <= state.getMaxQuestionsCount()) {
                 state.setMaxPerformedQuestionsCount(maxPerformedQuestionsCount);
                 newGameCreatingStateService.save(state);
-                requestMinQuestionsCountInGame(chatId, requestMsgId, maxPerformedQuestionsCount);
+                requestMinQuestionsCountInGame(chatId, requestMsgId, maxPerformedQuestionsCount, state);
             } else {
                 msgSender.edit(chatId, requestMsgId,
                         env.getProperty("messages.game.maxPerformedQMoreMaxQ")
                                 + String.format(
-                                    env.getProperty("messages.game.requestMaxPerformedQuestionCount", "Error"),
-                                    startQuestions),
-                        null
+                                env.getProperty("messages.game.requestMaxPerformedQuestionCount", "Error"),
+                                state.getGameName(),
+                                getGroupsNames(state.getGroupsIds()),
+                                state.getMaxQuestionsCount(),
+                                state.getStartCountTasks())
                 );
             }
         } else {
             msgSender.edit(chatId, requestMsgId,
                     env.getProperty("messages.game.invalidNumber")
                             + String.format(
-                                env.getProperty("messages.game.requestMaxPerformedQuestionCount", "Error"),
-                                startQuestions),
-                    null
+                            env.getProperty("messages.game.requestMaxPerformedQuestionCount", "Error"),
+                            state.getGameName(),
+                            getGroupsNames(state.getGroupsIds()),
+                            state.getMaxQuestionsCount(),
+                            state.getStartCountTasks())
             );
         }
     }
@@ -166,59 +183,86 @@ public class NewGameActions {
     public void addMinQuestionsCountInGameAndRequestNextPart(long chatId, NewGameCreatingState state,
                                                              String text, int msgId) {
         Integer minQuestionsInGame = parseTextToInteger(text);
-        int requestMsgId = getRequestMsgIdAndDeleteAnswerMsg(chatId, msgId);
-        int maxPerformed = state.getMaxPerformedQuestionsCount();
+        msgSender.sendDelete(chatId, msgId);
+        int requestMsgId = state.getRequestMsgId();
         if (minQuestionsInGame != null && minQuestionsInGame >= 0) {
             state.setMinQuestionsCountInGame(minQuestionsInGame);
             newGameCreatingStateService.save(state);
-            requestQuestionsCountToAdd(chatId, requestMsgId, minQuestionsInGame);
+            requestQuestionsCountToAdd(chatId, requestMsgId, minQuestionsInGame, state);
         } else {
             msgSender.edit(chatId, requestMsgId,
                     env.getProperty("messages.game.invalidNumber")
                     + String.format(
                             env.getProperty("messages.game.requestMinQuestionsCountInGame", "Error"),
-                            maxPerformed),
-                    null);
+                            state.getGameName(),
+                            getGroupsNames(state.getGroupsIds()),
+                            state.getMaxQuestionsCount(),
+                            state.getStartCountTasks(),
+                            state.getMaxPerformedQuestionsCount())
+            );
         }
     }
 
     public void addQuestionsCountToAddAndRequestNextPart(long chatId, NewGameCreatingState state,
                                                          String text, int msgId) {
         Integer questionsToAdd = parseTextToInteger(text);
-        int requestMsgId = getRequestMsgIdAndDeleteAnswerMsg(chatId, msgId);
-        int minInGame = state.getMinQuestionsCountInGame();
+        msgSender.sendDelete(chatId, msgId);
+        int requestMsgId = state.getRequestMsgId();
         if (questionsToAdd != null && questionsToAdd >= 0) {
             state.setQuestionsCountToAdd(questionsToAdd);
             newGameCreatingStateService.save(state);
-            requestMaxTimeMinutes(chatId, requestMsgId, questionsToAdd);
+            requestMaxTimeMinutes(chatId, requestMsgId, questionsToAdd, state);
         } else {
             msgSender.edit(chatId, requestMsgId,
                     env.getProperty("messages.game.invalidNumber")
                             + String.format(
                             env.getProperty("messages.game.requestQuestionsCountToAdd", "Error"),
-                            minInGame),
-                    null);
+                            state.getGameName(),
+                            getGroupsNames(state.getGroupsIds()),
+                            state.getMaxQuestionsCount(),
+                            state.getStartCountTasks(),
+                            state.getMaxPerformedQuestionsCount(),
+                            state.getMinQuestionsCountInGame())
+            );
         }
     }
 
     public void addMaxTimeMinutesToStateAmdSaveNewGame(long chatId, NewGameCreatingState state,
                                                        String text, int msgId) {
         Integer minutes = parseTextToInteger(text);
-        int requestMsgId = getRequestMsgIdAndDeleteAnswerMsg(chatId, msgId);
+        msgSender.sendDelete(chatId, msgId);
+        int requestMsgId = state.getRequestMsgId();
         int toAdd = state.getQuestionsCountToAdd();
         if (minutes != null && minutes > 0) {
-            msgSender.sendDelete(chatId, requestMsgId);
+            state.setMaxTimeMinutes(minutes);
             saveNewGame(state);
-            newGameCreatingStateService.delete(state);
             removeBlockedByAdminOnAdminChat(chatId);
             unRestrictAllMembers(chatId);
+            msgSender.edit(chatId, requestMsgId,
+                    String.format(env.getProperty("messages.game.gameAdded", "Error"),
+                            state.getGameName(),
+                            getGroupsNames(state.getGroupsIds()),
+                            state.getMaxQuestionsCount(),
+                            state.getStartCountTasks(),
+                            state.getMaxPerformedQuestionsCount(),
+                            state.getMinQuestionsCountInGame(),
+                            state.getQuestionsCountToAdd(),
+                            state.getMaxTimeMinutes())
+            );
+            newGameCreatingStateService.delete(state);
         } else {
             msgSender.edit(chatId, requestMsgId,
                     env.getProperty("messages.game.invalidNumber")
                             + String.format(
                             env.getProperty("messages.game.requestMaxTimeMinutes", "Error"),
-                            toAdd),
-                    null);
+                            state.getGameName(),
+                            getGroupsNames(state.getGroupsIds()),
+                            state.getMaxQuestionsCount(),
+                            state.getStartCountTasks(),
+                            state.getMaxPerformedQuestionsCount(),
+                            state.getMinQuestionsCountInGame(),
+                            state.getQuestionsCountToAdd())
+            );
         }
     }
 
@@ -247,53 +291,70 @@ public class NewGameActions {
         msgSender.edit(chatId, msgIdToEdit,
                 String.format(
                         env.getProperty("messages.game.requestMaxQuestionsCount", "Error"),
-                        getGroupsNames(getNewGameCreatingState(chatId).getGroupsIds())),
-                null);
+                        getNewGameCreatingState(chatId).getGameName(),
+                        getGroupsNames(getNewGameCreatingState(chatId).getGroupsIds())));
     }
 
-    private void requestStartCountTasks(long chatId, int msgIdToEdit, int maxQuestionCount) {
+    private void requestStartCountTasks(long chatId, int msgIdToEdit, int maxQuestionCount,
+                                        NewGameCreatingState state) {
         msgSender.edit(chatId, msgIdToEdit,
                 String.format(
                         env.getProperty("messages.game.requestStartCountTasks", "Error"),
-                        maxQuestionCount),
-                null);
+                        state.getGameName(),
+                        getGroupsNames(state.getGroupsIds()),
+                        state.getMaxQuestionsCount()
+                )
+        );
     }
 
-    private void requestMaxPerformedQuestionCount(long chatId, int msgIdToEdit, int startCountTask) {
+    private void requestMaxPerformedQuestionCount(long chatId, int msgIdToEdit, int startCountTask, NewGameCreatingState state) {
         msgSender.edit(chatId, msgIdToEdit,
                 String.format(
                         env.getProperty("messages.game.requestMaxPerformedQuestionCount", "Error"),
-                        startCountTask),
-                null);
+                        state.getGameName(),
+                        getGroupsNames(state.getGroupsIds()),
+                        state.getMaxQuestionsCount(),
+                        state.getStartCountTasks())
+        );
     }
 
-    private void requestMinQuestionsCountInGame(long chatId, int msgIdToEdit, Integer maxPerformedQuestionsCount) {
+    private void requestMinQuestionsCountInGame(long chatId, int msgIdToEdit, Integer maxPerformedQuestionsCount, NewGameCreatingState state) {
         msgSender.edit(chatId, msgIdToEdit,
                 String.format(
                         env.getProperty("messages.game.requestMinQuestionsCountInGame", "Error"),
-                        maxPerformedQuestionsCount),
-                null);
+                        state.getGameName(),
+                        getGroupsNames(state.getGroupsIds()),
+                        state.getMaxQuestionsCount(),
+                        state.getStartCountTasks(),
+                        state.getMaxPerformedQuestionsCount())
+        );
     }
 
-    private void requestQuestionsCountToAdd(long chatId, int msgIdToEdit, Integer minQuestionsInGame) {
+    private void requestQuestionsCountToAdd(long chatId, int msgIdToEdit, Integer minQuestionsInGame, NewGameCreatingState state) {
         msgSender.edit(chatId, msgIdToEdit,
                 String.format(
                         env.getProperty("messages.game.requestQuestionsCountToAdd", "Error"),
-                        minQuestionsInGame),
-                null);
+                        state.getGameName(),
+                        getGroupsNames(state.getGroupsIds()),
+                        state.getMaxQuestionsCount(),
+                        state.getStartCountTasks(),
+                        state.getMaxPerformedQuestionsCount(),
+                        state.getMinQuestionsCountInGame())
+        );
     }
 
-    private void requestMaxTimeMinutes(long chatId, int msgIdToEdit, Integer questionsToAdd) {
+    private void requestMaxTimeMinutes(long chatId, int msgIdToEdit, Integer questionsToAdd, NewGameCreatingState state) {
         msgSender.edit(chatId, msgIdToEdit,
                 String.format(
                         env.getProperty("messages.game.requestMaxTimeMinutes", "Error"),
-                        questionsToAdd),
-                null);
-    }
-
-    private int getRequestMsgIdAndDeleteAnswerMsg(long chatId, int answerMsgId) {
-        msgSender.sendDelete(chatId, answerMsgId);
-        return answerMsgId - 1;
+                        state.getGameName(),
+                        getGroupsNames(state.getGroupsIds()),
+                        state.getMaxQuestionsCount(),
+                        state.getStartCountTasks(),
+                        state.getMaxPerformedQuestionsCount(),
+                        state.getMinQuestionsCountInGame(),
+                        state.getQuestionsCountToAdd())
+        );
     }
 
     private String getGroupsNames(int[] allStateGroupsIds) {

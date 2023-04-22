@@ -113,6 +113,11 @@ public class MessageSender {
                 new EditMessageText(chatId, msgId, text).replyMarkup(kb)));
     }
 
+    public void edit(long chatId, int msgId, String text) {
+        checkResponse(bot.execute(
+                new EditMessageText(chatId, msgId, text)));
+    }
+
     /**
      * Удаляет сообщение с id {@code msgId} в чате с id {@code chatId}
      * @param chatId id чата

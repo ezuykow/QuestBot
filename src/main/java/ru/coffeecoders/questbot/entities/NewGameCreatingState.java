@@ -43,18 +43,22 @@ public class NewGameCreatingState {
     @Column(name = "max_time_minutes")
     private Integer maxTimeMinutes;
 
+    @Column(name = "request_msg_id")
+    private Integer requestMsgId;
+
     public NewGameCreatingState() {
     }
 
     public NewGameCreatingState(long initiatorChatId) {
         this(initiatorChatId,
                 null, null, null, null, null,
-                null, null, null);
+                null, null, null, null);
     }
 
     public NewGameCreatingState(long initiatorChatId, String gameName, int[] groupsIds, Integer startCountTasks,
                                 Integer maxQuestionsCount, Integer maxPerformedQuestionsCount,
-                                Integer minQuestionsCountInGame, Integer questionsCountToAdd, Integer maxTimeMinutes)
+                                Integer minQuestionsCountInGame, Integer questionsCountToAdd, Integer maxTimeMinutes,
+                                Integer requestMsgId)
     {
         this.initiatorChatId = initiatorChatId;
         this.gameName = gameName;
@@ -65,6 +69,7 @@ public class NewGameCreatingState {
         this.minQuestionsCountInGame = minQuestionsCountInGame;
         this.questionsCountToAdd = questionsCountToAdd;
         this.maxTimeMinutes = maxTimeMinutes;
+        this.requestMsgId = requestMsgId;
     }
 
     public long getInitiatorChatId() {
@@ -139,6 +144,14 @@ public class NewGameCreatingState {
         this.maxTimeMinutes = maxTimeMinutes;
     }
 
+    public Integer getRequestMsgId() {
+        return requestMsgId;
+    }
+
+    public void setRequestMsgId(Integer requestMsgId) {
+        this.requestMsgId = requestMsgId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -164,6 +177,7 @@ public class NewGameCreatingState {
                 ", minQuestionsCountInGame=" + minQuestionsCountInGame +
                 ", questionsCountToAdd=" + questionsCountToAdd +
                 ", maxTimeMinutes=" + maxTimeMinutes +
+                ", requestMsgId=" + requestMsgId +
                 '}';
     }
 }

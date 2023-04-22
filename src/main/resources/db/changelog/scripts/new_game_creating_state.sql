@@ -13,3 +13,11 @@ CREATE TABLE new_game_creating_state
     questions_count_to_add        INT,
     max_time_minutes              INT
 );
+
+-- changeset ezuykow:2
+ALTER TABLE new_game_creating_state
+    ADD COLUMN requestMsgId INT;
+
+-- changeset ezuykow:3
+ALTER TABLE new_game_creating_state
+    RENAME COLUMN requestMsgId TO request_msg_id;
