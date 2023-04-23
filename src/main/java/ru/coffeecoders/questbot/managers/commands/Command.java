@@ -5,6 +5,7 @@ import static ru.coffeecoders.questbot.managers.commands.Command.Attribute.*;
 public enum Command {
     STOPBOT(GLOBALADMIN),
 
+    SHOWGAMES(ADMIN),
     SHOWQUESTIONS(ADMIN),
     NEWGAME(ADMIN),
 

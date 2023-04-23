@@ -24,6 +24,7 @@ public class AdminsCommandsManager {
         long senderAdminId = update.getMessageFromUserId();
         long chatId = update.getMessageChatId();
         switch (cmd) {
+            case SHOWGAMES -> cmdActions.performShowGamesCmd(senderAdminId, chatId);
             case SHOWQUESTIONS -> cmdActions.performShowQuestionsCmd(senderAdminId, chatId);
             case NEWGAME -> newGameManager.startCreatingGame(senderAdminId, chatId);
             case STOPBOT -> cmdActions.performStopBotCmd();

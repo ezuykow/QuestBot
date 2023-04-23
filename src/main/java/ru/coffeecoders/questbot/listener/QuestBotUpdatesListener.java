@@ -28,6 +28,7 @@ public class QuestBotUpdatesListener implements UpdatesListener {
         bot.execute(new SetMyCommands(
                 new BotCommand("regteam", "(Игрок) Создать команду"),
                 new BotCommand("jointeam", "(Игрок) Вступить в команду"),
+                new BotCommand("showgames", "(Админ) Показать все игры"),
                 new BotCommand("showquestions", "(Админ) Показать все вопросы"),
                 new BotCommand("newgame", "(Админ) Создать новую игру"),
                 new BotCommand("stopbot", "(Админ) Остановить бота"),
