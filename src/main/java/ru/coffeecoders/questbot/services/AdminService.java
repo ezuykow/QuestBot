@@ -11,34 +11,55 @@ import java.util.Optional;
 
 @Service
 public class AdminService {
+
     Logger logger = LoggerFactory.getLogger(AdminService.class);
-    private final AdminRepository adminRepository;
-    public AdminService(AdminRepository adminRepository) {
-        this.adminRepository = adminRepository;
+
+    private final AdminRepository repository;
+
+    public AdminService(AdminRepository repository) {
+        this.repository = repository;
     }
 
+    /**
+     *
+     * @return
+     *@author Anatoliy Shikin
+     */
     public List<Admin> findAll() {
-        List<Admin> list = adminRepository.findAll();
-        logger.info("Admins {} displaying", list.isEmpty() ? "are not" : "are");
+        List<Admin> list = repository.findAll();
+        logger.info("Admins are {} displaying", list.isEmpty() ? "not" : "");
         return list;
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     *@author Anatoliy Shikin
+     */
     public Optional<Admin> findById(long id) {
-        Optional<Admin> admin = adminRepository.findById(id);
-        logger.info("Admin {} with id = {}", admin.isPresent() ? "found" : "not found", id);
+        Optional<Admin> admin = repository.findById(id);
+        logger.info("Admin with id = {} {} found", id, admin.isPresent() ? "" : "not");
         return admin;
     }
 
+    /**
+     *
+     * @param admin
+     * @return
+     *@author Anatoliy Shikin
+     */
     public Admin save(Admin admin) {
         logger.info("Admin = {} has been saved", admin);
-        return adminRepository.save(admin);
+        return repository.save(admin);
     }
 
     /**
      * @author ezuykow
      */
     public void deleteAll(List<Admin> admins) {
-        adminRepository.deleteAll(admins);
+        logger.info("Admins = {} has been deleted", admins);
+        repository.deleteAll(admins);
     }
 
     /**

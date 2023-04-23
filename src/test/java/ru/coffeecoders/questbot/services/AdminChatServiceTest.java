@@ -15,15 +15,18 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AdminChatServiceTest {
+
     @Mock
     private AdminChatRepository repository;
+
     @InjectMocks
     private AdminChatService service;
+
     private long id;
     private AdminChat chat;
 
@@ -35,7 +38,6 @@ class AdminChatServiceTest {
 
     @Test
     void findAllTest() {
-        chat.setTgAdminChatId(id);
         when(repository.findAll()).thenReturn(List.of(chat, new AdminChat(), new AdminChat()));
         assertEquals(3, service.findAll().size());
         assertTrue(service.findAll().contains(chat));
@@ -51,7 +53,7 @@ class AdminChatServiceTest {
 
     @Test
     void findById() {
-        when(repository.findById(any(Long.class))).thenReturn(Optional.of(chat));
+        when(repository.findById(anyLong())).thenReturn(Optional.of(chat));
         assertTrue(service.findById(id).isPresent());
         assertEquals(chat, service.findById(id).get());
         Mockito.verify(repository, times(2)).findById(id);
@@ -59,7 +61,7 @@ class AdminChatServiceTest {
 
     @Test
     void findByIdEmpty() {
-        when(repository.findById(any(Long.class))).thenReturn(Optional.empty());
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
         assertTrue(service.findById(id).isEmpty());
         Mockito.verify(repository).findById(id);
     }
@@ -69,5 +71,18 @@ class AdminChatServiceTest {
         when(repository.save(any(AdminChat.class))).thenReturn(chat);
         assertEquals(chat, service.save(chat));
         Mockito.verify(repository).save(chat);
+    }
+
+    //TODO
+    @Test
+    void delete() {
+        service.delete(chat);
+        Mockito.verify(repository).delete(chat);
+    }
+
+    @Test
+    void deleteByChatId() {
+        service.deleteByChatId(id);
+        Mockito.verify(repository).deleteById(id);
     }
 }

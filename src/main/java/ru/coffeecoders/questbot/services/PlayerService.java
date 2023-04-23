@@ -11,26 +11,29 @@ import java.util.Optional;
 
 @Service
 public class PlayerService {
+
     Logger logger = LoggerFactory.getLogger(PlayerService.class);
-    private final PlayerRepository playerRepository;
-    public PlayerService(PlayerRepository playerRepository) {
-        this.playerRepository = playerRepository;
+
+    private final PlayerRepository repository;
+
+    public PlayerService(PlayerRepository repository) {
+        this.repository = repository;
     }
 
     public List<Player> findAll() {
-        List<Player> list = playerRepository.findAll();
-        logger.info("Players {} displaying", list.isEmpty() ? "are not" : "are");
+        List<Player> list = repository.findAll();
+        logger.info("Players are {} displaying", list.isEmpty() ? "not" : "");
         return list;
     }
 
     public Optional<Player> findById(long id) {
-        Optional<Player> player = playerRepository.findById(id);
-        logger.info("Player {} with id = {}", player.isPresent() ? "found" : "not found", id);
-        return player;
+        Optional<Player> optional = repository.findById(id);
+        logger.info("Player with id = {} {} found", id, optional.isPresent() ? "" : "not");
+        return optional;
     }
 
     public Player save(Player player) {
         logger.info("Player = {} has been saved", player);
-        return playerRepository.save(player);
+        return repository.save(player);
     }
 }

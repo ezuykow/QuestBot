@@ -21,18 +21,35 @@ public class GameService {
         this.gameRepository = gameRepository;
     }
 
+    /**
+     *
+     * @return
+     *@author Anatoliy Shikin
+     */
     public List<Game> findAll() {
         List<Game> list = gameRepository.findAll();
         logger.info("Games {} displaying", list.isEmpty() ? "are not" : "are");
         return list;
     }
 
+    /**
+     *
+     * @param gameName
+     * @return
+     *@author Anatoliy Shikin
+     */
     public Optional<Game> findByName(String gameName) {
         Optional<Game> game = gameRepository.findById(gameName);
         logger.info("Game {} with id = {}", game.isPresent() ? "found" : "not found", gameName);
         return game;
     }
 
+    /**
+     *
+     * @param game
+     * @return
+     *@author Anatoliy Shikin
+     */
     public Game save(Game game) {
         logger.info("Game = {} has been saved", game);
         return gameRepository.save(game);

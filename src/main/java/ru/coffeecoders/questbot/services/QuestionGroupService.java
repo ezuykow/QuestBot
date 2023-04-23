@@ -11,27 +11,30 @@ import java.util.Optional;
 
 @Service
 public class QuestionGroupService {
+
     Logger logger = LoggerFactory.getLogger(QuestionGroupService.class);
-    private final QuestionGroupRepository questionGroupRepository;
-    public QuestionGroupService(QuestionGroupRepository questionGroupRepository) {
-        this.questionGroupRepository = questionGroupRepository;
+
+    private final QuestionGroupRepository repository;
+
+    public QuestionGroupService(QuestionGroupRepository repository) {
+        this.repository = repository;
     }
 
     public List<QuestionGroup> findAll() {
-        List<QuestionGroup> list = questionGroupRepository.findAll();
-        logger.info("QuestionGroups {} displaying", list.isEmpty() ? "are not" : "are");
+        List<QuestionGroup> list = repository.findAll();
+        logger.info("QuestionGroups are {} displaying", list.isEmpty() ? "not" : "");
         return list;
     }
 
     public Optional<QuestionGroup> findById(long id) {
-        Optional<QuestionGroup> optional = questionGroupRepository.findById(id);
-        logger.info("Player {} with id = {}", optional.isPresent() ? "found" : "not found", id);
+        Optional<QuestionGroup> optional = repository.findById(id);
+        logger.info("QuestionGroup with id = {} {} found", id, optional.isPresent() ? "" : "not");
         return optional;
     }
 
     public QuestionGroup save(QuestionGroup questionGroup) {
         logger.info("QuestionGroup = {} has been saved", questionGroup);
-        return questionGroupRepository.save(questionGroup);
+        return repository.save(questionGroup);
     }
 
     /**

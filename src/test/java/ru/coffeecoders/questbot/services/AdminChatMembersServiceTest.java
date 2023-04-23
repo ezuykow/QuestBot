@@ -7,76 +7,77 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.coffeecoders.questbot.entities.GlobalChat;
-import ru.coffeecoders.questbot.repositories.GlobalChatRepository;
+import ru.coffeecoders.questbot.entities.AdminChatMembers;
+import ru.coffeecoders.questbot.repositories.AdminChatMembersRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
+/**
+ * @author Anatoliy Shikin
+ */
 @ExtendWith(MockitoExtension.class)
-class GlobalChatServiceTest {
+class AdminChatMembersServiceTest {
 
     @Mock
-    private GlobalChatRepository repository;
+    private AdminChatMembersRepository repository;
 
     @InjectMocks
-    private GlobalChatService service;
+    private AdminChatMembersService service;
 
-    private GlobalChat globalChat;
+    private AdminChatMembers members;
     private long id;
 
     @BeforeEach
     void setUp() {
-        globalChat = new GlobalChat();
+        members = new AdminChatMembers();
         id = 111L;
     }
 
     @Test
     void findAll() {
-        when(repository.findAll()).thenReturn(List.of(globalChat, new GlobalChat(), new GlobalChat()));
-        assertEquals(3, repository.findAll().size());
-        assertTrue(service.findAll().contains(globalChat));
+        when(repository.findAll()).thenReturn(List.of(members, new AdminChatMembers(), new AdminChatMembers()));
+        assertEquals(3, service.findAll().size());
+        assertTrue(service.findAll().contains(members));
         Mockito.verify(repository, times(2)).findAll();
     }
 
     @Test
-    void findAllEmptyList() {
+    void findAllEmptyListTest() {
         when(repository.findAll()).thenReturn(List.of());
         assertTrue(service.findAll().isEmpty());
         Mockito.verify(repository).findAll();
     }
 
     @Test
-    void findById() {
-        when(repository.findById(anyLong())).thenReturn(Optional.of(globalChat));
-        assertTrue(service.findById(id).isPresent());
-        assertEquals(globalChat, service.findById(id).get());
+    void findByChatId() {
+        when(repository.findById(anyLong())).thenReturn(Optional.of(members));
+        assertTrue(service.findByChatId(id).isPresent());
+        assertEquals(members, service.findByChatId(id).get());
         Mockito.verify(repository, times(2)).findById(id);
     }
 
     @Test
-    void findByIdEmpty() {
+    void findByChatIdEmpty() {
         when(repository.findById(anyLong())).thenReturn(Optional.empty());
-        assertTrue(service.findById(id).isEmpty());
+        assertTrue(service.findByChatId(id).isEmpty());
         Mockito.verify(repository).findById(id);
     }
 
     @Test
     void save() {
-        when(repository.save(any(GlobalChat.class))).thenReturn(globalChat);
-        assertEquals(globalChat, service.save(globalChat));
-        Mockito.verify(repository).save(globalChat);
+        service.save(members);
+        Mockito.verify(repository).save(members);
     }
 
     @Test
-    void deleteById() {
-        service.deleteById(id);
-        Mockito.verify(repository, times(1)).deleteById(id);
+    void deleteByChatId() {
+        service.deleteByChatId(id);
+        Mockito.verify(repository).deleteById(id);
     }
 }

@@ -15,16 +15,19 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AdminServiceTest {
+
     @Mock
     private AdminRepository repository;
+
     @InjectMocks
     private AdminService service;
+
     private long id;
     private Admin admin;
 
@@ -36,7 +39,6 @@ class AdminServiceTest {
 
     @Test
     void findAllTest() {
-        admin.setTgAdminUserId(id);
         when(repository.findAll()).thenReturn(List.of(admin, new Admin(), new Admin()));
         assertEquals(3, service.findAll().size());
         assertTrue(service.findAll().contains(admin));
@@ -52,7 +54,7 @@ class AdminServiceTest {
 
     @Test
     void findById() {
-        when(repository.findById(any(Long.class))).thenReturn(Optional.of(admin));
+        when(repository.findById(anyLong())).thenReturn(Optional.of(admin));
         assertTrue(service.findById(id).isPresent());
         assertEquals(admin, service.findById(id).get());
         Mockito.verify(repository, times(2)).findById(id);
@@ -60,7 +62,7 @@ class AdminServiceTest {
 
     @Test
     void findByIdEmpty() {
-        when(repository.findById(any(Long.class))).thenReturn(Optional.empty());
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
         assertTrue(service.findById(id).isEmpty());
         Mockito.verify(repository).findById(id);
     }
@@ -70,5 +72,11 @@ class AdminServiceTest {
         when(repository.save(any(Admin.class))).thenReturn(admin);
         assertEquals(admin, service.save(admin));
         Mockito.verify(repository).save(admin);
+    }
+
+    @Test
+    void deleteAll() {
+        service.deleteAll(List.of(admin, new Admin(), new Admin()));
+        Mockito.verify(repository,times(1)).deleteAll(anyList());
     }
 }

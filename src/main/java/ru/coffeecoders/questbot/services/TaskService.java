@@ -10,36 +10,34 @@ import java.util.List;
 
 @Service
 public class TaskService {
+
     Logger logger = LoggerFactory.getLogger(TaskService.class);
-    private final TaskRepository taskRepository;
-    public TaskService(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
+
+    private final TaskRepository repository;
+
+    public TaskService(TaskRepository repository) {
+        this.repository = repository;
     }
 
     public List<Task> findAll() {
-        List<Task> list = taskRepository.findAll();
-        logger.info("Tasks {} displaying", list.isEmpty() ? "are not" : "are");
+        List<Task> list = repository.findAll();
+        logger.info("Tasks are {} displaying", list.isEmpty() ? "not" : "");
         return list;
     }
 
-    //TODO void или boolean
     public void deleteById(long id) {
-        if (taskRepository.existsById(id)) {
-            logger.info("Task with id = {} has been deleted", id);
-            taskRepository.deleteById(id);
-            return;
-        }
-        logger.warn("There is no task with id = {}", id);
+        logger.info("Task with id = {} has been deleted", id);
+        repository.deleteById(id);
     }
 
     public Task save(Task task) {
         logger.info("Task = {} has been saved", task);
-        return taskRepository.save(task);
+        return repository.save(task);
     }
 
     public List<Task> findByGameName(String gameName) {
-        List<Task> list = taskRepository.findByGameName(gameName);
-        logger.info("Tasks {} with name = {} displaying", list.isEmpty() ? "are not" : "are", gameName);
+        List<Task> list = repository.findByGameName(gameName);
+        logger.info("Tasks with game name = {} are {} displaying", gameName, list.isEmpty() ? "not" : "");
         return list;
     }
 }
