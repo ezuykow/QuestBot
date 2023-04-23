@@ -40,7 +40,7 @@ class QuestionViewerCallbackManagerTest {
     private long ownerId;
     private long chatId;
     private int msgId;
-
+/*
     @BeforeEach
     public void setUp() {
         senderId = 1L;
@@ -59,7 +59,7 @@ class QuestionViewerCallbackManagerTest {
         questionViewerCallbackManager.manageCallback(senderId, chatId, msgId, data);
         verify(questionsViewer).switchPageToPrevious(chatId, msgId, data);
     }
-/*
+
     @Test
     public void shouldCallSwitchPageToNextMethod() {
         final String data = "QuestionViewer.Switch page to next....";

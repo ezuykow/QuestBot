@@ -79,7 +79,7 @@ public class AdminService {
      * @author ezuykow
      */
     public void deleteUselessAdmins() {
-        adminRepository.deleteAll(
+        repository.deleteAll(
                 findAll().stream()
                         .filter(admin -> !admin.isOwner() && admin.getAdminChats().isEmpty())
                         .toList()
