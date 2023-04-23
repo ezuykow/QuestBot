@@ -41,6 +41,6 @@ public class QuestionGroupService {
      * @author ezuykow
      */
     public Optional<QuestionGroup> findByGroupName(String groupName) {
-        return questionGroupRepository.findQuestionGroupByGroupName(groupName);
+        return repository.findQuestionGroupByGroupName(groupName);
     }
 }
