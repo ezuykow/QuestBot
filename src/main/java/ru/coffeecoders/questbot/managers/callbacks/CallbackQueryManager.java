@@ -46,12 +46,13 @@ public class CallbackQueryManager {
         final long chatId = update.getCallbackMessageChatId();
         final int msgId = update.getCallbackMessageId();
         final String data = update.getCallbackQueryData();
+        final String id = update.getCallbackQueryId();
 
         if (data.matches(QUESTION_VIEWER_CALLBACK_REGEXP)) {
             questionViewerCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
         }
         if (data.matches(GAME_VIEWER_CALLBACK_REGEXP)) {
-            gamesViewerCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
+            gamesViewerCallbackManager.manageCallback(id, senderUserId, chatId, msgId, data);
         }
         if (data.matches(PROMOTE_USER_CALLBACK_REGEXP)) {
             promoteUserCallbackManager.manageCallback(senderUserId, chatId, msgId, data);

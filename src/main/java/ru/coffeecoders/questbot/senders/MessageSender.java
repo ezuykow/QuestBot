@@ -118,6 +118,15 @@ public class MessageSender {
                 new EditMessageText(chatId, msgId, text)));
     }
 
+    public void sentToast(String callbackId, String text, boolean isAlert) {
+        checkResponse(bot.execute(
+                new AnswerCallbackQuery(callbackId)
+                        .text(text)
+                        .showAlert(isAlert)
+                        .cacheTime(5)
+        ));
+    }
+
     /**
      * Удаляет сообщение с id {@code msgId} в чате с id {@code chatId}
      * @param chatId id чата
@@ -188,6 +197,8 @@ public class MessageSender {
     public void sendStopBot() {
         getAllChatIds().forEach(id -> send(id, stopBotMsg + Character.toString(0x1FAE3)));
     }
+
+    //-----------------API END-----------------
 
     /**
      * @author ezuykow

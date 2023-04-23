@@ -25,7 +25,7 @@ public class GameInfoKeyboard {
     private InlineKeyboardButton[] createButtons(String gameName) {
         return new InlineKeyboardButton[]{
                 new InlineKeyboardButton("Удалить")
-                        .callbackData("GameViewer.Game info.Delete" + gameName),
+                        .callbackData("GameViewer.Game info.Delete." + gameName),
                 new InlineKeyboardButton(Character.toString(0x1F519))
                         .callbackData("GameViewer.Game info.Back")
         };

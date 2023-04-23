@@ -24,7 +24,7 @@ public class ExtendedUpdate{
         UNKNOWN
     }
 
-    private final Update update;
+    public final Update update;
 
     public ExtendedUpdate(Update update) {
         this.update = update;
@@ -220,6 +220,13 @@ public class ExtendedUpdate{
             return update.message().from().id();
         }
         throw new RuntimeException("Update haven't message");
+    }
+
+    public String getCallbackQueryId() {
+        if (hasCallbackQuery()) {
+            return update.callbackQuery().id();
+        }
+        throw new RuntimeException("Update haven't callbackQuery!");
     }
 
     /**

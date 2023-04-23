@@ -12,6 +12,8 @@ public class GamesViewerCallbackManager {
 
     private enum Action {
         SHOW_GAME("GameViewer.Taken game.*"),
+        DELETE("GameViewer.Game info.Delete.*"),
+        BACK_FROM_INFO("GameViewer.Game info.Back"),
         CLOSE("GameViewer.Close"),
         UNKNOWN("");
 
@@ -33,17 +35,19 @@ public class GamesViewerCallbackManager {
 
     //-----------------API START-----------------
 
-    public void manageCallback(long senderUserId, long chatId, int msgId, String data) {
+    public void manageCallback(String callbackId, long senderUserId, long chatId, int msgId, String data) {
         if (validator.isBlockedAdmin(chatId, senderUserId) || validator.isOwner(senderUserId)) {
-            performCallback(chatId, msgId, data);
+            performCallback(callbackId, chatId, msgId, data);
         }
     }
 
     //-----------------API END-----------------
 
-    private void performCallback(long chatId, int msgId, String data) {
+    private void performCallback(String callbackId, long chatId, int msgId, String data) {
         switch (findActions(data)) {
             case SHOW_GAME -> gamesViewer.showGame(chatId, msgId, data);
+            case DELETE -> gamesViewer.deleteGame(callbackId, chatId, msgId, data);
+            case BACK_FROM_INFO -> gamesViewer.backFromInfo(chatId, msgId);
             case CLOSE -> gamesViewer.closeView(chatId, msgId);
             case UNKNOWN -> {} //Игнорируем неизвестный калбак
         }

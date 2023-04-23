@@ -1,5 +1,6 @@
 package ru.coffeecoders.questbot.services;
 
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -11,8 +12,11 @@ import java.util.Optional;
 
 @Service
 public class GameService {
+
     Logger logger = LoggerFactory.getLogger(GameService.class);
+
     private final GameRepository gameRepository;
+
     public GameService(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
     }
@@ -32,5 +36,13 @@ public class GameService {
     public Game save(Game game) {
         logger.info("Game = {} has been saved", game);
         return gameRepository.save(game);
+    }
+
+    /**
+     * @author ezuykow
+     */
+    @Transactional
+    public void deleteByGameName(String gameName) {
+        gameRepository.deleteByGameName(gameName);
     }
 }

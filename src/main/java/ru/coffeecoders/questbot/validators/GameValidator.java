@@ -1,7 +1,6 @@
 package ru.coffeecoders.questbot.validators;
 
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.entities.GlobalChat;
 import ru.coffeecoders.questbot.services.GameService;
 import ru.coffeecoders.questbot.services.GlobalChatService;
@@ -43,6 +42,11 @@ public class GameValidator {
         return globalChatService.findById(chatId)
                 .filter(this::isGameCreating)
                 .isPresent();
+    }
+
+    public boolean isGameCreating(String gameName) {
+        return globalChatService.findAll().stream()
+                .anyMatch(gc -> gc.getCreatingGameName().equals(gameName));
     }
 
     public boolean isNewGameCreating(long chatId) {
