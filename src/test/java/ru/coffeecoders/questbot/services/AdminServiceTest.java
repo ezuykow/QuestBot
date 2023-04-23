@@ -15,8 +15,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -40,7 +39,6 @@ class AdminServiceTest {
 
     @Test
     void findAllTest() {
-        admin.setTgAdminUserId(id);
         when(repository.findAll()).thenReturn(List.of(admin, new Admin(), new Admin()));
         assertEquals(3, service.findAll().size());
         assertTrue(service.findAll().contains(admin));
@@ -74,5 +72,11 @@ class AdminServiceTest {
         when(repository.save(any(Admin.class))).thenReturn(admin);
         assertEquals(admin, service.save(admin));
         Mockito.verify(repository).save(admin);
+    }
+
+    @Test
+    void deleteAll() {
+        service.deleteAll(List.of(admin, new Admin(), new Admin()));
+        Mockito.verify(repository,times(1)).deleteAll(anyList());
     }
 }

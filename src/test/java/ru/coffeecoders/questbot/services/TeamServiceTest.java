@@ -38,7 +38,6 @@ class TeamServiceTest {
 
     @Test
     void findAll() {
-        team.setGameName(name);
         when(repository.findAll()).thenReturn(List.of(team, new Team(), new Team()));
         assertTrue(service.findAll().contains(team));
         assertEquals(3, service.findAll().size());

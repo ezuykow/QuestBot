@@ -20,18 +20,35 @@ public class AdminService {
         this.repository = repository;
     }
 
+    /**
+     *
+     * @return
+     *@author Anatoliy Shikin
+     */
     public List<Admin> findAll() {
         List<Admin> list = repository.findAll();
         logger.info("Admins are {} displaying", list.isEmpty() ? "not" : "");
         return list;
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     *@author Anatoliy Shikin
+     */
     public Optional<Admin> findById(long id) {
         Optional<Admin> admin = repository.findById(id);
         logger.info("Admin with id = {} {} found", id, admin.isPresent() ? "" : "not");
         return admin;
     }
 
+    /**
+     *
+     * @param admin
+     * @return
+     *@author Anatoliy Shikin
+     */
     public Admin save(Admin admin) {
         logger.info("Admin = {} has been saved", admin);
         return repository.save(admin);
@@ -43,6 +60,7 @@ public class AdminService {
      * @author ezuykow
      */
     public void deleteAll(List<Admin> admins) {
-        adminRepository.deleteAll(admins);
+        logger.info("Admins = {} has been deleted", admins);
+        repository.deleteAll(admins);
     }
 }

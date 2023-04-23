@@ -22,7 +22,7 @@ public class GlobalChatService {
 
     public List<GlobalChat> findAll() {
         List<GlobalChat> list = repository.findAll();
-        logger.info("GlobalChats {} displaying", list.isEmpty() ? "are not" : "are");
+        logger.info("GlobalChats = {} are {} displaying", list, list.isEmpty() ? "not" : "");
         return list;
     }
 
@@ -32,17 +32,18 @@ public class GlobalChatService {
         return optional;
     }
 
+    //TODO есть ли смысл возвращать объект?
     public GlobalChat save(GlobalChat globalChat) {
         logger.info("GlobalChat = {} has been saved", globalChat);
         return repository.save(globalChat);
     }
 
     /**
-     *
      * @param chatId
      * @author ezuykow
      */
     public void deleteById(long chatId) {
-        globalChatRepository.deleteById(chatId);
+        logger.info("GlobalChat with id = {} has been deleted", chatId);
+        repository.deleteById(chatId);
     }
 }

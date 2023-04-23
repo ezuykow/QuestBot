@@ -16,8 +16,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AdminChatServiceTest {
@@ -39,7 +38,6 @@ class AdminChatServiceTest {
 
     @Test
     void findAllTest() {
-        chat.setTgAdminChatId(id);
         when(repository.findAll()).thenReturn(List.of(chat, new AdminChat(), new AdminChat()));
         assertEquals(3, service.findAll().size());
         assertTrue(service.findAll().contains(chat));
@@ -74,9 +72,17 @@ class AdminChatServiceTest {
         assertEquals(chat, service.save(chat));
         Mockito.verify(repository).save(chat);
     }
+
     //TODO
     @Test
     void delete() {
+        service.delete(chat);
+        Mockito.verify(repository).delete(chat);
+    }
 
+    @Test
+    void deleteByChatId() {
+        service.deleteByChatId(id);
+        Mockito.verify(repository).deleteById(id);
     }
 }

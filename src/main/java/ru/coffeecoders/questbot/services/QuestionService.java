@@ -42,9 +42,9 @@ public class QuestionService {
         logger.info("Question = {} has been saved", question);
         return repository.save(question);
     }
-//TODO зачем возвращать List<Question>
-    public List<Question> saveAll(List<Question> questionList) {
+
+    public void saveAll(List<Question> questionList) {
         logger.info("Questions = {} has been saved", questionList);
-        return repository.saveAll(questionList);
+        repository.saveAll(questionList);
     }
 }

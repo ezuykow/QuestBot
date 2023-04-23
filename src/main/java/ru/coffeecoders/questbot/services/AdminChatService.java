@@ -20,18 +20,35 @@ public class AdminChatService {
         this.repository = repository;
     }
 
+    /**
+     *
+     * @return
+     *@author Anatoliy Shikin
+     */
     public List<AdminChat> findAll() {
         List<AdminChat> list = repository.findAll();
         logger.info("AdminChats are {} displaying", list.isEmpty() ? "not" : "");
         return list;
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     *@author Anatoliy Shikin
+     */
     public Optional<AdminChat> findById(long id) {
         Optional<AdminChat> optional = repository.findById(id);
         logger.info("AdminChat with id = {} {} found", id, optional.isPresent() ? "" : "not");
         return optional;
     }
 
+    /**
+     *
+     * @param adminChat
+     * @return
+     *@author Anatoliy Shikin
+     */
     public AdminChat save(AdminChat adminChat) {
         logger.info("AdminChat = {} has been saved", adminChat);
         return repository.save(adminChat);
@@ -53,6 +70,7 @@ public class AdminChatService {
      * @author ezuykow
      */
     public void deleteByChatId(long chatId) {
-        adminChatRepository.deleteById(chatId);
+        logger.info("AdminChat with chatId = {} has been deleted", chatId);
+        repository.deleteById(chatId);
     }
 }

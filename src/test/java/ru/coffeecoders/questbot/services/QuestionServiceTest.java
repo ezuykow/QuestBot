@@ -40,7 +40,6 @@ class QuestionServiceTest {
 
     @Test
     void findAll() {
-        question.setQuestionId(id);
         when(repository.findAll()).thenReturn(List.of(question, new Question(), new Question()));
         assertTrue(service.findAll().contains(question));
         assertEquals(3, service.findAll().size());
@@ -90,8 +89,10 @@ class QuestionServiceTest {
         assertEquals(question, service.save(question));
         Mockito.verify(repository).save(question);
     }
-//TODO
+
     @Test
     void saveAll() {
+        service.saveAll(List.of(question, new Question(), new Question()));
+        Mockito.verify(repository).saveAll(anyList());
     }
 }

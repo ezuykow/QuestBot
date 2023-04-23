@@ -13,10 +13,8 @@ import ru.coffeecoders.questbot.repositories.TaskRepository;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TaskServiceTest {
@@ -53,9 +51,11 @@ class TaskServiceTest {
         assertTrue(service.findAll().isEmpty());
         Mockito.verify(repository).findAll();
     }
-    //TODO
     @Test
     void deleteById() {
+        doNothing().when(repository).deleteById(anyLong());
+        service.deleteById(id);
+        Mockito.verify(repository, times(1)).deleteById((long) id);
     }
 
     @Test

@@ -25,14 +25,9 @@ public class TaskService {
         return list;
     }
 
-    //TODO void или boolean
     public void deleteById(long id) {
-        if (repository.existsById(id)) {
-            logger.info("Task with id = {} has been deleted", id);
-            repository.deleteById(id);
-            return;
-        }
-        logger.warn("There is no task with id = {}", id);
+        logger.info("Task with id = {} has been deleted", id);
+        repository.deleteById(id);
     }
 
     public Task save(Task task) {

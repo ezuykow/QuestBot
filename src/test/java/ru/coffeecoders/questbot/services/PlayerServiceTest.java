@@ -39,7 +39,6 @@ class PlayerServiceTest {
 
     @Test
     void findAll() {
-        player.setTgUserId(id);
         when(repository.findAll()).thenReturn(List.of(player, new Player(), new Player()));
         assertTrue(service.findAll().contains(player));
         assertEquals(3, service.findAll().size());
