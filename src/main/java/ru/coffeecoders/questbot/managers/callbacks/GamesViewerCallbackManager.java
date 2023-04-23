@@ -43,7 +43,7 @@ public class GamesViewerCallbackManager {
 
     private void performCallback(long chatId, int msgId, String data) {
         switch (findActions(data)) {
-            case SHOW_GAME -> {}
+            case SHOW_GAME -> gamesViewer.showGame(chatId, msgId, data);
             case CLOSE -> gamesViewer.closeView(chatId, msgId);
             case UNKNOWN -> {} //Игнорируем неизвестный калбак
         }
