@@ -38,7 +38,6 @@ class TaskServiceTest {
 
     @Test
     void findAll() {
-        task.setTaskId(id);
         when(repository.findAll()).thenReturn(List.of(task, new Task(), new Task()));
         assertTrue(service.findAll().contains(task));
         assertEquals(3, service.findAll().size());

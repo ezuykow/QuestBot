@@ -32,7 +32,6 @@ public class GlobalChatService {
         return optional;
     }
 
-    //TODO есть ли смысл возвращать объект?
     public GlobalChat save(GlobalChat globalChat) {
         logger.info("GlobalChat = {} has been saved", globalChat);
         return repository.save(globalChat);
