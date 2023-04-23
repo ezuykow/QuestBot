@@ -1,19 +1,16 @@
 package ru.coffeecoders.questbot.viewers;
 
-import com.pengrad.telegrambot.model.ChatPermissions;
 import com.pengrad.telegrambot.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.entities.AdminChat;
 import ru.coffeecoders.questbot.entities.Question;
+import ru.coffeecoders.questbot.managers.BlockingManager;
+import ru.coffeecoders.questbot.managers.RestrictingManager;
 import ru.coffeecoders.questbot.models.QuestionsViewerPage;
 import ru.coffeecoders.questbot.senders.MessageSender;
-import ru.coffeecoders.questbot.services.AdminChatMembersService;
-import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.services.QuestionService;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,10 +22,10 @@ public class QuestionsViewer {
     @Value("${viewer.questions.page.size}")
     private int defaultPageSize;
 
-    private final AdminChatMembersService adminChatMembersService;
-    private final AdminChatService adminChatService;
     private final QuestionService questionService;
     private final QuestionInfoViewer questionInfoViewer;
+    private final BlockingManager blockingManager;
+    private final RestrictingManager restrictingManager;
     private final MessageSender msgSender;
     private final Environment env;
 
@@ -36,11 +33,13 @@ public class QuestionsViewer {
     private int pagesCount;
     private int lastShowedFirstIndex;
 
-    public QuestionsViewer(AdminChatMembersService adminChatMembersService, AdminChatService adminChatService, QuestionService questionService, QuestionInfoViewer questionInfoViewer, MessageSender msgSender, Environment env) {
-        this.adminChatMembersService = adminChatMembersService;
-        this.adminChatService = adminChatService;
+    public QuestionsViewer(QuestionService questionService, QuestionInfoViewer questionInfoViewer,
+                           BlockingManager blockingManager, RestrictingManager restrictingManager,
+                           MessageSender msgSender, Environment env) {
         this.questionService = questionService;
         this.questionInfoViewer = questionInfoViewer;
+        this.blockingManager = blockingManager;
+        this.restrictingManager = restrictingManager;
         this.msgSender = msgSender;
         this.env = env;
     }
@@ -105,8 +104,8 @@ public class QuestionsViewer {
     public void deleteView(long senderUserId, long chatId, int msgId) {
         msgSender.send(chatId,
                 buildName(chatId, senderUserId) + env.getProperty("messages.admins.endQuestionView"));
-        unRestrictAllMembers(chatId);
-        removeBlockedByAdminOnAdminChat(chatId);
+        restrictingManager.unRestrictMembers(chatId);
+        blockingManager.unblockAdminChat(chatId);
         msgSender.sendDelete(chatId, msgId);
     }
 
@@ -120,25 +119,10 @@ public class QuestionsViewer {
         return QuestionsViewerPage.createPage(questions, pageSize, lastShowedFirstIndex, pagesCount);
     }
 
-    private void unRestrictAllMembers(long chatId) {
-        ChatPermissions permissions = new ChatPermissions()
-                .canSendMessages(true)
-                .canSendOtherMessages(true);
-
-        Arrays.stream(adminChatMembersService.findByChatId(chatId).get().getMembers())
-                .forEach(id -> msgSender.sendRestrictChatMember(chatId, id, permissions));
-    }
-
     private String buildName(long chatId, long senderAdminId) {
         User user = msgSender.getChatMember(chatId, senderAdminId);
         return (user.lastName() == null)
                 ? user.firstName()
                 : user.firstName() + " " + user.lastName();
-    }
-
-    private void removeBlockedByAdminOnAdminChat(long chatId) {
-        AdminChat currentAdminChat = adminChatService.findById(chatId).get();
-        currentAdminChat.setBlockedByAdminId(0);
-        adminChatService.save(currentAdminChat);
     }
 }
