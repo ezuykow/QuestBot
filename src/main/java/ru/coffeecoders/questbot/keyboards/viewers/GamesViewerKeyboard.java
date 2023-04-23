@@ -11,25 +11,46 @@ import java.util.List;
  */
 public class GamesViewerKeyboard {
 
-    private final InlineKeyboardMarkup keyboard;
-    private InlineKeyboardButton[] buttons;
+    public static final int MAX_BUTTONS_COUNT_IN_ROW = 8;
+
+    private final InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
 
     private GamesViewerKeyboard(List<Game> games) {
-        createButtons(games);
-        keyboard = new InlineKeyboardMarkup(buttons);
+        createKb(games);
     }
 
     public static InlineKeyboardMarkup createKeyboard(List<Game> games) {
         return new GamesViewerKeyboard(games).keyboard;
     }
 
-    private void createButtons(List<Game> games) {
-        buttons = new InlineKeyboardButton[games.size() + 1];
-        for (int i = 0; i < games.size(); i++) {
-            buttons[i] = new InlineKeyboardButton(String.valueOf(i + 1))
-                    .callbackData("GameViewer.Taken game." + games.get(i).getGameName());
+    private void createKb(List<Game> games) {
+        int gamesCount = games.size();
+        int rowsCount = gamesCount / MAX_BUTTONS_COUNT_IN_ROW +
+                (gamesCount % MAX_BUTTONS_COUNT_IN_ROW == 0 ? 0 : 1);
+        addButtonsToKeyboard(games, gamesCount, rowsCount);
+    }
+
+    private void addButtonsToKeyboard(List<Game> games, int gamesCount, int rowsCount) {
+        for (int i = 0; i < rowsCount; i++) {
+            keyboard.addRow(createRow(games, calcButtonsCount(i + 1, rowsCount, gamesCount),
+                    i * MAX_BUTTONS_COUNT_IN_ROW));
         }
-        buttons[games.size()] = new InlineKeyboardButton("\u274C")
-                .callbackData("GameViewer.Close");
+        keyboard.addRow(new InlineKeyboardButton("\u274C")
+                .callbackData("GameViewer.Close"));
+    }
+
+    private InlineKeyboardButton[] createRow(List<Game> games, int buttonsCount, int startIndex) {
+        InlineKeyboardButton[] buttons = new InlineKeyboardButton[buttonsCount];
+        for (int i = 0; i < buttonsCount; i++, startIndex++) {
+            buttons[i] = new InlineKeyboardButton(String.valueOf(startIndex + 1))
+                    .callbackData("GameViewer.Taken game." + games.get(startIndex).getGameName());
+        }
+        return buttons;
+    }
+
+    private int calcButtonsCount(int currentRow, int rowsCount, int gamesCount) {
+        return ((currentRow == rowsCount) && (gamesCount % MAX_BUTTONS_COUNT_IN_ROW != 0))
+                ? gamesCount - MAX_BUTTONS_COUNT_IN_ROW * currentRow
+                : MAX_BUTTONS_COUNT_IN_ROW;
     }
 }
