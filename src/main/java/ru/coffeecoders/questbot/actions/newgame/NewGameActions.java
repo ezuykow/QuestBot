@@ -1,5 +1,6 @@
 package ru.coffeecoders.questbot.actions.newgame;
 
+import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.actions.newgame.utils.NewGameRequests;
@@ -43,6 +44,8 @@ public class NewGameActions {
         this.env = env;
     }
 
+    //-----------------API START-----------------
+
     public void createNewGameCreatingState(long chatId) {
         newGameCreatingStateService.save(
                 new NewGameCreatingState(chatId)
@@ -64,9 +67,9 @@ public class NewGameActions {
     }
 
     public void addSelectedQuestionGroupAndRefreshMsg(long chatId, int msgId, int questionGroupId) {
+        InlineKeyboardMarkup kb = utils.addQuestionGroupAndGetKeyboard(chatId, questionGroupId);
         utils.switchMsg(2, chatId, msgId, utils.getNewGameCreatingState(chatId),
-                env.getProperty("messages.game.addedQuestionGroup"),
-                utils.addQuestionGroupAndGetKeyboard(chatId, questionGroupId));
+                env.getProperty("messages.game.addedQuestionGroup"), kb);
     }
 
     public void stopSelectingQuestionsGroupsAndRequestNextPart(long chatId, int msgId) {
@@ -161,6 +164,8 @@ public class NewGameActions {
         }
     }
 
+    //-----------------API END-----------------
+
     private void addGameNameAndRequestNext(long chatId, NewGameCreatingState state, String gameName, int requestMsgId) {
         state.setGameName(gameName);
         newGameCreatingStateService.save(state);
@@ -229,8 +234,7 @@ public class NewGameActions {
     private void addTimeAndSaveGame(NewGameCreatingState state, Integer minutes, long chatId, int requestMsgId) {
         state.setMaxTimeMinutes(minutes);
         utils.saveNewGame(state);
-        blockingManager.unblockAdminChat(chatId);
-        restrictingManager.unRestrictMembers(chatId);
+        unblockAndUnrestrictChat(chatId);
         switchMsg8(chatId, requestMsgId, state, env.getProperty("messages.game.gameAdded"));
         newGameCreatingStateService.delete(state);
     }
@@ -241,5 +245,10 @@ public class NewGameActions {
 
     private void switchMsg9(long chatId, int requestMsgId, NewGameCreatingState state, String prop) {
         utils.switchMsg(9, chatId, requestMsgId, state, prop, null);
+    }
+
+    private void unblockAndUnrestrictChat(long chatId) {
+        blockingManager.unblockAdminChat(chatId, env.getProperty("messages.admins.endGameCreating"));
+        restrictingManager.unRestrictMembers(chatId);
     }
 }

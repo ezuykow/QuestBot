@@ -1,6 +1,5 @@
 package ru.coffeecoders.questbot.viewers;
 
-import com.pengrad.telegrambot.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -101,11 +100,8 @@ public class QuestionsViewer {
     /**
      * "Закрывает" "страницу" с вопросами - т.е. удаляет сообщение из чата
      */
-    public void deleteView(long senderUserId, long chatId, int msgId) {
-        msgSender.send(chatId,
-                buildName(chatId, senderUserId) + env.getProperty("messages.admins.endQuestionView"));
-        restrictingManager.unRestrictMembers(chatId);
-        blockingManager.unblockAdminChat(chatId);
+    public void deleteView(long chatId, int msgId) {
+        unblockAndUnrestrictChat(chatId);
         msgSender.sendDelete(chatId, msgId);
     }
 
@@ -119,10 +115,8 @@ public class QuestionsViewer {
         return QuestionsViewerPage.createPage(questions, pageSize, lastShowedFirstIndex, pagesCount);
     }
 
-    private String buildName(long chatId, long senderAdminId) {
-        User user = msgSender.getChatMember(chatId, senderAdminId);
-        return (user.lastName() == null)
-                ? user.firstName()
-                : user.firstName() + " " + user.lastName();
+    private void unblockAndUnrestrictChat(long chatId) {
+        restrictingManager.unRestrictMembers(chatId);
+        blockingManager.unblockAdminChat(chatId, env.getProperty("messages.admins.endQuestionView"));
     }
 }

@@ -2,6 +2,7 @@ package ru.coffeecoders.questbot.validators;
 
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Admin;
+import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.services.AdminService;
 import ru.coffeecoders.questbot.services.GlobalChatService;
@@ -11,16 +12,19 @@ import ru.coffeecoders.questbot.services.GlobalChatService;
  */
 @Component
 public class ChatAndUserValidator {
+
     private final AdminService adminService;
     private final AdminChatService adminChatService;
     private final GlobalChatService globalChatService;
+    private final BlockingManager blockingManager;
 
     public ChatAndUserValidator(AdminService adminService,
                                 AdminChatService adminChatService,
-                                GlobalChatService globalChatService) {
+                                GlobalChatService globalChatService, BlockingManager blockingManager) {
         this.adminService = adminService;
         this.adminChatService = adminChatService;
         this.globalChatService = globalChatService;
+        this.blockingManager = blockingManager;
     }
 
     /**
@@ -36,6 +40,13 @@ public class ChatAndUserValidator {
      */
     public boolean isOwner(long userId) {
         return adminService.findById(userId).filter(Admin::isOwner).isPresent();
+    }
+
+    /**
+     * @author ezuykow
+     */
+    public boolean isBlockedAdmin(long chatId, long userId) {
+        return userId == blockingManager.getBlockedAdminId(chatId);
     }
 
     /**

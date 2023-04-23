@@ -50,7 +50,7 @@ public class GamesViewerKeyboard {
 
     private int calcButtonsCount(int currentRow, int rowsCount, int gamesCount) {
         return ((currentRow == rowsCount) && (gamesCount % MAX_BUTTONS_COUNT_IN_ROW != 0))
-                ? gamesCount - MAX_BUTTONS_COUNT_IN_ROW * currentRow
+                ? gamesCount - MAX_BUTTONS_COUNT_IN_ROW * (currentRow - 1)
                 : MAX_BUTTONS_COUNT_IN_ROW;
     }
 }

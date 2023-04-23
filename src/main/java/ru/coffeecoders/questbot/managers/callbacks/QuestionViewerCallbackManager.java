@@ -1,7 +1,6 @@
 package ru.coffeecoders.questbot.managers.callbacks;
 
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 import ru.coffeecoders.questbot.viewers.QuestionsViewer;
 
@@ -26,12 +25,10 @@ public class QuestionViewerCallbackManager {
         }
     }
 
-    private final AdminChatService adminChatService;
     private final QuestionsViewer questionsViewer;
     private final ChatAndUserValidator validator;
 
-    public QuestionViewerCallbackManager(AdminChatService adminChatService, QuestionsViewer questionsViewer, ChatAndUserValidator validator) {
-        this.adminChatService = adminChatService;
+    public QuestionViewerCallbackManager(QuestionsViewer questionsViewer, ChatAndUserValidator validator) {
         this.questionsViewer = questionsViewer;
         this.validator = validator;
     }
@@ -41,19 +38,19 @@ public class QuestionViewerCallbackManager {
      * @param data данные CallbackQuery
      */
     public void manageCallback(long senderUserId, long chatId, int msgId, String data) {
-        long blockedAdminId = adminChatService.findById(chatId).get().getBlockedByAdminId();
-        if ((senderUserId == blockedAdminId) || validator.isOwner(senderUserId)) {
-            performCallback(senderUserId, chatId, msgId, data);
+        if (validator.isBlockedAdmin(chatId, senderUserId) || validator.isOwner(senderUserId)) {
+            performCallback(chatId, msgId, data);
         }
-
     }
 
-    private void performCallback(long senderUserId, long chatId, int msgId, String data) {
+    //-----------------API END-----------------
+
+    private void performCallback(long chatId, int msgId, String data) {
         switch (findAction(data)) {
             case PREVIOUS_PAGE -> questionsViewer.switchPageToPrevious(chatId, msgId, data);
             case NEXT_PAGE -> questionsViewer.switchPageToNext(chatId, msgId, data);
             case SHOW_QUESTION -> questionsViewer.showQuestionInfo(chatId, msgId, data);
-            case DELETE_MESSAGE -> questionsViewer.deleteView(senderUserId, chatId, msgId);
+            case DELETE_MESSAGE -> questionsViewer.deleteView(chatId, msgId);
             case BACK_FROM_QUESTION_INFO -> questionsViewer.backFromQuestionInfo(chatId, msgId);
             case UNKNOWN -> {} //Игнорируем неизвестный калбак
         }

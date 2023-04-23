@@ -1,6 +1,5 @@
 package ru.coffeecoders.questbot.actions.commands;
 
-import com.pengrad.telegrambot.model.User;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.managers.ApplicationShutdownManager;
@@ -57,16 +56,8 @@ public class AdminsCommandsActions {
     }
 
     private void blockAndRestrictChat(long chatId, long senderAdminId, String cause) {
-        blockingManager.blockAdminChatByAdmin(chatId, senderAdminId);
+        blockingManager.blockAdminChatByAdmin(chatId, senderAdminId, cause);
         restrictingManager.restrictMembers(chatId, senderAdminId);
-        msgSender.send(chatId,
-                buildName(chatId, senderAdminId) + cause);
-    }
 
-    private String buildName(long chatId, long senderAdminId) {
-        User user = msgSender.getChatMember(chatId, senderAdminId);
-        return (user.lastName() == null)
-                ? user.firstName()
-                : user.firstName() + " " + user.lastName();
     }
 }

@@ -3,6 +3,8 @@ package ru.coffeecoders.questbot.viewers;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Game;
+import ru.coffeecoders.questbot.managers.BlockingManager;
+import ru.coffeecoders.questbot.managers.RestrictingManager;
 import ru.coffeecoders.questbot.models.GamesViewPage;
 import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.services.GameService;
@@ -16,11 +18,18 @@ import java.util.List;
 public class GamesViewer {
 
     private final GameService gameService;
+    private final BlockingManager blockingManager;
+    private final RestrictingManager restrictingManager;
     private final MessageSender msgSender;
     private final Environment env;
 
-    public GamesViewer(GameService gameService, MessageSender msgSender, Environment env) {
+    //-----------------API START-----------------
+
+    public GamesViewer(GameService gameService, BlockingManager blockingManager, RestrictingManager restrictingManager,
+                       MessageSender msgSender, Environment env) {
         this.gameService = gameService;
+        this.blockingManager = blockingManager;
+        this.restrictingManager = restrictingManager;
         this.msgSender = msgSender;
         this.env = env;
     }
@@ -29,6 +38,13 @@ public class GamesViewer {
         List<Game> games = gameService.findAll();
         validateAndShowGamesList(chatId, games);
     }
+
+    public void closeView(long chatId, int msgId) {
+        unBlockAndUnrestrictChat(chatId);
+        msgSender.sendDelete(chatId, msgId);
+    }
+
+    //-----------------API END-----------------
 
     private void validateAndShowGamesList(long chatId, List<Game> games) {
         if (!games.isEmpty()) {
@@ -41,5 +57,10 @@ public class GamesViewer {
     private void showGames(long chatId, List<Game> games) {
         GamesViewPage page = GamesViewPage.createPage(games);
         msgSender.send(chatId, page.getText(), page.getKeyboard());
+    }
+
+    private void unBlockAndUnrestrictChat(long chatId) {
+        restrictingManager.unRestrictMembers(chatId);
+        blockingManager.unblockAdminChat(chatId, env.getProperty("messages.admins.endGamesView"));
     }
 }
