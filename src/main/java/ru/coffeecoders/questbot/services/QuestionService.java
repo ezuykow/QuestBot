@@ -51,4 +51,13 @@ public class QuestionService {
         logger.info("Questions = {} has been saved", questionList);
         repository.saveAll(questionList);
     }
+
+    /**
+     * Удаляет вопрос их БД
+     * @param question удаляемый вопрос
+     * @author ezuykow
+     */
+    public void delete(Question question) {
+        repository.delete(question);
+    }
 }

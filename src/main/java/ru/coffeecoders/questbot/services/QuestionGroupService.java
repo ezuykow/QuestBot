@@ -38,9 +38,21 @@ public class QuestionGroupService {
     }
 
     /**
+     * Находит в БД {@link QuestionGroup} по названию
+     * @param groupName название группы
+     * @return {@link Optional} с найденной группой, либо пустой, если такой группы не было в БД
      * @author ezuykow
      */
     public Optional<QuestionGroup> findByGroupName(String groupName) {
         return repository.findQuestionGroupByGroupName(groupName);
+    }
+
+    /**
+     * Удаляет группу из БД
+     * @param questionGroup удаляемая группа
+     * @author ezuykow
+     */
+    public void delete(QuestionGroup questionGroup) {
+        repository.delete(questionGroup);
     }
 }

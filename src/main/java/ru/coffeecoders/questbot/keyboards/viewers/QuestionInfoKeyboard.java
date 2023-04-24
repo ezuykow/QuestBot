@@ -2,7 +2,7 @@ package ru.coffeecoders.questbot.keyboards.viewers;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import ru.coffeecoders.questbot.viewers.QuestionInfoViewer;
+import ru.coffeecoders.questbot.viewers.QuestionsViewer;
 
 /**
  * @author ezuykow
@@ -21,7 +21,7 @@ public class QuestionInfoKeyboard {
     //-----------------API START-----------------
 
     /**
-     * Создает Inline-клавиатуру для {@link QuestionInfoViewer}
+     * Создает Inline-клавиатуру для {@link QuestionsViewer} для отображения вопроса
      * @param questionId id отображаемого вопроса
      * @return собранный {@link InlineKeyboardMarkup}
      * @author ezuykow
