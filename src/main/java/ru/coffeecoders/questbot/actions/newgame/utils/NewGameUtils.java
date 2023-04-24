@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.entities.NewGameCreatingState;
 import ru.coffeecoders.questbot.entities.QuestionGroup;
-import ru.coffeecoders.questbot.exceptions.NonExistentQuestionGroup;
 import ru.coffeecoders.questbot.keyboards.QuestionsGroupsKeyboard;
 import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.services.GameService;
@@ -56,9 +55,9 @@ public class NewGameUtils {
     /**
      * @author ezuykow
      */
-    public String getGroupsNames(int[] allStateGroupsIds) {
+    public String getGroupsNames(int[] allGroupsIds) {
         StringBuilder sb = new StringBuilder();
-        int allQuestionsCount = addGroupsNamesAndGetQuestionsCount(sb, allStateGroupsIds);
+        int allQuestionsCount = addGroupsNamesAndGetQuestionsCount(sb, allGroupsIds);
         sb.append("    \uD83D\uDFF0 Всего вопросов со всех групп: ").append(allQuestionsCount);
         return sb.toString();
     }
@@ -168,12 +167,15 @@ public class NewGameUtils {
 
     //-----------------API END-----------------
 
+    /**
+     * @author ezuykow
+     */
     private int addGroupsNamesAndGetQuestionsCount(StringBuilder sb, int[] allStateGroupsIds) {
         List<QuestionGroup> groups = questionGroupService.findAll();
         int count = 0;
         for (final int id : allStateGroupsIds) {
             final String groupName = groups.stream().filter(g -> g.getGroupId() == id).findAny()
-                    .orElseThrow(NonExistentQuestionGroup::new).getGroupName();
+                    .map(QuestionGroup::getGroupName).orElse("❌DELETED❌");
             final long questionsCount = questionService.findByGroupName(groupName).size();
             sb.append("    ➕ ").append(groupName).append(" (вопросов: ").append(questionsCount).append("),\n");
             count += questionsCount;

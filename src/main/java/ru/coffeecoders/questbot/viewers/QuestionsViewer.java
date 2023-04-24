@@ -5,7 +5,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Question;
 import ru.coffeecoders.questbot.exceptions.NonExistentQuestion;
-import ru.coffeecoders.questbot.exceptions.NonExistentQuestionGroup;
 import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.managers.RestrictingManager;
 import ru.coffeecoders.questbot.models.QuestionInfoPage;
@@ -16,7 +15,7 @@ import ru.coffeecoders.questbot.services.QuestionService;
 
 import java.util.List;
 
-import static java.lang.Math.*;
+import static java.lang.Math.min;
 
 /**
  * @author ezuykow
@@ -202,19 +201,9 @@ public class QuestionsViewer {
     public void deleteQuestion(int questionId) {
         questionService.findById(questionId).ifPresentOrElse(
                 q -> {
-                    deleteQuestionsGroupIfNecessary(q.getGroup());
                     questionService.delete(q);
+                    questionGroupService.deleteQuestionGroupIfNoQuestionsWithIt(q.getGroup());
                 },
                 NonExistentQuestion::new);
-    }
-
-    /**
-     * @author ezuykow
-     */
-    private void deleteQuestionsGroupIfNecessary(String groupName) {
-        questionGroupService.findByGroupName(groupName).ifPresentOrElse(
-                questionGroupService::delete,
-                NonExistentQuestionGroup::new
-        );
     }
 }
