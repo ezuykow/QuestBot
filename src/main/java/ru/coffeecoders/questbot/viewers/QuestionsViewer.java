@@ -34,7 +34,6 @@ public class QuestionsViewer {
     private final Environment env;
 
     private List<Question> questions;
-    private int pagesCount;
     private int lastShowedFirstIndex;
 
     public QuestionsViewer(QuestionService questionService, QuestionGroupService questionGroupService,
@@ -60,7 +59,7 @@ public class QuestionsViewer {
      */
     public void viewQuestions(long chatId) {
         refreshQuestionsList();
-        validateAndCreateView(chatId, -1, defaultPageSize);
+        validateAndCreateView(chatId, -1, defaultPageSize, 0);
     }
 
     /**
@@ -72,8 +71,7 @@ public class QuestionsViewer {
      */
     public void switchPageToPrevious(long chatId, int msgId, String data) {
         final int firstIndexShowed = Integer.parseInt(data.substring(data.lastIndexOf(".") + 1));
-        QuestionsViewerPage newPage = QuestionsViewerPage.createPage(questions, defaultPageSize,
-                firstIndexShowed - defaultPageSize, pagesCount);
+        QuestionsViewerPage newPage = createPage(defaultPageSize, firstIndexShowed - defaultPageSize);
         msgSender.edit(chatId, msgId, newPage.getText(), newPage.getKeyboard());
     }
 
@@ -87,8 +85,7 @@ public class QuestionsViewer {
     public void switchPageToNext(long chatId, int msgId, String data) {
         final int lastIndexShowed = Integer.parseInt(data.substring(data.lastIndexOf(".") + 1));
         final int newPageSize = min(defaultPageSize, questions.size() - (lastIndexShowed + 1));
-        QuestionsViewerPage newPage = QuestionsViewerPage.createPage(questions, newPageSize,
-                lastIndexShowed + 1, pagesCount);
+        QuestionsViewerPage newPage = createPage(newPageSize, lastIndexShowed + 1);
         msgSender.edit(chatId, msgId, newPage.getText(), newPage.getKeyboard());
     }
 
@@ -130,7 +127,7 @@ public class QuestionsViewer {
     public void backFromQuestionInfo(long chatId, int msgId) {
         refreshQuestionsList();
         int pageSize = min(defaultPageSize, questions.size() - lastShowedFirstIndex);
-        validateAndCreateView(chatId, msgId, pageSize);
+        validateAndCreateView(chatId, msgId, pageSize, lastShowedFirstIndex);
     }
 
     /**
@@ -149,21 +146,21 @@ public class QuestionsViewer {
     /**
      * @author ezuykow
      */
-    private void validateAndCreateView(long chatId, int msgId, int pageSize) {
+    private void validateAndCreateView(long chatId, int msgId, int pageSize, int startIndex) {
         if (questions.isEmpty()) {
             msgSender.sendDelete(chatId, msgId);
             msgSender.send(chatId, env.getProperty("messages.questions.emptyList"));
             unblockAndUnrestrictChat(chatId);
         } else {
-            createView(chatId, msgId, pageSize);
+            createView(chatId, msgId, pageSize, startIndex);
         }
     }
 
     /**
      * @author ezuykow
      */
-    private void createView(long chatId, int msgId, int pageSize) {
-        QuestionsViewerPage page = createPage(pageSize);
+    private void createView(long chatId, int msgId, int pageSize, int startIndex) {
+        QuestionsViewerPage page = createPage(pageSize, startIndex);
         if (msgId == -1) {
             msgSender.send(chatId, page.getText(), page.getKeyboard());
         } else {
@@ -181,10 +178,10 @@ public class QuestionsViewer {
     /**
      * @author ezuykow
      */
-    private QuestionsViewerPage createPage(int pageSize) {
-        pagesCount = questions.size() / defaultPageSize;
+    private QuestionsViewerPage createPage(int pageSize, int startIndex) {
+        int pagesCount = questions.size() / defaultPageSize;
         pagesCount = (questions.size() % defaultPageSize == 0) ? pagesCount : pagesCount + 1;
-        return QuestionsViewerPage.createPage(questions, pageSize, lastShowedFirstIndex, pagesCount);
+        return QuestionsViewerPage.createPage(questions, pageSize, startIndex, pagesCount, defaultPageSize);
     }
 
     /**

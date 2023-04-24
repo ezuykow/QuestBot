@@ -11,18 +11,30 @@ import java.util.List;
  */
 public class QuestionsViewerPage {
 
-    private List<Question> questions;
-    private int defaultPageSize;
-    private int pageSize;
-    private int pagesCount;
-    private int startIndex;
-    private int lastIndex;
+    private final List<Question> questions;
+    private final int defaultPageSize;
+    private final int pageSize;
+    private final int pagesCount;
+    private final int startIndex;
+    private final int lastIndex;
     private String text;
     private InlineKeyboardMarkup keyboard;
     private boolean leftArrowNeed;
     private boolean rightArrowNeed;
 
-    private QuestionsViewerPage() {}
+    private QuestionsViewerPage(List<Question> questions, int pageSize, int startIndex,
+                                int pagesCount, int defaultPageSize) {
+        this.questions = questions;
+        this.startIndex = startIndex;
+        this.pageSize = pageSize;
+        this.pagesCount = pagesCount;
+        this.defaultPageSize = defaultPageSize;
+
+        lastIndex = Math.min(startIndex + this.pageSize - 1, questions.size() - 1);
+        createText();
+        checkArrowsNeed();
+        createKeyboard();
+    }
 
     //-----------------API START-----------------
 
@@ -32,25 +44,15 @@ public class QuestionsViewerPage {
      * Собирается "постранично", количество вопросов на "странице" - {@code pageSize}, начиная с вопроса
      * {@code startIndex}
      * @param questions вопросы, который нужно отобразить
-     * @param defaultPageSize дефолтное количество вопросов на "странице"
+     * @param pageSize дефолтное количество вопросов на "странице"
      * @param startIndex индекс вопроса из {@code questions}, который будет первым на "странице"
      * @return собранную страницу {@link QuestionsViewerPage}
      * @author ezuykow
      */
-    public static QuestionsViewerPage createPage(List<Question> questions, int defaultPageSize, int startIndex, int pagesCount) {
-        QuestionsViewerPage page = new QuestionsViewerPage();
-        page.questions = questions;
-        page.defaultPageSize = defaultPageSize;
-        page.startIndex = startIndex;
-        page.pageSize = Math.min(defaultPageSize, questions.size());
-        page.lastIndex = Math.min(startIndex + page.pageSize - 1, questions.size() - 1);
-        page.pagesCount = pagesCount;
-
-        page.createText();
-        page.checkArrowsNeed();
-        page.createKeyboard();
-
-        return page;
+    public static QuestionsViewerPage createPage(List<Question> questions, int pageSize, int startIndex,
+                                                 int pagesCount, int defaultPageSize)
+    {
+        return new QuestionsViewerPage(questions, pageSize, startIndex, pagesCount, defaultPageSize);
     }
 
     /**
@@ -106,7 +108,7 @@ public class QuestionsViewerPage {
      * @author ezuykow
      */
     private String calcPage() {
-        int currentPage = startIndex / defaultPageSize + 1;
+        int currentPage = (startIndex / defaultPageSize) + 1;
         return "Страница " + currentPage + " из " + pagesCount + "\n\n";
     }
 }
