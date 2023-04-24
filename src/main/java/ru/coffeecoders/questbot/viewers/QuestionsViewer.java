@@ -53,15 +53,15 @@ public class QuestionsViewer {
     //-----------------API START-----------------
 
     /**
-     * Собирает "страницу" {@link QuestionsViewerPage} и вызывает метод
-     * {@link MessageSender#send} для отображения "страницы" вопросов
+     * Вызывает метод
+     * {@link QuestionsViewer#validateAndCreateView} c {@code msgId = -1} и {@code pageSize = defaultPageSize}
+     * для отображения "страницы" вопросов
      * @param chatId id чата
      * @author ezuykow
      */
     public void viewQuestions(long chatId) {
         refreshQuestionsList();
-        QuestionsViewerPage page = createPage(defaultPageSize);
-        msgSender.send(chatId, page.getText(), page.getKeyboard());
+        validateAndCreateView(chatId, -1, defaultPageSize);
     }
 
     /**
@@ -131,8 +131,7 @@ public class QuestionsViewer {
     public void backFromQuestionInfo(long chatId, int msgId) {
         refreshQuestionsList();
         int pageSize = min(defaultPageSize, questions.size() - lastShowedFirstIndex);
-        QuestionsViewerPage page = createPage(pageSize);
-        msgSender.edit(chatId, msgId, page.getText(), page.getKeyboard());
+        validateAndCreateView(chatId, msgId, pageSize);
     }
 
     /**
@@ -147,6 +146,30 @@ public class QuestionsViewer {
     }
 
     //-----------------API END-----------------
+
+    /**
+     * @author ezuykow
+     */
+    private void validateAndCreateView(long chatId, int msgId, int pageSize) {
+        if (questions.isEmpty()) {
+            msgSender.send(chatId, env.getProperty("messages.questions.emptyList"));
+            unblockAndUnrestrictChat(chatId);
+        } else {
+            createView(chatId, msgId, pageSize);
+        }
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void createView(long chatId, int msgId, int pageSize) {
+        QuestionsViewerPage page = createPage(pageSize);
+        if (msgId == -1) {
+            msgSender.send(chatId, page.getText(), page.getKeyboard());
+        } else {
+            msgSender.edit(chatId, msgId, page.getText(), page.getKeyboard());
+        }
+    }
 
     /**
      * @author ezuykow

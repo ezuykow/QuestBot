@@ -58,6 +58,9 @@ messages:
     noOneQuestionAdded: Ни одного вопроса не добавлено
     defaultQuestionGroup: Вопросы без группы
 
+  questions:
+    emptyList: 🔴В базе нет вопросов
+
   game:
     requestNewGameName: 🟡Введите название новой игры
     requestQuestionsGroups: "🟢Название игры - \"%s\" 
