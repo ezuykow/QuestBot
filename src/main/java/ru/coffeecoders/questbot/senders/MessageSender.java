@@ -60,8 +60,8 @@ public class MessageSender {
      * @author ezuykow
      */
     public void send(long chatId, String text) {
-        checkResponse(bot.execute(
-                new SendMessage(chatId, text)));
+        checkResponse(bot.execute(new SendMessage(chatId, text)),
+                String.format("Failed to send msg \"%s\" to chat %d! Error code: {}", text, chatId));
     }
 
     /**
@@ -73,8 +73,8 @@ public class MessageSender {
      * @author ezuykow
      */
     public void send(long chatId, String text, Keyboard kb) {
-        checkResponse(bot.execute(
-                new SendMessage(chatId, text).replyMarkup(kb)));
+        checkResponse(bot.execute(new SendMessage(chatId, text).replyMarkup(kb)),
+                String.format("Failed to send msg \"%s\" with kb to chat %d! Error code: {}", text, chatId));
     }
 
     /**
@@ -87,10 +87,11 @@ public class MessageSender {
      * @author ezuykow
      */
     public SendResponse send(long chatId, String text, int replyToMessageId) {
-        SendResponse response = bot.execute(
-                new SendMessage(chatId, text).replyMarkup(new ForceReply(true))
-                        .replyToMessageId(replyToMessageId));
-        checkResponse(response);
+        SendResponse response = bot.execute(new SendMessage(chatId, text)
+                .replyMarkup(new ForceReply(true)).replyToMessageId(replyToMessageId));
+        checkResponse(response,
+                String.format("Failed to send msg \"%s\" (reply to msg %d) to chat %d! Error code: {}",
+                        text, replyToMessageId, chatId));
         return response;
     }
 
@@ -105,7 +106,9 @@ public class MessageSender {
      */
     public void send(long chatId, String text, Keyboard kb, int replyToMessageId) {
         checkResponse(bot.execute(
-                new SendMessage(chatId, text).replyMarkup(kb).replyToMessageId(replyToMessageId)));
+                new SendMessage(chatId, text).replyMarkup(kb).replyToMessageId(replyToMessageId)),
+                String.format("Failed to send msg \"%s\" (reply to msg %d) with kb to chat %d! Error code: {}",
+                        text, replyToMessageId, chatId));
     }
 
     /**
@@ -117,8 +120,8 @@ public class MessageSender {
      * @author ezuykow
      */
     public void edit(long chatId, int msgId, String text) {
-        checkResponse(bot.execute(
-                new EditMessageText(chatId, msgId, text)));
+        checkResponse(bot.execute(new EditMessageText(chatId, msgId, text)),
+        String.format("Failed to edit msg %d in chat %d! Error {}", msgId, chatId));
     }
 
     /**
@@ -131,8 +134,9 @@ public class MessageSender {
      * @author ezuykow
      */
     public void edit(long chatId, int msgId, String text, InlineKeyboardMarkup kb) {
-        checkResponse(bot.execute(
-                new EditMessageText(chatId, msgId, text).replyMarkup(kb)));
+        checkResponse(bot.execute(new EditMessageText(chatId, msgId, text)
+                        .replyMarkup(kb)),
+                String.format("Failed to edit msg %d in chat %d! Error {}", msgId, chatId));
     }
 
     /**
@@ -145,11 +149,12 @@ public class MessageSender {
      */
     public void sentToast(String callbackId, String text, boolean isAlert) {
         checkResponse(bot.execute(
-                new AnswerCallbackQuery(callbackId)
-                        .text(text)
-                        .showAlert(isAlert)
-                        .cacheTime(5)
-        ));
+                        new AnswerCallbackQuery(callbackId)
+                                .text(text)
+                                .showAlert(isAlert)
+                                .cacheTime(5)
+                ),
+                String.format("Failed to answer callback %s! Error {}", callbackId));
     }
 
     /**
@@ -159,8 +164,8 @@ public class MessageSender {
      * @author ezuykow
      */
     public void sendDelete(long chatId, int msgId) {
-        checkResponse(bot.execute(
-                new DeleteMessage(chatId, msgId)));
+        checkResponse(bot.execute(new DeleteMessage(chatId, msgId)),
+                String.format("Failed to delete msg %d in chat %d! Error {}", msgId, chatId));
     }
 
     /**
@@ -182,9 +187,8 @@ public class MessageSender {
      * @author ezuykow
      */
     public void sendLeaveChat(long chatId) {
-        checkResponse(bot.execute(
-                new LeaveChat(chatId)
-        ));
+        checkResponse(bot.execute(new LeaveChat(chatId)),
+                String.format("Failed to leave chat %d! Error {}", chatId));
     }
 
     /**
@@ -214,7 +218,8 @@ public class MessageSender {
      * @author ezuykow
      */
     public void sendRestrictChatMember(long chatId, long userId, ChatPermissions permissions) {
-        checkResponse(bot.execute(new RestrictChatMember(chatId, userId, permissions)));
+        checkResponse(bot.execute(new RestrictChatMember(chatId, userId, permissions)),
+                String.format("Failed to restrict chat member %d! Error {}", userId));
     }
 
     /**
@@ -248,9 +253,9 @@ public class MessageSender {
     /**
      * @author ezuykow
      */
-    private void checkResponse(BaseResponse response) {
+    private void checkResponse(BaseResponse response, String warn) {
         if (!response.isOk()) {
-            logger.warn("Unsent msg! Error code: {}", response.errorCode());
+            logger.warn(warn);
         }
     }
 }
