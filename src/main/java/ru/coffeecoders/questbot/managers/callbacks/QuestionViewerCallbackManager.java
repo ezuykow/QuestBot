@@ -33,9 +33,16 @@ public class QuestionViewerCallbackManager {
         this.validator = validator;
     }
 
+    //-----------------API START-----------------
+
     /**
-     * Вызывает необходимый метод {@link QuestionsViewer}, исходя из {@code data}
-     * @param data данные CallbackQuery
+     * Проверяет, что {@code senderUserId} это id админа, который заблокировал чат или владелец бота,
+     * вызывает {@link QuestionViewerCallbackManager#performCallback}
+     * @param senderUserId id пользователя, от которого пришел калбак
+     * @param chatId id чата
+     * @param msgId id сообщения
+     * @param data данные калбака
+     * @author ezuykow
      */
     public void manageCallback(long senderUserId, long chatId, int msgId, String data) {
         if (validator.isBlockedAdmin(chatId, senderUserId) || validator.isOwner(senderUserId)) {

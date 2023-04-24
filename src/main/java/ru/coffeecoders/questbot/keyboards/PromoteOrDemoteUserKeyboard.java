@@ -16,13 +16,21 @@ public class PromoteOrDemoteUserKeyboard {
         createButtons(users, dataPrefix);
     }
 
+    //-----------------API START-----------------
+
     /**
+     * Создает клавиатуру с именами пользователей для повышения или понижения
+     * @param users список пользователей
+     * @param dataPrefix для повышения - "Promote", для понижения - "Demote"
+     * @return {@link InlineKeyboardMarkup} - собранная клавиатура
      * @author ezuykow
      */
     public static InlineKeyboardMarkup createKeyboard(Set<User> users, String dataPrefix) {
         return new PromoteOrDemoteUserKeyboard(users, dataPrefix)
                 .keyboard;
     }
+
+    //-----------------API END-----------------
 
     /**
      * @author ezuykow

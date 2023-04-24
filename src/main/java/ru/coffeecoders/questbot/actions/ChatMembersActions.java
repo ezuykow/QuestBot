@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Admin;
 import ru.coffeecoders.questbot.entities.AdminChat;
 import ru.coffeecoders.questbot.entities.AdminChatMembers;
+import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.services.AdminChatMembersService;
 import ru.coffeecoders.questbot.services.AdminChatService;
@@ -58,7 +59,13 @@ public class ChatMembersActions {
         this.msgSender = msgSender;
     }
 
+    //-----------------API START-----------------
+
     /**
+     * Если чат админский, то вызывает {@link ChatMembersActions#newChatMemberInAdminChat},
+     * Если чат не админский, то вызывает {@link ChatMembersActions#newChatMemberInGlobalChat}
+     * @param newMember новый пользователь чата
+     * @param chatId id чата
      * @author ezuykow
      */
     public void newChatMember(User newMember, long chatId) {
@@ -70,15 +77,21 @@ public class ChatMembersActions {
     }
 
     /**
+     * Если чат админский, то вызывает {@link ChatMembersActions#leftChatMemberInAdminChat},
+     * Если чат не админский, то вызывает {@link ChatMembersActions#leftChatMemberInGlobalChat}
+     * @param leftMember пользователь, покинувший чат
+     * @param chatId id чата
      * @author ezuykow
      */
     public void leftChatMember(User leftMember, long chatId) {
         if (validator.isAdminChat(chatId)) {
             leftChatMemberInAdminChat(leftMember, chatId);
-        } else {
+        } else if (validator.isGlobalChat(chatId)){
             leftChatMemberInGlobalChat(leftMember, chatId);
         }
     }
+
+    //-----------------API END-----------------
 
     /**
      * @author ezuykow
@@ -147,7 +160,8 @@ public class ChatMembersActions {
      * @author ezuykow
      */
     private void refreshAdminChatMember(User newMember, long chatId) {
-        AdminChatMembers adminChatMembers = adminChatMembersService.findByChatId(chatId).get();
+        AdminChatMembers adminChatMembers = adminChatMembersService.findByChatId(chatId)
+                .orElseThrow(NonExistentChat::new);
         adminChatMembers.setMembers(refreshMember(adminChatMembers.getMembers(), newMember));
         adminChatMembersService.save(adminChatMembers);
     }
@@ -209,7 +223,7 @@ public class ChatMembersActions {
      * @author ezuykow
      */
     private void deleteAdminFromChat(long chatId, User leftMember) {
-        AdminChat adminChat = adminChatService.findById(chatId).get();
+        AdminChat adminChat = adminChatService.findById(chatId).orElseThrow(NonExistentChat::new);
         adminChat.getAdmins().remove(new Admin(leftMember.id()));
         adminChatService.save(adminChat);
         deleteAllUselessAdmins();
@@ -220,7 +234,8 @@ public class ChatMembersActions {
      * @author ezuykow
      */
     private void deleteMemberFromAdminChatsMembers(long chatId, User leftMember) {
-        AdminChatMembers adminChatMembers = adminChatMembersService.findByChatId(chatId).get();
+        AdminChatMembers adminChatMembers = adminChatMembersService.findByChatId(chatId)
+                .orElseThrow(NonExistentChat::new);
         long[] newMembers = Arrays.stream(adminChatMembers.getMembers())
                 .filter(id -> !(id == leftMember.id())).toArray();
         adminChatMembers.setMembers(newMembers);
@@ -231,7 +246,8 @@ public class ChatMembersActions {
      * @author ezuykow
      */
     private boolean hasItMemberInAdminChatsMembers(long chatId, User leftMember) {
-        return Arrays.stream(adminChatMembersService.findByChatId(chatId).get().getMembers())
+        return Arrays.stream(adminChatMembersService.findByChatId(chatId)
+                        .orElseThrow(NonExistentChat::new).getMembers())
                 .filter(id -> id == leftMember.id()).findAny().isPresent();
     }
 }

@@ -23,6 +23,9 @@ public class SimpleMessageManager {
         this.gameValidator = gameValidator;
         this.env = env;
     }
+
+    //-----------------API START-----------------
+
 //TODO JavaDoc, когда метод будет готов
     public void manageMessage(ExtendedUpdate update) {
         long chatId = update.getMessageChatId();
@@ -36,6 +39,8 @@ public class SimpleMessageManager {
             manageReplyToMessage(update);
         }
     }
+
+    //-----------------API END-----------------
 
     private void manageReplyToMessage(ExtendedUpdate update) {
         String replyMsgText = update.getReplyToMessage().text();

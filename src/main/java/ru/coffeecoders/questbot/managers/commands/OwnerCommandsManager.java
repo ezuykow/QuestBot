@@ -2,7 +2,6 @@ package ru.coffeecoders.questbot.managers.commands;
 
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.actions.commands.OwnerCommandsActions;
-import ru.coffeecoders.questbot.models.ExtendedUpdate;
 
 /**
  * @author ezuykow
@@ -16,12 +15,15 @@ public class OwnerCommandsManager {
         this.actions = actions;
     }
 
+    //-----------------API START-----------------
+
     /**
-     *
+     * Исходя из пришедшей команды вызывает соответствующий метод {@link OwnerCommandsActions}
+     * @param chatId id чата, с которого пришла команда
+     * @param cmd команда
      * @author ezuykow
      */
-    public void manageCommand(ExtendedUpdate update, Command cmd) {
-        long chatId = update.getMessageChatId();
+    public void manageCommand(long chatId, Command cmd) {
         switch (cmd) {
             case START -> actions.validateAndPerformStartCmd(chatId);
             case ADMINON -> actions.validateAndPerformAdminOnCmd(chatId);
@@ -30,4 +32,7 @@ public class OwnerCommandsManager {
             case DEMOTE -> actions.validateAndPerformDemoteCmd(chatId);
         }
     }
+
+    //-----------------API END-----------------
+
 }

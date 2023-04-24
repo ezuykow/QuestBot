@@ -22,9 +22,11 @@ public class GameValidator {
         this.gameService = gameService;
     }
 
+    //-----------------API START-----------------
+
     /**
-     *
-     * @return
+     * @param chatId id чата
+     * @return {@code true}, если в этом чате запущена игра, иначе {@code false}
      * @author ezuykow
      */
     public boolean isGameStarted(long chatId) {
@@ -34,8 +36,8 @@ public class GameValidator {
     }
 
     /**
-     *
-     * @return
+     * @param chatId id чата
+     * @return {@code true}, если в этом чате запущена подготовка к игре, иначе {@code false}
      * @author ezuykow
      */
     public boolean isGameCreating(long chatId) {
@@ -44,21 +46,39 @@ public class GameValidator {
                 .isPresent();
     }
 
+    /**
+     * @param gameName название игры
+     * @return {@code true}, если игра с таким названием подготавливается или запущена в любом чате,
+     * иначе {@code false}
+     * @author ezuykow
+     */
     public boolean isGameCreating(String gameName) {
         return globalChatService.findAll().stream()
                 .anyMatch(gc -> gc.getCreatingGameName().equals(gameName));
     }
 
+    /**
+     * @param chatId id чата
+     * @return {@code true}, если в этом чате создается новая игра, иначе {@code false}
+     * @author ezuykow
+     */
     public boolean isNewGameCreating(long chatId) {
         return newGameCreatingStateService.findById(chatId).isPresent();
     }
 
+    /**
+     * @param gameName название игры
+     * @return {@code true}, если игра с таким названием уже существует или создается, иначе {@code false}
+     * @author ezuykow
+     */
     public boolean isGameNameAlreadyTaken(String gameName) {
         return gameService.findAll()
                 .stream().anyMatch(g -> g.getGameName().equals(gameName))
                 || newGameCreatingStateService.findAll()
                 .stream().anyMatch(cg -> cg.getGameName() != null && cg.getGameName().equals(gameName));
     }
+
+    //-----------------API END-----------------
 
     /**
      * @author ezuykow

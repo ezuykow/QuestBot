@@ -34,12 +34,23 @@ public class AdminsCommandsActions {
         this.env = env;
     }
 
+    //-----------------API START-----------------
+
+    /**
+     * Блокирует чат, ограничивает членов и вызывает {@link GamesViewer#viewGames}
+     * @param senderAdminId id админа, который ввел команду /showgames
+     * @param chatId id чата, в котором была введена команда
+     * @author ezuykow
+     */
     public void performShowGamesCmd(long senderAdminId, long chatId) {
         blockAndRestrictChat(chatId, senderAdminId, env.getProperty("messages.admins.startGamesView"));
         gamesViewer.viewGames(chatId);
     }
 
     /**
+     * Блокирует чат, ограничивает членов и вызывает {@link QuestionsViewer#viewQuestions}
+     * @param senderAdminId id админа, который ввел команду /showquestion
+     * @param chatId id чата, в котором была введена команда
      * @author ezuykow
      */
     public void performShowQuestionsCmd(long senderAdminId, long chatId) {
@@ -48,6 +59,7 @@ public class AdminsCommandsActions {
     }
 
     /**
+     * Вызывает {@link MessageSender#sendStopBot} и {@link ApplicationShutdownManager#stopBot}
      * @author ezuykow
      */
     public void performStopBotCmd() {
@@ -55,6 +67,11 @@ public class AdminsCommandsActions {
         applicationShutdownManager.stopBot();
     }
 
+    //-----------------API END-----------------
+
+    /**
+     * @author ezuykow
+     */
     private void blockAndRestrictChat(long chatId, long senderAdminId, String cause) {
         blockingManager.blockAdminChatByAdmin(chatId, senderAdminId, cause);
         restrictingManager.restrictMembers(chatId, senderAdminId);

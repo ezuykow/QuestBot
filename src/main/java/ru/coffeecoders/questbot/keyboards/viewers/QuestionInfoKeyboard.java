@@ -17,16 +17,23 @@ public class QuestionInfoKeyboard {
         keyboard = new InlineKeyboardMarkup(buttons);
     }
 
+    //-----------------API START-----------------
+
     /**
      * Создает Inline-клавиатуру для {@link QuestionInfoViewer}
      * @param questionId id отображаемого вопроса
-     * @return собранный InlineKeyboardMarkup
-     * @see InlineKeyboardMarkup
+     * @return собранный {@link InlineKeyboardMarkup}
+     * @author ezuykow
      */
     public static InlineKeyboardMarkup createKeyboard(int questionId) {
         return new QuestionInfoKeyboard(questionId).keyboard;
     }
 
+    //-----------------API END-----------------
+
+    /**
+     * @author ezuykow
+     */
     private void createButtons(int questionId) {
         buttons = new InlineKeyboardButton[3];
 

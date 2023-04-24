@@ -8,6 +8,7 @@ import ru.coffeecoders.questbot.entities.Admin;
 import ru.coffeecoders.questbot.entities.AdminChat;
 import ru.coffeecoders.questbot.entities.AdminChatMembers;
 import ru.coffeecoders.questbot.entities.GlobalChat;
+import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.keyboards.PromoteOrDemoteUserKeyboard;
 import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.services.AdminChatMembersService;
@@ -48,7 +49,12 @@ public class OwnerCommandsActions {
         this.env = env;
     }
 
+    //-----------------API START-----------------
+
     /**
+     * Проверяет, что чата с таким chatId нет в системе и вызывает {@link OwnerCommandsActions#performStartCmd},
+     * в противном случае отправляет в чат сообщение, что чат уже был добавлен
+     * @param chatId id чата, в котором вызвали команду /start
      * @author ezuykow
      */
     public void validateAndPerformStartCmd(long chatId) {
@@ -60,6 +66,9 @@ public class OwnerCommandsActions {
     }
 
     /**
+     * Проверяет, что чат с таким chatId не админский и вызывает {@link OwnerCommandsActions#performAdminOnCmd},
+     * в противном случае отправляет в чат сообщение, что чат уже админский
+     * @param chatId id чата, в котором вызвали команду /adminon
      * @author ezuykow
      */
     public void validateAndPerformAdminOnCmd(long chatId) {
@@ -70,8 +79,10 @@ public class OwnerCommandsActions {
         }
     }
 
-
     /**
+     * Проверяет, что чат с таким chatId админский и вызывает {@link OwnerCommandsActions#performAdminOffCmd},
+     * в противном случае отправляет в чат сообщение, что чат не админский
+     * @param chatId id чата, в котором вызвали команду /adminoff
      * @author ezuykow
      */
     public void validateAndPerformAdminOffCmd(long chatId) {
@@ -83,6 +94,10 @@ public class OwnerCommandsActions {
     }
 
     /**
+     * Проверяет, что чат с таким chatId админский и вызывает
+     * {@link OwnerCommandsActions#validateAdminChatMembersAndPerformPromoteCmd},
+     * в противном случае отправляет в чат сообщение, что чат не админский
+     * @param chatId id чата, в котором вызвали команду /promote
      * @author ezuykow
      */
     public void validateAndPerformPromoteCmd(long chatId) {
@@ -94,6 +109,10 @@ public class OwnerCommandsActions {
     }
 
     /**
+     * Проверяет, что чат с таким chatId админский и вызывает
+     * {@link OwnerCommandsActions#validateAdminsInChatAndPerformDemoteCmd},
+     * в противном случае отправляет в чат сообщение, что чат не админский
+     * @param chatId id чата, в котором вызвали команду /demote
      * @author ezuykow
      */
     public void validateAndPerformDemoteCmd(long chatId) {
@@ -104,7 +123,12 @@ public class OwnerCommandsActions {
         }
     }
 
+    //-----------------API END-----------------
+    
     /**
+     * Создает новый {@link GlobalChat}, вызывает для него {@link GlobalChatService#save}
+     * и отправляет в чат приветственное сообщение
+     * @param chatId id чата, в котором вызвали команду /start
      * @author ezuykow
      */
     private void performStartCmd(long chatId) {
@@ -113,6 +137,10 @@ public class OwnerCommandsActions {
     }
 
     /**
+     * Вызывает {@link OwnerCommandsActions#swapGlobalChatToAdminChat} и
+     * {@link OwnerCommandsActions#createAdminChatMembers},
+     * отправляет в чат сообщение, что чат теперь админский
+     * @param chatId id чата, в котором вызвали команду /adminon
      * @author ezuykow
      */
     private void performAdminOnCmd(long chatId) {
@@ -123,6 +151,11 @@ public class OwnerCommandsActions {
     }
 
     /**
+     * Вызывает {@link OwnerCommandsActions#swapAdminChatToGlobalChat},
+     * {@link AdminChatMembersService#deleteByChatId},
+     * {@link AdminService#deleteUselessAdmins},
+     * отправляет в чат сообщение, что чат теперь не админский
+     * @param chatId id чата, в котором вызвали команду /adminoff
      * @author ezuykow
      */
     private void performAdminOffCmd(long chatId) {
@@ -133,6 +166,10 @@ public class OwnerCommandsActions {
     }
 
     /**
+     * Проверяет, что в чате есть члены не админы и отправляет сообщение для выбора повышаемого члена с
+     * клавиатурой {@link PromoteOrDemoteUserKeyboard}, в противном случае
+     * отправляет в чат сообщение, что в чате нет не админов
+     * @param chatId id чата, в котором вызвали команду /promote
      * @author ezuykow
      */
     private void validateAdminChatMembersAndPerformPromoteCmd(long chatId) {
@@ -147,6 +184,10 @@ public class OwnerCommandsActions {
     }
 
     /**
+     * Проверяет, что в чате есть админы и отправляет сообщение для выбора понижаемого члена с
+     * клавиатурой {@link PromoteOrDemoteUserKeyboard}, в противном случае
+     * отправляет в чат сообщение, что в чате нет админов
+     * @param chatId id чата, в котором вызвали команду /demote
      * @author ezuykow
      */
     private void validateAdminsInChatAndPerformDemoteCmd(long chatId) {
@@ -161,6 +202,10 @@ public class OwnerCommandsActions {
     }
 
     /**
+     * Вызывает {@link GlobalChatService#deleteById} для {@code chatId}, создает новый
+     * {@link AdminChat} c {@code chatId} и админом {@code owner} и вызывает для него {@link AdminChatService#save}
+     * @param chatId id чата
+     * @param owner админ-владелец бота
      * @author ezuykow
      */
     private void swapGlobalChatToAdminChat(long chatId, Admin owner) {
@@ -174,6 +219,9 @@ public class OwnerCommandsActions {
     }
 
     /**
+     * Вызывает {@link AdminChatService#deleteByChatId} для {@code chatId}, создает новый
+     * {@link GlobalChat} c {@code chatId} и вызывает для него {@link GlobalChatService#save}
+     * @param chatId id чата
      * @author ezuykow
      */
     private void swapAdminChatToGlobalChat(long chatId) {
@@ -182,6 +230,10 @@ public class OwnerCommandsActions {
     }
 
     /**
+     * Создает {@link AdminChatMembers} с {@code chatId} и {@code owner.getTgAdminUserId()}
+     * и вызывает для него {@link AdminChatMembersService#save}
+     * @param chatId id чата
+     * @param owner админ-владелец бота
      * @author ezuykow
      */
     private void createAdminChatMembers(long chatId, Admin owner) {
@@ -194,6 +246,10 @@ public class OwnerCommandsActions {
     }
 
     /**
+     * Получает список id всех членов чата, убирает из него id админов, получает {@link User} по каждому id
+     * и возвращает {@code Set<User>}
+     * @param chatId id чата
+     * @return {@code Set<User>} - сет членов чата, которые не являются админами
      * @author ezuykow
      */
     private Set<User> getNotAdminMembersInAdminChat(long chatId) {
@@ -204,14 +260,22 @@ public class OwnerCommandsActions {
     }
 
     /**
+     * Получает членов чата по {@code chatId} как {@code long[] ids}, преобразует в {@code Set<Long>} и возвращает
+     * @param chatId id чата
+     * @return {@code Set<Long>} - сет из id членов чата
      * @author ezuykow
      */
     private Set<Long> getAdminChatMembersIds(long chatId) {
         return new HashSet<>(
-                Set.of(ArrayUtils.toObject(adminChatMembersService.findByChatId(chatId).get().getMembers())));
+                Set.of(ArrayUtils.toObject(adminChatMembersService.findByChatId(chatId)
+                                .orElseThrow(NonExistentChat::new).getMembers())));
     }
 
     /**
+     * Получает список id админов чата, убирает из него id хозяина бота, получает {@link User} по каждому id
+     * и возвращает {@code Set<User>}
+     * @param chatId id чата
+     * @return {@code Set<User>} - сет членов чата, которые являются админами
      * @author ezuykow
      */
     private Set<User> getAdminUsersFromChat(long chatId) {
@@ -223,10 +287,13 @@ public class OwnerCommandsActions {
     }
 
     /**
+     * Получает список id админов чата по {@code chatId}, преобразует в {@code Set<Long>} и возвращает
+     * @param chatId id чата
+     * @return {@code Set<Long>} - сет из id админов чата
      * @author ezuykow
      */
     private Set<Long> getAdminsIdsFromChat(long chatId) {
-        return adminChatService.findById(chatId).get().getAdmins()
+        return adminChatService.findById(chatId).orElseThrow(NonExistentChat::new).getAdmins()
                 .stream().map(Admin::getTgAdminUserId).collect(Collectors.toSet());
     }
 }

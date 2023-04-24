@@ -36,10 +36,12 @@ public class CallbackQueryManager {
         this.newGameCreatingCallbackManager = newGameCreatingCallbackManager;
     }
 
+    //-----------------API START-----------------
+
     /**
      * По данным калбака передает апдейт конкретному менеджеру
      * @param update апдейт с CallbackQuery
-     * @see QuestionViewerCallbackManager
+     * @author ezuykow
      */
     public void manageCallback(ExtendedUpdate update) {
         final long senderUserId = update.getCallbackFromUserId();
@@ -64,4 +66,7 @@ public class CallbackQueryManager {
             newGameCreatingCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
         }
     }
+
+    //-----------------API END-----------------
+
 }

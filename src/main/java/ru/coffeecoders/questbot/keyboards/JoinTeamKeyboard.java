@@ -18,15 +18,23 @@ public class JoinTeamKeyboard {
                 .selective(true);
     }
 
+    //-----------------API START-----------------
+
     /**
-     * Возвразает {@link ReplyKeyboardMarkup} с кнопками - именами команд
+     * Возвращает {@link ReplyKeyboardMarkup} с кнопками - именами команд
      * @param teamsNames список имен команд
      * @return {@link ReplyKeyboardMarkup} клавиатуру
+     * @author ezuykow
      */
     public static ReplyKeyboardMarkup createKeyboard(List<String> teamsNames) {
         return new JoinTeamKeyboard(teamsNames).keyboard;
     }
 
+    //-----------------API END-----------------
+
+    /**
+     * @author ezuykow
+     */
     private String[][] makeButtons(List<String> teamsNames) {
         String[][] buttons = new String[teamsNames.size()][1];
         for (int i = 0; i < teamsNames.size(); i++) {

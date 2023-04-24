@@ -46,11 +46,14 @@ public class QuestionsFromExcelParser {
         this.env = env;
     }
 
+    //-----------------API START-----------------
+
     /**
      * Принимает excel-файл, вытаскивает из него вопросы.
      * Если вопросы есть, передает их в {@link QuestionService}
      * для сохранения в БД
      * @param excelFile excel-файл. Не может быть {@code NULL}
+     * @author ezuykow
      */
     public void parse(File excelFile, long chatId) {
         try (XSSFWorkbook workBook = new XSSFWorkbook(new FileInputStream(excelFile))) {
@@ -67,17 +70,28 @@ public class QuestionsFromExcelParser {
 
     }
 
+    //-----------------API END-----------------
+
+    /**
+     * @author ezuykow
+     */
     private void searchQuestionsInSheet(Sheet sheet) {
         StreamSupport.stream(((Iterable<Row>) sheet).spliterator(), false) //Разбираю страницу на ряды
                 .skip(15) //Пропускаю первые ряды (правила и шапка таблицы)
                 .forEach(this::searchQuestionInRow);
     }
 
+    /**
+     * @author ezuykow
+     */
     private void searchQuestionInRow(Row row) {
         Optional<Question> questionOpt = searchQuestionFieldsInRowCells(row, new Question());
         questionOpt.ifPresent(newQuestions::add);
     }
 
+    /**
+     * @author ezuykow
+     */
     private Optional<Question> searchQuestionFieldsInRowCells(Row row, Question newQuestion) {
         int cellNo = 1;
         for (Cell cell : row) {
@@ -91,6 +105,9 @@ public class QuestionsFromExcelParser {
         return validateAndReturnNewQuestion(newQuestion);
     }
 
+    /**
+     * @author ezuykow
+     */
     private void fillQuestionFieldFromCell(int cellNo, Cell cell, Question newQuestion) {
         switch (cellNo) {
             case 2 -> newQuestion.setQuestion(cell.getStringCellValue().trim());
@@ -101,6 +118,9 @@ public class QuestionsFromExcelParser {
         }
     }
 
+    /**
+     * @author ezuykow
+     */
     private Optional<Question> validateAndReturnNewQuestion(Question newQuestion) {
         if (newQuestion.getQuestion() == null || newQuestion.getAnswer() == null) {
             blankQuestionsPresent = true;
@@ -118,6 +138,9 @@ public class QuestionsFromExcelParser {
         return Optional.of(newQuestion);
     }
 
+    /**
+     * @author ezuykow
+     */
     private void saveQuestionsIfPresent(long chatId) {
         if (newQuestions.isEmpty()) {
             msgSender.send(chatId, env.getProperty("messages.documents.emptyQuestionList"));
@@ -128,6 +151,9 @@ public class QuestionsFromExcelParser {
         }
     }
 
+    /**
+     * @author ezuykow
+     */
     private String createNewQuestionsMsg(StringBuilder sb) {
         if (newQuestions.isEmpty()) {
             sb.append(env.getProperty("messages.documents.noOneQuestionAdded"));
@@ -142,6 +168,9 @@ public class QuestionsFromExcelParser {
         return sb.toString();
     }
 
+    /**
+     * @author ezuykow
+     */
     private void deleteTempFile(File tempFile) {
         try {
             if (tempFile.delete()) {
@@ -154,6 +183,9 @@ public class QuestionsFromExcelParser {
         }
     }
 
+    /**
+     * @author ezuykow
+     */
     private StringBuilder checkBlankAndRemoveEqualsQuestions() {
         StringBuilder msgSB = new StringBuilder();
         if (blankQuestionsPresent) {
@@ -165,6 +197,9 @@ public class QuestionsFromExcelParser {
         return msgSB;
     }
 
+    /**
+     * @author ezuykow
+     */
     private boolean findAndRemoveEqualsQuestions() {
         boolean hasEquals = false;
         List<String> questionsText = questionService.findAll().

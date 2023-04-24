@@ -24,6 +24,8 @@ public class QuestionsViewerKeyboard {
         keyboard = new InlineKeyboardMarkup(buttons);
     }
 
+    //-----------------API START-----------------
+
     /**
      * Создает Inline-клавиатуру для {@link QuestionsViewer}
      * @param pageSize количество вопросов на "странице"
@@ -31,8 +33,8 @@ public class QuestionsViewerKeyboard {
      * @param startIndex индекс первого вопроса на "странице"
      * @param lastIndex индекс последнего вопроса на "странице"
      * @param rightArrowNeed нужна ли кнопка "следующая страница"
-     * @return собранный InlineKeyboardMarkup
-     * @see InlineKeyboardMarkup
+     * @return собранный {@link InlineKeyboardMarkup}
+     * @author ezuykow
      */
     public static InlineKeyboardMarkup createKeyboard(
             int pageSize, boolean leftArrowNeed, int startIndex, int lastIndex, boolean rightArrowNeed) {
@@ -41,6 +43,11 @@ public class QuestionsViewerKeyboard {
                 .keyboard;
     }
 
+    //-----------------API END-----------------
+
+    /**
+     * @author ezuykow
+     */
     private void createFirstButton(boolean leftArrowNeed, int startIndex) {
         if (leftArrowNeed) {
             createLeftArrow(startIndex);
@@ -49,6 +56,9 @@ public class QuestionsViewerKeyboard {
         }
     }
 
+    /**
+     * @author ezuykow
+     */
     private void createQuestionsButtons(int startIndex, int lastIndex) {
         int currentButtonIdx = 1;
         for (int i = startIndex; i <= lastIndex; i++) {
@@ -57,6 +67,9 @@ public class QuestionsViewerKeyboard {
         }
     }
 
+    /**
+     * @author ezuykow
+     */
     private void createLastButton(boolean leftArrowNeed, boolean rightArrowNeed, int lastIndex) {
         if (rightArrowNeed) {
             createRightArrow(lastIndex);
@@ -69,21 +82,33 @@ public class QuestionsViewerKeyboard {
         }
     }
 
+    /**
+     * @author ezuykow
+     */
     private void createLeftArrow(int startIndex) {
         buttons[0] = new InlineKeyboardButton("\u25C0")
                 .callbackData("QuestionViewer.Switch page to previous.First element index." + startIndex);
     }
 
+    /**
+     * @author ezuykow
+     */
     private void createRightArrow(int lastIndex) {
         buttons[buttons.length - 1] =  new InlineKeyboardButton("\u25B6")
                 .callbackData("QuestionViewer.Switch page to next.Last element index." + lastIndex);
     }
 
+    /**
+     * @author ezuykow
+     */
     private void createCris(int buttonsIdx) {
         buttons[buttonsIdx] = new InlineKeyboardButton("\u274C")
                 .callbackData("QuestionViewer.Delete message");
     }
 
+    /**
+     * @author ezuykow
+     */
     private void deleteLastButton() {
         buttons = Arrays.copyOf(buttons, buttons.length - 1);
     }

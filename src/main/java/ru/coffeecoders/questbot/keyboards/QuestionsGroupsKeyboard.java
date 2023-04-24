@@ -18,10 +18,23 @@ public class QuestionsGroupsKeyboard {
         createButtons(groups);
     }
 
+    //-----------------API START-----------------
+
+    /**
+     * Собирает клавиатуру с группами вопросов
+     * @param groups группы вопросов {@link QuestionGroup}
+     * @return {@link InlineKeyboardMarkup} - собранная клавиатура
+     * @author ezuykow
+     */
     public static InlineKeyboardMarkup createKeyboard(List<QuestionGroup> groups) {
         return new QuestionsGroupsKeyboard(groups).keyboard;
     }
 
+    //-----------------API END-----------------
+
+    /**
+     * @author ezuykow
+     */
     private void createButtons(List<QuestionGroup> groups) {
         groups.forEach(g ->
                     keyboard.addRow(

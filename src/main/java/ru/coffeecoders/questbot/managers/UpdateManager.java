@@ -31,6 +31,11 @@ public class UpdateManager {
         this.msgSender = msgSender;
     }
 
+    /**
+     *
+     * @author anatoliy
+     * @Redact: ezuykow
+     */
     public void performUpdate(Update update) {
         ExtendedUpdate exUpdate = new ExtendedUpdate(update);
         switch (exUpdate.getUpdateType()) {

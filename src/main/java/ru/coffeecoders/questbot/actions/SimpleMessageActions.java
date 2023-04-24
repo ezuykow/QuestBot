@@ -4,8 +4,8 @@ import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.MessageToDelete;
 import ru.coffeecoders.questbot.entities.Player;
 import ru.coffeecoders.questbot.entities.Team;
+import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
-import ru.coffeecoders.questbot.repositories.MessageToDeleteRepository;
 import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.services.GlobalChatService;
 import ru.coffeecoders.questbot.services.MessageToDeleteService;
@@ -28,7 +28,6 @@ public class SimpleMessageActions {
 
     public SimpleMessageActions(TeamService teamService, PlayerService playerService,
                                 GlobalChatService globalChatService, MessageSender msgSender,
-                                MessageToDeleteRepository mtdRepository,
                                 MessageToDeleteService messageToDeleteService) {
         this.teamService = teamService;
         this.playerService = playerService;
@@ -37,21 +36,25 @@ public class SimpleMessageActions {
         this.messageToDeleteService = messageToDeleteService;
     }
 
+    //-----------------API START-----------------
+
     /**
-     * Принимает апдейт, в тексте которога - название создаваемой команды.
+     * Принимает апдейт, в тексте которого - название создаваемой команды.
      * Если такой команды еще не существует, то создает новую команду и записывает
      * создавшего игрока в нее
      * @param update апдейт с именем новой команды в тексте
+     * @author ezuykow
      */
     public void registerNewTeam(ExtendedUpdate update) {
         if (update.hasMessageText()) {
             Team newTeam = new Team(
                     update.getMessageText(),
-                    globalChatService.findById(update.getMessageChatId()).get().getCreatingGameName()
+                    globalChatService.findById(update.getMessageChatId())
+                            .orElseThrow(NonExistentChat::new).getCreatingGameName()
             );
             checkTeamForExistAndSave(update, newTeam);
         }
-        saveToMessageToDelete(update, "REGTEAM", false);
+        saveToMessageToDelete(update);
         markUselessRegTeamMsgAsInactive(update);
     }
 
@@ -59,15 +62,22 @@ public class SimpleMessageActions {
      * Записывает игрока по userId из апдейта в команду с именем {@code teamName}
      * @param update апдейт с id игрока
      * @param teamName имя выбранной команды
+     * @author ezuykow
      */
     public void joinTeam(ExtendedUpdate update, String teamName) {
         Player newPlayer = createNewPlayer(update.getMessageFromUserId(),
-                globalChatService.findById(update.getMessageChatId()).get().getCreatingGameName(),
+                globalChatService.findById(update.getMessageChatId())
+                        .orElseThrow(NonExistentChat::new).getCreatingGameName(),
                 teamName
         );
         addPlayersWithTeam(newPlayer, update);
     }
 
+    //-----------------API END-----------------
+
+    /**
+     * @author ezuykow
+     */
     private void checkTeamForExistAndSave(ExtendedUpdate update, Team newTeam) {
         teamService.findByTeamName(newTeam.getTeamName())
                 .ifPresentOrElse(
@@ -77,6 +87,9 @@ public class SimpleMessageActions {
                 );
     }
 
+    /**
+     * @author ezuykow
+     */
     private void addPlayersWithTeam(Player player, ExtendedUpdate update) {
         playerService.save(player);
         msgSender.send(update.getMessageChatId(),
@@ -85,10 +98,16 @@ public class SimpleMessageActions {
         );
     }
 
+    /**
+     * @author ezuykow
+     */
     private Player createNewPlayer(long tgUserId, String gameName, String teamName) {
         return new Player(tgUserId, gameName, teamName);
     }
 
+    /**
+     * @author ezuykow
+     */
     private void saveNewTeam(Team newTeam, ExtendedUpdate update) {
         teamService.save(newTeam);
         msgSender.send(update.getMessageChatId(),
@@ -97,18 +116,24 @@ public class SimpleMessageActions {
         joinTeam(update, newTeam.getTeamName());
     }
 
-    private void saveToMessageToDelete(ExtendedUpdate update, String relateTo, boolean active) {
+    /**
+     * @author ezuykow
+     */
+    private void saveToMessageToDelete(ExtendedUpdate update) {
         messageToDeleteService.save(
                 new MessageToDelete(
                         update.getMessageId(),
                         update.getMessageFromUserId(),
-                        relateTo,
+                        "REGTEAM",
                         update.getMessageChatId(),
-                        active
+                        false
                 )
         );
     }
 
+    /**
+     * @author ezuykow
+     */
     private void markUselessRegTeamMsgAsInactive(ExtendedUpdate update) {
         List<MessageToDelete> mtds = messageToDeleteService.findByUserId(update.getMessageFromUserId())
                 .stream()

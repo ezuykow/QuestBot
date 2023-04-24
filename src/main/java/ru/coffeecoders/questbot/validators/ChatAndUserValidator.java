@@ -28,14 +28,18 @@ public class ChatAndUserValidator {
     }
 
     /**
-     * @param userId - id пользователя
+     * @param userId id пользователя
      * @return true, если userId принадлежит админу, иначе false
+     * @author anna
+     * @Redact: ezuykow
      */
     public boolean isAdmin(long userId) {
         return adminService.findById(userId).isPresent();
     }
 
     /**
+     * @param userId id пользователя
+     * @return true, если userId принадлежит владельцу, иначе false
      * @author ezuykow
      */
     public boolean isOwner(long userId) {
@@ -43,6 +47,10 @@ public class ChatAndUserValidator {
     }
 
     /**
+     * @param chatId id чата
+     * @param userId id пользователя
+     * @return {@code true}, если {@code userId} принадлежит админу, заблокировавшему чат
+     * с {@code id = chatId}, иначе {@code false}
      * @author ezuykow
      */
     public boolean isBlockedAdmin(long chatId, long userId) {
@@ -66,6 +74,8 @@ public class ChatAndUserValidator {
     }
 
     /**
+     * @param chatId id чата
+     * @return {@code true}, если чат с таким id есть в системе, иначе {@code false}
      * @author ezuykow
      */
     public boolean chatAlreadyAdded(long chatId) {
@@ -73,6 +83,8 @@ public class ChatAndUserValidator {
     }
 
     /**
+     * @param chatId id чата
+     * @return {@code true}, если чата с таким id нет в системе, иначе {@code false}
      * @author ezuykow
      */
     public boolean chatNotAdded(long chatId) {

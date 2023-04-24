@@ -23,6 +23,15 @@ public class QuestionsValidator {
         this.questionGroupService = questionGroupService;
     }
 
+    //-----------------API START-----------------
+
+    /**
+     * @param requestedCount запрашиваемое количество вопросов
+     * @param groupsIds id групп, которые нужно учитывать при подсчете количества
+     * @return {@code true}, если в количество вопросов базе, у которых группа соответствует одной из групп
+     * с {@code id = groupsId[x]} больше чем {@code requestedCount}
+     * @author ezuykow
+     */
     public boolean isRequestedQuestionCountNotMoreThanWeHaveByGroups(int requestedCount, int[] groupsIds) {
         Set<String> targetGroupsNames = questionGroupService.findAll().stream()
                 .filter(g -> ArrayUtils.contains(groupsIds, g.getGroupId()))
@@ -33,4 +42,8 @@ public class QuestionsValidator {
                 .count();
         return requestedCount <= count;
     }
+
+
+    //-----------------API END-----------------
+
 }

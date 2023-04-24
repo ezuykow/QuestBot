@@ -2,7 +2,6 @@ package ru.coffeecoders.questbot.managers.callbacks;
 
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.actions.newgame.NewGameActions;
-import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 
 /**
@@ -11,23 +10,36 @@ import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 @Component
 public class NewGameCreatingCallbackManager {
 
-    private final AdminChatService adminChatService;
     private final NewGameActions newGameActions;
     private final ChatAndUserValidator validator;
 
-    public NewGameCreatingCallbackManager(AdminChatService adminChatService, NewGameActions newGameActions, ChatAndUserValidator validator) {
-        this.adminChatService = adminChatService;
+    public NewGameCreatingCallbackManager(NewGameActions newGameActions, ChatAndUserValidator validator) {
         this.newGameActions = newGameActions;
         this.validator = validator;
     }
 
+    //-----------------API START-----------------
+
+    /**
+     * Проверяет, что {@code senderUserId} это id админа, который заблокировал чат или владелец бота,
+     * вызывает {@link NewGameCreatingCallbackManager#performCallback}
+     * @param senderUserId id пользователя, от которого пришел калбак
+     * @param chatId id чата
+     * @param msgId id сообщения
+     * @param data данные калбака
+     * @author ezuykow
+     */
     public void manageCallback(long senderUserId, long chatId, int msgId, String data) {
-        long blockedAdminId = adminChatService.findById(chatId).get().getBlockedByAdminId();
-        if ((senderUserId == blockedAdminId) || validator.isOwner(senderUserId)) {
+        if (validator.isBlockedAdmin(chatId, senderUserId) || validator.isOwner(senderUserId)) {
             performCallback(chatId, msgId, data);
         }
     }
 
+    //-----------------API END-----------------
+
+    /**
+     * @author ezuykow
+     */
     private void performCallback(long chatId, int msgId, String data) {
         String dataPart = data.substring(data.indexOf(".") + 1);
         if (dataPart.equals("Stop")) {

@@ -43,9 +43,13 @@ public class QuestionsViewer {
         this.env = env;
     }
 
+    //-----------------API START-----------------
+
     /**
      * Собирает "страницу" {@link QuestionsViewerPage} и вызывает метод
      * {@link MessageSender#send} для отображения "страницы" вопросов
+     * @param chatId id чата
+     * @author ezuykow
      */
     public void viewQuestions(long chatId) {
         refreshQuestionsList();
@@ -55,7 +59,10 @@ public class QuestionsViewer {
 
     /**
      * "Перелистывает" страницу отображения вопросов на предыдущую
+     * @param chatId id чата
+     * @param msgId id сообщения, в котором отображался список вопросов
      * @param data данные из CallbackQuery
+     * @author ezuykow
      */
     public void switchPageToPrevious(long chatId, int msgId, String data) {
         final int firstIndexShowed = Integer.parseInt(data.substring(data.lastIndexOf(".") + 1));
@@ -66,7 +73,10 @@ public class QuestionsViewer {
 
     /**
      * "Перелистывает" страницу отображения вопросов на следующую
+     * @param chatId id чата
+     * @param msgId id сообщения, в котором отображался список вопросов
      * @param data данные из CallbackQuery
+     * @author ezuykow
      */
     public void switchPageToNext(long chatId, int msgId, String data) {
         final int lastIndexShowed = Integer.parseInt(data.substring(data.lastIndexOf(".") + 1));
@@ -77,8 +87,12 @@ public class QuestionsViewer {
     }
 
     /**
-     * Вызывает метод {@link QuestionInfoViewer#showQuestionInfo} для отображения информации о вопросе
+     * Вызывает метод {@link QuestionInfoViewer#showQuestionInfo} для отображения информации о вопросе, передает в него
+     * вопрос с id, вытащенном из {@code data}
+     * @param chatId id чата
+     * @param msgId id сообщения, в котором отображался список вопросов
      * @param data данные из CallbackQuery
+     * @author ezuykow
      */
     public void showQuestionInfo(long chatId, int msgId, String data) {
         String[] parts = data.split("\\.");
@@ -89,6 +103,9 @@ public class QuestionsViewer {
 
     /**
      * Возвращает отображение "страницы" с вопросами из "страницы" с отображением информации о вопросе
+     * @param chatId id чата
+     * @param msgId id сообщения, в котором отображалась информация о вопросе
+     * @author ezuykow
      */
     public void backFromQuestionInfo(long chatId, int msgId) {
         refreshQuestionsList();
@@ -99,22 +116,36 @@ public class QuestionsViewer {
 
     /**
      * "Закрывает" "страницу" с вопросами - т.е. удаляет сообщение из чата
+     * @param chatId id чата
+     * @param msgId id сообщения, в котором отображался список вопросов
+     * @author ezuykow
      */
     public void deleteView(long chatId, int msgId) {
         unblockAndUnrestrictChat(chatId);
         msgSender.sendDelete(chatId, msgId);
     }
 
+    //-----------------API END-----------------
+
+    /**
+     * @author ezuykow
+     */
     private void refreshQuestionsList() {
         questions = questionService.findAll();
     }
 
+    /**
+     * @author ezuykow
+     */
     private QuestionsViewerPage createPage(int pageSize) {
         pagesCount = questions.size() / defaultPageSize;
         pagesCount = (questions.size() % defaultPageSize == 0) ? pagesCount : pagesCount + 1;
         return QuestionsViewerPage.createPage(questions, pageSize, lastShowedFirstIndex, pagesCount);
     }
 
+    /**
+     * @author ezuykow
+     */
     private void unblockAndUnrestrictChat(long chatId) {
         restrictingManager.unRestrictMembers(chatId);
         blockingManager.unblockAdminChat(chatId, env.getProperty("messages.admins.endQuestionView"));

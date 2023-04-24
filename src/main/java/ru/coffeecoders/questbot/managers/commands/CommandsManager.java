@@ -78,7 +78,7 @@ public class CommandsManager {
     private void checkAndSendOwnersCommand(ExtendedUpdate update, Command cmd){
         deleteMessageWithCommand(update);
         if (validator.isOwner(update.getMessageFromUserId())) {
-            ownerCommandsManager.manageCommand(update, cmd);
+            ownerCommandsManager.manageCommand(update.getMessageChatId(), cmd);
         } else {
             msgSender.send(chatId, env.getProperty("messages.admins.isOwnerCommand"));
         }
@@ -100,6 +100,10 @@ public class CommandsManager {
         }
     }
 
+    /**
+     * @author anna
+     * @Redact: ezuykow
+     */
     private void checkAndSendGlobalAdminsCommand(ExtendedUpdate update, Command cmd) {
         deleteMessageWithCommand(update);
         if (validator.isAdmin(update.getMessageFromUserId())) {
@@ -109,6 +113,9 @@ public class CommandsManager {
         }
     }
 
+    /**
+     * @author ezuykow
+     */
     private String getTextCommand(ExtendedUpdate update) {
         String text = update.getMessageText();
         return text.trim().
@@ -116,6 +123,9 @@ public class CommandsManager {
                 .toUpperCase();
     }
 
+    /**
+     * @author ezuykow
+     */
     private void deleteMessageWithCommand(ExtendedUpdate update) {
         msgSender.sendDelete(update.getMessageChatId(), update.getMessageId());
     }

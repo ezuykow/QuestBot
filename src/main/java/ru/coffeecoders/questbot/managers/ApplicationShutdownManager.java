@@ -16,7 +16,16 @@ public class ApplicationShutdownManager {
         this.context = context;
     }
 
+    //-----------------API START-----------------
+
+    /**
+     * Закрывает контекст приложения, останавливает приложение
+     * @author ezuykow
+     */
     public void stopBot() {
         System.exit(SpringApplication.exit(context, () -> 0));
     }
+
+    //-----------------API END-----------------
+
 }

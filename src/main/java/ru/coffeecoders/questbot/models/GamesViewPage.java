@@ -19,18 +19,39 @@ public class GamesViewPage {
         createKeyboard(games);
     }
 
+    //-----------------API START-----------------
+
+    /**
+     * Возвращает новый экземпляр {@link GamesViewPage}
+     * @param games список всех игр
+     * @return собранный {@link GamesViewPage}
+     * @author ezuykow
+     */
     public static GamesViewPage createPage(List<Game> games) {
         return new GamesViewPage(games);
     }
 
+    /**
+     * @return {@code GamesViewPage.text} - текст страницы
+     * @author ezuykow
+     */
     public String getText() {
         return text;
     }
 
+    /**
+     * @return {@code GamesViewPage.keyboard} - клавиатуру страницы
+     * @author ezuykow
+     */
     public InlineKeyboardMarkup getKeyboard() {
         return keyboard;
     }
 
+    //-----------------API END-----------------
+
+    /**
+     * @author ezuykow
+     */
     private void createText(List<Game> games) {
         StringBuilder sb = new StringBuilder();
         sb.append("🎲Созданные игры:\n\n");
@@ -41,6 +62,9 @@ public class GamesViewPage {
         text = sb.toString();
     }
 
+    /**
+     * @author ezuykow
+     */
     private void createKeyboard(List<Game> games) {
         keyboard = GamesViewerKeyboard.createKeyboard(games);
     }

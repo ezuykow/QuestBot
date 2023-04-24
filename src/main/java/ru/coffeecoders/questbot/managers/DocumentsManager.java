@@ -29,12 +29,15 @@ public class DocumentsManager {
         this.env = env;
     }
 
+    //-----------------API START-----------------
+
     /**
      * Принимает апдейт с документом для добавления с него вопросов,
      * проверяет, что он пришел от админа в админском чате и является
      * файлом Excel, пробует скачать его с сервера используя {@link DocumentDownloader}
      * и пробрасывает скачанный файл в {@link QuestionsFromExcelParser}
      * @param update апдейт с документом
+     * @author ezuykow
      */
     public void manageDocument(ExtendedUpdate update) {
         long chatId = update.getMessageChatId();
@@ -45,6 +48,11 @@ public class DocumentsManager {
         }
     }
 
+    //-----------------API END-----------------
+
+    /**
+     * @author ezuykow
+     */
     private boolean validate(ExtendedUpdate exUpdate) {
         if (validator.isAdminChat(exUpdate.getMessageChatId())) {
             if (validator.isAdmin(exUpdate.getMessageFromUserId())) {
@@ -60,10 +68,16 @@ public class DocumentsManager {
         return false;
     }
 
+    /**
+     * @author ezuykow
+     */
     private boolean isExcelFile(Document doc) {
         return doc.mimeType().equals(env.getProperty("document.excel.mimeType"));
     }
 
+    /**
+     * @author ezuykow
+     */
     private void deleteMessageWithNewQuestionsDocument(ExtendedUpdate update) {
         msgSender.sendDelete(update.getMessageChatId(), update.getMessageId());
     }

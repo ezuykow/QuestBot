@@ -29,11 +29,25 @@ public class NewGameManager {
 
     //-----------------API START-----------------
 
+    /**
+     * Вызывает {@link NewGameManager#blockAndRestrictChat} и {@link NewGameActions#createNewGameCreatingState}
+     * @param senderAdminId id админа, инициировавшего создание игры
+     * @param chatId id чата
+     * @author ezuykow
+     */
     public void startCreatingGame(long senderAdminId, long chatId) {
         blockAndRestrictChat(chatId, senderAdminId);
         actions.createNewGameCreatingState(chatId);
     }
 
+    /**
+     * В зависимости от ожидаемого свойства новой игры вызывает соответствующий метод
+     * {@link NewGameActions}
+     * @param chatId id чата
+     * @param text текст ответа
+     * @param msgId id сообщения с ответом
+     * @author ezuykow
+     */
     public void manageNewGamePart(long chatId, String text, int msgId) {
         NewGameCreatingState state = utils.getNewGameCreatingState(chatId);
         if (state.getGameName() == null) {
@@ -55,6 +69,9 @@ public class NewGameManager {
 
     //-----------------API END-----------------
 
+    /**
+     * @author ezuykow
+     */
     private void blockAndRestrictChat(long chatId, long senderAdminId) {
         blockingManager.blockAdminChatByAdmin(chatId, senderAdminId, env.getProperty("messages.admins.startGameCreating"));
         restrictingManager.restrictMembers(chatId, senderAdminId);

@@ -41,6 +41,12 @@ public class QuestBotUpdatesListener implements UpdatesListener {
         startUp = true;
     }
 
+    //-----------------API START-----------------
+
+    /**
+     * @author anatoliy
+     * @Redact: ezuykow
+     */
     @PostConstruct
     public void init() {
         bot.setUpdatesListener(this,
@@ -65,6 +71,10 @@ public class QuestBotUpdatesListener implements UpdatesListener {
         msgSender.sendStartUp();
     }
 
+    /**
+     * @author anatoliy
+     * @Redact: ezuykow
+     */
     @Override
     public int process(List<Update> updates) {
         if (startUp) {
@@ -75,4 +85,7 @@ public class QuestBotUpdatesListener implements UpdatesListener {
         msgSender.sendDeleteAllMessageToDelete();
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
+
+    //-----------------API END-----------------
+
 }

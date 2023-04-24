@@ -38,12 +38,20 @@ public class NewGameUtils {
         this.env = env;
     }
 
+    //-----------------API START-----------------
+
+    /**
+     * @author ezuykow
+     */
     public NewGameCreatingState getNewGameCreatingState(long chatId) {
         return newGameCreatingStateService.findById(chatId)
                 .orElseThrow(() ->
                         new RuntimeException("Этого, конечно, никогда не будет, нооо... пиздец, короче"));
     }
 
+    /**
+     * @author ezuykow
+     */
     public String getGroupsNames(int[] allStateGroupsIds) {
         StringBuilder sb = new StringBuilder();
         List<QuestionGroup> groups = questionGroupService.findAll();
@@ -58,6 +66,9 @@ public class NewGameUtils {
         return sb.toString();
     }
 
+    /**
+     * @author ezuykow
+     */
     public int[] addQuestionGroupIdToState(long chatId, int questionGroupId) {
         NewGameCreatingState state = getNewGameCreatingState(chatId);
         int[] groupsIds = ArrayUtils.add(state.getGroupsIds(), questionGroupId);
@@ -66,6 +77,9 @@ public class NewGameUtils {
         return groupsIds;
     }
 
+    /**
+     * @author ezuykow
+     */
     public Integer parseTextToInteger(String text) {
         try {
             return Integer.valueOf(text);
@@ -74,6 +88,9 @@ public class NewGameUtils {
         }
     }
 
+    /**
+     * @author ezuykow
+     */
     public void calcRequestMsgId(NewGameCreatingState state, int answerMsgId) {
         if (state.getRequestMsgId() == null) {
             state.setRequestMsgId(answerMsgId - 1);
@@ -81,6 +98,9 @@ public class NewGameUtils {
         }
     }
 
+    /**
+     * @author ezuykow
+     */
     public InlineKeyboardMarkup addQuestionGroupAndGetKeyboard(long chatId, int questionGroupId) {
         int[] allStateGroupsIds = addQuestionGroupIdToState(chatId, questionGroupId);
         return QuestionsGroupsKeyboard.createKeyboard(questionGroupService.findAll()
@@ -89,6 +109,9 @@ public class NewGameUtils {
                 .toList());
     }
 
+    /**
+     * @author ezuykow
+     */
     public void switchMsg(int msgN, long chatId, int msgId, NewGameCreatingState state, String prop1, InlineKeyboardMarkup kb) {
         switch (msgN) {
             case 1 -> msgSender.edit(chatId, msgId, createTextFromStateFields(
@@ -110,6 +133,9 @@ public class NewGameUtils {
         }
     }
 
+    /**
+     * @author ezuykow
+     */
     public String createTextFromStateFields(String property, int argsCount, NewGameCreatingState state) {
         Object[] args = new Object[argsCount];
         switch (argsCount) {
@@ -125,6 +151,9 @@ public class NewGameUtils {
         return String.format(property, args);
     }
 
+    /**
+     * @author ezuykow
+     */
     public void saveNewGame(NewGameCreatingState state) {
         gameService.save(
                 new Game(
@@ -139,4 +168,7 @@ public class NewGameUtils {
                 )
         );
     }
+
+    //-----------------API END-----------------
+
 }

@@ -1,5 +1,6 @@
 package ru.coffeecoders.questbot.managers;
 
+import com.pengrad.telegrambot.model.ChatMemberUpdated;
 import com.pengrad.telegrambot.model.User;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.actions.ChatMembersActions;
@@ -17,8 +18,12 @@ public class ChatMembersManager {
         this.chatMembersActions = actions;
     }
 
+    //-----------------API START-----------------
+
     /**
-     *
+     * В зависимости от {@code type} вызывает метод из {@link ChatMembersActions}
+     * @param update апдейт с {@link ChatMemberUpdated}
+     * @param type тип апдейта
      * @author ezuykow
      */
     public void manageChatMembers(ExtendedUpdate update, ExtendedUpdate.UpdateType type) {
@@ -31,4 +36,8 @@ public class ChatMembersManager {
                 chatMembersActions.leftChatMember(updatedMember, chatId);
         }
     }
+
+
+    //-----------------API END-----------------
+
 }

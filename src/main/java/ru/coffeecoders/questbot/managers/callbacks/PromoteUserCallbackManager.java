@@ -4,6 +4,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Admin;
 import ru.coffeecoders.questbot.entities.AdminChat;
+import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
@@ -29,7 +30,15 @@ public class PromoteUserCallbackManager {
         this.env = env;
     }
 
+    //-----------------API START-----------------
+
     /**
+     * Проверяет, что {@code senderUserId} это id владельца бота и вызывает
+     * {@link PromoteUserCallbackManager#performPromotion}
+     * @param senderUserId id пользователя, от которого пришел калбак
+     * @param chatId id чата
+     * @param msgId id сообщения
+     * @param data данные калбака
      * @author ezuykow
      */
     public void manageCallback(long senderUserId, long chatId, int msgId, String data) {
@@ -37,6 +46,8 @@ public class PromoteUserCallbackManager {
             performPromotion(chatId, msgId, data);
         }
     }
+
+    //-----------------API END-----------------
 
     /**
      * @author ezuykow
@@ -59,7 +70,8 @@ public class PromoteUserCallbackManager {
      * @author ezuykow
      */
     private void saveNewAdmin(long chatId, long userId) {
-        AdminChat currentAdminChat = adminChatService.findById(chatId).get();
+        AdminChat currentAdminChat = adminChatService.findById(chatId)
+                .orElseThrow(NonExistentChat::new);
         Set<Admin> admins = currentAdminChat.getAdmins();
         admins.add(new Admin(userId, Collections.singleton(currentAdminChat)));
         currentAdminChat.setAdmins(admins);

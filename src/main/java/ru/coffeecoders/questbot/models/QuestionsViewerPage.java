@@ -1,7 +1,6 @@
 package ru.coffeecoders.questbot.models;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import org.springframework.beans.factory.annotation.Value;
 import ru.coffeecoders.questbot.entities.Question;
 import ru.coffeecoders.questbot.keyboards.viewers.QuestionsViewerKeyboard;
 
@@ -25,6 +24,8 @@ public class QuestionsViewerPage {
 
     private QuestionsViewerPage() {}
 
+    //-----------------API START-----------------
+
     /**
      * Собирает "страницу" отображения всех вопросов {@code questions}, включающую непосредственно текст
      * сообщения {@link QuestionsViewerPage#text} и Inline-клавиатуру {@link QuestionsViewerPage#keyboard}.
@@ -34,6 +35,7 @@ public class QuestionsViewerPage {
      * @param defaultPageSize дефолтное количество вопросов на "странице"
      * @param startIndex индекс вопроса из {@code questions}, который будет первым на "странице"
      * @return собранную страницу {@link QuestionsViewerPage}
+     * @author ezuykow
      */
     public static QuestionsViewerPage createPage(List<Question> questions, int defaultPageSize, int startIndex, int pagesCount) {
         QuestionsViewerPage page = new QuestionsViewerPage();
@@ -51,14 +53,27 @@ public class QuestionsViewerPage {
         return page;
     }
 
+    /**
+     * @return {@code QuestionsViewerPage.text} - текст страницы
+     * @author ezuykow
+     */
     public String getText() {
         return text;
     }
 
+    /**
+     * @return {@code QuestionsViewerPage.keyboard} - клавиатуру страницы
+     * @author ezuykow
+     */
     public InlineKeyboardMarkup getKeyboard() {
         return keyboard;
     }
 
+    //-----------------API END-----------------
+
+    /**
+     * @author ezuykow
+     */
     private void createText() {
         StringBuilder sb = new StringBuilder();
         sb.append(calcPage());
@@ -71,16 +86,25 @@ public class QuestionsViewerPage {
         text = sb.toString();
     }
 
+    /**
+     * @author ezuykow
+     */
     private void checkArrowsNeed() {
         leftArrowNeed = startIndex != 0;
         rightArrowNeed = lastIndex != questions.size() - 1;
     }
 
+    /**
+     * @author ezuykow
+     */
     private void createKeyboard() {
         keyboard = QuestionsViewerKeyboard.createKeyboard(
                 pageSize, leftArrowNeed, startIndex, lastIndex, rightArrowNeed);
     }
 
+    /**
+     * @author ezuykow
+     */
     private String calcPage() {
         int currentPage = startIndex / defaultPageSize + 1;
         return "Страница " + currentPage + " из " + pagesCount + "\n\n";

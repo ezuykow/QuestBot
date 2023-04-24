@@ -4,14 +4,14 @@ import com.pengrad.telegrambot.response.SendResponse;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.*;
+import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.keyboards.JoinTeamKeyboard;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
-import ru.coffeecoders.questbot.repositories.MessageToDeleteRepository;
 import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.services.*;
 import ru.coffeecoders.questbot.validators.GameValidator;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * @author anna
@@ -30,8 +30,7 @@ public class PlayersCommandsActions {
     public PlayersCommandsActions(TeamService teamService, TaskService taskService,
                                   GlobalChatService globalChatService, MessageSender msgSender,
                                   QuestionService questionService, MessageToDeleteService messageToDeleteService,
-                                  MessageToDeleteRepository mtdRepository, GameValidator gameValidator,
-                                  Environment env)
+                                  GameValidator gameValidator, Environment env)
     {
         this.teamService = teamService;
         this.taskService = taskService;
@@ -42,6 +41,8 @@ public class PlayersCommandsActions {
         this.env = env;
         this.gameValidator = gameValidator;
     }
+
+    //-----------------API START-----------------
 
     /**
      * Собирает сообщение из пар название команды-счет и передает его
@@ -65,12 +66,13 @@ public class PlayersCommandsActions {
      * актуальных вопросов
      * @param chatId id чата
      * @author anna
-     * <br>Redact: ezuykow
+     * @Redact: ezuykow
      */
     public void showTasks(long chatId) {
         if (gameValidator.isGameStarted(chatId)) {
             msgSender.send(chatId,
-                    getActualTasks(globalChatService.findById(chatId).map(GlobalChat::getCreatingGameName).get())
+                    getActualTasks(globalChatService.findById(chatId)
+                            .map(GlobalChat::getCreatingGameName).orElseThrow(NonExistentChat::new))
             );
         } else {
             msgSender.send(chatId, env.getProperty("messages.players.haventStartedGame"));
@@ -82,7 +84,7 @@ public class PlayersCommandsActions {
      *
      * @param update апдейт
      * @author anna
-     * <br>Redact: ezuykow
+     * @Redact: ezuykow
      */
     public void regTeam(ExtendedUpdate update) {
         long chatId = update.getMessageChatId();
@@ -91,8 +93,8 @@ public class PlayersCommandsActions {
                     msgSender.send(chatId, env.getProperty("messages.players.enterTeamName"),
                             update.getMessageId()
                     );
-            saveToMessageToDelete(update.getMessageId(), update, "REGTEAM", true);
-            saveToMessageToDelete(response.message().messageId(), update, "REGTEAM", true);
+            saveToMessageToDelete(update.getMessageId(), update.getMessageFromUserId(), chatId);
+            saveToMessageToDelete(response.message().messageId(), update.getMessageFromUserId(), chatId);
         }
     }
 
@@ -102,7 +104,7 @@ public class PlayersCommandsActions {
      *
      //* @param chatId id чата
      * @author anna
-     * <br>Redact: ezuykow
+     * @Redact: ezuykow
      */
     public void joinTeam(ExtendedUpdate update) {
         long chatId = update.getMessageChatId();
@@ -120,6 +122,15 @@ public class PlayersCommandsActions {
         }
     }
 
+    //-----------------API END-----------------
+
+    /**
+     * Получает невыполненные задачи, относящиеся к игре {@code gameName}, собирает из текстов их вопросов
+     * одну строку и возвращает
+     * @param gameName название игры
+     * @return строку с текстами вопросов всех актуальных задач
+     * @author ezuykow
+     */
     private String getActualTasks(String gameName) {
         StringBuilder sb = new StringBuilder();
         taskService.findByGameName(gameName)
@@ -133,16 +144,16 @@ public class PlayersCommandsActions {
         return sb.toString();
     }
 
-    private void saveToMessageToDelete(int msgId, ExtendedUpdate update, String relateTo, boolean active) {
+    /**
+     * Создает новый {@link MessageToDelete} и вызывает для него {@link MessageToDeleteService#save}
+     * @param msgId id сообщение, которое нужно будет удалить
+     * @param userId id пользователя, который отправил сообщение
+     * @param chatId id чата, в котором нужно будет удалить сообщение
+     * @author ezuykow
+     */
+    private void saveToMessageToDelete(int msgId, long userId, long chatId) {
         messageToDeleteService.save(
-                new MessageToDelete(
-                        msgId,
-                        update.getMessageFromUserId(),
-                        relateTo,
-                        update.getMessageChatId(),
-                        active
-                )
-        );
+                new MessageToDelete(msgId, userId, "REGTEAM", chatId, true));
     }
 
     private String createQuestionInfoMsg(Question q) {

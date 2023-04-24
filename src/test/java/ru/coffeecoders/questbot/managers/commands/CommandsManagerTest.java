@@ -57,7 +57,7 @@ class CommandsManagerTest {
 
         when(validator.isOwner(exUpdate.getMessageFromUserId())).thenReturn(true);
         commandsManager.manageCommand(exUpdate);
-        Mockito.verify(ownerCommandsManager).manageCommand(exUpdate,
+        Mockito.verify(ownerCommandsManager).manageCommand(0,
                 Command.valueOf(cmd.substring(1).toUpperCase()));
     }
 
