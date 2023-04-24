@@ -10,6 +10,7 @@ import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import ru.coffeecoders.questbot.managers.ExceptionManager;
 import ru.coffeecoders.questbot.managers.UpdateManager;
 import ru.coffeecoders.questbot.senders.MessageSender;
 
@@ -20,17 +21,72 @@ public class QuestBotUpdatesListener implements UpdatesListener {
 
     Logger logger = LoggerFactory.getLogger(QuestBotUpdatesListener.class);
 
-    private final UpdateManager updateManager;
     private final TelegramBot bot;
+    private final UpdateManager updateManager;
+    private final ExceptionManager exceptionManager;
     private final MessageSender msgSender;
 
-    private boolean startUp;
+    private boolean startUp = true;
 
-    public QuestBotUpdatesListener(UpdateManager updateManager, TelegramBot bot, MessageSender msgSender) {
+    public QuestBotUpdatesListener(UpdateManager updateManager, TelegramBot bot, ExceptionManager exceptionManager,
+                                   MessageSender msgSender) {
         logger.warn("Starting bot...");
+
+        this.exceptionManager = exceptionManager;
         this.updateManager = updateManager;
         this.msgSender = msgSender;
-        bot.execute(new SetMyCommands(
+        this.bot = bot;
+    }
+
+    /**
+     * @author anatoliy
+     * @Redact: ezuykow
+     */
+    @PostConstruct
+    public void init() {
+        bot.execute(createSetMyCommands());
+        bot.setUpdatesListener(this, createGetUpdates());
+    }
+
+    //-----------------API START-----------------
+
+    /**
+     * @author anatoliy
+     * @Redact: ezuykow
+     */
+    @Override
+    public int process(List<Update> updates) {
+        if (!startUp) {
+            performAllUpdates(updates);
+        } else {
+            logger.warn("Bot has been started!");
+            msgSender.sendStartUp();
+            startUp = false;
+        }
+        return UpdatesListener.CONFIRMED_UPDATES_ALL;
+    }
+
+    //-----------------API END-----------------
+
+    /**
+     * @author ezuykow
+     */
+    private void performAllUpdates(List<Update> updates) {
+        updates.forEach(update -> {
+            try {
+                updateManager.performUpdate(update);
+            } catch (Exception e) {
+                exceptionManager.logException(e);
+            }
+        });
+        msgSender.sendDeleteAllMessageToDelete();
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private SetMyCommands createSetMyCommands() {
+        return new SetMyCommands(
                 new BotCommand("regteam", "(Игрок) Создать команду"),
                 new BotCommand("jointeam", "(Игрок) Вступить в команду"),
                 new BotCommand("showgames", "(Админ) Показать все игры"),
@@ -41,20 +97,14 @@ public class QuestBotUpdatesListener implements UpdatesListener {
                 new BotCommand("adminoff", "(Владелец) Сделать текущий чат не администраторским"),
                 new BotCommand("promote", "(Владелец) Назначить администратором бота"),
                 new BotCommand("demote", "(Владелец) Назначить администратором бота")
-        ));
-        this.bot = bot;
-        startUp = true;
+        );
     }
 
-    //-----------------API START-----------------
-
     /**
-     * @author anatoliy
-     * @Redact: ezuykow
+     * @author ezuykow
      */
-    @PostConstruct
-    public void init() {
-        GetUpdates gu = new GetUpdates().allowedUpdates(
+    private GetUpdates createGetUpdates() {
+        return new GetUpdates().allowedUpdates(
                 "message",
                 "edited_message",
                 "channel_post",
@@ -70,26 +120,5 @@ public class QuestBotUpdatesListener implements UpdatesListener {
                 "chat_member",
                 "chat_join_request"
         );
-        bot.setUpdatesListener(this, gu);
-        logger.warn("Bot has been started!");
-        msgSender.sendStartUp();
     }
-
-    /**
-     * @author anatoliy
-     * @Redact: ezuykow
-     */
-    @Override
-    public int process(List<Update> updates) {
-        if (startUp) {
-            startUp = false;
-            return UpdatesListener.CONFIRMED_UPDATES_ALL;
-        }
-        updates.forEach(updateManager::performUpdate);
-        msgSender.sendDeleteAllMessageToDelete();
-        return UpdatesListener.CONFIRMED_UPDATES_ALL;
-    }
-
-    //-----------------API END-----------------
-
 }
