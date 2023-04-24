@@ -152,6 +152,7 @@ public class QuestionsViewer {
      */
     private void validateAndCreateView(long chatId, int msgId, int pageSize) {
         if (questions.isEmpty()) {
+            msgSender.sendDelete(chatId, msgId);
             msgSender.send(chatId, env.getProperty("messages.questions.emptyList"));
             unblockAndUnrestrictChat(chatId);
         } else {
