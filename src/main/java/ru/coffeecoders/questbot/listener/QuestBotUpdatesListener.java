@@ -7,6 +7,8 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.GetUpdates;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.coffeecoders.questbot.managers.UpdateManager;
 import ru.coffeecoders.questbot.senders.MessageSender;
@@ -16,6 +18,8 @@ import java.util.List;
 @Service
 public class QuestBotUpdatesListener implements UpdatesListener {
 
+    Logger logger = LoggerFactory.getLogger(QuestBotUpdatesListener.class);
+
     private final UpdateManager updateManager;
     private final TelegramBot bot;
     private final MessageSender msgSender;
@@ -23,6 +27,7 @@ public class QuestBotUpdatesListener implements UpdatesListener {
     private boolean startUp;
 
     public QuestBotUpdatesListener(UpdateManager updateManager, TelegramBot bot, MessageSender msgSender) {
+        logger.warn("Starting bot...");
         this.updateManager = updateManager;
         this.msgSender = msgSender;
         bot.execute(new SetMyCommands(
@@ -49,25 +54,24 @@ public class QuestBotUpdatesListener implements UpdatesListener {
      */
     @PostConstruct
     public void init() {
-        bot.setUpdatesListener(this,
-                new GetUpdates()
-                        .allowedUpdates(
-                                "message",
-                                "edited_message",
-                                "channel_post",
-                                "edited_channel_post",
-                                "inline_query",
-                                "chosen_inline_result",
-                                "callback_query",
-                                "shipping_query",
-                                "pre_checkout_query",
-                                "poll",
-                                "poll_answer",
-                                "my_chat_member",
-                                "chat_member",
-                                "chat_join_request"
-                        )
+        GetUpdates gu = new GetUpdates().allowedUpdates(
+                "message",
+                "edited_message",
+                "channel_post",
+                "edited_channel_post",
+                "inline_query",
+                "chosen_inline_result",
+                "callback_query",
+                "shipping_query",
+                "pre_checkout_query",
+                "poll",
+                "poll_answer",
+                "my_chat_member",
+                "chat_member",
+                "chat_join_request"
         );
+        bot.setUpdatesListener(this, gu);
+        logger.warn("Bot has been started!");
         msgSender.sendStartUp();
     }
 

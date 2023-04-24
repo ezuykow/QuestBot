@@ -1,6 +1,21 @@
 spring:
   config:
     import: classpath:messages/messages.yaml
+  jpa:
+    open-in-view: false
+
+logging:
+  level:
+    root: warn
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+  file:
+    name: ./logs/app_log.log
+  logback:
+    rollingpolicy:
+      file-name-pattern: "app_log.%d{yyyy-MM-dd}.%i.log"
+      max-history: 7
 
 document:
   excel:
@@ -14,10 +29,8 @@ telegram:
   bot:
     api:
      prefix: https://api.telegram.org/bot
-
      method:
        getFile: /getFile?file_id=
-
   file:
     api:
       prefix: https://api.telegram.org/file/bot
