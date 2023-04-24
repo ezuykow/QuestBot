@@ -14,7 +14,7 @@ logging:
     name: ./logs/app_log.log
   logback:
     rollingpolicy:
-      file-name-pattern: "app_log.%d{yyyy-MM-dd}.%i.log"
+      file-name-pattern: "./logs/archive/app_log.%d{yyyy-MM-dd}.%i.log"
       max-history: 7
 
 document:
