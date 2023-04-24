@@ -9,12 +9,13 @@ import ru.coffeecoders.questbot.viewers.QuestionInfoViewer;
  */
 public class QuestionInfoKeyboard {
 
-    private InlineKeyboardButton[] buttons;
     private final InlineKeyboardMarkup keyboard;
 
     private QuestionInfoKeyboard(int questionId) {
-        createButtons(questionId);
-        keyboard = new InlineKeyboardMarkup(buttons);
+        keyboard = new InlineKeyboardMarkup(new InlineKeyboardButton("Удалить")
+                .callbackData("QuestionViewer.QuestionInfo.Delete question." + questionId),
+                new InlineKeyboardButton(Character.toString(0x1F519))
+                        .callbackData("QuestionViewer.QuestionInfo.Back"));
     }
 
     //-----------------API START-----------------
@@ -30,18 +31,4 @@ public class QuestionInfoKeyboard {
     }
 
     //-----------------API END-----------------
-
-    /**
-     * @author ezuykow
-     */
-    private void createButtons(int questionId) {
-        buttons = new InlineKeyboardButton[3];
-
-        buttons[0] = new InlineKeyboardButton("Редактировать")
-                .callbackData("QuestionViewer.QuestionInfo.Edit question." + questionId);
-        buttons[1] = new InlineKeyboardButton("Удалить")
-                .callbackData("QuestionViewer.QuestionInfo.Delete question." + questionId);
-        buttons[2] = new InlineKeyboardButton(Character.toString(0x1F519))
-                .callbackData("QuestionViewer.QuestionInfo.Back");
-    }
 }
