@@ -253,9 +253,9 @@ public class MessageSender {
     /**
      * @author ezuykow
      */
-    private void checkResponse(BaseResponse response, String warn) {
+    private void checkResponse(BaseResponse response, String error) {
         if (!response.isOk()) {
-            logger.warn(warn, response.errorCode());
+            logger.warn(error, response.errorCode());
         }
     }
 }
