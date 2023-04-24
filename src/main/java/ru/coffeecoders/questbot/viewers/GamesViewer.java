@@ -21,6 +21,8 @@ import java.util.List;
 @Component
 public class GamesViewer {
 
+    private static final int START_GAME_NAME_IN_DATA_IDX = 22;
+
     private final GameService gameService;
     private final BlockingManager blockingManager;
     private final RestrictingManager restrictingManager;
@@ -60,7 +62,7 @@ public class GamesViewer {
      * @author ezuykow
      */
     public void showGame(long chatId, int msgId, String data) {
-        String gameName = data.substring(data.lastIndexOf(".") + 1);
+        String gameName = data.substring(START_GAME_NAME_IN_DATA_IDX);
         Game game = gameService.findByName(gameName).orElseThrow(NonExistentGame::new);
         GameInfoPage page = GameInfoPage.createPage(game, env.getProperty("messages.game.gameInfo"), utils);
         msgSender.edit(chatId, msgId, page.getText(), page.getKeyboard());

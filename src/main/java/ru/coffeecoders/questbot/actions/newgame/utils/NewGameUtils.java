@@ -7,11 +7,13 @@ import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.entities.NewGameCreatingState;
 import ru.coffeecoders.questbot.entities.QuestionGroup;
+import ru.coffeecoders.questbot.exceptions.NonExistentQuestionGroup;
 import ru.coffeecoders.questbot.keyboards.QuestionsGroupsKeyboard;
 import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.services.GameService;
 import ru.coffeecoders.questbot.services.NewGameCreatingStateService;
 import ru.coffeecoders.questbot.services.QuestionGroupService;
+import ru.coffeecoders.questbot.services.QuestionService;
 
 import java.util.List;
 
@@ -23,16 +25,18 @@ public class NewGameUtils {
 
     private final NewGameCreatingStateService newGameCreatingStateService;
     private final QuestionGroupService questionGroupService;
+    private final QuestionService questionService;
     private final GameService gameService;
     private final MessageSender msgSender;
     private final Environment env;
 
     public NewGameUtils(NewGameCreatingStateService newGameCreatingStateService,
-                        QuestionGroupService questionGroupService, GameService gameService,
-                        MessageSender msgSender, Environment env)
+                        QuestionGroupService questionGroupService, QuestionService questionService,
+                        GameService gameService, MessageSender msgSender, Environment env)
     {
         this.newGameCreatingStateService = newGameCreatingStateService;
         this.questionGroupService = questionGroupService;
+        this.questionService = questionService;
         this.gameService = gameService;
         this.msgSender = msgSender;
         this.env = env;
@@ -54,15 +58,8 @@ public class NewGameUtils {
      */
     public String getGroupsNames(int[] allStateGroupsIds) {
         StringBuilder sb = new StringBuilder();
-        List<QuestionGroup> groups = questionGroupService.findAll();
-        for (int i = 0; i < allStateGroupsIds.length; i++) {
-            final int id = allStateGroupsIds[i];
-            groups.stream().filter(g -> g.getGroupId() == id).findAny()
-                    .ifPresent(g -> sb.append(g.getGroupName()));
-            if (i < allStateGroupsIds.length - 1) {
-                sb.append(", ");
-            }
-        }
+        int allQuestionsCount = addGroupsNamesAndGetQuestionsCount(sb, allStateGroupsIds);
+        sb.append("    \uD83D\uDFF0 Всего вопросов со всех групп: ").append(allQuestionsCount);
         return sb.toString();
     }
 
@@ -171,4 +168,16 @@ public class NewGameUtils {
 
     //-----------------API END-----------------
 
+    private int addGroupsNamesAndGetQuestionsCount(StringBuilder sb, int[] allStateGroupsIds) {
+        List<QuestionGroup> groups = questionGroupService.findAll();
+        int count = 0;
+        for (final int id : allStateGroupsIds) {
+            final String groupName = groups.stream().filter(g -> g.getGroupId() == id).findAny()
+                    .orElseThrow(NonExistentQuestionGroup::new).getGroupName();
+            final long questionsCount = questionService.findByGroupName(groupName).size();
+            sb.append("    ➕ ").append(groupName).append(" (вопросов: ").append(questionsCount).append("),\n");
+            count += questionsCount;
+        }
+        return count;
+    }
 }
