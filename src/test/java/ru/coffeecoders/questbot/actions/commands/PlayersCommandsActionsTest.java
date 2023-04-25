@@ -140,12 +140,14 @@ class PlayersCommandsActionsTest {
         when(exUpdate.getMessageId()).thenReturn(msgId);
         when(messages.chooseYourTeam())
                 .thenReturn(", выберите команду, в которую хотите вступить");
-        MockedStatic<JoinTeamKeyboard> theMock = mockStatic(JoinTeamKeyboard.class);
-        theMock.when(() -> JoinTeamKeyboard.createKeyboard(teamService.findAll()
-                .stream().map(Team::getTeamName).toList())).thenReturn(keyboard);
-        actions.joinTeam(exUpdate);
-        verify(msgSender).send(id, "@" + userName + ", выберите команду, в которую хотите вступить",
-                keyboard, msgId);
+        try (MockedStatic<JoinTeamKeyboard> theMock = mockStatic(JoinTeamKeyboard.class)) {
+            theMock.when(() -> JoinTeamKeyboard.createKeyboard(teamService.findAll()
+                    .stream().map(Team::getTeamName).toList())).thenReturn(keyboard);
+            actions.joinTeam(exUpdate);
+            verify(msgSender).send(id, "@" + userName + ", выберите команду, в которую хотите вступить",
+                    keyboard, msgId);
+        }
+
     }
 
     @Test
@@ -173,7 +175,8 @@ class PlayersCommandsActionsTest {
     }
 
     private List<Team> createTeamsList() {
-        return List.of(new Team(teamName1, null, teamScore1), new Team(teamName2, null, teamScore2));
+        return List.of(new Team(teamName1, null, teamScore1, id ),
+                new Team(teamName2, null, teamScore2, id));
     }
 
     private String appendTeamScore(String teamName, int teamScore) {
