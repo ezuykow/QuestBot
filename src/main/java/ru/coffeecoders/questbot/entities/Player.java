@@ -24,6 +24,9 @@ public class Player {
     @Column(name = "team_name")
     private String teamName;
 
+    @Column(name = "chat_id")
+    private long chatId;
+
     public Player() {
     }
 
@@ -31,6 +34,24 @@ public class Player {
         this.tgUserId = tgUserId;
         this.gameName = gameName;
         this.teamName = teamName;
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "tgUserId=" + tgUserId +
+                ", gameName='" + gameName + '\'' +
+                ", teamName='" + teamName + '\'' +
+                ", chatId=" + chatId +
+                '}';
+    }
+
+    public long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(long chatId) {
+        this.chatId = chatId;
     }
 
     public long getTgUserId() {
@@ -70,12 +91,4 @@ public class Player {
         return Objects.hash(tgUserId);
     }
 
-    @Override
-    public String toString() {
-        return "Player{" +
-                "tgUserId=" + tgUserId +
-                ", gameName='" + gameName + '\'' +
-                ", teamName='" + teamName + '\'' +
-                '}';
-    }
 }

@@ -24,6 +24,9 @@ public class Team {
     @Column(name = "score")
     private int score;
 
+    @Column(name = "chat_id")
+    private long chatId;
+
     public Team() {
     }
 
@@ -35,6 +38,24 @@ public class Team {
         this.teamName = teamName;
         this.gameName = gameName;
         this.score = score;
+    }
+
+    @Override
+    public String toString() {
+        return "Team{" +
+                "teamName='" + teamName + '\'' +
+                ", gameName='" + gameName + '\'' +
+                ", score=" + score +
+                ", chatId=" + chatId +
+                '}';
+    }
+
+    public long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(long chatId) {
+        this.chatId = chatId;
     }
 
     public String getTeamName() {
@@ -74,12 +95,4 @@ public class Team {
         return Objects.hash(teamName);
     }
 
-    @Override
-    public String toString() {
-        return "Team{" +
-                "teamName='" + teamName + '\'' +
-                ", gameName='" + gameName + '\'' +
-                ", score=" + score +
-                '}';
-    }
 }

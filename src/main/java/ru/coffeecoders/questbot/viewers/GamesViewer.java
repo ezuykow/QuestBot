@@ -70,7 +70,7 @@ public class GamesViewer {
 
     /**
      * Достает из {@code data} название игры и, если эта игра нигде не запущена, то удаляет ее, иначе отправляет
-     * {@link MessageSender#sentToast}, что эту игру удалить нельзя
+     * {@link MessageSender#sendToast}, что эту игру удалить нельзя
      * @param callbackId id калбака, в котором пришли данные на удаление игры
      * @param chatId id чата
      * @param msgId id сообщения, где отображалась игра
@@ -80,7 +80,7 @@ public class GamesViewer {
     public void deleteGame(String callbackId, long chatId, int msgId, String data) {
         String gameName = data.substring(data.lastIndexOf(".") + 1);
         if (validator.isGameCreating(gameName)) {
-            msgSender.sentToast(callbackId, messages.failedDeletingGame(), true);
+            msgSender.sendToast(callbackId, messages.failedDeletingGame(), true);
         } else {
             gameService.deleteByGameName(gameName);
             msgSender.sendDelete(chatId, msgId);

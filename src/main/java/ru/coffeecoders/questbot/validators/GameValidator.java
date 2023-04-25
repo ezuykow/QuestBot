@@ -1,10 +1,11 @@
 package ru.coffeecoders.questbot.validators;
 
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.entities.GlobalChat;
-import ru.coffeecoders.questbot.services.GameService;
-import ru.coffeecoders.questbot.services.GlobalChatService;
-import ru.coffeecoders.questbot.services.NewGameCreatingStateService;
+import ru.coffeecoders.questbot.entities.QuestionGroup;
+import ru.coffeecoders.questbot.exceptions.NonExistentQuestionGroup;
+import ru.coffeecoders.questbot.services.*;
 
 /**
  * @author ezuykow
@@ -15,11 +16,17 @@ public class GameValidator {
     private final GlobalChatService globalChatService;
     private final NewGameCreatingStateService newGameCreatingStateService;
     private final GameService gameService;
+    private final QuestionGroupService questionGroupService;
+    private final QuestionService questionService;
 
-    public GameValidator(GlobalChatService globalChatService, NewGameCreatingStateService newGameCreatingStateService, GameService gameService) {
+    public GameValidator(GlobalChatService globalChatService, NewGameCreatingStateService newGameCreatingStateService,
+                         GameService gameService, QuestionGroupService questionGroupService, QuestionService questionService)
+    {
         this.globalChatService = globalChatService;
         this.newGameCreatingStateService = newGameCreatingStateService;
         this.gameService = gameService;
+        this.questionGroupService = questionGroupService;
+        this.questionService = questionService;
     }
 
     //-----------------API START-----------------
@@ -76,6 +83,25 @@ public class GameValidator {
                 .stream().anyMatch(g -> g.getGameName().equals(gameName))
                 || newGameCreatingStateService.findAll()
                 .stream().anyMatch(cg -> cg.getGameName() != null && cg.getGameName().equals(gameName));
+    }
+
+    /**
+     * @param game проверяемая игра
+     * @return {@code true}, если количество вопросов, подходящих по группам к игре не меньше, чем нужно для игры,
+     * иначе {@code false}
+     * @author ezuykow
+     */
+    public boolean isRightQuestionsCount(Game game) {
+        int requestCount = game.getMaxQuestionsCount();
+        int existentCount = 0;
+
+        for (int groupId : game.getGroupsIds()) {
+            String groupName = questionGroupService.findById(groupId)
+                    .orElseThrow(NonExistentQuestionGroup::new).getGroupName();
+            existentCount += questionService.findByGroupName(groupName).size();
+        }
+
+        return requestCount <= existentCount;
     }
 
     //-----------------API END-----------------
