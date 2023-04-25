@@ -7,3 +7,7 @@ CREATE TABLE players
     game_name  VARCHAR(100) NOT NULL,
     team_name  VARCHAR(100) NOT NULL
 );
+
+-- changeset ezuykow:2
+ALTER TABLE players
+    ADD COLUMN chat_id BIGINT;
