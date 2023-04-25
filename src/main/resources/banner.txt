@@ -16,5 +16,5 @@ Q:::::::QQ::::::::Qu:::::::::::::::uue::::::::e          s:::::ssss::::::s      
    QQ:::::::::::Q    uu::::::::uu:::u  ee:::::::::::::e   s:::::::::::ss          tt:::::::::::ttB::::::::::::::::B   oo:::::::::::oo         tt:::::::::::tt
      QQQQQQQQ::::QQ    uuuuuuuu  uuuu    eeeeeeeeeeeeee    sssssssssss              ttttttttttt  BBBBBBBBBBBBBBBBB      ooooooooooo             ttttttttttt
              Q:::::Q
-              QQQQQQ                                         ${AnsiColor.157}${application.title} v${application.version}           Developed by @The_Cofee_Coders@$            Powered by Spring Boot ${spring-boot.version}
+              QQQQQQ                                         ${AnsiColor.157}${application.title} v${application.version}           Developed by @The_Coffee_Coders@            Powered by Spring Boot ${spring-boot.version}
 ${AnsiBackground.DEFAULT}${AnsiColor.DEFAULT}

@@ -1,5 +1,6 @@
 package ru.coffeecoders.questbot.services;
 
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -35,5 +36,13 @@ public class TeamService {
     public Team save(Team team) {
         logger.info("Team = {} has been saved", team);
         return repository.save(team);
+    }
+
+    /**
+     * @author ezuykow
+     */
+    @Transactional
+    public void deleteAllByChatId(long chatId) {
+        repository.deleteAllByChatId(chatId);
     }
 }
