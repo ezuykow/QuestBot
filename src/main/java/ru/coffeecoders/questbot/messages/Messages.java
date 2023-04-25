@@ -297,6 +297,18 @@ public class Messages {
         return env.getProperty("messages.games.failedDeletingGame");
     }
 
+    public String notEnoughQuestions() {
+        return env.getProperty("messages.games.notEnoughQuestions");
+    }
+
+    public String prepareGameStartedHint() {
+        return env.getProperty("messages.games.prepareGameStartedHint");
+    }
+
+    public String prepareInterrupted() {
+        return env.getProperty("messages.games.prepareInterrupted");
+    }
+
     //-----------------API END-----------------
 
 }

@@ -143,7 +143,7 @@ public class MessageSender {
      * @param isAlert {@code true}, если отправить как Alert, {@code false} - если нет
      * @author ezuykow
      */
-    public void sentToast(String callbackId, String text, boolean isAlert) {
+    public void sendToast(String callbackId, String text, boolean isAlert) {
         checkResponse(bot.execute(
                         new AnswerCallbackQuery(callbackId)
                                 .text(text)

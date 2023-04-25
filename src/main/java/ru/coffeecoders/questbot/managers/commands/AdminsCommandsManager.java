@@ -29,6 +29,7 @@ public class AdminsCommandsManager {
             case NEWGAME -> newGameManager.startCreatingGame(senderAdminId, chatId);
             case DELETECHAT -> cmdActions.performDeleteChatCmd(chatId);
             case PREPAREGAME -> cmdActions.performPrepareGameCmd(senderAdminId, chatId);
+            case DROPPREPARE -> cmdActions.performDropPrepareGameCmd(senderAdminId, chatId);
             case STOPBOT -> cmdActions.performStopBotCmd();
         }
     }

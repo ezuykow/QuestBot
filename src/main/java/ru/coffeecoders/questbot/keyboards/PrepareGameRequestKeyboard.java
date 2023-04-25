@@ -44,7 +44,7 @@ public class PrepareGameRequestKeyboard {
                 ));
         keyboard.addRow(
                 new InlineKeyboardButton("❌ Отмена")
-                        .callbackData("PrepareGame.Close")
+                        .callbackData("PrepareGame.Close." + adminId)
         );
     }
 }

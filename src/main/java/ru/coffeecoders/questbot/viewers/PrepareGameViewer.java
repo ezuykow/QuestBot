@@ -3,10 +3,14 @@ package ru.coffeecoders.questbot.viewers;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Game;
+import ru.coffeecoders.questbot.entities.GlobalChat;
+import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.keyboards.PrepareGameRequestKeyboard;
+import ru.coffeecoders.questbot.managers.GameManager;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.GameService;
+import ru.coffeecoders.questbot.services.GlobalChatService;
 
 import java.util.List;
 
@@ -16,12 +20,17 @@ import java.util.List;
 @Component
 public class PrepareGameViewer {
 
+    private final GameManager gameManager;
     private final GameService gameService;
+    private final GlobalChatService globalChatService;
     private final MessageSender msgSender;
     private final Messages messages;
 
-    public PrepareGameViewer(GameService gameService, MessageSender msgSender, Messages messages) {
+    public PrepareGameViewer(GameManager gameManager, GameService gameService, GlobalChatService globalChatService,
+                             MessageSender msgSender, Messages messages) {
+        this.gameManager = gameManager;
         this.gameService = gameService;
+        this.globalChatService = globalChatService;
         this.msgSender = msgSender;
         this.messages = messages;
     }
@@ -39,6 +48,14 @@ public class PrepareGameViewer {
         validateListAndSendMsg(gamesNames, senderAdminId, adminUsername, chatId);
     }
 
+    public void startPrepare(long chatId, Game game) {
+        GlobalChat chat = globalChatService.findById(chatId).orElseThrow(NonExistentChat::new);
+        chat.setCreatingGameName(game.getGameName());
+        globalChatService.save(chat);
+        msgSender.send(chatId,
+                String.format(messages.prepareGameStartedHint(), game.getGameName()));
+        gameManager.createTasks(chatId, game);
+    }
 
     //-----------------API END-----------------
 

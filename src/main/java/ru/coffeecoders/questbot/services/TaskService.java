@@ -1,5 +1,6 @@
 package ru.coffeecoders.questbot.services;
 
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -25,9 +26,10 @@ public class TaskService {
         return list;
     }
 
-    public void deleteById(long id) {
-        logger.info("Task with id = {} has been deleted", id);
-        repository.deleteById(id);
+    public List<Task> findByGameName(String gameName) {
+        List<Task> list = repository.findByGameName(gameName);
+        logger.info("Tasks with game name = {} are {} displaying", gameName, list.isEmpty() ? "not" : "");
+        return list;
     }
 
     public Task save(Task task) {
@@ -35,9 +37,23 @@ public class TaskService {
         return repository.save(task);
     }
 
-    public List<Task> findByGameName(String gameName) {
-        List<Task> list = repository.findByGameName(gameName);
-        logger.info("Tasks with game name = {} are {} displaying", gameName, list.isEmpty() ? "not" : "");
-        return list;
+    /**
+     * @author ezuykow
+     */
+    public void saveAll(List<Task> tasks) {
+        repository.saveAll(tasks);
+    }
+
+    public void deleteById(long id) {
+        logger.info("Task with id = {} has been deleted", id);
+        repository.deleteById(id);
+    }
+
+    /**
+     * @author ezuykow
+     */
+    @Transactional
+    public void deleteAllByChatId(long chatId) {
+        repository.deleteAllByChatId(chatId);
     }
 }
