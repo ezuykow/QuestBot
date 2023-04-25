@@ -1,3 +1,7 @@
+application:
+  title: QuestBot
+  version: 1.0
+
 spring:
   config:
     import: classpath:messages/messages.yaml
