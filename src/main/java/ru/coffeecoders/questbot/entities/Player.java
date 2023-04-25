@@ -30,10 +30,11 @@ public class Player {
     public Player() {
     }
 
-    public Player(long tgUserId, String gameName, String teamName) {
+    public Player(long tgUserId, String gameName, String teamName, long chatId) {
         this.tgUserId = tgUserId;
         this.gameName = gameName;
         this.teamName = teamName;
+        this.chatId = chatId;
     }
 
     @Override
