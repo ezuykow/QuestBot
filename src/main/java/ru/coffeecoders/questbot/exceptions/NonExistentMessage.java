@@ -6,7 +6,7 @@ package ru.coffeecoders.questbot.exceptions;
 public class NonExistentMessage extends RuntimeException{
 
     public NonExistentMessage() {
-        super();
+        super("Message not found!");
     }
 
 }

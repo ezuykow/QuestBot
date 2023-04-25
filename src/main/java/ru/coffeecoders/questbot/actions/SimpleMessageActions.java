@@ -6,7 +6,7 @@ import ru.coffeecoders.questbot.entities.Player;
 import ru.coffeecoders.questbot.entities.Team;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
-import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.services.GlobalChatService;
 import ru.coffeecoders.questbot.services.MessageToDeleteService;
 import ru.coffeecoders.questbot.services.PlayerService;

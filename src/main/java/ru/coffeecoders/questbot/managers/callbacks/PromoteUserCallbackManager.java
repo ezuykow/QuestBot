@@ -1,11 +1,11 @@
 package ru.coffeecoders.questbot.managers.callbacks;
 
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Admin;
 import ru.coffeecoders.questbot.entities.AdminChat;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
-import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 
@@ -21,13 +21,14 @@ public class PromoteUserCallbackManager {
     private final ChatAndUserValidator validator;
     private final AdminChatService adminChatService;
     private final MessageSender msgSender;
-    private final Environment env;
+    private final Messages messages;
 
-    public PromoteUserCallbackManager(ChatAndUserValidator validator, AdminChatService adminChatService, MessageSender msgSender, Environment env) {
+    public PromoteUserCallbackManager(ChatAndUserValidator validator, AdminChatService adminChatService,
+                                      MessageSender msgSender, Messages messages) {
         this.validator = validator;
         this.adminChatService = adminChatService;
         this.msgSender = msgSender;
-        this.env = env;
+        this.messages = messages;
     }
 
     //-----------------API START-----------------
@@ -84,7 +85,7 @@ public class PromoteUserCallbackManager {
     private void sendPromotionMessage(long chatId, String data) {
         msgSender.send(chatId,
                 data.substring(data.indexOf(".") + 1, data.lastIndexOf("."))
-                        + env.getProperty("messages.owner.userPromoted")
+                        + messages.userPromoted()
         );
     }
 }

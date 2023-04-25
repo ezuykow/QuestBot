@@ -1,16 +1,21 @@
 package ru.coffeecoders.questbot.viewers;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Question;
+import ru.coffeecoders.questbot.exceptions.NonExistentQuestion;
 import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.managers.RestrictingManager;
+import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.messages.Messages;
+import ru.coffeecoders.questbot.models.QuestionInfoPage;
 import ru.coffeecoders.questbot.models.QuestionsViewerPage;
-import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.services.QuestionGroupService;
 import ru.coffeecoders.questbot.services.QuestionService;
 
 import java.util.List;
+
+import static java.lang.Math.min;
 
 /**
  * @author ezuykow
@@ -22,39 +27,39 @@ public class QuestionsViewer {
     private int defaultPageSize;
 
     private final QuestionService questionService;
-    private final QuestionInfoViewer questionInfoViewer;
+    private final QuestionGroupService questionGroupService;
     private final BlockingManager blockingManager;
     private final RestrictingManager restrictingManager;
     private final MessageSender msgSender;
-    private final Environment env;
+    private final Messages messages;
 
     private List<Question> questions;
-    private int pagesCount;
     private int lastShowedFirstIndex;
 
-    public QuestionsViewer(QuestionService questionService, QuestionInfoViewer questionInfoViewer,
+    public QuestionsViewer(QuestionService questionService, QuestionGroupService questionGroupService,
                            BlockingManager blockingManager, RestrictingManager restrictingManager,
-                           MessageSender msgSender, Environment env) {
+                           MessageSender msgSender, Messages messages)
+    {
         this.questionService = questionService;
-        this.questionInfoViewer = questionInfoViewer;
+        this.questionGroupService = questionGroupService;
         this.blockingManager = blockingManager;
         this.restrictingManager = restrictingManager;
         this.msgSender = msgSender;
-        this.env = env;
+        this.messages = messages;
     }
 
     //-----------------API START-----------------
 
     /**
-     * Собирает "страницу" {@link QuestionsViewerPage} и вызывает метод
-     * {@link MessageSender#send} для отображения "страницы" вопросов
+     * Вызывает метод
+     * {@link QuestionsViewer#validateAndCreateView} c {@code msgId = -1} и {@code pageSize = defaultPageSize}
+     * для отображения "страницы" вопросов
      * @param chatId id чата
      * @author ezuykow
      */
     public void viewQuestions(long chatId) {
         refreshQuestionsList();
-        QuestionsViewerPage page = createPage(defaultPageSize);
-        msgSender.send(chatId, page.getText(), page.getKeyboard());
+        validateAndCreateView(chatId, -1, defaultPageSize, 0);
     }
 
     /**
@@ -66,8 +71,7 @@ public class QuestionsViewer {
      */
     public void switchPageToPrevious(long chatId, int msgId, String data) {
         final int firstIndexShowed = Integer.parseInt(data.substring(data.lastIndexOf(".") + 1));
-        QuestionsViewerPage newPage = QuestionsViewerPage.createPage(questions, defaultPageSize,
-                firstIndexShowed - defaultPageSize, pagesCount);
+        QuestionsViewerPage newPage = createPage(defaultPageSize, firstIndexShowed - defaultPageSize);
         msgSender.edit(chatId, msgId, newPage.getText(), newPage.getKeyboard());
     }
 
@@ -80,15 +84,14 @@ public class QuestionsViewer {
      */
     public void switchPageToNext(long chatId, int msgId, String data) {
         final int lastIndexShowed = Integer.parseInt(data.substring(data.lastIndexOf(".") + 1));
-        final int newPageSize = Math.min(defaultPageSize, questions.size() - (lastIndexShowed + 1));
-        QuestionsViewerPage newPage = QuestionsViewerPage.createPage(questions, newPageSize,
-                lastIndexShowed + 1, pagesCount);
+        final int newPageSize = min(defaultPageSize, questions.size() - (lastIndexShowed + 1));
+        QuestionsViewerPage newPage = createPage(newPageSize, lastIndexShowed + 1);
         msgSender.edit(chatId, msgId, newPage.getText(), newPage.getKeyboard());
     }
 
     /**
-     * Вызывает метод {@link QuestionInfoViewer#showQuestionInfo} для отображения информации о вопросе, передает в него
-     * вопрос с id, вытащенном из {@code data}
+     * Собирает "страницу" отображения вопроса {@link QuestionInfoPage} и отправляет
+     * в метод {@link MessageSender#edit} для отображения вопроса
      * @param chatId id чата
      * @param msgId id сообщения, в котором отображался список вопросов
      * @param data данные из CallbackQuery
@@ -98,7 +101,21 @@ public class QuestionsViewer {
         String[] parts = data.split("\\.");
         lastShowedFirstIndex = Integer.parseInt(parts[parts.length - 1]);
         int targetQuestionIdx = Integer.parseInt(parts[2]);
-        questionInfoViewer.showQuestionInfo(chatId, msgId, questions.get(targetQuestionIdx));
+        QuestionInfoPage page = QuestionInfoPage.createPage(questions.get(targetQuestionIdx));
+        msgSender.edit(chatId, msgId, page.getText(), page.getKeyboard());
+    }
+
+    /**
+     * Удаляет вопрос с id из {@code data} и вызывает {@link QuestionsViewer#backFromQuestionInfo}
+     * @param chatId id чата
+     * @param msgId id сообщения, в котором отображался вопрос
+     * @param data данные калбака
+     * @author ezuykow
+     */
+    public void deleteQuestion(long chatId, int msgId, String data) {
+        int questionId = Integer.parseInt(data.substring(data.lastIndexOf(".") + 1));
+        deleteQuestion(questionId);
+        backFromQuestionInfo(chatId, msgId);
     }
 
     /**
@@ -109,9 +126,8 @@ public class QuestionsViewer {
      */
     public void backFromQuestionInfo(long chatId, int msgId) {
         refreshQuestionsList();
-        int pageSize = Math.min(defaultPageSize, questions.size() - lastShowedFirstIndex);
-        QuestionsViewerPage page = createPage(pageSize);
-        msgSender.edit(chatId, msgId, page.getText(), page.getKeyboard());
+        int pageSize = min(defaultPageSize, questions.size() - lastShowedFirstIndex);
+        validateAndCreateView(chatId, msgId, pageSize, lastShowedFirstIndex);
     }
 
     /**
@@ -130,6 +146,31 @@ public class QuestionsViewer {
     /**
      * @author ezuykow
      */
+    private void validateAndCreateView(long chatId, int msgId, int pageSize, int startIndex) {
+        if (questions.isEmpty()) {
+            msgSender.sendDelete(chatId, msgId);
+            msgSender.send(chatId, messages.emptyList());
+            unblockAndUnrestrictChat(chatId);
+        } else {
+            createView(chatId, msgId, pageSize, startIndex);
+        }
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void createView(long chatId, int msgId, int pageSize, int startIndex) {
+        QuestionsViewerPage page = createPage(pageSize, startIndex);
+        if (msgId == -1) {
+            msgSender.send(chatId, page.getText(), page.getKeyboard());
+        } else {
+            msgSender.edit(chatId, msgId, page.getText(), page.getKeyboard());
+        }
+    }
+
+    /**
+     * @author ezuykow
+     */
     private void refreshQuestionsList() {
         questions = questionService.findAll();
     }
@@ -137,10 +178,10 @@ public class QuestionsViewer {
     /**
      * @author ezuykow
      */
-    private QuestionsViewerPage createPage(int pageSize) {
-        pagesCount = questions.size() / defaultPageSize;
+    private QuestionsViewerPage createPage(int pageSize, int startIndex) {
+        int pagesCount = questions.size() / defaultPageSize;
         pagesCount = (questions.size() % defaultPageSize == 0) ? pagesCount : pagesCount + 1;
-        return QuestionsViewerPage.createPage(questions, pageSize, lastShowedFirstIndex, pagesCount);
+        return QuestionsViewerPage.createPage(questions, pageSize, startIndex, pagesCount, defaultPageSize);
     }
 
     /**
@@ -148,6 +189,18 @@ public class QuestionsViewer {
      */
     private void unblockAndUnrestrictChat(long chatId) {
         restrictingManager.unRestrictMembers(chatId);
-        blockingManager.unblockAdminChat(chatId, env.getProperty("messages.admins.endQuestionView"));
+        blockingManager.unblockAdminChat(chatId, messages.endQuestionView());
+    }
+
+    /**
+     * @author ezuykow
+     */
+    public void deleteQuestion(int questionId) {
+        questionService.findById(questionId).ifPresentOrElse(
+                q -> {
+                    questionService.delete(q);
+                    questionGroupService.deleteQuestionGroupIfNoQuestionsWithIt(q.getGroup());
+                },
+                NonExistentQuestion::new);
     }
 }

@@ -6,7 +6,7 @@ package ru.coffeecoders.questbot.exceptions;
 public class NonExistentAdmin extends RuntimeException{
 
     public NonExistentAdmin() {
-        super();
+        super("Admin not found!");
     }
 
 }

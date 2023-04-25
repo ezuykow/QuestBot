@@ -6,7 +6,7 @@ package ru.coffeecoders.questbot.exceptions;
 public class NonExistentChat extends RuntimeException{
 
     public NonExistentChat() {
-        super();
+        super("Chat not found!");
     }
 
 }

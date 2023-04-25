@@ -1,17 +1,16 @@
 package ru.coffeecoders.questbot.actions;
 
 import com.pengrad.telegrambot.model.User;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Admin;
 import ru.coffeecoders.questbot.entities.AdminChat;
 import ru.coffeecoders.questbot.entities.AdminChatMembers;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
-import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.AdminChatMembersService;
 import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.services.AdminService;
-import ru.coffeecoders.questbot.services.GlobalChatService;
 import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 
 import java.util.Arrays;
@@ -23,40 +22,23 @@ import java.util.List;
 @Component
 public class ChatMembersActions {
 
-    @Value("${messages.members.welcomePrefix}")
-    private String welcomePrefix;
-    @Value("${messages.members.welcomeSuffix}")
-    private String welcomeSuffix;
-    @Value("${messages.members.byePrefix}")
-    private String byePrefix;
-    @Value("${messages.members.byeSuffix}")
-    private String byeSuffix;
-    @Value("${messages.members.welcomeAdminPrefix}")
-    private String welcomeAdminPrefix;
-    @Value("${messages.members.welcomeAdminSuffix}")
-    private String welcomeAdminSuffix;
-    @Value("${messages.members.byeAdmin}")
-    private String byeAdmin;
-    @Value("${messages.members.ownerLeftChat}")
-    private String ownerLeftChat;
-
     private final AdminChatMembersService adminChatMembersService;
-    private final GlobalChatService globalChatService;
     private final AdminChatService adminChatService;
     private final AdminService adminService;
     private final ChatAndUserValidator validator;
     private final MessageSender msgSender;
+    private final Messages messages;
 
-    public ChatMembersActions(AdminChatMembersService adminChatMembersService, GlobalChatService globalChatService,
-                              AdminChatService adminChatService, AdminService adminService,
-                              ChatAndUserValidator validator, MessageSender msgSender)
+    public ChatMembersActions(AdminChatMembersService adminChatMembersService,AdminChatService adminChatService,
+                              AdminService adminService, ChatAndUserValidator validator, MessageSender msgSender,
+                              Messages messages)
     {
         this.adminChatMembersService = adminChatMembersService;
-        this.globalChatService = globalChatService;
         this.adminChatService = adminChatService;
         this.adminService = adminService;
         this.validator = validator;
         this.msgSender = msgSender;
+        this.messages = messages;
     }
 
     //-----------------API START-----------------
@@ -101,7 +83,7 @@ public class ChatMembersActions {
         if (newMember.lastName() != null) {
                 nameSB.append(" ").append(newMember.lastName());
         }
-        msgSender.send(chatId, welcomeAdminPrefix + nameSB + welcomeAdminSuffix);
+        msgSender.send(chatId, messages.welcomeAdminPrefix() + nameSB + messages.welcomeAdminSuffix());
         refreshAdminChatMember(newMember, chatId);
     }
 
@@ -113,47 +95,32 @@ public class ChatMembersActions {
         if (newMember.lastName() != null) {
                 nameSB.append(" ").append(newMember.lastName());
         }
-        msgSender.send(chatId, welcomePrefix + nameSB + welcomeSuffix);
+        msgSender.send(chatId, messages.welcomePrefix() + nameSB + messages.welcomeSuffix());
     }
 
     /**
      * @author ezuykow
      */
     private void leftChatMemberInAdminChat(User leftMember, long chatId) {
-        if (isOwner(leftMember)) {
-            ownerLeftAdminChat(chatId);
-        } else {
-            if (hasItMemberInAdminChatsMembers(chatId, leftMember)) {
-                deleteAdminFromChat(chatId, leftMember);
-            }
-            StringBuilder nameSB = new StringBuilder(leftMember.firstName());
-            if (leftMember.lastName() != null) {
-                nameSB.append(" ").append(leftMember.lastName());
-            }
-            msgSender.send(chatId, nameSB + byeAdmin);
+        if (hasItMemberInAdminChatsMembers(chatId, leftMember)) {
+            deleteAdminFromChat(chatId, leftMember);
         }
-    }
-
-    /**
-     * @author ezuykow
-     */
-    private boolean isOwner(User leftMember) {
-        return adminService.findById(leftMember.id()).filter(Admin::isOwner).isPresent();
+        StringBuilder nameSB = new StringBuilder(leftMember.firstName());
+        if (leftMember.lastName() != null) {
+            nameSB.append(" ").append(leftMember.lastName());
+        }
+        msgSender.send(chatId, nameSB + messages.byeAdmin());
     }
 
     /**
      * @author ezuykow
      */
     private void leftChatMemberInGlobalChat(User leftMember, long chatId) {
-        if (isOwner(leftMember)) {
-            ownerLeftGlobalChat(chatId);
-        } else {
-            StringBuilder nameSB = new StringBuilder(leftMember.firstName());
-            if (leftMember.lastName() != null) {
-                nameSB.append(" ").append(leftMember.lastName());
-            }
-            msgSender.send(chatId, byePrefix + nameSB + byeSuffix);
+        StringBuilder nameSB = new StringBuilder(leftMember.firstName());
+        if (leftMember.lastName() != null) {
+            nameSB.append(" ").append(leftMember.lastName());
         }
+        msgSender.send(chatId, messages.byePrefix() + nameSB + messages.byeSuffix());
     }
 
     /**
@@ -173,39 +140,6 @@ public class ChatMembersActions {
         long[] refreshedMembers = Arrays.copyOf(oldMembers, oldMembers.length + 1);
         refreshedMembers[refreshedMembers.length - 1] = newMember.id();
         return refreshedMembers;
-    }
-
-    /**
-     * @author ezuykow
-     */
-    private void ownerLeftGlobalChat(long chatId) {
-        globalChatService.deleteById(chatId);
-        ownerLeftChat(chatId);
-    }
-
-    /**
-     * @author ezuykow
-     */
-    private void ownerLeftAdminChat(long chatId) {
-        deleteAdminChat(chatId);
-        ownerLeftChat(chatId);
-    }
-
-    /**
-     * @author ezuykow
-     */
-    private void ownerLeftChat(long chatId) {
-        msgSender.send(chatId, ownerLeftChat);
-        msgSender.sendLeaveChat(chatId);
-    }
-
-    /**
-     * @author ezuykow
-     */
-    private void deleteAdminChat(long chatId) {
-        adminChatService.deleteByChatId(chatId);
-        deleteAllUselessAdmins();
-        adminChatMembersService.deleteByChatId(chatId);
     }
 
     /**

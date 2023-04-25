@@ -56,10 +56,44 @@ public class GameService {
     }
 
     /**
+     * Сохраняет все игры из списка в БД
+     * @param games список игр
+     * @author ezuykow
+     */
+    public void saveAll(List<Game> games) {
+        gameRepository.saveAll(games);
+    }
+
+    /**
      * @author ezuykow
      */
     @Transactional
     public void deleteByGameName(String gameName) {
         gameRepository.deleteByGameName(gameName);
+    }
+
+    /**
+     * Проверяет, что у игры в {@link Game#getGroupsIds} нет {@code groupId}, иначе меняет его на 0
+     * @param groupId id удаленной группы
+     * @author ezuykow
+     */
+    public void setGroupIdIfItsDeleted(int groupId) {
+        List<Game> games = findAll();
+        games.forEach(g -> swapGroupIdToZeroIfEquals(g, groupId));
+        saveAll(games);
+    }
+
+    //-----------------API END-----------------
+
+    /**
+     * @author ezuykow
+     */
+    private void swapGroupIdToZeroIfEquals(Game game, int groupId) {
+        int[] ids = game.getGroupsIds();
+        for (int i = 0; i < ids.length; i++) {
+            if (ids[i] == groupId) {
+                ids[i] = 0;
+            }
+        }
     }
 }

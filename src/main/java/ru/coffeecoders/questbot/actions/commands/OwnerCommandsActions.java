@@ -2,7 +2,6 @@ package ru.coffeecoders.questbot.actions.commands;
 
 import com.pengrad.telegrambot.model.User;
 import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Admin;
 import ru.coffeecoders.questbot.entities.AdminChat;
@@ -10,7 +9,8 @@ import ru.coffeecoders.questbot.entities.AdminChatMembers;
 import ru.coffeecoders.questbot.entities.GlobalChat;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.keyboards.PromoteOrDemoteUserKeyboard;
-import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.AdminChatMembersService;
 import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.services.AdminService;
@@ -33,20 +33,20 @@ public class OwnerCommandsActions {
     private final GlobalChatService globalChatService;
     private final AdminChatService adminChatService;
     private final AdminChatMembersService adminChatMembersService;
+    private final Messages messages;
     private final MessageSender msgSender;
-    private final Environment env;
 
     public OwnerCommandsActions(ChatAndUserValidator validator, AdminService adminService, GlobalChatService globalChatService,
                                 AdminChatService adminChatService, AdminChatMembersService adminChatMembersService,
-                                MessageSender msgSender, Environment env)
+                                Messages messages, MessageSender msgSender)
     {
         this.validator = validator;
         this.adminService = adminService;
         this.globalChatService = globalChatService;
         this.adminChatService = adminChatService;
         this.adminChatMembersService = adminChatMembersService;
+        this.messages = messages;
         this.msgSender = msgSender;
-        this.env = env;
     }
 
     //-----------------API START-----------------
@@ -61,7 +61,7 @@ public class OwnerCommandsActions {
         if (validator.chatNotAdded(chatId)) {
             performStartCmd(chatId);
         } else {
-            msgSender.send(chatId, env.getProperty("messages.owner.validation.startCmdFailed"));
+            msgSender.send(chatId, messages.startCmdFailed());
         }
     }
 
@@ -75,7 +75,7 @@ public class OwnerCommandsActions {
         if (validator.isGlobalChat(chatId)) {
             performAdminOnCmd(chatId);
         } else {
-            msgSender.send(chatId, env.getProperty("messages.owner.validation.adminOnCmdFailed"));
+            msgSender.send(chatId, messages.adminOnCmdFailed());
         }
     }
 
@@ -89,7 +89,7 @@ public class OwnerCommandsActions {
         if (validator.isAdminChat(chatId)) {
             performAdminOffCmd(chatId);
         } else {
-            msgSender.send(chatId, env.getProperty("messages.owner.validation.chatIsNotAdmin"));
+            msgSender.send(chatId, messages.chatIsNotAdmin());
         }
     }
 
@@ -104,7 +104,7 @@ public class OwnerCommandsActions {
         if (validator.isAdminChat(chatId)) {
             validateAdminChatMembersAndPerformPromoteCmd(chatId);
         } else {
-            msgSender.send(chatId, env.getProperty("messages.owner.validation.chatIsNotAdmin"));
+            msgSender.send(chatId, messages.chatIsNotAdmin());
         }
     }
 
@@ -119,7 +119,7 @@ public class OwnerCommandsActions {
         if (validator.isAdminChat(chatId)) {
             validateAdminsInChatAndPerformDemoteCmd(chatId);
         } else {
-            msgSender.send(chatId, env.getProperty("messages.owner.validation.chatIsNotAdmin"));
+            msgSender.send(chatId, messages.chatIsNotAdmin());
         }
     }
 
@@ -133,7 +133,7 @@ public class OwnerCommandsActions {
      */
     private void performStartCmd(long chatId) {
         globalChatService.save(new GlobalChat(chatId));
-        msgSender.send(chatId, env.getProperty("messages.welcome"));
+        msgSender.send(chatId, messages.welcome());
     }
 
     /**
@@ -147,7 +147,7 @@ public class OwnerCommandsActions {
         Admin owner = adminService.getOwner();
         swapGlobalChatToAdminChat(chatId, owner);
         createAdminChatMembers(chatId, owner);
-        msgSender.send(chatId, env.getProperty("messages.owner.chatIsAdminNow"));
+        msgSender.send(chatId, messages.chatIsAdminNow());
     }
 
     /**
@@ -162,7 +162,7 @@ public class OwnerCommandsActions {
         swapAdminChatToGlobalChat(chatId);
         adminChatMembersService.deleteByChatId(chatId);
         adminService.deleteUselessAdmins();
-        msgSender.send(chatId, env.getProperty("messages.owner.chatIsGlobalNow"));
+        msgSender.send(chatId, messages.chatIsGlobalNow());
     }
 
     /**
@@ -175,9 +175,9 @@ public class OwnerCommandsActions {
     private void validateAdminChatMembersAndPerformPromoteCmd(long chatId) {
         Set<User> notAdminMembers = getNotAdminMembersInAdminChat(chatId);
         if (notAdminMembers.isEmpty()) {
-            msgSender.send(chatId, env.getProperty("messages.owner.emptyPromotionList"));
+            msgSender.send(chatId, messages.emptyPromotionList());
         } else {
-            msgSender.send(chatId, env.getProperty("messages.owner.promote"),
+            msgSender.send(chatId, messages.promote(),
                     PromoteOrDemoteUserKeyboard.createKeyboard(notAdminMembers, "PromoteUser.")
             );
         }
@@ -193,9 +193,9 @@ public class OwnerCommandsActions {
     private void validateAdminsInChatAndPerformDemoteCmd(long chatId) {
         Set<User> admins = getAdminUsersFromChat(chatId);
         if (admins.isEmpty()) {
-            msgSender.send(chatId, env.getProperty("messages.owner.emptyPromotionList"));
+            msgSender.send(chatId, messages.emptyPromotionList());
         } else {
-            msgSender.send(chatId, env.getProperty("messages.owner.demote"),
+            msgSender.send(chatId, messages.demote(),
                     PromoteOrDemoteUserKeyboard.createKeyboard(admins, "DemoteUser.")
             );
         }

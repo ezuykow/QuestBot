@@ -25,17 +25,36 @@ public class Task {
     @Column(name = "performed_team_name")
     private String performedTeamName;
 
+    @Column(name = "chat_id")
+    private long chatId;
+
     public Task() {
     }
 
-    public Task(String gameName, int questionId) {
-        this(gameName, questionId, null);
-    }
-
-    public Task(String gameName, int questionId, String performedTeamName) {
+    public Task(String gameName, int questionId, String performedTeamName, long chatId) {
         this.gameName = gameName;
         this.questionId = questionId;
         this.performedTeamName = performedTeamName;
+        this.chatId = chatId;
+    }
+
+    public long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(long chatId) {
+        this.chatId = chatId;
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "taskId=" + taskId +
+                ", gameName='" + gameName + '\'' +
+                ", questionId=" + questionId +
+                ", performedTeamName='" + performedTeamName + '\'' +
+                ", chatId=" + chatId +
+                '}';
     }
 
     public int getTaskId() {
@@ -83,13 +102,4 @@ public class Task {
         return Objects.hash(taskId);
     }
 
-    @Override
-    public String toString() {
-        return "Task{" +
-                "taskId=" + taskId +
-                ", gameName='" + gameName + '\'' +
-                ", questionId=" + questionId +
-                ", performedTeamName='" + performedTeamName + '\'' +
-                '}';
-    }
 }

@@ -6,7 +6,7 @@ package ru.coffeecoders.questbot.exceptions;
 public class NonExistentCallbackQuery extends RuntimeException{
 
     public NonExistentCallbackQuery() {
-        super();
+        super("CallbackQuery not found!");
     }
 
 }

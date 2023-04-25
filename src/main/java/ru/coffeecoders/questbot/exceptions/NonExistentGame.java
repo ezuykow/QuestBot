@@ -6,6 +6,6 @@ package ru.coffeecoders.questbot.exceptions;
 public class NonExistentGame extends RuntimeException {
 
     public NonExistentGame() {
-        super();
+        super("Game not found!");
     }
 }

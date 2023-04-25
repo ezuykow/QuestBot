@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.managers.callbacks.CallbackQueryManager;
 import ru.coffeecoders.questbot.managers.commands.CommandsManager;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
-import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.messages.MessageSender;
 
 import static ru.coffeecoders.questbot.models.ExtendedUpdate.UpdateType.*;
 

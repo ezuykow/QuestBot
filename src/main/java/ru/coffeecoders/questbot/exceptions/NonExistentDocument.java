@@ -6,7 +6,7 @@ package ru.coffeecoders.questbot.exceptions;
 public class NonExistentDocument extends RuntimeException{
 
     public NonExistentDocument() {
-        super();
+        super("Document not found!");
     }
 
 }

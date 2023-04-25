@@ -1,10 +1,10 @@
 package ru.coffeecoders.questbot.actions.newgame.utils;
 
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.NewGameCreatingState;
 import ru.coffeecoders.questbot.keyboards.QuestionsGroupsKeyboard;
-import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.QuestionGroupService;
 
 /**
@@ -16,14 +16,14 @@ public class NewGameRequests {
     private final QuestionGroupService questionGroupService;
     private final NewGameUtils utils;
     private final MessageSender msgSender;
-    private final Environment env;
+    private final Messages messages;
 
     public NewGameRequests(QuestionGroupService questionGroupService, NewGameUtils utils, MessageSender msgSender,
-                           Environment env) {
+                           Messages messages) {
         this.questionGroupService = questionGroupService;
         this.utils = utils;
         this.msgSender = msgSender;
-        this.env = env;
+        this.messages = messages;
     }
 
     //-----------------API START-----------------
@@ -34,7 +34,7 @@ public class NewGameRequests {
      * @author ezuykow
      */
     public void requestNewGameName(long chatId) {
-        msgSender.send(chatId, env.getProperty("messages.game.requestNewGameName"));
+        msgSender.send(chatId, messages.requestNewGameName());
     }
 
     /**
@@ -47,7 +47,7 @@ public class NewGameRequests {
     public void requestQuestionGroups(String gameName, long chatId, int requestMsgId) {
         msgSender.edit(chatId, requestMsgId,
                 String.format(
-                        env.getProperty("messages.game.requestQuestionsGroups", "Error"), gameName),
+                        messages.requestQuestionsGroups(), gameName),
                 QuestionsGroupsKeyboard.createKeyboard(questionGroupService.findAll())
         );
     }
@@ -63,7 +63,7 @@ public class NewGameRequests {
         NewGameCreatingState state = utils.getNewGameCreatingState(chatId);
         msgSender.edit(chatId, msgIdToEdit,
                 utils.createTextFromStateFields(
-                        env.getProperty("messages.game.requestMaxQuestionsCount"), 2, state));
+                        messages.requestMaxQuestionsCount(), 2, state));
     }
 
     /**
@@ -78,7 +78,7 @@ public class NewGameRequests {
                                         NewGameCreatingState state) {
         msgSender.edit(chatId, msgIdToEdit,
                 utils.createTextFromStateFields(
-                        env.getProperty("messages.game.requestStartCountTasks"), 3, state));
+                        messages.requestStartCountTasks(), 3, state));
     }
 
     /**
@@ -92,7 +92,7 @@ public class NewGameRequests {
     public void requestMaxPerformedQuestionCount(long chatId, int msgIdToEdit, NewGameCreatingState state) {
         msgSender.edit(chatId, msgIdToEdit,
                 utils.createTextFromStateFields(
-                        env.getProperty("messages.game.requestMaxPerformedQuestionCount"), 4, state));
+                        messages.requestMaxPerformedQuestionCount(), 4, state));
     }
 
     /**
@@ -106,7 +106,7 @@ public class NewGameRequests {
     public void requestMinQuestionsCountInGame(long chatId, int msgIdToEdit, NewGameCreatingState state) {
         msgSender.edit(chatId, msgIdToEdit,
                 utils.createTextFromStateFields(
-                        env.getProperty("messages.game.requestMinQuestionsCountInGame"), 5, state));
+                        messages.requestMinQuestionsCountInGame(), 5, state));
     }
 
     /**
@@ -120,7 +120,7 @@ public class NewGameRequests {
     public void requestQuestionsCountToAdd(long chatId, int msgIdToEdit, NewGameCreatingState state) {
         msgSender.edit(chatId, msgIdToEdit,
                 utils.createTextFromStateFields(
-                        env.getProperty("messages.game.requestQuestionsCountToAdd"), 6, state));
+                        messages.requestQuestionsCountToAdd(), 6, state));
     }
 
     /**
@@ -134,7 +134,7 @@ public class NewGameRequests {
     public void requestMaxTimeMinutes(long chatId, int msgIdToEdit, NewGameCreatingState state) {
         msgSender.edit(chatId, msgIdToEdit,
                 utils.createTextFromStateFields(
-                        env.getProperty("messages.game.requestMaxTimeMinutes"), 7, state));
+                        messages.requestMaxTimeMinutes(), 7, state));
     }
 
     //-----------------API END-----------------

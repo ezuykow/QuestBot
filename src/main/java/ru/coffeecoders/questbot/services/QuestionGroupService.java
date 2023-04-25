@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.coffeecoders.questbot.entities.QuestionGroup;
+import ru.coffeecoders.questbot.exceptions.NonExistentQuestionGroup;
 import ru.coffeecoders.questbot.repositories.QuestionGroupRepository;
 
 import java.util.List;
@@ -15,9 +16,14 @@ public class QuestionGroupService {
     Logger logger = LoggerFactory.getLogger(QuestionGroupService.class);
 
     private final QuestionGroupRepository repository;
+    private final QuestionService questionService;
+    private final GameService gameService;
 
-    public QuestionGroupService(QuestionGroupRepository repository) {
+    public QuestionGroupService(QuestionGroupRepository repository, QuestionService questionService,
+                                GameService gameService) {
         this.repository = repository;
+        this.questionService = questionService;
+        this.gameService = gameService;
     }
 
     public List<QuestionGroup> findAll() {
@@ -38,9 +44,38 @@ public class QuestionGroupService {
     }
 
     /**
+     * Находит в БД {@link QuestionGroup} по названию
+     * @param groupName название группы
+     * @return {@link Optional} с найденной группой, либо пустой, если такой группы не было в БД
      * @author ezuykow
      */
     public Optional<QuestionGroup> findByGroupName(String groupName) {
         return repository.findQuestionGroupByGroupName(groupName);
+    }
+
+    /**
+     * Удаляет группу из БД
+     * @param questionGroup удаляемая группа
+     * @author ezuykow
+     */
+    public void delete(QuestionGroup questionGroup) {
+        repository.delete(questionGroup);
+    }
+
+    /**
+     * Удаляет группу из БД, если вопросов с такой группой нет
+     * @param groupName название группы
+     * @author ezuykow
+     */
+    public void deleteQuestionGroupIfNoQuestionsWithIt(String groupName) {
+        if (questionService.findByGroupName(groupName).isEmpty()) {
+            findByGroupName(groupName).ifPresentOrElse(
+                    qg -> {
+                        delete(qg);
+                        gameService.setGroupIdIfItsDeleted(qg.getGroupId());
+                    },
+                    NonExistentQuestionGroup::new
+            );
+        }
     }
 }

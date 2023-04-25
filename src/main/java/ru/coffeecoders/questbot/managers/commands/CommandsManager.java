@@ -1,10 +1,10 @@
 
 package ru.coffeecoders.questbot.managers.commands;
 
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
-import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 
 
@@ -21,21 +21,19 @@ public class CommandsManager {
     private final PlayersCommandsManager playersCommandsManager;
     private final ChatAndUserValidator validator;
     private final MessageSender msgSender;
-    private final Environment env;
+    private final Messages messages;
     private long chatId;
 
     public CommandsManager(OwnerCommandsManager ownerCommandsManager, AdminsCommandsManager adminsCommandsManager,
-                           PlayersCommandsManager playersCommandsManager,
-                           ChatAndUserValidator validator,
-                           MessageSender msgSender,
-                           Environment env)
+                           PlayersCommandsManager playersCommandsManager, ChatAndUserValidator validator,
+                           MessageSender msgSender, Messages messages)
     {
         this.ownerCommandsManager = ownerCommandsManager;
         this.adminsCommandsManager = adminsCommandsManager;
         this.playersCommandsManager = playersCommandsManager;
         this.validator = validator;
         this.msgSender = msgSender;
-        this.env = env;
+        this.messages = messages;
     }
 
     /**
@@ -52,7 +50,7 @@ public class CommandsManager {
             Command cmd = Command.valueOf(textCommand);
             manageCommandByAttribute(update, cmd);
         } catch (IllegalArgumentException e) {
-            msgSender.send(chatId, env.getProperty("messages.admins.invalidMsg"));
+            msgSender.send(chatId, messages.invalidMsg());
         }
     }
 
@@ -80,7 +78,7 @@ public class CommandsManager {
         if (validator.isOwner(update.getMessageFromUserId())) {
             ownerCommandsManager.manageCommand(update.getMessageChatId(), cmd);
         } else {
-            msgSender.send(chatId, env.getProperty("messages.admins.isOwnerCommand"));
+            msgSender.send(chatId, messages.isOwnerCommand());
         }
     }
 
@@ -88,7 +86,7 @@ public class CommandsManager {
         if (validator.isGlobalChat(chatId)) {
             playersCommandsManager.manageCommand(update, cmd);
         } else {
-            msgSender.send(chatId, env.getProperty("messages.admins.gameCmdInAdminChat"));
+            msgSender.send(chatId, messages.gameCmdInAdminChat());
         }
     }
 
@@ -96,7 +94,7 @@ public class CommandsManager {
         if (validator.isAdminChat(chatId)) {
             checkAndSendGlobalAdminsCommand(update, cmd);
         } else {
-            msgSender.send(chatId, env.getProperty("messages.admins.adminCmdInGlobalChat"));
+            msgSender.send(chatId, messages.adminCmdInGlobalChat());
         }
     }
 
@@ -109,7 +107,7 @@ public class CommandsManager {
         if (validator.isAdmin(update.getMessageFromUserId())) {
             adminsCommandsManager.manageCommand(update, cmd);
         } else {
-            msgSender.send(chatId, env.getProperty("messages.admins.cmdSendByNotAdmin"));
+            msgSender.send(chatId, messages.cmdSendByNotAdmin());
         }
     }
 

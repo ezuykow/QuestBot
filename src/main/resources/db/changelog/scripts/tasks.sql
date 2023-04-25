@@ -8,3 +8,7 @@ CREATE TABLE tasks
     question_id         INT UNIQUE   NOT NULL,
     performed_team_name VARCHAR(100)
 );
+
+-- changeset ezuykow:2
+ALTER TABLE tasks
+    ADD COLUMN chat_id BIGINT;

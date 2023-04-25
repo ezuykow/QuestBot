@@ -1,12 +1,12 @@
 package ru.coffeecoders.questbot.managers.callbacks;
 
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Admin;
 import ru.coffeecoders.questbot.entities.AdminChat;
 import ru.coffeecoders.questbot.exceptions.NonExistentAdmin;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
-import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.services.AdminService;
 import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
@@ -23,14 +23,15 @@ public class DemoteUserCallbackManager {
     private final AdminService adminService;
     private final ChatAndUserValidator validator;
     private final MessageSender msgSender;
-    private final Environment env;
+    private final Messages messages;
 
-    public DemoteUserCallbackManager(AdminChatService adminChatService, AdminService adminService, ChatAndUserValidator validator, MessageSender msgSender, Environment env) {
+    public DemoteUserCallbackManager(AdminChatService adminChatService, AdminService adminService,
+                                     ChatAndUserValidator validator, MessageSender msgSender, Messages messages) {
         this.adminChatService = adminChatService;
         this.adminService = adminService;
         this.validator = validator;
         this.msgSender = msgSender;
-        this.env = env;
+        this.messages = messages;
     }
 
     //-----------------API START-----------------
@@ -89,7 +90,7 @@ public class DemoteUserCallbackManager {
     private void sendDemotionMessage(long chatId, String data) {
         msgSender.send(chatId,
                 data.substring(data.indexOf(".") + 1, data.lastIndexOf("."))
-                        + env.getProperty("messages.owner.userDemoted")
+                        + messages.userDemoted()
         );
     }
 }

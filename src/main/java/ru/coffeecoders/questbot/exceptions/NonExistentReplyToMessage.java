@@ -6,7 +6,7 @@ package ru.coffeecoders.questbot.exceptions;
 public class NonExistentReplyToMessage extends RuntimeException{
 
     public NonExistentReplyToMessage() {
-        super();
+        super("ReplyToMessage not found!");
     }
 
 }
