@@ -1,7 +1,6 @@
 package ru.coffeecoders.questbot.actions.newgame;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.actions.newgame.utils.NewGameRequests;
 import ru.coffeecoders.questbot.actions.newgame.utils.NewGameUtils;
@@ -9,6 +8,7 @@ import ru.coffeecoders.questbot.entities.NewGameCreatingState;
 import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.managers.RestrictingManager;
 import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.NewGameCreatingStateService;
 import ru.coffeecoders.questbot.validators.GameValidator;
 import ru.coffeecoders.questbot.validators.QuestionsValidator;
@@ -27,12 +27,12 @@ public class NewGameActions {
     private final BlockingManager blockingManager;
     private final RestrictingManager restrictingManager;
     private final MessageSender msgSender;
-    private final Environment env;
+    private final Messages messages;
 
     public NewGameActions(NewGameCreatingStateService newGameCreatingStateService,
                           QuestionsValidator questionsValidator, GameValidator gameValidator, NewGameRequests requests,
                           NewGameUtils utils, BlockingManager blockingManager, RestrictingManager restrictingManager,
-                          MessageSender msgSender, Environment env) {
+                          MessageSender msgSender, Messages messages) {
         this.newGameCreatingStateService = newGameCreatingStateService;
         this.questionsValidator = questionsValidator;
         this.gameValidator = gameValidator;
@@ -41,7 +41,7 @@ public class NewGameActions {
         this.blockingManager = blockingManager;
         this.restrictingManager = restrictingManager;
         this.msgSender = msgSender;
-        this.env = env;
+        this.messages = messages;
     }
 
     //-----------------API START-----------------
@@ -77,7 +77,7 @@ public class NewGameActions {
             addGameNameAndRequestNext(chatId, state, gameName, requestMsgId);
         } else {
             state.setGameName(gameName);
-            switchMsg(1, chatId, requestMsgId, state, env.getProperty("messages.game.nameAlreadyTaken"));
+            switchMsg(1, chatId, requestMsgId, state, messages.nameAlreadyTaken());
         }
     }
 
@@ -91,7 +91,7 @@ public class NewGameActions {
     public void addSelectedQuestionGroupAndRefreshMsg(long chatId, int msgId, int questionGroupId) {
         InlineKeyboardMarkup kb = utils.addQuestionGroupAndGetKeyboard(chatId, questionGroupId);
         utils.switchMsg(2, chatId, msgId, utils.getNewGameCreatingState(chatId),
-                env.getProperty("messages.game.addedQuestionGroup"), kb);
+                messages.addedQuestionGroup(), kb);
     }
 
     /**
@@ -128,10 +128,10 @@ public class NewGameActions {
         {
                 addMaxQuestionsCountAndRequestNext(chatId, state, maxQuestionCount, requestMsgId);
         } else {
-            switchMsg(3, chatId, requestMsgId, state, env.getProperty(
+            switchMsg(3, chatId, requestMsgId, state,
                     (maxQuestionCount != null && maxQuestionCount > 0)
-                            ? "messages.game.invalidQuestionCount"
-                            : "messages.game.invalidNumber"));
+                            ? messages.invalidQuestionCount()
+                            : messages.invalidNumber());
         }
     }
 
@@ -154,10 +154,10 @@ public class NewGameActions {
         if ((startCountTask != null && startCountTask > 0) && (startCountTask <= maxQuestionCount)) {
             addStartCountTasksAndRequestNext(chatId, state, startCountTask, requestMsgId);
         } else {
-            switchMsg(4, chatId, requestMsgId, state, env.getProperty(
+            switchMsg(4, chatId, requestMsgId, state,
                     (startCountTask != null && startCountTask > 0)
-                            ? "messages.game.startQMoreMaxQ"
-                            : "messages.game.invalidNumber"));
+                            ? messages.startQMoreMaxQ()
+                            : messages.invalidNumber());
         }
     }
 
@@ -182,10 +182,10 @@ public class NewGameActions {
         {
             addMaxPerformedAndRequestNext(chatId, state, maxPerformedQuestionsCount, requestMsgId);
         } else {
-            switchMsg(5, chatId, requestMsgId, state, env.getProperty(
+            switchMsg(5, chatId, requestMsgId, state,
                     (maxPerformedQuestionsCount != null && maxPerformedQuestionsCount > 0)
-                            ? "messages.game.maxPerformedQMoreMaxQ"
-                            : "messages.game.invalidNumber"));
+                            ? messages.maxPerformedQMoreMaxQ()
+                            : messages.invalidNumber());
         }
     }
 
@@ -208,7 +208,7 @@ public class NewGameActions {
         if (minQuestionsInGame != null && minQuestionsInGame >= 0) {
             addMinQuestionAndRequestNext(state, chatId, minQuestionsInGame, requestMsgId);
         } else {
-            switchMsg(6, chatId, requestMsgId, state, env.getProperty("messages.game.invalidNumber"));
+            switchMsg(6, chatId, requestMsgId, state, messages.invalidNumber());
         }
     }
 
@@ -231,7 +231,7 @@ public class NewGameActions {
         if (questionsToAdd != null && questionsToAdd >= 0) {
             addQuestionsToAddAndPerformNext(state, chatId, questionsToAdd, requestMsgId);
         } else {
-            switchMsg(7, chatId, requestMsgId, state, env.getProperty("messages.game.invalidNumber"));
+            switchMsg(7, chatId, requestMsgId, state, messages.invalidNumber());
         }
     }
 
@@ -254,7 +254,7 @@ public class NewGameActions {
         if (minutes != null && minutes > 0) {
             addTimeAndSaveGame(state, minutes, chatId, requestMsgId);
         } else {
-            switchMsg(9, chatId, requestMsgId, state, env.getProperty("messages.game.invalidNumber"));
+            switchMsg(9, chatId, requestMsgId, state, messages.invalidNumber());
         }
     }
 
@@ -326,7 +326,7 @@ public class NewGameActions {
         state.setMaxTimeMinutes(minutes);
         utils.saveNewGame(state);
         unblockAndUnrestrictChat(chatId);
-        switchMsg(8, chatId, requestMsgId, state, env.getProperty("messages.game.gameAdded"));
+        switchMsg(8, chatId, requestMsgId, state, messages.gameAdded());
         newGameCreatingStateService.delete(state);
     }
 
@@ -334,7 +334,7 @@ public class NewGameActions {
      * @author ezuykow
      */
     private void unblockAndUnrestrictChat(long chatId) {
-        blockingManager.unblockAdminChat(chatId, env.getProperty("messages.admins.endGameCreating"));
+        blockingManager.unblockAdminChat(chatId, messages.endGameCreating());
         restrictingManager.unRestrictMembers(chatId);
     }
 

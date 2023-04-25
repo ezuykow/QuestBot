@@ -7,11 +7,11 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Question;
 import ru.coffeecoders.questbot.entities.QuestionGroup;
 import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.QuestionGroupService;
 import ru.coffeecoders.questbot.services.QuestionService;
 
@@ -34,16 +34,17 @@ public class QuestionsFromExcelParser {
     private final MessageSender msgSender;
     private final QuestionService questionService;
     private final QuestionGroupService questionGroupService;
-    private final Environment env;
+    private final Messages messages;
 
     private List<Question> newQuestions;
     boolean blankQuestionsPresent;
 
-    public QuestionsFromExcelParser(MessageSender msgSender, QuestionService questionService, QuestionGroupService questionGroupService, Environment env) {
+    public QuestionsFromExcelParser(MessageSender msgSender, QuestionService questionService,
+                                    QuestionGroupService questionGroupService, Messages messages) {
         this.msgSender = msgSender;
         this.questionService = questionService;
         this.questionGroupService = questionGroupService;
-        this.env = env;
+        this.messages = messages;
     }
 
     //-----------------API START-----------------
@@ -130,7 +131,7 @@ public class QuestionsFromExcelParser {
             newQuestion.setMapUrl(null);
         }
         if (newQuestion.getGroup().equalsIgnoreCase("нет")) {
-            newQuestion.setGroup(env.getProperty("messages.documents.defaultQuestionGroup"));
+            newQuestion.setGroup(messages.defaultQuestionGroup());
         }
         String group = newQuestion.getGroup();
         questionGroupService.findByGroupName(group).ifPresentOrElse(g -> {},
@@ -143,7 +144,7 @@ public class QuestionsFromExcelParser {
      */
     private void saveQuestionsIfPresent(long chatId) {
         if (newQuestions.isEmpty()) {
-            msgSender.send(chatId, env.getProperty("messages.documents.emptyQuestionList"));
+            msgSender.send(chatId, messages.emptyQuestionList());
         } else {
             StringBuilder msgSB = checkBlankAndRemoveEqualsQuestions();
             questionService.saveAll(newQuestions);
@@ -156,9 +157,9 @@ public class QuestionsFromExcelParser {
      */
     private String createNewQuestionsMsg(StringBuilder sb) {
         if (newQuestions.isEmpty()) {
-            sb.append(env.getProperty("messages.documents.noOneQuestionAdded"));
+            sb.append(messages.noOneQuestionAdded());
         } else {
-            sb.append(String.format(env.getProperty("messages.documents.questionsAdded", "%d"),
+            sb.append(String.format(messages.questionsAdded(),
                     newQuestions.size())
             );
             newQuestions.forEach(question -> sb.append(Character.toString(0x2714)).append(" ")
@@ -189,10 +190,10 @@ public class QuestionsFromExcelParser {
     private StringBuilder checkBlankAndRemoveEqualsQuestions() {
         StringBuilder msgSB = new StringBuilder();
         if (blankQuestionsPresent) {
-            msgSB.append(env.getProperty("messages.documents.emptyQuestionsNotAdded"));
+            msgSB.append(messages.emptyQuestionsNotAdded());
         }
         if (findAndRemoveEqualsQuestions()) {
-            msgSB.append(env.getProperty("messages.documents.equalsQuestionsNotAdded"));
+            msgSB.append(messages.equalsQuestionsNotAdded());
         }
         return msgSB;
     }

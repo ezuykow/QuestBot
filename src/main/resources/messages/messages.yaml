@@ -61,7 +61,7 @@ messages:
   questions:
     emptyList: 🔴В базе нет вопросов
 
-  game:
+  games:
     requestNewGameName: 🟡Введите название новой игры
     requestQuestionsGroups: "${variables.1}${variables.chooseQuestionsGroup}"
     addedQuestionGroup: "${variables.1-2}${variables.chooseQuestionsGroup}"

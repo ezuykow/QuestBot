@@ -13,7 +13,6 @@ import com.pengrad.telegrambot.response.GetChatMemberResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.AdminChat;
 import ru.coffeecoders.questbot.entities.GlobalChat;
@@ -33,22 +32,19 @@ public class MessageSender {
 
     private final Logger logger = LoggerFactory.getLogger(MessageSender.class);
 
-    @Value("${messages.startUp}")
-    private String startUpMsg;
-    @Value("${messages.stopBot}")
-    private String stopBotMsg;
-
     private final TelegramBot bot;
     private final MessageToDeleteService messageToDeleteService;
     private final AdminChatService adminChatService;
     private final GlobalChatService globalChatService;
+    private final Messages messages;
 
     public MessageSender(TelegramBot bot, MessageToDeleteService messageToDeleteService,
-                         AdminChatService adminChatService, GlobalChatService globalChatService) {
+                         AdminChatService adminChatService, GlobalChatService globalChatService, Messages messages) {
         this.bot = bot;
         this.messageToDeleteService = messageToDeleteService;
         this.adminChatService = adminChatService;
         this.globalChatService = globalChatService;
+        this.messages = messages;
     }
 
     //-----------------API START-----------------
@@ -227,7 +223,7 @@ public class MessageSender {
      * @author ezuykow
      */
     public void sendStartUp() {
-        getAllChatIds().forEach(id -> send(id, startUpMsg));
+        getAllChatIds().forEach(id -> send(id, messages.startUp()));
     }
 
     /**
@@ -235,7 +231,7 @@ public class MessageSender {
      * @author ezuykow
      */
     public void sendStopBot() {
-        getAllChatIds().forEach(id -> send(id, stopBotMsg));
+        getAllChatIds().forEach(id -> send(id, messages.stopBot()));
     }
 
     //-----------------API END-----------------

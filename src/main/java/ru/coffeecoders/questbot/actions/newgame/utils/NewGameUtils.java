@@ -2,13 +2,14 @@ package ru.coffeecoders.questbot.actions.newgame.utils;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.entities.NewGameCreatingState;
 import ru.coffeecoders.questbot.entities.QuestionGroup;
+import ru.coffeecoders.questbot.exceptions.NonExistentNewCreatingGameState;
 import ru.coffeecoders.questbot.keyboards.QuestionsGroupsKeyboard;
 import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.GameService;
 import ru.coffeecoders.questbot.services.NewGameCreatingStateService;
 import ru.coffeecoders.questbot.services.QuestionGroupService;
@@ -27,18 +28,18 @@ public class NewGameUtils {
     private final QuestionService questionService;
     private final GameService gameService;
     private final MessageSender msgSender;
-    private final Environment env;
+    private final Messages messages;
 
     public NewGameUtils(NewGameCreatingStateService newGameCreatingStateService,
                         QuestionGroupService questionGroupService, QuestionService questionService,
-                        GameService gameService, MessageSender msgSender, Environment env)
+                        GameService gameService, MessageSender msgSender, Messages messages)
     {
         this.newGameCreatingStateService = newGameCreatingStateService;
         this.questionGroupService = questionGroupService;
         this.questionService = questionService;
         this.gameService = gameService;
         this.msgSender = msgSender;
-        this.env = env;
+        this.messages = messages;
     }
 
     //-----------------API START-----------------
@@ -48,8 +49,7 @@ public class NewGameUtils {
      */
     public NewGameCreatingState getNewGameCreatingState(long chatId) {
         return newGameCreatingStateService.findById(chatId)
-                .orElseThrow(() ->
-                        new RuntimeException("Этого, конечно, никогда не будет, нооо... пиздец, короче"));
+                .orElseThrow(NonExistentNewCreatingGameState::new);
     }
 
     /**
@@ -111,21 +111,21 @@ public class NewGameUtils {
     public void switchMsg(int msgN, long chatId, int msgId, NewGameCreatingState state, String prop1, InlineKeyboardMarkup kb) {
         switch (msgN) {
             case 1 -> msgSender.edit(chatId, msgId, createTextFromStateFields(
-                    prop1 + env.getProperty("messages.game.requestNewGameName"), 1, state));
+                    prop1 + messages.requestNewGameName(), 1, state));
             case 2 -> msgSender.edit(chatId, msgId, createTextFromStateFields(prop1, 2, state), kb);
             case 3 -> msgSender.edit(chatId, msgId, createTextFromStateFields(
-                    prop1 + env.getProperty("messages.game.requestMaxQuestionsCount"), 2, state));
+                    prop1 + messages.requestMaxQuestionsCount(), 2, state));
             case 4 -> msgSender.edit(chatId, msgId, createTextFromStateFields(
-                    prop1 + env.getProperty("messages.game.requestStartCountTasks"), 3, state));
+                    prop1 + messages.requestStartCountTasks(), 3, state));
             case 5 -> msgSender.edit(chatId, msgId, createTextFromStateFields(
-                    prop1 + env.getProperty("messages.game.requestMaxPerformedQuestionCount"), 4, state));
+                    prop1 + messages.requestMaxPerformedQuestionCount(), 4, state));
             case 6 -> msgSender.edit(chatId, msgId, createTextFromStateFields(
-                    prop1 + env.getProperty("messages.game.requestMinQuestionsCountInGame"), 5, state));
+                    prop1 + messages.requestMinQuestionsCountInGame(), 5, state));
             case 7 -> msgSender.edit(chatId, msgId, createTextFromStateFields(
-                    prop1 + env.getProperty("messages.game.requestQuestionsCountToAdd"), 6, state));
+                    prop1 + messages.requestQuestionsCountToAdd(), 6, state));
             case 8 -> msgSender.edit(chatId, msgId, createTextFromStateFields(prop1, 8, state));
             case 9 -> msgSender.edit(chatId, msgId, createTextFromStateFields(
-                    prop1 + env.getProperty("messages.game.requestMaxTimeMinutes"), 7, state));
+                    prop1 + messages.requestMaxTimeMinutes(), 7, state));
         }
     }
 

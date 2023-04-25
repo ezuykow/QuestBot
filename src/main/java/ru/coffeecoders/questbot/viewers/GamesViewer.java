@@ -1,15 +1,15 @@
 package ru.coffeecoders.questbot.viewers;
 
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.actions.newgame.utils.NewGameUtils;
 import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.exceptions.NonExistentGame;
 import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.managers.RestrictingManager;
+import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.models.GameInfoPage;
 import ru.coffeecoders.questbot.models.GamesViewPage;
-import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.services.GameService;
 import ru.coffeecoders.questbot.validators.GameValidator;
 
@@ -29,17 +29,17 @@ public class GamesViewer {
     private final NewGameUtils utils;
     private final GameValidator validator;
     private final MessageSender msgSender;
-    private final Environment env;
+    private final Messages messages;
 
     public GamesViewer(GameService gameService, BlockingManager blockingManager, RestrictingManager restrictingManager,
-                       NewGameUtils utils, GameValidator validator, MessageSender msgSender, Environment env) {
+                       NewGameUtils utils, GameValidator validator, MessageSender msgSender, Messages messages) {
         this.gameService = gameService;
         this.blockingManager = blockingManager;
         this.restrictingManager = restrictingManager;
         this.utils = utils;
         this.validator = validator;
         this.msgSender = msgSender;
-        this.env = env;
+        this.messages = messages;
     }
 
     //-----------------API START-----------------
@@ -64,7 +64,7 @@ public class GamesViewer {
     public void showGame(long chatId, int msgId, String data) {
         String gameName = data.substring(START_GAME_NAME_IN_DATA_IDX);
         Game game = gameService.findByName(gameName).orElseThrow(NonExistentGame::new);
-        GameInfoPage page = GameInfoPage.createPage(game, env.getProperty("messages.game.gameInfo"), utils);
+        GameInfoPage page = GameInfoPage.createPage(game, messages.gameInfo(), utils);
         msgSender.edit(chatId, msgId, page.getText(), page.getKeyboard());
     }
 
@@ -80,7 +80,7 @@ public class GamesViewer {
     public void deleteGame(String callbackId, long chatId, int msgId, String data) {
         String gameName = data.substring(data.lastIndexOf(".") + 1);
         if (validator.isGameCreating(gameName)) {
-            msgSender.sentToast(callbackId, env.getProperty("messages.game.failedDeletingGame"), true);
+            msgSender.sentToast(callbackId, messages.failedDeletingGame(), true);
         } else {
             gameService.deleteByGameName(gameName);
             msgSender.sendDelete(chatId, msgId);
@@ -126,7 +126,7 @@ public class GamesViewer {
         if (!games.isEmpty()) {
             showGames(chatId, games, msgId);
         } else {
-            msgSender.send(chatId, env.getProperty("messages.game.emptyGamesList"));
+            msgSender.send(chatId, messages.emptyGamesList());
             unBlockAndUnrestrictChat(chatId);
         }
     }
@@ -148,6 +148,6 @@ public class GamesViewer {
      */
     private void unBlockAndUnrestrictChat(long chatId) {
         restrictingManager.unRestrictMembers(chatId);
-        blockingManager.unblockAdminChat(chatId, env.getProperty("messages.admins.endGamesView"));
+        blockingManager.unblockAdminChat(chatId, messages.endGamesView());
     }
 }

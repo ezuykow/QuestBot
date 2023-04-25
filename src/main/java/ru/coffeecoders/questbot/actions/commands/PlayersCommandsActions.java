@@ -1,13 +1,13 @@
 package ru.coffeecoders.questbot.actions.commands;
 
 import com.pengrad.telegrambot.response.SendResponse;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.*;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.keyboards.JoinTeamKeyboard;
-import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.messages.Messages;
+import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.services.*;
 import ru.coffeecoders.questbot.validators.GameValidator;
 
@@ -25,12 +25,12 @@ public class PlayersCommandsActions {
     private final QuestionService questionService;
     private final MessageToDeleteService messageToDeleteService;
     private final GameValidator gameValidator;
-    private final Environment env;
+    private final Messages messages;
 
     public PlayersCommandsActions(TeamService teamService, TaskService taskService,
                                   GlobalChatService globalChatService, MessageSender msgSender,
                                   QuestionService questionService, MessageToDeleteService messageToDeleteService,
-                                  GameValidator gameValidator, Environment env)
+                                  GameValidator gameValidator, Messages messages)
     {
         this.teamService = teamService;
         this.taskService = taskService;
@@ -38,8 +38,8 @@ public class PlayersCommandsActions {
         this.msgSender = msgSender;
         this.questionService = questionService;
         this.messageToDeleteService = messageToDeleteService;
-        this.env = env;
         this.gameValidator = gameValidator;
+        this.messages = messages;
     }
 
     //-----------------API START-----------------
@@ -75,7 +75,7 @@ public class PlayersCommandsActions {
                             .map(GlobalChat::getCreatingGameName).orElseThrow(NonExistentChat::new))
             );
         } else {
-            msgSender.send(chatId, env.getProperty("messages.players.haventStartedGame"));
+            msgSender.send(chatId, messages.haventStartedGame());
         }
     }
 
@@ -90,7 +90,7 @@ public class PlayersCommandsActions {
         long chatId = update.getMessageChatId();
         if (gameValidator.isGameCreating(chatId) && !gameValidator.isGameStarted(chatId)) {
             SendResponse response =
-                    msgSender.send(chatId, env.getProperty("messages.players.enterTeamName"),
+                    msgSender.send(chatId, messages.enterTeamName(),
                             update.getMessageId()
                     );
             saveToMessageToDelete(update.getMessageId(), update.getMessageFromUserId(), chatId);
@@ -112,10 +112,10 @@ public class PlayersCommandsActions {
             List<String> teamsNames = teamService.findAll()
                     .stream().map(Team::getTeamName).toList();
             if (teamsNames.isEmpty()) {
-                msgSender.send(chatId, env.getProperty("messages.players.noTeamsRegisteredYet"));
+                msgSender.send(chatId, messages.noTeamsRegisteredYet());
             } else {
                 msgSender.send(chatId,
-                        "@" + update.getUsernameFromMessage() + env.getProperty("messages.players.chooseYourTeam"),
+                        "@" + update.getUsernameFromMessage() + messages.chooseYourTeam(),
                         JoinTeamKeyboard.createKeyboard(teamsNames), update.getMessageId()
                 );
             }

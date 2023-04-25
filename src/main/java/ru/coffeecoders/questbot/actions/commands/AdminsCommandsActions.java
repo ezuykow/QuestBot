@@ -1,11 +1,11 @@
 package ru.coffeecoders.questbot.actions.commands;
 
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.managers.ApplicationShutdownManager;
 import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.managers.RestrictingManager;
 import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.viewers.GamesViewer;
 import ru.coffeecoders.questbot.viewers.QuestionsViewer;
 
@@ -18,12 +18,11 @@ public class AdminsCommandsActions {
     private final RestrictingManager restrictingManager;
     private final ApplicationShutdownManager applicationShutdownManager;
     private final MessageSender msgSender;
-    private final Environment env;
+    private final Messages messages;
 
     private AdminsCommandsActions(GamesViewer gamesViewer, MessageSender msgSender, QuestionsViewer questionsViewer,
                                   ApplicationShutdownManager applicationShutdownManager,
-                                  BlockingManager blockingManager, RestrictingManager restrictingManager,
-                                  Environment env)
+                                  BlockingManager blockingManager, RestrictingManager restrictingManager, Messages messages)
     {
         this.gamesViewer = gamesViewer;
         this.msgSender = msgSender;
@@ -31,7 +30,7 @@ public class AdminsCommandsActions {
         this.applicationShutdownManager = applicationShutdownManager;
         this.blockingManager = blockingManager;
         this.restrictingManager = restrictingManager;
-        this.env = env;
+        this.messages = messages;
     }
 
     //-----------------API START-----------------
@@ -43,7 +42,7 @@ public class AdminsCommandsActions {
      * @author ezuykow
      */
     public void performShowGamesCmd(long senderAdminId, long chatId) {
-        blockAndRestrictChat(chatId, senderAdminId, env.getProperty("messages.admins.startGamesView"));
+        blockAndRestrictChat(chatId, senderAdminId, messages.startGamesView());
         gamesViewer.viewGames(chatId);
     }
 
@@ -54,7 +53,7 @@ public class AdminsCommandsActions {
      * @author ezuykow
      */
     public void performShowQuestionsCmd(long senderAdminId, long chatId) {
-        blockAndRestrictChat(chatId, senderAdminId, env.getProperty("messages.admins.startQuestionView"));
+        blockAndRestrictChat(chatId, senderAdminId, messages.startQuestionView());
         questionsViewer.viewQuestions(chatId);
     }
 

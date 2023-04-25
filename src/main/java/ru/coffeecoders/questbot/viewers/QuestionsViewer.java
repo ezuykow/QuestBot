@@ -1,15 +1,15 @@
 package ru.coffeecoders.questbot.viewers;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Question;
 import ru.coffeecoders.questbot.exceptions.NonExistentQuestion;
 import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.managers.RestrictingManager;
+import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.models.QuestionInfoPage;
 import ru.coffeecoders.questbot.models.QuestionsViewerPage;
-import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.services.QuestionGroupService;
 import ru.coffeecoders.questbot.services.QuestionService;
 
@@ -31,21 +31,21 @@ public class QuestionsViewer {
     private final BlockingManager blockingManager;
     private final RestrictingManager restrictingManager;
     private final MessageSender msgSender;
-    private final Environment env;
+    private final Messages messages;
 
     private List<Question> questions;
     private int lastShowedFirstIndex;
 
     public QuestionsViewer(QuestionService questionService, QuestionGroupService questionGroupService,
                            BlockingManager blockingManager, RestrictingManager restrictingManager,
-                           MessageSender msgSender, Environment env)
+                           MessageSender msgSender, Messages messages)
     {
         this.questionService = questionService;
         this.questionGroupService = questionGroupService;
         this.blockingManager = blockingManager;
         this.restrictingManager = restrictingManager;
         this.msgSender = msgSender;
-        this.env = env;
+        this.messages = messages;
     }
 
     //-----------------API START-----------------
@@ -149,7 +149,7 @@ public class QuestionsViewer {
     private void validateAndCreateView(long chatId, int msgId, int pageSize, int startIndex) {
         if (questions.isEmpty()) {
             msgSender.sendDelete(chatId, msgId);
-            msgSender.send(chatId, env.getProperty("messages.questions.emptyList"));
+            msgSender.send(chatId, messages.emptyList());
             unblockAndUnrestrictChat(chatId);
         } else {
             createView(chatId, msgId, pageSize, startIndex);
@@ -189,7 +189,7 @@ public class QuestionsViewer {
      */
     private void unblockAndUnrestrictChat(long chatId) {
         restrictingManager.unRestrictMembers(chatId);
-        blockingManager.unblockAdminChat(chatId, env.getProperty("messages.admins.endQuestionView"));
+        blockingManager.unblockAdminChat(chatId, messages.endQuestionView());
     }
 
     /**

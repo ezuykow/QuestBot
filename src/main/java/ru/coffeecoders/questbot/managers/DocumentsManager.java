@@ -1,12 +1,12 @@
 package ru.coffeecoders.questbot.managers;
 
 import com.pengrad.telegrambot.model.Document;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.documents.DocumentDownloader;
 import ru.coffeecoders.questbot.documents.QuestionsFromExcelParser;
-import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.messages.Messages;
+import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 
 /**
@@ -19,14 +19,15 @@ public class DocumentsManager {
     private final QuestionsFromExcelParser parser;
     private final DocumentDownloader downloader;
     private final ChatAndUserValidator validator;
-    private final Environment env;
+    private final Messages messages;
 
-    public DocumentsManager(MessageSender msgSender, QuestionsFromExcelParser parser, DocumentDownloader downloader, ChatAndUserValidator validator, Environment env) {
+    public DocumentsManager(MessageSender msgSender, QuestionsFromExcelParser parser, DocumentDownloader downloader,
+                            ChatAndUserValidator validator, Messages messages) {
         this.msgSender = msgSender;
         this.parser = parser;
         this.downloader = downloader;
         this.validator = validator;
-        this.env = env;
+        this.messages = messages;
     }
 
     //-----------------API START-----------------
@@ -59,10 +60,10 @@ public class DocumentsManager {
                 if (isExcelFile(exUpdate.getDocument())) {
                     return true;
                 } else {
-                    msgSender.send(exUpdate.getMessageChatId(), env.getProperty("messages.documents.wrongDocumentType"));
+                    msgSender.send(exUpdate.getMessageChatId(), messages.wrongDocumentType());
                 }
             } else {
-                msgSender.send(exUpdate.getMessageChatId(), env.getProperty("messages.documents.fromNotAdmin"));
+                msgSender.send(exUpdate.getMessageChatId(), messages.fromNotAdmin());
             }
         }
         return false;
@@ -72,7 +73,7 @@ public class DocumentsManager {
      * @author ezuykow
      */
     private boolean isExcelFile(Document doc) {
-        return doc.mimeType().equals(env.getProperty("document.excel.mimeType"));
+        return doc.mimeType().equals(messages.mimeType());
     }
 
     /**

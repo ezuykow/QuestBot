@@ -1,10 +1,10 @@
 package ru.coffeecoders.questbot.managers;
 
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.actions.newgame.NewGameActions;
 import ru.coffeecoders.questbot.actions.newgame.utils.NewGameUtils;
 import ru.coffeecoders.questbot.entities.NewGameCreatingState;
+import ru.coffeecoders.questbot.messages.Messages;
 
 /**
  * @author ezuykow
@@ -16,15 +16,15 @@ public class NewGameManager {
     private final NewGameUtils utils;
     private final BlockingManager blockingManager;
     private final RestrictingManager restrictingManager;
-    private final Environment env;
+    private final Messages messages;
 
     public NewGameManager(NewGameActions actions, NewGameUtils utils, BlockingManager blockingManager,
-                          RestrictingManager restrictingManager, Environment env) {
+                          RestrictingManager restrictingManager, Messages messages) {
         this.actions = actions;
         this.utils = utils;
         this.blockingManager = blockingManager;
         this.restrictingManager = restrictingManager;
-        this.env = env;
+        this.messages = messages;
     }
 
     //-----------------API START-----------------
@@ -73,7 +73,7 @@ public class NewGameManager {
      * @author ezuykow
      */
     private void blockAndRestrictChat(long chatId, long senderAdminId) {
-        blockingManager.blockAdminChatByAdmin(chatId, senderAdminId, env.getProperty("messages.admins.startGameCreating"));
+        blockingManager.blockAdminChatByAdmin(chatId, senderAdminId, messages.startGameCreating());
         restrictingManager.restrictMembers(chatId, senderAdminId);
     }
 }
