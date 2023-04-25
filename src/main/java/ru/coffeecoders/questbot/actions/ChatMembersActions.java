@@ -11,7 +11,6 @@ import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.AdminChatMembersService;
 import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.services.AdminService;
-import ru.coffeecoders.questbot.services.GlobalChatService;
 import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 
 import java.util.Arrays;
@@ -24,19 +23,17 @@ import java.util.List;
 public class ChatMembersActions {
 
     private final AdminChatMembersService adminChatMembersService;
-    private final GlobalChatService globalChatService;
     private final AdminChatService adminChatService;
     private final AdminService adminService;
     private final ChatAndUserValidator validator;
     private final MessageSender msgSender;
     private final Messages messages;
 
-    public ChatMembersActions(AdminChatMembersService adminChatMembersService, GlobalChatService globalChatService,
-                              AdminChatService adminChatService, AdminService adminService,
-                              ChatAndUserValidator validator, MessageSender msgSender, Messages messages)
+    public ChatMembersActions(AdminChatMembersService adminChatMembersService,AdminChatService adminChatService,
+                              AdminService adminService, ChatAndUserValidator validator, MessageSender msgSender,
+                              Messages messages)
     {
         this.adminChatMembersService = adminChatMembersService;
-        this.globalChatService = globalChatService;
         this.adminChatService = adminChatService;
         this.adminService = adminService;
         this.validator = validator;
@@ -105,40 +102,25 @@ public class ChatMembersActions {
      * @author ezuykow
      */
     private void leftChatMemberInAdminChat(User leftMember, long chatId) {
-        if (isOwner(leftMember)) {
-            ownerLeftAdminChat(chatId);
-        } else {
-            if (hasItMemberInAdminChatsMembers(chatId, leftMember)) {
-                deleteAdminFromChat(chatId, leftMember);
-            }
-            StringBuilder nameSB = new StringBuilder(leftMember.firstName());
-            if (leftMember.lastName() != null) {
-                nameSB.append(" ").append(leftMember.lastName());
-            }
-            msgSender.send(chatId, nameSB + messages.byeAdmin());
+        if (hasItMemberInAdminChatsMembers(chatId, leftMember)) {
+            deleteAdminFromChat(chatId, leftMember);
         }
-    }
-
-    /**
-     * @author ezuykow
-     */
-    private boolean isOwner(User leftMember) {
-        return adminService.findById(leftMember.id()).filter(Admin::isOwner).isPresent();
+        StringBuilder nameSB = new StringBuilder(leftMember.firstName());
+        if (leftMember.lastName() != null) {
+            nameSB.append(" ").append(leftMember.lastName());
+        }
+        msgSender.send(chatId, nameSB + messages.byeAdmin());
     }
 
     /**
      * @author ezuykow
      */
     private void leftChatMemberInGlobalChat(User leftMember, long chatId) {
-        if (isOwner(leftMember)) {
-            ownerLeftGlobalChat(chatId);
-        } else {
-            StringBuilder nameSB = new StringBuilder(leftMember.firstName());
-            if (leftMember.lastName() != null) {
-                nameSB.append(" ").append(leftMember.lastName());
-            }
-            msgSender.send(chatId, messages.byePrefix() + nameSB + messages.byeSuffix());
+        StringBuilder nameSB = new StringBuilder(leftMember.firstName());
+        if (leftMember.lastName() != null) {
+            nameSB.append(" ").append(leftMember.lastName());
         }
+        msgSender.send(chatId, messages.byePrefix() + nameSB + messages.byeSuffix());
     }
 
     /**
@@ -158,39 +140,6 @@ public class ChatMembersActions {
         long[] refreshedMembers = Arrays.copyOf(oldMembers, oldMembers.length + 1);
         refreshedMembers[refreshedMembers.length - 1] = newMember.id();
         return refreshedMembers;
-    }
-
-    /**
-     * @author ezuykow
-     */
-    private void ownerLeftGlobalChat(long chatId) {
-        globalChatService.deleteById(chatId);
-        ownerLeftChat(chatId);
-    }
-
-    /**
-     * @author ezuykow
-     */
-    private void ownerLeftAdminChat(long chatId) {
-        deleteAdminChat(chatId);
-        ownerLeftChat(chatId);
-    }
-
-    /**
-     * @author ezuykow
-     */
-    private void ownerLeftChat(long chatId) {
-        msgSender.send(chatId, messages.ownerLeftChat());
-        msgSender.sendLeaveChat(chatId);
-    }
-
-    /**
-     * @author ezuykow
-     */
-    private void deleteAdminChat(long chatId) {
-        adminChatService.deleteByChatId(chatId);
-        deleteAllUselessAdmins();
-        adminChatMembersService.deleteByChatId(chatId);
     }
 
     /**

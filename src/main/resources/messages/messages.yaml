@@ -31,6 +31,8 @@ messages:
     endQuestionView: Работа с вопросами закончена, пользователи разблокированы
     startGamesView: " начал работать со списком игр, остальные пользователи временно заблокированы"
     endGamesView: Работа со списком игр закончена, пользователи разблокированы
+    cmdForGlobalChat: Эту команду можно использовать только в не администраторском чате
+    chatNotInGame: Этот чат больше не в Игре
 
   players:
     haventStartedGame: Запущенных игр нет
@@ -46,7 +48,6 @@ messages:
     welcomeAdminPrefix: "Новый помощник - "
     welcomeAdminSuffix: ", приветствуем!"
     byeAdmin: " покинул нас..."
-    ownerLeftChat: Мой владелец покинул этот захудалый чат, прощайте, неудачники!
 
   documents:
     emptyQuestionList: Вопросов в файле не обнаружено!

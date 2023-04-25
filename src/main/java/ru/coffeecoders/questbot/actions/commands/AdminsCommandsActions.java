@@ -6,6 +6,8 @@ import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.managers.RestrictingManager;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
+import ru.coffeecoders.questbot.services.GlobalChatService;
+import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 import ru.coffeecoders.questbot.viewers.GamesViewer;
 import ru.coffeecoders.questbot.viewers.QuestionsViewer;
 
@@ -17,12 +19,15 @@ public class AdminsCommandsActions {
     private final BlockingManager blockingManager;
     private final RestrictingManager restrictingManager;
     private final ApplicationShutdownManager applicationShutdownManager;
+    private final GlobalChatService globalChatService;
+    private final ChatAndUserValidator validator;
     private final MessageSender msgSender;
     private final Messages messages;
 
     private AdminsCommandsActions(GamesViewer gamesViewer, MessageSender msgSender, QuestionsViewer questionsViewer,
                                   ApplicationShutdownManager applicationShutdownManager,
-                                  BlockingManager blockingManager, RestrictingManager restrictingManager, Messages messages)
+                                  BlockingManager blockingManager, RestrictingManager restrictingManager,
+                                  GlobalChatService globalChatService, ChatAndUserValidator validator, Messages messages)
     {
         this.gamesViewer = gamesViewer;
         this.msgSender = msgSender;
@@ -30,6 +35,8 @@ public class AdminsCommandsActions {
         this.applicationShutdownManager = applicationShutdownManager;
         this.blockingManager = blockingManager;
         this.restrictingManager = restrictingManager;
+        this.globalChatService = globalChatService;
+        this.validator = validator;
         this.messages = messages;
     }
 
@@ -55,6 +62,16 @@ public class AdminsCommandsActions {
     public void performShowQuestionsCmd(long senderAdminId, long chatId) {
         blockAndRestrictChat(chatId, senderAdminId, messages.startQuestionView());
         questionsViewer.viewQuestions(chatId);
+    }
+
+    public void performDeleteChatCmd(long chatId) {
+        if (validator.isGlobalChat(chatId)) {
+            globalChatService.deleteById(chatId);
+            msgSender.send(chatId, messages.chatNotInGame());
+            msgSender.sendLeaveChat(chatId);
+        } else {
+            msgSender.send(chatId, messages.cmdForGlobalChat());
+        }
     }
 
     /**

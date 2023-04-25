@@ -119,6 +119,14 @@ public class Messages {
         return env.getProperty("messages.admins.endGamesView");
     }
 
+    public String cmdForGlobalChat() {
+        return env.getProperty("messages.admins.cmdForGlobalChat");
+    }
+
+    public String chatNotInGame() {
+        return env.getProperty("messages.admins.chatNotInGame");
+    }
+
     //players messages
 
     public String haventStartedGame() {
@@ -165,10 +173,6 @@ public class Messages {
 
     public String byeAdmin() {
         return env.getProperty("messages.members.byeAdmin");
-    }
-
-    public String ownerLeftChat() {
-        return env.getProperty("messages.members.ownerLeftChat");
     }
 
     //documents messages
