@@ -11,11 +11,11 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.core.env.Environment;
 import ru.coffeecoders.questbot.entities.*;
 import ru.coffeecoders.questbot.keyboards.JoinTeamKeyboard;
+import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
-import ru.coffeecoders.questbot.senders.MessageSender;
 import ru.coffeecoders.questbot.services.*;
 import ru.coffeecoders.questbot.validators.GameValidator;
 
@@ -42,13 +42,13 @@ class PlayersCommandsActionsTest {
     private MessageToDeleteService msgToDelService;
 
     @Mock
-    private Environment env;
-    @Mock
     private ExtendedUpdate exUpdate;
     @Mock
     private SendResponse response;
     @Mock
     private Message message;
+    @Mock
+    private Messages messages;
     @Mock
     private ReplyKeyboardMarkup keyboard;
 
@@ -83,9 +83,9 @@ class PlayersCommandsActionsTest {
     @Test
     void showTasksIfGameNotStarted() {
         when(gameValidator.isGameStarted(exUpdate.getMessageChatId())).thenReturn(false);
-        when(env.getProperty("messages.players.haventStartedGame")).thenReturn("Запущенных игр нет");
+        when(messages.haventStartedGame()).thenReturn("Запущенных игр нет");
         actions.showTasks(exUpdate.getMessageChatId());
-        Mockito.verify(msgSender).send(id, env.getProperty("messages.players.haventStartedGame"));
+        Mockito.verify(msgSender).send(id, "Запущенных игр нет");
     }
 
     @Test
@@ -120,7 +120,7 @@ class PlayersCommandsActionsTest {
         when(message.messageId()).thenReturn(replyToMsgId);
         when(gameValidator.isGameStarted(exUpdate.getMessageChatId())).thenReturn(false);
         when(gameValidator.isGameCreating(exUpdate.getMessageChatId())).thenReturn(true);
-        when(env.getProperty("messages.players.enterTeamName"))
+        when(messages.enterTeamName())
                 .thenReturn("В ответ на это сообщение введите название своей команды");
         actions.regTeam(exUpdate);
         Mockito.verify(msgSender).send(id,
@@ -138,7 +138,7 @@ class PlayersCommandsActionsTest {
         when(gameValidator.isGameCreating(exUpdate.getMessageChatId())).thenReturn(true);
         when(teamService.findAll()).thenReturn(createTeamsList());
         when(exUpdate.getMessageId()).thenReturn(msgId);
-        when(env.getProperty("messages.players.chooseYourTeam"))
+        when(messages.chooseYourTeam())
                 .thenReturn(", выберите команду, в которую хотите вступить");
         MockedStatic<JoinTeamKeyboard> theMock = mockStatic(JoinTeamKeyboard.class);
         theMock.when(() -> JoinTeamKeyboard.createKeyboard(teamService.findAll()
@@ -153,7 +153,7 @@ class PlayersCommandsActionsTest {
         when(gameValidator.isGameStarted(exUpdate.getMessageChatId())).thenReturn(false);
         when(gameValidator.isGameCreating(exUpdate.getMessageChatId())).thenReturn(true);
         when(teamService.findAll()).thenReturn(List.of());
-        when(env.getProperty("messages.players.noTeamsRegisteredYet"))
+        when(messages.noTeamsRegisteredYet())
                 .thenReturn("Пока не зарегистрировано ни одной команды");
         actions.joinTeam(exUpdate);
         verify(msgSender).send(id, "Пока не зарегистрировано ни одной команды");
@@ -168,8 +168,8 @@ class PlayersCommandsActionsTest {
         return Optional.of(question);
     }
 
-    private Task createTask(String gameName, int id) {
-        return new Task(gameName, id, null);
+    private Task createTask(String gameName, int questionId) {
+        return new Task(gameName, questionId, null, id);
     }
 
     private List<Team> createTeamsList() {
