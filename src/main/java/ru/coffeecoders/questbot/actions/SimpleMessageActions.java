@@ -46,11 +46,14 @@ public class SimpleMessageActions {
      * @author ezuykow
      */
     public void registerNewTeam(ExtendedUpdate update) {
+        long chatId = update.getMessageChatId();
         if (update.hasMessageText()) {
             Team newTeam = new Team(
                     update.getMessageText(),
-                    globalChatService.findById(update.getMessageChatId())
-                            .orElseThrow(NonExistentChat::new).getCreatingGameName()
+                    globalChatService.findById(chatId)
+                            .orElseThrow(NonExistentChat::new).getCreatingGameName(),
+                    0,
+                    chatId
             );
             checkTeamForExistAndSave(update, newTeam);
         }
@@ -65,10 +68,10 @@ public class SimpleMessageActions {
      * @author ezuykow
      */
     public void joinTeam(ExtendedUpdate update, String teamName) {
+        long chatId = update.getMessageChatId();
         Player newPlayer = createNewPlayer(update.getMessageFromUserId(),
-                globalChatService.findById(update.getMessageChatId())
-                        .orElseThrow(NonExistentChat::new).getCreatingGameName(),
-                teamName
+                globalChatService.findById(chatId).orElseThrow(NonExistentChat::new).getCreatingGameName(),
+                teamName, chatId
         );
         addPlayersWithTeam(newPlayer, update);
     }
@@ -101,8 +104,8 @@ public class SimpleMessageActions {
     /**
      * @author ezuykow
      */
-    private Player createNewPlayer(long tgUserId, String gameName, String teamName) {
-        return new Player(tgUserId, gameName, teamName);
+    private Player createNewPlayer(long tgUserId, String gameName, String teamName, long chatId) {
+        return new Player(tgUserId, gameName, teamName, chatId);
     }
 
     /**
