@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.documents.DocumentDownloader;
 import ru.coffeecoders.questbot.documents.QuestionsFromExcelParser;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
-import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 
 /**

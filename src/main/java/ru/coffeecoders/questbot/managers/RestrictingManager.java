@@ -4,7 +4,7 @@ import com.pengrad.telegrambot.model.ChatPermissions;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.AdminChatMembers;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
-import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.services.AdminChatMembersService;
 import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 

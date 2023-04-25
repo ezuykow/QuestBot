@@ -4,7 +4,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.NewGameCreatingState;
 import ru.coffeecoders.questbot.keyboards.QuestionsGroupsKeyboard;
-import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.services.QuestionGroupService;
 
 /**

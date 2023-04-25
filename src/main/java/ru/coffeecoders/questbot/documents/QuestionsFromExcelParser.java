@@ -11,7 +11,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Question;
 import ru.coffeecoders.questbot.entities.QuestionGroup;
-import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.services.QuestionGroupService;
 import ru.coffeecoders.questbot.services.QuestionService;
 

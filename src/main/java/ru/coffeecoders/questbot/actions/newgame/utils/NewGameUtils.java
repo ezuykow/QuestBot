@@ -8,7 +8,7 @@ import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.entities.NewGameCreatingState;
 import ru.coffeecoders.questbot.entities.QuestionGroup;
 import ru.coffeecoders.questbot.keyboards.QuestionsGroupsKeyboard;
-import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.services.GameService;
 import ru.coffeecoders.questbot.services.NewGameCreatingStateService;
 import ru.coffeecoders.questbot.services.QuestionGroupService;

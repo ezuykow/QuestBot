@@ -9,7 +9,7 @@ import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.managers.RestrictingManager;
 import ru.coffeecoders.questbot.models.QuestionInfoPage;
 import ru.coffeecoders.questbot.models.QuestionsViewerPage;
-import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.services.QuestionGroupService;
 import ru.coffeecoders.questbot.services.QuestionService;
 

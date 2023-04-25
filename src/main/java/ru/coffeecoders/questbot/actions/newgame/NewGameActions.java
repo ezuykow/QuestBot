@@ -8,7 +8,7 @@ import ru.coffeecoders.questbot.actions.newgame.utils.NewGameUtils;
 import ru.coffeecoders.questbot.entities.NewGameCreatingState;
 import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.managers.RestrictingManager;
-import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.services.NewGameCreatingStateService;
 import ru.coffeecoders.questbot.validators.GameValidator;
 import ru.coffeecoders.questbot.validators.QuestionsValidator;

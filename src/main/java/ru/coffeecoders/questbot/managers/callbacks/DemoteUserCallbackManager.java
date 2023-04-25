@@ -6,7 +6,7 @@ import ru.coffeecoders.questbot.entities.Admin;
 import ru.coffeecoders.questbot.entities.AdminChat;
 import ru.coffeecoders.questbot.exceptions.NonExistentAdmin;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
-import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.services.AdminService;
 import ru.coffeecoders.questbot.validators.ChatAndUserValidator;

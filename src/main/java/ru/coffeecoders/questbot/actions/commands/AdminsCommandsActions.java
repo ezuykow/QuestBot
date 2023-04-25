@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.managers.ApplicationShutdownManager;
 import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.managers.RestrictingManager;
-import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.viewers.GamesViewer;
 import ru.coffeecoders.questbot.viewers.QuestionsViewer;
 

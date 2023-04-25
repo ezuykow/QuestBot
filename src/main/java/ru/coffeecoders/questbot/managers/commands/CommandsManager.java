@@ -4,7 +4,7 @@ package ru.coffeecoders.questbot.managers.commands;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
-import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 
 

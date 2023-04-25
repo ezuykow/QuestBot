@@ -9,7 +9,7 @@ import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.managers.RestrictingManager;
 import ru.coffeecoders.questbot.models.GameInfoPage;
 import ru.coffeecoders.questbot.models.GamesViewPage;
-import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.services.GameService;
 import ru.coffeecoders.questbot.validators.GameValidator;
 

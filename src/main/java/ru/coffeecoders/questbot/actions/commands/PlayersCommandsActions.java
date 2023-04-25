@@ -7,7 +7,7 @@ import ru.coffeecoders.questbot.entities.*;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.keyboards.JoinTeamKeyboard;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
-import ru.coffeecoders.questbot.senders.MessageSender;
+import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.services.*;
 import ru.coffeecoders.questbot.validators.GameValidator;
 

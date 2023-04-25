@@ -1,4 +1,4 @@
-package ru.coffeecoders.questbot.senders;
+package ru.coffeecoders.questbot.messages;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.CallbackQuery;
