@@ -33,6 +33,7 @@ messages:
     endGamesView: Работа со списком игр закончена, пользователи разблокированы
     cmdForGlobalChat: Эту команду можно использовать только в не администраторском чате
     chatNotInGame: Этот чат больше не в Игре
+    choosePreparingGame: ", выберите игру, которую нужно подготовить:"
 
   players:
     haventStartedGame: Запущенных игр нет

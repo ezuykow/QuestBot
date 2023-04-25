@@ -127,6 +127,10 @@ public class Messages {
         return env.getProperty("messages.admins.chatNotInGame");
     }
 
+    public String choosePreparingGame() {
+        return env.getProperty("messages.admins.choosePreparingGame");
+    }
+
     //players messages
 
     public String haventStartedGame() {
