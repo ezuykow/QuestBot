@@ -54,10 +54,12 @@ class OwnerCommandsActionsTest {
     @Mock
     private InlineKeyboardMarkup keyboard;
 
-    long chatId = 1L;
+    private final long chatId = 1L;
+    private final String msgNotAdminChat = "Этот чат не администраторский";
+    private final String msgHaventAdmins = "Некого назначать админом";
 
     @InjectMocks
-    OwnerCommandsActions actions;
+    private OwnerCommandsActions actions;
 
     @BeforeEach
     void setUp() {
@@ -66,32 +68,34 @@ class OwnerCommandsActionsTest {
 
     @Test
     void validateAndPerformStartCmdIfChatNotAddedTest() {
+        String msg = "Привет, я QuestBot) Если вы хотите назначить этот чат админским -\n" +
+                "    выберите соответсвующую команду в меню";
         when(validator.chatNotAdded(chatId)).thenReturn(true);
-        when(messages.welcome()).thenReturn("Привет, я QuestBot) Если вы хотите назначить этот чат админским -\n" +
-                "    выберите соответсвующую команду в меню");
+        when(messages.welcome()).thenReturn(msg);
         actions.validateAndPerformStartCmd(chatId);
         verify(globalChatService).save(new GlobalChat(chatId));
-        verify(msgSender).send(chatId, "Привет, я QuestBot) Если вы хотите назначить этот чат админским -\n" +
-                "    выберите соответсвующую команду в меню");
+        verify(msgSender).send(chatId, msg);
     }
 
     @Test
     void validateAndPerformStartCmdIfChatAddedTest() {
+        String msg = "Этот чат уже добавлен в систему";
         when(validator.chatNotAdded(chatId)).thenReturn(false);
-        when(messages.startCmdFailed()).thenReturn("Этот чат уже добавлен в систему");
+        when(messages.startCmdFailed()).thenReturn(msg);
         actions.validateAndPerformStartCmd(chatId);
-        verify(msgSender).send(chatId, "Этот чат уже добавлен в систему");
+        verify(msgSender).send(chatId, msg);
     }
 
     @Test
     void validateAndPerformAdminOnCmdIfGlobalChatTest() {
+        String msg = "Теперь этот чат - администраторский";
         long userId = 12L;
         when(validator.isGlobalChat(chatId)).thenReturn(true);
         when(adminService.getOwner()).thenReturn(owner);
-        when(messages.chatIsAdminNow()).thenReturn("Теперь этот чат - администраторский");
+        when(messages.chatIsAdminNow()).thenReturn(msg);
         when(owner.getTgAdminUserId()).thenReturn(userId);
         actions.validateAndPerformAdminOnCmd(chatId);
-        verify(msgSender).send(chatId, "Теперь этот чат - администраторский");
+        verify(msgSender).send(chatId, msg);
         verify(globalChatService).deleteById(chatId);
         verify(adminChatService).save(new AdminChat(chatId, Collections.singleton(owner)));
         verify(adminChatMembersService).save(new AdminChatMembers(chatId, new long[]{userId}));
@@ -99,35 +103,38 @@ class OwnerCommandsActionsTest {
 
     @Test
     void validateAndPerformAdminOnCmdIfNotGlobalChatTest() {
+        String msg = "Этот чат уже администраторский";
         when(validator.isGlobalChat(chatId)).thenReturn(false);
-        when(messages.adminOnCmdFailed()).thenReturn("Этот чат уже администраторский");
+        when(messages.adminOnCmdFailed()).thenReturn(msg);
         actions.validateAndPerformAdminOnCmd(chatId);
-        verify(msgSender).send(chatId, "Этот чат уже администраторский");
+        verify(msgSender).send(chatId, msg);
     }
 
     @Test
     void validateAndPerformAdminOffCmdIfAdminChatTest() {
+        String msg = "Теперь этот чат - не администраторский";
         when(validator.isAdminChat(chatId)).thenReturn(true);
-        when(messages.chatIsGlobalNow()).thenReturn("Теперь этот чат - не администраторский");
+        when(messages.chatIsGlobalNow()).thenReturn(msg);
         actions.validateAndPerformAdminOffCmd(chatId);
         verify(adminChatService).deleteByChatId(chatId);
         verify(globalChatService).save(new GlobalChat(chatId));
         verify(adminChatMembersService).deleteByChatId(chatId);
         verify(adminService).deleteUselessAdmins();
-        verify(msgSender).send(chatId, "Теперь этот чат - не администраторский");
+        verify(msgSender).send(chatId, msg);
     }
 
     @Test
     void validateAndPerformAdminOffCmdIfNotAdminChatTest() {
         when(validator.isAdminChat(chatId)).thenReturn(false);
-        when(messages.chatIsNotAdmin()).thenReturn("Этот чат не администраторский");
+        when(messages.chatIsNotAdmin()).thenReturn(msgNotAdminChat);
         actions.validateAndPerformAdminOffCmd(chatId);
-        verify(msgSender).send(chatId, "Этот чат не администраторский");
+        verify(msgSender).send(chatId, msgNotAdminChat);
     }
 
 
     @Test
     void validateAndPerformPromoteCmdIfAdminChatTest() {
+        String msg = "Назначить администратором бота:";
         when(validator.isAdminChat(chatId)).thenReturn(true);
         when(adminChatMembersService.findByChatId(chatId)).thenReturn(Optional.of(members));
         when(members.getMembers()).thenReturn(new long[]{1, 2, 3});
@@ -135,11 +142,11 @@ class OwnerCommandsActionsTest {
         when(adminChat.getAdmins()).thenReturn(Set.of(new Admin(3)));
         when(msgSender.getChatMember(chatId, 1)).thenReturn(new User(1L));
         when(msgSender.getChatMember(chatId, 1)).thenReturn(new User(2L));
-        when(messages.promote()).thenReturn("Назначить администратором бота:");
+        when(messages.promote()).thenReturn(msg);
         try (MockedStatic<PromoteOrDemoteUserKeyboard> theMock = mockStatic(PromoteOrDemoteUserKeyboard.class)) {
             theMock.when(() -> PromoteOrDemoteUserKeyboard.createKeyboard(anySet(), anyString())).thenReturn(keyboard);
             actions.validateAndPerformPromoteCmd(chatId);
-            verify(msgSender).send(chatId, "Назначить администратором бота:", keyboard);
+            verify(msgSender).send(chatId, msg, keyboard);
         }
 
     }
@@ -151,32 +158,33 @@ class OwnerCommandsActionsTest {
         when(members.getMembers()).thenReturn(new long[]{3});
         when(adminChatService.findById(chatId)).thenReturn(Optional.of(adminChat));
         when(adminChat.getAdmins()).thenReturn(Set.of(new Admin(3)));
-        when(messages.emptyPromotionList()).thenReturn("Некого назначать админом");
+        when(messages.emptyPromotionList()).thenReturn(msgHaventAdmins);
         actions.validateAndPerformPromoteCmd(chatId);
-        verify(msgSender).send(chatId, "Некого назначать админом");
+        verify(msgSender).send(chatId, msgHaventAdmins);
     }
 
     @Test
     void validateAndPerformPromoteCmdIfNotAdminChatTest() {
         when(validator.isAdminChat(chatId)).thenReturn(false);
-        when(messages.chatIsNotAdmin()).thenReturn("Этот чат не администраторский");
+        when(messages.chatIsNotAdmin()).thenReturn(msgNotAdminChat);
         actions.validateAndPerformPromoteCmd(chatId);
-        verify(msgSender).send(chatId, "Этот чат не администраторский");
+        verify(msgSender).send(chatId, msgNotAdminChat);
     }
 
     @Test
     void validateAndPerformDemoteCmdIfChatAdminTest() {
+        String msg = "Разжаловать администратора бота:";
         Admin admin = new Admin(3);
         when(validator.isAdminChat(chatId)).thenReturn(true);
         when(adminChatService.findById(chatId)).thenReturn(Optional.of(adminChat));
         when(adminChat.getAdmins()).thenReturn(Set.of(admin, new Admin(1)));
         when(adminService.getOwner()).thenReturn(admin);
         when(msgSender.getChatMember(chatId, 1)).thenReturn(new User(1L));
-        when(messages.demote()).thenReturn("Разжаловать администратора бота:");
+        when(messages.demote()).thenReturn(msg);
         try (MockedStatic<PromoteOrDemoteUserKeyboard> theMock = mockStatic(PromoteOrDemoteUserKeyboard.class)) {
             theMock.when(() -> PromoteOrDemoteUserKeyboard.createKeyboard(anySet(), anyString())).thenReturn(keyboard);
             actions.validateAndPerformDemoteCmd(chatId);
-            verify(msgSender).send(chatId, "Разжаловать администратора бота:", keyboard);
+            verify(msgSender).send(chatId, msg, keyboard);
         }
 
     }
@@ -188,16 +196,16 @@ class OwnerCommandsActionsTest {
         when(adminChatService.findById(chatId)).thenReturn(Optional.of(adminChat));
         when(adminChat.getAdmins()).thenReturn(Set.of(admin));
         when(adminService.getOwner()).thenReturn(admin);
-        when(messages.emptyPromotionList()).thenReturn("Некого назначать админом");
+        when(messages.emptyPromotionList()).thenReturn(msgHaventAdmins);
         actions.validateAndPerformDemoteCmd(chatId);
-        verify(msgSender).send(chatId, "Некого назначать админом");
+        verify(msgSender).send(chatId, msgHaventAdmins);
     }
 
     @Test
     void validateAndPerformDemoteCmdIfChatNotAdmin() {
         when(validator.isAdminChat(chatId)).thenReturn(false);
-        when(messages.chatIsNotAdmin()).thenReturn("Этот чат не администраторский");
+        when(messages.chatIsNotAdmin()).thenReturn(msgNotAdminChat);
         actions.validateAndPerformDemoteCmd(chatId);
-        verify(msgSender).send(chatId, "Этот чат не администраторский");
+        verify(msgSender).send(chatId, msgNotAdminChat);
     }
 }
