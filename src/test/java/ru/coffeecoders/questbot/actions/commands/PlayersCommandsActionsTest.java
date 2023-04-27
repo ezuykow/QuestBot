@@ -52,10 +52,6 @@ class PlayersCommandsActionsTest {
     @Mock
     private ReplyKeyboardMarkup keyboard;
 
-
-    @InjectMocks
-    private PlayersCommandsActions actions;
-
     private final String teamName1 = "hkj";
     private final String teamName2 = "iop";
     private final String questionText = "ghj ghj";
@@ -64,6 +60,9 @@ class PlayersCommandsActionsTest {
     private final int teamScore1 = 123;
     private final int teamScore2 = 456;
     private final long id = 1L;
+
+    @InjectMocks
+    private PlayersCommandsActions actions;
 
     @BeforeEach
     void setUp() {
@@ -82,10 +81,11 @@ class PlayersCommandsActionsTest {
 
     @Test
     void showTasksIfGameNotStarted() {
+        String msg = "Запущенных игр нет";
         when(gameValidator.isGameStarted(exUpdate.getMessageChatId())).thenReturn(false);
-        when(messages.haventStartedGame()).thenReturn("Запущенных игр нет");
+        when(messages.haventStartedGame()).thenReturn(msg);
         actions.showTasks(exUpdate.getMessageChatId());
-        Mockito.verify(msgSender).send(id, "Запущенных игр нет");
+        Mockito.verify(msgSender).send(id, msg);
     }
 
     @Test
@@ -109,22 +109,21 @@ class PlayersCommandsActionsTest {
     @Test
     void regTeamIfGameCreated() {
         String relateTo = "REGTEAM";
+        String msg = "В ответ на это сообщение введите название своей команды";
         int replyToMsgId = 12;
         int msgId = 11;
         long userId = 111L;
         when(exUpdate.getMessageFromUserId()).thenReturn(userId);
         when(exUpdate.getMessageId()).thenReturn(msgId);
-        when(msgSender.send(id, "В ответ на это сообщение введите название своей команды", msgId))
+        when(msgSender.send(id, msg, msgId))
                 .thenReturn(response);
         when(response.message()).thenReturn(message);
         when(message.messageId()).thenReturn(replyToMsgId);
         when(gameValidator.isGameStarted(exUpdate.getMessageChatId())).thenReturn(false);
         when(gameValidator.isGameCreating(exUpdate.getMessageChatId())).thenReturn(true);
-        when(messages.enterTeamName())
-                .thenReturn("В ответ на это сообщение введите название своей команды");
+        when(messages.enterTeamName()).thenReturn(msg);
         actions.regTeam(exUpdate);
-        Mockito.verify(msgSender).send(id,
-                "В ответ на это сообщение введите название своей команды", msgId);
+        Mockito.verify(msgSender).send(id, msg, msgId);
         Mockito.verify(msgToDelService).save(new MessageToDelete(msgId, userId, relateTo, id, true));
         Mockito.verify(msgToDelService).save(new MessageToDelete(replyToMsgId, userId, relateTo, id, true));
     }
@@ -133,32 +132,31 @@ class PlayersCommandsActionsTest {
     void joinTeamIfTeamsExistTest() {
         int msgId = 11;
         String userName = "user";
+        String msg = ", выберите команду, в которую хотите вступить";
         when(exUpdate.getUsernameFromMessage()).thenReturn(userName);
         when(gameValidator.isGameStarted(exUpdate.getMessageChatId())).thenReturn(false);
         when(gameValidator.isGameCreating(exUpdate.getMessageChatId())).thenReturn(true);
         when(teamService.findAll()).thenReturn(createTeamsList());
         when(exUpdate.getMessageId()).thenReturn(msgId);
-        when(messages.chooseYourTeam())
-                .thenReturn(", выберите команду, в которую хотите вступить");
+        when(messages.chooseYourTeam()).thenReturn(msg);
         try (MockedStatic<JoinTeamKeyboard> theMock = mockStatic(JoinTeamKeyboard.class)) {
             theMock.when(() -> JoinTeamKeyboard.createKeyboard(teamService.findAll()
                     .stream().map(Team::getTeamName).toList())).thenReturn(keyboard);
             actions.joinTeam(exUpdate);
-            verify(msgSender).send(id, "@" + userName + ", выберите команду, в которую хотите вступить",
-                    keyboard, msgId);
+            verify(msgSender).send(id, "@" + userName + msg, keyboard, msgId);
         }
 
     }
 
     @Test
     void joinTeamIfTeamsNotExistTest() {
+        String msg = "Пока не зарегистрировано ни одной команды";
         when(gameValidator.isGameStarted(exUpdate.getMessageChatId())).thenReturn(false);
         when(gameValidator.isGameCreating(exUpdate.getMessageChatId())).thenReturn(true);
         when(teamService.findAll()).thenReturn(List.of());
-        when(messages.noTeamsRegisteredYet())
-                .thenReturn("Пока не зарегистрировано ни одной команды");
+        when(messages.noTeamsRegisteredYet()).thenReturn(msg);
         actions.joinTeam(exUpdate);
-        verify(msgSender).send(id, "Пока не зарегистрировано ни одной команды");
+        verify(msgSender).send(id, msg);
     }
 
     private Optional<Question> createQuestion(int i) {
@@ -175,7 +173,7 @@ class PlayersCommandsActionsTest {
     }
 
     private List<Team> createTeamsList() {
-        return List.of(new Team(teamName1, null, teamScore1, id ),
+        return List.of(new Team(teamName1, null, teamScore1, id),
                 new Team(teamName2, null, teamScore2, id));
     }
 
