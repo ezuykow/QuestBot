@@ -44,46 +44,44 @@ class AdminsCommandsActionsTest {
     long chatId = 22L;
 
     @InjectMocks
-    AdminsCommandsActions actions;
+    private AdminsCommandsActions actions;
 
     @Test
     void performShowGamesCmdTest() {
-        when(messages.startGamesView())
-                .thenReturn(" начал работать со списком игр, остальные пользователи временно заблокированы");
+        String msg = " начал работать со списком игр, остальные пользователи временно заблокированы";
+        when(messages.startGamesView()).thenReturn(msg);
         actions.performShowGamesCmd(senderAdminId, chatId);
         verify(gamesViewer).viewGames(chatId);
-        verify(blockingManager).blockAdminChatByAdmin(chatId, senderAdminId,
-                " начал работать со списком игр, остальные пользователи временно заблокированы");
+        verify(blockingManager).blockAdminChatByAdmin(chatId, senderAdminId, msg);
         verify(restrictingManager).restrictMembers(chatId, senderAdminId);
     }
 
     @Test
     void performShowQuestionsCmdTest() {
-        when(messages.startQuestionView())
-                .thenReturn(" начал работать с вопросами, остальные пользователи временно заблокированы");
+        String msg = " начал работать с вопросами, остальные пользователи временно заблокированы";
+        when(messages.startQuestionView()).thenReturn(msg);
         actions.performShowQuestionsCmd(senderAdminId, chatId);
         verify(questionsViewer).viewQuestions(chatId);
-        verify(blockingManager).blockAdminChatByAdmin(chatId, senderAdminId,
-                " начал работать с вопросами, остальные пользователи временно заблокированы");
+        verify(blockingManager).blockAdminChatByAdmin(chatId, senderAdminId, msg);
         verify(restrictingManager).restrictMembers(chatId, senderAdminId);
     }
 
     @Test
     void performDeleteChatCmdIfAdminChatTest() {
+        String msg = "Эту команду можно использовать только в не администраторском чате";
         when(validator.isGlobalChat(chatId)).thenReturn(false);
-        when(messages.cmdForGlobalChat())
-                .thenReturn("Эту команду можно использовать только в не администраторском чате");
+        when(messages.cmdForGlobalChat()).thenReturn(msg);
         actions.performDeleteChatCmd(chatId);
-        verify(msgSender).send(chatId, "Эту команду можно использовать только в не администраторском чате");
+        verify(msgSender).send(chatId, msg);
     }
 
     @Test
     void performDeleteChatCmdIfGlobalChatTest() {
+        String msg = "Этот чат больше не в Игре";
         when(validator.isGlobalChat(chatId)).thenReturn(true);
-        when(messages.chatNotInGame())
-                .thenReturn("Этот чат больше не в Игре");
+        when(messages.chatNotInGame()).thenReturn(msg);
         actions.performDeleteChatCmd(chatId);
-        verify(msgSender).send(chatId, "Этот чат больше не в Игре");
+        verify(msgSender).send(chatId, msg);
         verify(msgSender).sendLeaveChat(chatId);
         verify(globalChatService).deleteById(chatId);
     }
