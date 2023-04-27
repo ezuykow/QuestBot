@@ -64,29 +64,33 @@ class ChatMembersActionsTest {
 
     @Test
     void newChatMemberInAdminChatTest() {
+        String msg1 = "Новый помощник - ";
+        String msg2 = ", приветствуем!";
         adminChatMembers = new AdminChatMembers(chatId, chatMembers);
         when(validator.isAdminChat(chatId)).thenReturn(true);
-        when(messages.welcomeAdminSuffix()).thenReturn(", приветствуем!");
-        when(messages.welcomeAdminPrefix()).thenReturn("Новый помощник - ");
+        when(messages.welcomeAdminSuffix()).thenReturn(msg2);
+        when(messages.welcomeAdminPrefix()).thenReturn(msg1);
         when(adminChatMembersService.findByChatId(chatId)).thenReturn(Optional.of(adminChatMembers));
         when(member.id()).thenReturn(userId);
         actions.newChatMember(member, chatId);
-        verify(msgSender).send(chatId, "Новый помощник - " + name + " " + surname + ", приветствуем!");
+        verify(msgSender).send(chatId, msg1 + name + " " + surname + msg2);
         verify(adminChatMembersService).save(adminChatMembers);
     }
 
     @Test
     void newChatMemberInGlobalChatTest() {
+        String msg1 = "Поприветствуем нового игрока - ";
+        String msg2 = "! Приятного времяпрепровождения и удачи на игре!";
         when(validator.isGlobalChat(chatId)).thenReturn(true);
-        when(messages.welcomeSuffix()).thenReturn("! Приятного времяпрепровождения и удачи на игре!");
-        when(messages.welcomePrefix()).thenReturn("Поприветствуем нового игрока - ");
+        when(messages.welcomeSuffix()).thenReturn(msg2);
+        when(messages.welcomePrefix()).thenReturn(msg1);
         actions.newChatMember(member, chatId);
-        verify(msgSender).send(chatId, "Поприветствуем нового игрока - " + name + " " + surname
-                + "! Приятного времяпрепровождения и удачи на игре!");
+        verify(msgSender).send(chatId, msg1 + name + " " + surname + msg2);
     }
 
     @Test
     void leftChatMemberInAdminChatTest() {
+        String msg = " покинул нас...";
         adminChatMembers = new AdminChatMembers(chatId, chatMembers);
         Set<Admin> adminSet = new HashSet<>();
         adminSet.add(new Admin(userId));
@@ -95,19 +99,21 @@ class ChatMembersActionsTest {
         when(adminChatMembersService.findByChatId(chatId)).thenReturn(Optional.of(adminChatMembers));
         when(adminChat.getAdmins()).thenReturn(adminSet);
         when(adminChatService.findById(chatId)).thenReturn(Optional.of(adminChat));
-        when(messages.byeAdmin()).thenReturn(" покинул нас...");
+        when(messages.byeAdmin()).thenReturn(msg);
         actions.leftChatMember(member, chatId);
         verify(adminChatService).save(adminChat);
         verify(adminChatMembersService).save(adminChatMembers);
-        verify(msgSender).send(chatId, name + " " + surname + " покинул нас...");
+        verify(msgSender).send(chatId, name + " " + surname + msg);
     }
 
     @Test
     void leftChatMemberInGlobalChatTest() {
+        String msg1 = "Пока, ";
+        String msg2 = ", надеемся вы еще вернетесь!";
         when(validator.isGlobalChat(chatId)).thenReturn(true);
-        when(messages.byePrefix()).thenReturn("Пока, ");
-        when(messages.byeSuffix()).thenReturn(", надеемся вы еще вернетесь!");
+        when(messages.byePrefix()).thenReturn(msg1);
+        when(messages.byeSuffix()).thenReturn(msg2);
         actions.leftChatMember(member, chatId);
-        msgSender.send(chatId, "Пока, " + name + " " + surname + ", надеемся вы еще вернетесь!");
+        msgSender.send(chatId, msg1 + name + " " + surname + msg2);
     }
 }
