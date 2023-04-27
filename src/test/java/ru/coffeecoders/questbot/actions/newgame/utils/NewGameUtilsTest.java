@@ -192,7 +192,7 @@ class NewGameUtilsTest {
     }
 
     @Test
-    void saveNewGame() {
+    void saveNewGameTest() {
         utils.saveNewGame(state);
         verify(gameService).save(new Game(gameName, allGroupsIds, maxTime, maxQuestionCount,
                 maxPerformedQuestionsCount, minQuestionsCount, questionsCountToAdd, startCountTasks));
