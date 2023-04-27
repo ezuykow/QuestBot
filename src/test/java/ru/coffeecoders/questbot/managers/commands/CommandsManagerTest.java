@@ -44,10 +44,11 @@ class CommandsManagerTest {
 
     @Test
     void manageInvalidCommand() {
+        String msg = "Введена неверная команда";
         when(exUpdate.getMessageText()).thenReturn("/skkk");
-        when(messages.invalidMsg()).thenReturn("Введена неверная команда");
+        when(messages.invalidMsg()).thenReturn(msg);
         commandsManager.manageCommand(exUpdate);
-        Mockito.verify(msgSender).send(exUpdate.getMessageChatId(), "Введена неверная команда");
+        Mockito.verify(msgSender).send(exUpdate.getMessageChatId(), msg);
     }
 
     @Test
@@ -64,10 +65,11 @@ class CommandsManagerTest {
     @Test
     void manageGlobalAdminCommandFromNotAdmin() {
         String cmd = "/start";
+        String msg = "Эту команду может использовать только владелец";
         when(exUpdate.getMessageText()).thenReturn(cmd);
-        when(messages.isOwnerCommand()).thenReturn("Эту команду может использовать только владелец");
+        when(messages.isOwnerCommand()).thenReturn(msg);
         commandsManager.manageCommand(exUpdate);
-        Mockito.verify(msgSender).send(chatId, "Эту команду может использовать только владелец");
+        Mockito.verify(msgSender).send(chatId, msg);
     }
 
     @Test
@@ -83,13 +85,13 @@ class CommandsManagerTest {
 
     @Test
     void manageAdminCommandInNotAdminChat() {
+        String msg = "Эту команду можно использовать только в администраторском чате";
         String cmd = "/showquestions";
         when(exUpdate.getMessageText()).thenReturn(cmd);
         when(validator.isAdminChat(exUpdate.getMessageChatId())).thenReturn(false);
-        when(messages.adminCmdInGlobalChat())
-                .thenReturn("Эту команду можно использовать только в администраторском чате");
+        when(messages.adminCmdInGlobalChat()).thenReturn(msg);
         commandsManager.manageCommand(exUpdate);
-        Mockito.verify(msgSender).send(chatId, "Эту команду можно использовать только в администраторском чате");
+        Mockito.verify(msgSender).send(chatId, msg);
     }
 
     @Test
@@ -104,11 +106,12 @@ class CommandsManagerTest {
 
     @Test
     void managePlayerCommandInNotGlobalChat() {
+        String msg = "В админском чате оставлена игровая команда";
         String cmd = "/showquestions";
         when(exUpdate.getMessageText()).thenReturn(cmd);
         Mockito.lenient().when(validator.isGlobalChat(exUpdate.getMessageChatId())).thenReturn(true);
-        when(messages.adminCmdInGlobalChat()).thenReturn("В админском чате оставлена игровая команда");
+        when(messages.adminCmdInGlobalChat()).thenReturn(msg);
         commandsManager.manageCommand(exUpdate);
-        Mockito.verify(msgSender).send(chatId, "В админском чате оставлена игровая команда");
+        Mockito.verify(msgSender).send(chatId, msg);
     }
 }
