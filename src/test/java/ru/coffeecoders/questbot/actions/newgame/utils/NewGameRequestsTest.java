@@ -47,7 +47,7 @@ class NewGameRequestsTest {
     }
 
     @Test
-    void requestQuestionGroups() {
+    void requestQuestionGroupsTest() {
         String gameName = "name";
         int requestMsgId = 12;
         InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
@@ -61,7 +61,7 @@ class NewGameRequestsTest {
     }
 
     @Test
-    void requestMaxQuestionsCount() {
+    void requestMaxQuestionsCountTest() {
         when(utils.getNewGameCreatingState(chatId)).thenReturn(state);
         when(messages.requestMaxQuestionsCount()).thenReturn(msg);
         when(utils.createTextFromStateFields(msg, 2, state)).thenReturn(text);
@@ -70,7 +70,7 @@ class NewGameRequestsTest {
     }
 
     @Test
-    void requestStartCountTasks() {
+    void requestStartCountTasksTest() {
         when(messages.requestStartCountTasks()).thenReturn(msg);
         when(utils.createTextFromStateFields(msg, 3, state)).thenReturn(text);
         requests.requestStartCountTasks(chatId, msgIdToEdit, state);
@@ -78,7 +78,7 @@ class NewGameRequestsTest {
     }
 
     @Test
-    void requestMaxPerformedQuestionCount() {
+    void requestMaxPerformedQuestionCountTest() {
         when(messages.requestMaxPerformedQuestionCount()).thenReturn(msg);
         when(utils.createTextFromStateFields(msg, 4, state)).thenReturn(text);
         requests.requestMaxPerformedQuestionCount(chatId, msgIdToEdit, state);
@@ -86,7 +86,7 @@ class NewGameRequestsTest {
     }
 
     @Test
-    void requestMinQuestionsCountInGame() {
+    void requestMinQuestionsCountInGameTest() {
         when(messages.requestMinQuestionsCountInGame()).thenReturn(msg);
         when(utils.createTextFromStateFields(msg, 5, state)).thenReturn(text);
         requests.requestMinQuestionsCountInGame(chatId, msgIdToEdit, state);
@@ -94,7 +94,7 @@ class NewGameRequestsTest {
     }
 
     @Test
-    void requestQuestionsCountToAdd() {
+    void requestQuestionsCountToAddTest() {
         when(messages.requestQuestionsCountToAdd()).thenReturn(msg);
         when(utils.createTextFromStateFields(msg, 6, state)).thenReturn(text);
         requests.requestQuestionsCountToAdd(chatId, msgIdToEdit, state);
@@ -102,7 +102,7 @@ class NewGameRequestsTest {
     }
 
     @Test
-    void requestMaxTimeMinutes() {
+    void requestMaxTimeMinutesTest() {
         when(messages.requestMaxTimeMinutes()).thenReturn(msg);
         when(utils.createTextFromStateFields(msg, 7, state)).thenReturn(text);
         requests.requestMaxTimeMinutes(chatId, msgIdToEdit, state);
