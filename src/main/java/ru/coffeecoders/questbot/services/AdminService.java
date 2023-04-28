@@ -1,5 +1,6 @@
 package ru.coffeecoders.questbot.services;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,9 +22,8 @@ public class AdminService {
     }
 
     /**
-     *
      * @return
-     *@author Anatoliy Shikin
+     * @author Anatoliy Shikin
      */
     public List<Admin> findAll() {
         List<Admin> list = repository.findAll();
@@ -32,10 +32,9 @@ public class AdminService {
     }
 
     /**
-     *
      * @param id
      * @return
-     *@author Anatoliy Shikin
+     * @author Anatoliy Shikin
      */
     public Optional<Admin> findById(long id) {
         Optional<Admin> admin = repository.findById(id);
@@ -44,10 +43,9 @@ public class AdminService {
     }
 
     /**
-     *
      * @param admin
      * @return
-     *@author Anatoliy Shikin
+     * @author Anatoliy Shikin
      */
     public Admin save(Admin admin) {
         logger.info("Admin = {} has been saved", admin);
@@ -79,10 +77,19 @@ public class AdminService {
      * @author ezuykow
      */
     public void deleteUselessAdmins() {
-        repository.deleteAll(
-                findAll().stream()
-                        .filter(admin -> !admin.isOwner() && admin.getAdminChats().isEmpty())
-                        .toList()
-        );
+        logger.info("Admin = {} has been deleted", getListUselessAdmins());
+        repository.deleteAll(getListUselessAdmins());
+    }
+
+    /**
+     * @return
+     * @author Anatoliy Shikin
+     */
+    //TODO вынес
+    @NotNull
+    private List<Admin> getListUselessAdmins() {
+        return findAll().stream()
+                .filter(admin -> !admin.isOwner() && admin.getAdminChats().isEmpty())
+                .toList();
     }
 }

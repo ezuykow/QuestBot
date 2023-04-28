@@ -41,6 +41,7 @@ public class TaskService {
      * @author ezuykow
      */
     public void saveAll(List<Task> tasks) {
+        logger.info("Tasks = {} has been saved", tasks);
         repository.saveAll(tasks);
     }
 
@@ -54,6 +55,7 @@ public class TaskService {
      */
     @Transactional
     public void deleteAllByChatId(long chatId) {
+        logger.info("Tasks with chatId = {} has been deleted", chatId);
         repository.deleteAllByChatId(chatId);
     }
 }

@@ -50,7 +50,9 @@ public class QuestionGroupService {
      * @author ezuykow
      */
     public Optional<QuestionGroup> findByGroupName(String groupName) {
-        return repository.findQuestionGroupByGroupName(groupName);
+        Optional<QuestionGroup> optional = repository.findQuestionGroupByGroupName(groupName);
+        logger.info("QuestionGroup with name = {} {} found", groupName, optional.isPresent() ? "" : "not");
+        return optional;
     }
 
     /**
@@ -59,6 +61,7 @@ public class QuestionGroupService {
      * @author ezuykow
      */
     public void delete(QuestionGroup questionGroup) {
+        logger.info("QuestionGroup = {} has been deleted", questionGroup);
         repository.delete(questionGroup);
     }
 
@@ -67,6 +70,7 @@ public class QuestionGroupService {
      * @param groupName название группы
      * @author ezuykow
      */
+    //TODO logger
     public void deleteQuestionGroupIfNoQuestionsWithIt(String groupName) {
         if (questionService.findByGroupName(groupName).isEmpty()) {
             findByGroupName(groupName).ifPresentOrElse(

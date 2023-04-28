@@ -5,17 +5,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.coffeecoders.questbot.entities.MessageToDelete;
 import ru.coffeecoders.questbot.repositories.MessageToDeleteRepository;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Anatoliy Shikin
@@ -41,13 +41,13 @@ class MessageToDeleteServiceTest {
     @Test
     void save() {
         service.save(message);
-        Mockito.verify(repository).save(message);
+        verify(repository).save(message);
     }
 
     @Test
     void saveAll() {
         service.saveAll(anyList());
-        Mockito.verify(repository).saveAll(anyList());
+        verify(repository).saveAll(anyList());
     }
 
     @Test
@@ -55,14 +55,14 @@ class MessageToDeleteServiceTest {
         when(repository.findAll()).thenReturn(List.of(message, new MessageToDelete(), new MessageToDelete()));
         assertEquals(3, service.findAll().size());
         assertTrue(service.findAll().contains(message));
-        Mockito.verify(repository, times(2)).findAll();
+        verify(repository, times(2)).findAll();
     }
 
     @Test
     void findAllEmptyListTest() {
         when(repository.findAll()).thenReturn(List.of());
         assertTrue(service.findAll().isEmpty());
-        Mockito.verify(repository).findAll();
+        verify(repository).findAll();
     }
 
     @Test
@@ -70,25 +70,25 @@ class MessageToDeleteServiceTest {
         when(repository.findByUserId(anyLong())).thenReturn(List.of(message));
         assertTrue(service.findByUserId(id).contains(message));
         assertEquals(List.of(message), service.findByUserId(id));
-        Mockito.verify(repository, times(2)).findByUserId(id);
+        verify(repository, times(2)).findByUserId(id);
     }
 
     @Test
     void findByGameNameEmpty() {
         when(repository.findByUserId(id)).thenReturn(List.of());
         assertTrue(service.findByUserId(id).isEmpty());
-        Mockito.verify(repository).findByUserId(id);
+        verify(repository).findByUserId(id);
     }
 
     @Test
     void delete() {
         service.delete(message);
-        Mockito.verify(repository).delete(message);
+        verify(repository).delete(message);
     }
 
     @Test
     void deleteAll() {
         service.deleteAll(anyList());
-        Mockito.verify(repository).deleteAll(anyList());
+        verify(repository).deleteAll(anyList());
     }
 }

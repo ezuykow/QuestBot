@@ -43,6 +43,7 @@ public class TeamService {
      */
     @Transactional
     public void deleteAllByChatId(long chatId) {
+        logger.info("Teams with chatId = {} has been deleted", chatId);
         repository.deleteAllByChatId(chatId);
     }
 }
