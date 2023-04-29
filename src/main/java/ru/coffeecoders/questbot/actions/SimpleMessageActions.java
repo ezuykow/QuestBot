@@ -93,15 +93,7 @@ public class SimpleMessageActions {
         String answer = text.substring(text.indexOf(" ") + 1).trim();
         String rightAnswer = getRightAnswer(targetTask);
         if (answer.equalsIgnoreCase(rightAnswer)) {
-            String teamName = playerService.findById(senderId)
-                    .orElseThrow(NonExistentPlayer::new).getTeamName();
-            targetTask.setPerformedTeamName(teamName);
-            targetTask.setActual(false);
-            taskService.save(targetTask);
-            setQuestionsLastUsage(targetTask.getQuestionId());
-            sendAcceptedMsg(chatId, teamName, taskNo, msgId);
-            checkTeamScoreAndTasksCount(chatId, teamName);
-            tasksViewer.showActualTasks(chatId);
+            acceptAnswer(senderId, targetTask, taskNo, msgId, chatId);
         } else {
             msgSender.sendReply(chatId, "Ответ неверный! (Возможно Вы не соблюдали формат ответа)", msgId);
         }
@@ -239,5 +231,20 @@ public class SimpleMessageActions {
             tasksToAdd.forEach(t -> t.setActual(true));
             taskService.saveAll(tasksToAdd);
         }
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void acceptAnswer(long senderId, Task targetTask, int taskNo, int msgId, long chatId) {
+        String teamName = playerService.findById(senderId)
+                .orElseThrow(NonExistentPlayer::new).getTeamName();
+        targetTask.setPerformedTeamName(teamName);
+        targetTask.setActual(false);
+        taskService.save(targetTask);
+        setQuestionsLastUsage(targetTask.getQuestionId());
+        sendAcceptedMsg(chatId, teamName, taskNo, msgId);
+        checkTeamScoreAndTasksCount(chatId, teamName);
+        tasksViewer.showActualTasks(chatId);
     }
 }

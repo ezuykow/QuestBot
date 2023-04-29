@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.actions.newgame.NewGameActions;
 import ru.coffeecoders.questbot.actions.newgame.utils.NewGameUtils;
 import ru.coffeecoders.questbot.entities.NewGameCreatingState;
+import ru.coffeecoders.questbot.logs.LogSender;
 import ru.coffeecoders.questbot.messages.Messages;
 
 /**
@@ -17,14 +18,16 @@ public class NewGameManager {
     private final BlockingManager blockingManager;
     private final RestrictingManager restrictingManager;
     private final Messages messages;
+    private final LogSender logger;
 
     public NewGameManager(NewGameActions actions, NewGameUtils utils, BlockingManager blockingManager,
-                          RestrictingManager restrictingManager, Messages messages) {
+                          RestrictingManager restrictingManager, Messages messages, LogSender logger) {
         this.actions = actions;
         this.utils = utils;
         this.blockingManager = blockingManager;
         this.restrictingManager = restrictingManager;
         this.messages = messages;
+        this.logger = logger;
     }
 
     //-----------------API START-----------------
@@ -36,6 +39,7 @@ public class NewGameManager {
      * @author ezuykow
      */
     public void startCreatingGame(long senderAdminId, long chatId) {
+        logger.warn("Запускаю создание новой игры");
         blockAndRestrictChat(chatId, senderAdminId);
         actions.createNewGameCreatingState(chatId);
     }

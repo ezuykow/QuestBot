@@ -3,10 +3,9 @@ package ru.coffeecoders.questbot.documents;
 import com.pengrad.telegrambot.model.Document;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.logs.LogSender;
 
 import java.io.*;
 import java.net.URL;
@@ -19,7 +18,6 @@ import java.nio.channels.ReadableByteChannel;
 @Component
 public class DocumentDownloader {
 
-    Logger logger = LoggerFactory.getLogger(DocumentDownloader.class);
 
     @Value("${telegram.bot.api.prefix}")
     private String botApiUrlPrefix;
@@ -33,6 +31,12 @@ public class DocumentDownloader {
     private String tempFileNamePrefix;
     @Value("${document.temp.file.suffix}")
     private String tempFileNameSuffix;
+
+    private final LogSender logger;
+
+    public DocumentDownloader(LogSender logger) {
+        this.logger = logger;
+    }
 
     //-----------------API START-----------------
 

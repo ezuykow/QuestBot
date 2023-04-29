@@ -1,10 +1,9 @@
 package ru.coffeecoders.questbot.managers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.logs.LogSender;
 
 /**
  * @author ezuykow
@@ -12,12 +11,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApplicationShutdownManager {
 
-    Logger logger = LoggerFactory.getLogger(ApplicationShutdownManager.class);
 
     private final ApplicationContext context;
+    private final LogSender logger;
 
-    public ApplicationShutdownManager(ApplicationContext context) {
+    public ApplicationShutdownManager(ApplicationContext context, LogSender logger) {
         this.context = context;
+        this.logger = logger;
     }
 
     //-----------------API START-----------------

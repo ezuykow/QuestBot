@@ -39,13 +39,13 @@ public class AdminsCommandsActions {
     private final MessageSender msgSender;
     private final Messages messages;
 
-    private AdminsCommandsActions(GamesViewer gamesViewer, TasksViewer tasksViewer, MessageSender msgSender, QuestionsViewer questionsViewer,
+    private AdminsCommandsActions(GamesViewer gamesViewer, TasksViewer tasksViewer, MessageSender msgSender,
+                                  QuestionsViewer questionsViewer, BlockingManager blockingManager,
                                   ApplicationShutdownManager applicationShutdownManager,
-                                  BlockingManager blockingManager, RestrictingManager restrictingManager,
-                                  GlobalChatService globalChatService, GameService gameService, TeamService teamService,
-                                  TaskService taskService, PlayerService playerService,
-                                  PrepareGameViewer prepareGameViewer, ChatAndUserValidator chatValidator,
-                                  GameValidator gameValidator, Messages messages)
+                                  RestrictingManager restrictingManager, GlobalChatService globalChatService,
+                                  GameService gameService, TeamService teamService, TaskService taskService,
+                                  PlayerService playerService, PrepareGameViewer prepareGameViewer,
+                                  ChatAndUserValidator chatValidator, GameValidator gameValidator, Messages messages)
     {
         this.gamesViewer = gamesViewer;
         this.tasksViewer = tasksViewer;
@@ -168,7 +168,6 @@ public class AdminsCommandsActions {
     private void blockAndRestrictChat(long chatId, long senderAdminId, String cause) {
         blockingManager.blockAdminChatByAdmin(chatId, senderAdminId, cause);
         restrictingManager.restrictMembers(chatId, senderAdminId);
-
     }
 
     /**

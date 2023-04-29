@@ -1,8 +1,7 @@
 package ru.coffeecoders.questbot.managers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.logs.LogSender;
 
 /**
  * @author ezuykow
@@ -10,7 +9,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExceptionManager {
 
-    Logger logger = LoggerFactory.getLogger(ExceptionManager.class);
+    private final LogSender logger;
+
+    public ExceptionManager(LogSender logger) {
+        this.logger = logger;
+    }
 
     //-----------------API START-----------------
 

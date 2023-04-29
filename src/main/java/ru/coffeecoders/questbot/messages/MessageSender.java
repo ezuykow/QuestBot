@@ -14,12 +14,11 @@ import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetChatMemberResponse;
 import com.pengrad.telegrambot.response.GetChatResponse;
 import com.pengrad.telegrambot.response.SendResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.AdminChat;
 import ru.coffeecoders.questbot.entities.GlobalChat;
 import ru.coffeecoders.questbot.entities.MessageToDelete;
+import ru.coffeecoders.questbot.logs.LogSender;
 import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.services.GlobalChatService;
 import ru.coffeecoders.questbot.services.MessageToDeleteService;
@@ -33,21 +32,22 @@ import java.util.List;
 @Component
 public class MessageSender {
 
-    private final Logger logger = LoggerFactory.getLogger(MessageSender.class);
 
     private final TelegramBot bot;
     private final MessageToDeleteService messageToDeleteService;
     private final AdminChatService adminChatService;
     private final GlobalChatService globalChatService;
     private final Messages messages;
+    private final LogSender logger;
 
-    public MessageSender(TelegramBot bot, MessageToDeleteService messageToDeleteService,
+    public MessageSender(TelegramBot bot, MessageToDeleteService messageToDeleteService, LogSender logger,
                          AdminChatService adminChatService, GlobalChatService globalChatService, Messages messages) {
         this.bot = bot;
         this.messageToDeleteService = messageToDeleteService;
         this.adminChatService = adminChatService;
         this.globalChatService = globalChatService;
         this.messages = messages;
+        this.logger = logger;
     }
 
     //-----------------API START-----------------
@@ -287,7 +287,7 @@ public class MessageSender {
      */
     private void checkResponse(BaseResponse response, String error) {
         if (!response.isOk()) {
-            logger.warn(error, response.errorCode());
+            logger.warn(String.format(error, response.errorCode()));
         }
     }
 }

@@ -29,7 +29,7 @@ public class ChatMembersActions {
     private final MessageSender msgSender;
     private final Messages messages;
 
-    public ChatMembersActions(AdminChatMembersService adminChatMembersService,AdminChatService adminChatService,
+    public ChatMembersActions(AdminChatMembersService adminChatMembersService, AdminChatService adminChatService,
                               AdminService adminService, ChatAndUserValidator validator, MessageSender msgSender,
                               Messages messages)
     {

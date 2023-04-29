@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.User;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.AdminChat;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
+import ru.coffeecoders.questbot.logs.LogSender;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.services.AdminChatService;
 
@@ -15,10 +16,12 @@ public class BlockingManager {
 
     private final AdminChatService adminChatService;
     private final MessageSender msgSender;
+    private final LogSender logger;
 
-    public BlockingManager(AdminChatService adminChatService, MessageSender msgSender) {
+    public BlockingManager(AdminChatService adminChatService, MessageSender msgSender, LogSender logger) {
         this.adminChatService = adminChatService;
         this.msgSender = msgSender;
+        this.logger = logger;
     }
 
     //-----------------API START-----------------
@@ -31,6 +34,7 @@ public class BlockingManager {
      * @author ezuykow
      */
     public void blockAdminChatByAdmin(long chatId, long adminId, String cause) {
+        logger.warn("Блокирую чат");
         switchBlocker(chatId, adminId, cause);
     }
 

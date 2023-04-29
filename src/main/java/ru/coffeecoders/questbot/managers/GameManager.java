@@ -5,6 +5,7 @@ import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.entities.Question;
 import ru.coffeecoders.questbot.entities.Task;
 import ru.coffeecoders.questbot.exceptions.NonExistentQuestionGroup;
+import ru.coffeecoders.questbot.logs.LogSender;
 import ru.coffeecoders.questbot.services.QuestionGroupService;
 import ru.coffeecoders.questbot.services.QuestionService;
 import ru.coffeecoders.questbot.services.TaskService;
@@ -21,12 +22,14 @@ public class GameManager {
     private final QuestionService questionService;
     private final QuestionGroupService questionGroupService;
     private final TaskService taskService;
+    private final LogSender logger;
 
     public GameManager(QuestionService questionService, QuestionGroupService questionGroupService,
-                       TaskService taskService) {
+                       TaskService taskService, LogSender logger) {
         this.questionService = questionService;
         this.questionGroupService = questionGroupService;
         this.taskService = taskService;
+        this.logger = logger;
     }
 
     //-----------------API START-----------------
@@ -38,6 +41,7 @@ public class GameManager {
      * @author ezuykow
      */
     public void createTasks(long chatId, Game game) {
+        logger.warn("Создаю задачи");
         String gameName = game.getGameName();
         List<Question> questions = getSortedByLastUsageQuestionsByGroupsIds(game.getGroupsIds(), game.getMaxQuestionsCount());
         List<Task> tasks = questions.stream()

@@ -5,11 +5,10 @@ import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Question;
 import ru.coffeecoders.questbot.entities.QuestionGroup;
+import ru.coffeecoders.questbot.logs.LogSender;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.QuestionGroupService;
@@ -29,22 +28,23 @@ import java.util.stream.StreamSupport;
 @Component
 public class QuestionsFromExcelParser {
 
-    Logger logger = LoggerFactory.getLogger(QuestionsFromExcelParser.class);
 
     private final MessageSender msgSender;
     private final QuestionService questionService;
     private final QuestionGroupService questionGroupService;
     private final Messages messages;
+    private final LogSender logger;
 
     private List<Question> newQuestions;
     boolean blankQuestionsPresent;
 
     public QuestionsFromExcelParser(MessageSender msgSender, QuestionService questionService,
-                                    QuestionGroupService questionGroupService, Messages messages) {
+                                    QuestionGroupService questionGroupService, Messages messages, LogSender logger) {
         this.msgSender = msgSender;
         this.questionService = questionService;
         this.questionGroupService = questionGroupService;
         this.messages = messages;
+        this.logger = logger;
     }
 
     //-----------------API START-----------------

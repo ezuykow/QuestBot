@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Document;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.documents.DocumentDownloader;
 import ru.coffeecoders.questbot.documents.QuestionsFromExcelParser;
+import ru.coffeecoders.questbot.logs.LogSender;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
@@ -20,14 +21,16 @@ public class DocumentsManager {
     private final DocumentDownloader downloader;
     private final ChatAndUserValidator validator;
     private final Messages messages;
+    private final LogSender logger;
 
     public DocumentsManager(MessageSender msgSender, QuestionsFromExcelParser parser, DocumentDownloader downloader,
-                            ChatAndUserValidator validator, Messages messages) {
+                            ChatAndUserValidator validator, Messages messages, LogSender logger) {
         this.msgSender = msgSender;
         this.parser = parser;
         this.downloader = downloader;
         this.validator = validator;
         this.messages = messages;
+        this.logger = logger;
     }
 
     //-----------------API START-----------------
@@ -44,6 +47,7 @@ public class DocumentsManager {
         long chatId = update.getMessageChatId();
 
         if (validator.isAdminChat(chatId) && validate(update)) {
+            logger.warn("Добавляю вопросы с файла");
             deleteMessageWithNewQuestionsDocument(update);
             parser.parse(downloader.downloadDocument(update.getDocument()), chatId);
         }

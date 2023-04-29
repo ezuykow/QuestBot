@@ -7,9 +7,8 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.GetUpdates;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import jakarta.annotation.PostConstruct;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import ru.coffeecoders.questbot.logs.LogSender;
 import ru.coffeecoders.questbot.managers.ExceptionManager;
 import ru.coffeecoders.questbot.managers.UpdateManager;
 import ru.coffeecoders.questbot.messages.MessageSender;
@@ -19,18 +18,19 @@ import java.util.List;
 @Service
 public class QuestBotUpdatesListener implements UpdatesListener {
 
-    Logger logger = LoggerFactory.getLogger(QuestBotUpdatesListener.class);
 
     private final TelegramBot bot;
     private final UpdateManager updateManager;
     private final ExceptionManager exceptionManager;
     private final MessageSender msgSender;
+    private final LogSender logger;
 
     private boolean startUp = true;
 
     public QuestBotUpdatesListener(UpdateManager updateManager, TelegramBot bot, ExceptionManager exceptionManager,
-                                   MessageSender msgSender) {
-        logger.warn("Starting bot...");
+                                   MessageSender msgSender, LogSender logger) {
+        this.logger = logger;
+        this.logger.warn("Starting bot...");
 
         this.exceptionManager = exceptionManager;
         this.updateManager = updateManager;
