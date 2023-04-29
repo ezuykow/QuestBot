@@ -14,8 +14,19 @@ import java.util.List;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
+    /**
+     * @author ezuykow
+     */
     List<Task> findByGameName(String gameName);
 
+    /**
+     * @author ezuykow
+     */
+    List<Task> findByChatId(long chatId);
+
+    /**
+     * @author ezuykow
+     */
     @Modifying
     @Query(value = "DELETE FROM tasks WHERE chat_id=:chatId", nativeQuery = true)
     void deleteAllByChatId(long chatId);

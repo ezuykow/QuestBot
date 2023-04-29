@@ -1,33 +1,35 @@
 package ru.coffeecoders.questbot.actions.commands;
 
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.entities.GlobalChat;
 import ru.coffeecoders.questbot.exceptions.NonExistentCallbackQuery;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
+import ru.coffeecoders.questbot.exceptions.NonExistentGame;
 import ru.coffeecoders.questbot.managers.ApplicationShutdownManager;
 import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.managers.RestrictingManager;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
-import ru.coffeecoders.questbot.services.GlobalChatService;
-import ru.coffeecoders.questbot.services.PlayerService;
-import ru.coffeecoders.questbot.services.TaskService;
-import ru.coffeecoders.questbot.services.TeamService;
+import ru.coffeecoders.questbot.services.*;
 import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 import ru.coffeecoders.questbot.validators.GameValidator;
 import ru.coffeecoders.questbot.viewers.GamesViewer;
 import ru.coffeecoders.questbot.viewers.PrepareGameViewer;
 import ru.coffeecoders.questbot.viewers.QuestionsViewer;
+import ru.coffeecoders.questbot.viewers.TasksViewer;
 
 @Component
 public class AdminsCommandsActions {
 
     private final GamesViewer gamesViewer;
     private final QuestionsViewer questionsViewer;
+    private final TasksViewer tasksViewer;
     private final BlockingManager blockingManager;
     private final RestrictingManager restrictingManager;
     private final ApplicationShutdownManager applicationShutdownManager;
     private final GlobalChatService globalChatService;
+    private final GameService gameService;
     private final TeamService teamService;
     private final TaskService taskService;
     private final PlayerService playerService;
@@ -37,20 +39,23 @@ public class AdminsCommandsActions {
     private final MessageSender msgSender;
     private final Messages messages;
 
-    private AdminsCommandsActions(GamesViewer gamesViewer, MessageSender msgSender, QuestionsViewer questionsViewer,
+    private AdminsCommandsActions(GamesViewer gamesViewer, TasksViewer tasksViewer, MessageSender msgSender, QuestionsViewer questionsViewer,
                                   ApplicationShutdownManager applicationShutdownManager,
                                   BlockingManager blockingManager, RestrictingManager restrictingManager,
-                                  GlobalChatService globalChatService, TeamService teamService, TaskService taskService,
-                                  PlayerService playerService, PrepareGameViewer prepareGameViewer,
-                                  ChatAndUserValidator chatValidator, GameValidator gameValidator, Messages messages)
+                                  GlobalChatService globalChatService, GameService gameService, TeamService teamService,
+                                  TaskService taskService, PlayerService playerService,
+                                  PrepareGameViewer prepareGameViewer, ChatAndUserValidator chatValidator,
+                                  GameValidator gameValidator, Messages messages)
     {
         this.gamesViewer = gamesViewer;
+        this.tasksViewer = tasksViewer;
         this.msgSender = msgSender;
         this.questionsViewer = questionsViewer;
         this.applicationShutdownManager = applicationShutdownManager;
         this.blockingManager = blockingManager;
         this.restrictingManager = restrictingManager;
         this.globalChatService = globalChatService;
+        this.gameService = gameService;
         this.teamService = teamService;
         this.taskService = taskService;
         this.playerService = playerService;
@@ -118,16 +123,31 @@ public class AdminsCommandsActions {
         }
     }
 
+    /**
+     * Прерывает подготовку игры в чате
+     * @param senderAdminId id инициировавшего админа
+     * @param chatId id чата
+     * @author ezuykow
+     */
     public void performDropPrepareGameCmd(long senderAdminId, long chatId) {
         final String adminUsername = "@" + msgSender.getChatMember(chatId, senderAdminId).username();
         if (gameValidator.isGameCreating(chatId)) {
             msgSender.send(chatId, adminUsername + messages.prepareInterrupted());
-            GlobalChat chat = globalChatService.findById(chatId).orElseThrow(NonExistentChat::new);
-            chat.setCreatingGameName(null);
-            globalChatService.save(chat);
-            taskService.deleteAllByChatId(chatId);
-            playerService.deleteAllByChatId(chatId);
-            teamService.deleteAllByChatId(chatId);
+            dropPrepareGame(chatId);
+        }
+    }
+
+    /**
+     * Запускает подготовленную игру
+     * @param senderAdminId id инициировавшего админа
+     * @param chatId id чата
+     * @author ezuykow
+     */
+    public void performStartGameCmd(long senderAdminId, long chatId) {
+        final String adminUsername = "@" + msgSender.getChatMember(chatId, senderAdminId).username();
+        if (gameValidator.isGameCreating(chatId)) {
+            msgSender.send(chatId, adminUsername + messages.gameStarted());
+            startGame(chatId);
         }
     }
 
@@ -149,5 +169,33 @@ public class AdminsCommandsActions {
         blockingManager.blockAdminChatByAdmin(chatId, senderAdminId, cause);
         restrictingManager.restrictMembers(chatId, senderAdminId);
 
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void dropPrepareGame(long chatId) {
+        GlobalChat chat = globalChatService.findById(chatId).orElseThrow(NonExistentChat::new);
+        chat.setCreatingGameName(null);
+        globalChatService.save(chat);
+        taskService.deleteAllByChatId(chatId);
+        playerService.deleteAllByChatId(chatId);
+        teamService.deleteAllByChatId(chatId);
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void startGame(long chatId) {
+        GlobalChat chat = globalChatService.findById(chatId).orElseThrow(NonExistentChat::new);
+        chat.setGameStarted(true);
+        globalChatService.save(chat);
+        Game game = gameService.findByName(chat.getCreatingGameName()).orElseThrow(NonExistentGame::new);
+        msgSender.send(chatId,
+                String.format(messages.gameStartedHint(),
+                        game.getGameName(),
+                        game.getMaxTimeMinutes(),
+                        game.getMaxPerformedQuestionsCount()));
+        tasksViewer.createAndSendTasksMsg(chatId, game.getStartCountTasks());
     }
 }

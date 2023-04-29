@@ -24,10 +24,10 @@ public class PlayersCommandsManager {
     public void manageCommand(ExtendedUpdate update, Command cmd) {
         long chatId = update.getMessageChatId();
         switch (cmd) {
-            case SCORE -> playersCommandsActions.showScores(chatId);
-            case TASKS -> playersCommandsActions.showTasks(chatId);
+            case INFO -> playersCommandsActions.showInfo(chatId);
             case REGTEAM -> playersCommandsActions.regTeam(update);
             case JOINTEAM -> playersCommandsActions.joinTeam(update);
+            case QUESTIONS -> playersCommandsActions.showQuestions(chatId);
         }
     }
 }
