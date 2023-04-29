@@ -33,6 +33,13 @@ public class TeamService {
         return optional;
     }
 
+    /**
+     * @author ezuykow
+     */
+    public List<Team> findByChatId(long chatId) {
+        return repository.findByChatId(chatId);
+    }
+
     public Team save(Team team) {
         logger.info("Team = {} has been saved", team);
         return repository.save(team);
@@ -43,6 +50,7 @@ public class TeamService {
      */
     @Transactional
     public void deleteAllByChatId(long chatId) {
+        logger.info("Teams with chatId = {} has been deleted", chatId);
         repository.deleteAllByChatId(chatId);
     }
 }
