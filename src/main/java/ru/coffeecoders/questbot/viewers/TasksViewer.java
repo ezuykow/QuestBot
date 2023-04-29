@@ -39,6 +39,8 @@ public class TasksViewer {
                 .filter(t -> t.getPerformedTeamName() == null)
                 .limit(count)
                 .toList();
+        tasks.forEach(t -> t.setActual(true));
+        taskService.saveAll(tasks);
         msgSender.sendWithHTML(chatId, createMsg(tasks));
     }
 
