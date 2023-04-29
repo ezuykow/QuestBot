@@ -20,7 +20,7 @@ class PromoteOrDemoteUserKeyboardTest {
     private User user2;
 
     @Test
-    void createKeyboard() {
+    void createKeyboardTest() {
         String dataPrefix = "prefix";
         Set<User> users = Set.of(user1, user2);
         when(user1.lastName()).thenReturn("lastName");
