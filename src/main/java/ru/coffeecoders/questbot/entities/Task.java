@@ -28,6 +28,9 @@ public class Task {
     @Column(name = "chat_id")
     private long chatId;
 
+    @Column(name = "actual")
+    private boolean actual;
+
     public Task() {
     }
 
@@ -36,6 +39,15 @@ public class Task {
         this.questionId = questionId;
         this.performedTeamName = performedTeamName;
         this.chatId = chatId;
+        this.actual = false;
+    }
+
+    public boolean isActual() {
+        return actual;
+    }
+
+    public void setActual(boolean actual) {
+        this.actual = actual;
     }
 
     public long getChatId() {
@@ -44,17 +56,6 @@ public class Task {
 
     public void setChatId(long chatId) {
         this.chatId = chatId;
-    }
-
-    @Override
-    public String toString() {
-        return "Task{" +
-                "taskId=" + taskId +
-                ", gameName='" + gameName + '\'' +
-                ", questionId=" + questionId +
-                ", performedTeamName='" + performedTeamName + '\'' +
-                ", chatId=" + chatId +
-                '}';
     }
 
     public int getTaskId() {
@@ -102,4 +103,15 @@ public class Task {
         return Objects.hash(taskId);
     }
 
+    @Override
+    public String toString() {
+        return "Task{" +
+                "taskId=" + taskId +
+                ", gameName='" + gameName + '\'' +
+                ", questionId=" + questionId +
+                ", performedTeamName='" + performedTeamName + '\'' +
+                ", chatId=" + chatId +
+                ", actual=" + actual +
+                '}';
+    }
 }

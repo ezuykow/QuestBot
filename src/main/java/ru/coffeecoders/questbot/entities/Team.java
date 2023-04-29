@@ -30,14 +30,11 @@ public class Team {
     public Team() {
     }
 
-    public Team(String teamName, String gameName) {
-        this(teamName, gameName, 0);
-    }
-
-    public Team(String teamName, String gameName, int score) {
+    public Team(String teamName, String gameName, int score, long chatId) {
         this.teamName = teamName;
         this.gameName = gameName;
         this.score = score;
+        this.chatId = chatId;
     }
 
     @Override
