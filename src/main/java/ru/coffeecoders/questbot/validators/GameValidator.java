@@ -3,9 +3,12 @@ package ru.coffeecoders.questbot.validators;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.entities.GlobalChat;
-import ru.coffeecoders.questbot.entities.QuestionGroup;
+import ru.coffeecoders.questbot.exceptions.NonExistentGame;
 import ru.coffeecoders.questbot.exceptions.NonExistentQuestionGroup;
 import ru.coffeecoders.questbot.services.*;
+import ru.coffeecoders.questbot.viewers.EndGameViewer;
+
+import java.util.List;
 
 /**
  * @author ezuykow
@@ -18,15 +21,17 @@ public class GameValidator {
     private final GameService gameService;
     private final QuestionGroupService questionGroupService;
     private final QuestionService questionService;
+    private final EndGameViewer endGameViewer;
 
     public GameValidator(GlobalChatService globalChatService, NewGameCreatingStateService newGameCreatingStateService,
-                         GameService gameService, QuestionGroupService questionGroupService, QuestionService questionService)
+                         GameService gameService, QuestionGroupService questionGroupService, QuestionService questionService, EndGameViewer endGameViewer)
     {
         this.globalChatService = globalChatService;
         this.newGameCreatingStateService = newGameCreatingStateService;
         this.gameService = gameService;
         this.questionGroupService = questionGroupService;
         this.questionService = questionService;
+        this.endGameViewer = endGameViewer;
     }
 
     //-----------------API START-----------------
@@ -104,6 +109,16 @@ public class GameValidator {
         return requestCount <= existentCount;
     }
 
+    /**
+     * Проверяет запущенные игры в чатах. Если время со старта игры равно максимальному времени проведения - то
+     * заканчивает игру
+     * @author ezuykow
+     */
+    public void validateGamesTimeEnded(List<GlobalChat> chats) {
+        chats.stream().filter(this::isTimeIsMax)
+                .forEach(endGameViewer::finishGameByTimeEnded);
+    }
+
     //-----------------API END-----------------
 
     /**
@@ -120,4 +135,14 @@ public class GameValidator {
         return globalChat.getCreatingGameName() != null
                 && !isGameStarted(globalChat);
     }
+
+    /**
+     * @author ezuykow
+     */
+    private boolean isTimeIsMax(GlobalChat chat) {
+        return chat.getMinutesSinceStart() ==
+                gameService.findByName(chat.getCreatingGameName())
+                        .orElseThrow(NonExistentGame::new).getMaxTimeMinutes();
+    }
+
 }
