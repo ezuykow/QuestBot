@@ -102,7 +102,7 @@ public class PlayersCommandsActions {
         long chatId = update.getMessageChatId();
         if (gameValidator.isGameCreating(chatId) && !gameValidator.isGameStarted(chatId)) {
             SendResponse response =
-                    msgSender.send(chatId, messages.enterTeamName(),
+                    msgSender.sendForceReply(chatId, messages.enterTeamName(),
                             update.getMessageId()
                     );
             saveToMessageToDelete(update.getMessageId(), update.getMessageFromUserId(), chatId);
