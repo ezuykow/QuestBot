@@ -32,6 +32,13 @@ public class TaskService {
         return list;
     }
 
+    /**
+     * @author ezuykow
+     */
+    public List<Task> findByChatId(long chatId) {
+        return repository.findByChatId(chatId);
+    }
+
     public Task save(Task task) {
         logger.info("Task = {} has been saved", task);
         return repository.save(task);
