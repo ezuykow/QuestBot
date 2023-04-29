@@ -38,7 +38,7 @@ public class QuestionService {
      */
     public List<Question> findByGroupName(String groupName) {
         List<Question> list = repository.findByGroup(groupName);
-        logger.info("Questions {} with group = {} displaying", list.isEmpty() ? "are not" : "are",groupName);
+        logger.info("Questions with group name = {} are {} displaying",groupName, list.isEmpty() ? "not" : "");
         return list;
     }
 
@@ -53,11 +53,12 @@ public class QuestionService {
     }
 
     /**
-     * Удаляет вопрос их БД
+     * Удаляет вопрос из БД
      * @param question удаляемый вопрос
      * @author ezuykow
      */
     public void delete(Question question) {
+        logger.info("Question = {} has been deleted", question);
         repository.delete(question);
     }
 }
