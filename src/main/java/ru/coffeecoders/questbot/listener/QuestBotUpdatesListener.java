@@ -57,11 +57,12 @@ public class QuestBotUpdatesListener implements UpdatesListener {
     @Override
     public int process(List<Update> updates) {
         if (!startUp) {
-            performAllUpdates(updates);
+            performUpdates(updates, false);
         } else {
             logger.warn("Bot has been started!");
             msgSender.sendStartUp();
             startUp = false;
+            performUpdates(updates, true);
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
@@ -71,10 +72,14 @@ public class QuestBotUpdatesListener implements UpdatesListener {
     /**
      * @author ezuykow
      */
-    private void performAllUpdates(List<Update> updates) {
+    private void performUpdates(List<Update> updates, boolean afterSleep) {
         updates.forEach(update -> {
             try {
-                updateManager.performUpdate(update);
+                if (afterSleep) {
+                    updateManager.performUpdateAfterSleep(update);
+                } else {
+                    updateManager.performUpdate(update);
+                }
             } catch (Exception e) {
                 exceptionManager.logException(e);
             }

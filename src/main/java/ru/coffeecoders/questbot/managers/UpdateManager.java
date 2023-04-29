@@ -56,4 +56,19 @@ public class UpdateManager {
             case UNKNOWN -> {} //Игнорировать апдейт
         }
     }
+
+    /**
+     * После сна бота обрабатываем только изменения статусов пользователей
+     * @param update апдейт
+     * @author ezuykow
+     */
+    public void performUpdateAfterSleep(Update update) {
+        ExtendedUpdate exUpdate = new ExtendedUpdate(update);
+        switch (exUpdate.getUpdateType()) {
+            case NEW_CHAT_MEMBER ->
+                    chatMembersManager.manageChatMembers(exUpdate, NEW_CHAT_MEMBER);
+            case LEFT_CHAT_MEMBER ->
+                    chatMembersManager.manageChatMembers(exUpdate, LEFT_CHAT_MEMBER);
+        }
+    }
 }
