@@ -38,7 +38,13 @@ public class GlobalChatService {
     }
 
     /**
-     * @param chatId
+     * @author ezuykow
+     */
+    public void saveAll(List<GlobalChat> chats) {
+        repository.saveAll(chats);
+    }
+
+    /**
      * @author ezuykow
      */
     public void deleteById(long chatId) {
