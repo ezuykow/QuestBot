@@ -2,6 +2,7 @@ package ru.coffeecoders.questbot.messages;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.CallbackQuery;
+import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.ChatPermissions;
 import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.ForceReply;
@@ -11,6 +12,7 @@ import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.*;
 import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetChatMemberResponse;
+import com.pengrad.telegrambot.response.GetChatResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -203,15 +205,12 @@ public class MessageSender {
      * @author ezuykow
      */
     public User getChatMember(long chatId, long userId) {
-        GetChatMemberResponse response = bot.execute(
-                new GetChatMember(chatId, userId)
-        );
+        GetChatMemberResponse response = bot.execute(new GetChatMember(chatId, userId));
         if (response.isOk()) {
             return response.chatMember().user();
-        } else {
-            logger.error("GetChatMember failed! Error code: {}", response.errorCode());
-            return null;
         }
+        checkResponse(response, "GetChatMember failed! Error code: {}");
+        return null;
     }
 
     /**
@@ -224,6 +223,21 @@ public class MessageSender {
     public void sendRestrictChatMember(long chatId, long userId, ChatPermissions permissions) {
         checkResponse(bot.execute(new RestrictChatMember(chatId, userId, permissions)),
                 String.format("Failed to restrict chat member %d! Error {}", userId));
+    }
+
+    /**
+     * Возвращает чат по id
+     * @param chatId id чата
+     * @return Chat
+     * @author ezuykow
+     */
+    public Chat sendGetChat(long chatId) {
+        GetChatResponse response = bot.execute(new GetChat(chatId));
+        if (response.isOk()) {
+            return response.chat();
+        }
+        checkResponse(response, "Failed to get chat! Error {}");
+        return null;
     }
 
     /**
