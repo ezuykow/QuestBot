@@ -88,6 +88,7 @@ public class QuestBotUpdatesListener implements UpdatesListener {
     private SetMyCommands createSetMyCommands() {
         return new SetMyCommands(
                 new BotCommand("questions", "(Игрок) Показать актуальные вопросы"),
+                new BotCommand("info", "(Игрок) Показать информацию об игре - таблицу лидеров и оставшееся время"),
                 new BotCommand("regteam", "(Игрок) Создать команду"),
                 new BotCommand("jointeam", "(Игрок) Вступить в команду"),
                 new BotCommand("preparegame", "(Админ) Запустить подготовку к игре"),

@@ -19,7 +19,7 @@ public enum Command {
     PROMOTE(OWNER),
     DEMOTE(OWNER),
 
-    SCORE(PLAYER),
+    INFO(PLAYER),
     REGTEAM(PLAYER),
     JOINTEAM(PLAYER),
     QUESTIONS(PLAYER);

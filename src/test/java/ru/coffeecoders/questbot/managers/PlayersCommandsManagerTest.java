@@ -26,7 +26,7 @@ class PlayersCommandsManagerTest {
     void manageCommandScoreTest() {
         when(exUpdate.getMessageChatId()).thenReturn(1L);
         playersCommandsManager.manageCommand(exUpdate, Command.SCORE);
-        Mockito.verify(playersCommandsActions).showScores(exUpdate.getMessageChatId());
+        Mockito.verify(playersCommandsActions).showInfo(exUpdate.getMessageChatId());
     }
 
     @Test
