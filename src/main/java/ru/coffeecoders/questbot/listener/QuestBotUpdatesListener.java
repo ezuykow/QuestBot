@@ -91,6 +91,7 @@ public class QuestBotUpdatesListener implements UpdatesListener {
                 new BotCommand("jointeam", "(Игрок) Вступить в команду"),
                 new BotCommand("preparegame", "(Админ) Запустить подготовку к игре"),
                 new BotCommand("dropprepare", "(Админ) Прервать подготовку к игре"),
+                new BotCommand("startgame", "(Админ) Запустить подготовленную игру"),
                 new BotCommand("deletechat", "(Админ) Удалить этот чат из системы"),
                 new BotCommand("showgames", "(Админ) Показать все игры"),
                 new BotCommand("showquestions", "(Админ) Показать все вопросы"),
