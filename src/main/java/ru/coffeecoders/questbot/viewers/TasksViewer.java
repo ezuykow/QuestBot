@@ -44,6 +44,18 @@ public class TasksViewer {
         msgSender.sendWithHTML(chatId, createMsg(tasks));
     }
 
+    /**
+     * Выводит в чат актуальные для игры вопросы
+     * @param chatId id чата
+     * @author ezuykow
+     */
+    public void showActualTasks(long chatId) {
+        List<Task> tasks = taskService.findByChatId(chatId).stream()
+                .filter(Task::isActual)
+                .toList();
+        msgSender.sendWithHTML(chatId, createMsg(tasks));
+    }
+
     //-----------------API END-----------------
 
     /**

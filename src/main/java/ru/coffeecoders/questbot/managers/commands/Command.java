@@ -20,9 +20,9 @@ public enum Command {
     DEMOTE(OWNER),
 
     SCORE(PLAYER),
-    TASKS(PLAYER),
     REGTEAM(PLAYER),
-    JOINTEAM(PLAYER),;
+    JOINTEAM(PLAYER),
+    QUESTIONS(PLAYER);
 
     public enum Attribute {
         OWNER,

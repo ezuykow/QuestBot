@@ -25,9 +25,9 @@ public class PlayersCommandsManager {
         long chatId = update.getMessageChatId();
         switch (cmd) {
             case SCORE -> playersCommandsActions.showScores(chatId);
-            case TASKS -> playersCommandsActions.showTasks(chatId);
             case REGTEAM -> playersCommandsActions.regTeam(update);
             case JOINTEAM -> playersCommandsActions.joinTeam(update);
+            case QUESTIONS -> playersCommandsActions.showQuestions(chatId);
         }
     }
 }

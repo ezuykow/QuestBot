@@ -3,13 +3,13 @@ package ru.coffeecoders.questbot.actions.commands;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.*;
-import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.keyboards.JoinTeamKeyboard;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.services.*;
 import ru.coffeecoders.questbot.validators.GameValidator;
+import ru.coffeecoders.questbot.viewers.TasksViewer;
 
 import java.util.List;
 
@@ -18,25 +18,21 @@ import java.util.List;
  */
 @Component
 public class PlayersCommandsActions {
+
     private final TeamService teamService;
-    private final TaskService taskService;
-    private final GlobalChatService globalChatService;
+    private final TasksViewer tasksViewer;
     private final MessageSender msgSender;
-    private final QuestionService questionService;
     private final MessageToDeleteService messageToDeleteService;
     private final GameValidator gameValidator;
     private final Messages messages;
 
-    public PlayersCommandsActions(TeamService teamService, TaskService taskService,
-                                  GlobalChatService globalChatService, MessageSender msgSender,
-                                  QuestionService questionService, MessageToDeleteService messageToDeleteService,
+    public PlayersCommandsActions(TeamService teamService, TasksViewer tasksViewer, MessageSender msgSender,
+                                  MessageToDeleteService messageToDeleteService,
                                   GameValidator gameValidator, Messages messages)
     {
         this.teamService = teamService;
-        this.taskService = taskService;
-        this.globalChatService = globalChatService;
+        this.tasksViewer = tasksViewer;
         this.msgSender = msgSender;
-        this.questionService = questionService;
         this.messageToDeleteService = messageToDeleteService;
         this.gameValidator = gameValidator;
         this.messages = messages;
@@ -68,12 +64,9 @@ public class PlayersCommandsActions {
      * @author anna
      * @Redact: ezuykow
      */
-    public void showTasks(long chatId) {
+    public void showQuestions(long chatId) {
         if (gameValidator.isGameStarted(chatId)) {
-            msgSender.send(chatId,
-                    getActualTasks(globalChatService.findById(chatId)
-                            .map(GlobalChat::getCreatingGameName).orElseThrow(NonExistentChat::new))
-            );
+            tasksViewer.showActualTasks(chatId);
         } else {
             msgSender.send(chatId, messages.haventStartedGame());
         }
@@ -125,26 +118,6 @@ public class PlayersCommandsActions {
     //-----------------API END-----------------
 
     /**
-     * Получает невыполненные задачи, относящиеся к игре {@code gameName}, собирает из текстов их вопросов
-     * одну строку и возвращает
-     * @param gameName название игры
-     * @return строку с текстами вопросов всех актуальных задач
-     * @author ezuykow
-     */
-    private String getActualTasks(String gameName) {
-        StringBuilder sb = new StringBuilder();
-        taskService.findByGameName(gameName)
-                .stream()
-                .filter(t -> t.getPerformedTeamName() == null)
-                .map(Task::getQuestionId).toList()
-                .forEach(id -> questionService.findById(id).ifPresent(
-                                q -> sb.append(createQuestionInfoMsg(q))
-                        )
-                );
-        return sb.toString();
-    }
-
-    /**
      * Создает новый {@link MessageToDelete} и вызывает для него {@link MessageToDeleteService#save}
      * @param msgId id сообщение, которое нужно будет удалить
      * @param userId id пользователя, который отправил сообщение
@@ -154,12 +127,5 @@ public class PlayersCommandsActions {
     private void saveToMessageToDelete(int msgId, long userId, long chatId) {
         messageToDeleteService.save(
                 new MessageToDelete(msgId, userId, "REGTEAM", chatId, true));
-    }
-
-    private String createQuestionInfoMsg(Question q) {
-        return Character.toString(0x2753) +
-                " Вопрос:" + q.getQuestion() +
-                "\nФормат ответа: " + q.getAnswerFormat() +
-                "\n На карте: " + q.getMapUrl() + "\n";
     }
 }

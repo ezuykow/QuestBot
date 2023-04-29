@@ -33,7 +33,7 @@ class PlayersCommandsManagerTest {
     void manageCommandTasksTest() {
         when(exUpdate.getMessageChatId()).thenReturn(1L);
         playersCommandsManager.manageCommand(exUpdate, Command.TASKS);
-        Mockito.verify(playersCommandsActions).showTasks(exUpdate.getMessageChatId());
+        Mockito.verify(playersCommandsActions).showQuestions(exUpdate.getMessageChatId());
     }
 
     @Test
