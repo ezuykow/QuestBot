@@ -309,6 +309,14 @@ public class Messages {
         return env.getProperty("messages.games.prepareInterrupted");
     }
 
+    public String gameStarted() {
+        return env.getProperty("messages.games.gameStarted");
+    }
+
+    public String gameStartedHint() {
+        return env.getProperty("messages.games.gameStartedHint");
+    }
+
     //-----------------API END-----------------
 
 }

@@ -12,3 +12,7 @@ CREATE TABLE tasks
 -- changeset ezuykow:2
 ALTER TABLE tasks
     ADD COLUMN chat_id BIGINT;
+
+-- changeset ezuykow:3
+ALTER TABLE tasks
+    ADD COLUMN actual BOOLEAN;
