@@ -25,14 +25,14 @@ class PlayersCommandsManagerTest {
     @Test
     void manageCommandScoreTest() {
         when(exUpdate.getMessageChatId()).thenReturn(1L);
-        playersCommandsManager.manageCommand(exUpdate, Command.SCORE);
+        playersCommandsManager.manageCommand(exUpdate, Command.INFO);
         Mockito.verify(playersCommandsActions).showInfo(exUpdate.getMessageChatId());
     }
 
     @Test
     void manageCommandTasksTest() {
         when(exUpdate.getMessageChatId()).thenReturn(1L);
-        playersCommandsManager.manageCommand(exUpdate, Command.TASKS);
+        playersCommandsManager.manageCommand(exUpdate, Command.QUESTIONS);
         Mockito.verify(playersCommandsActions).showQuestions(exUpdate.getMessageChatId());
     }
 

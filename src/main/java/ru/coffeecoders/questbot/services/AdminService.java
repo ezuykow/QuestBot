@@ -85,7 +85,6 @@ public class AdminService {
      * @return
      * @author Anatoliy Shikin
      */
-    //TODO вынес
     @NotNull
     private List<Admin> getListUselessAdmins() {
         return findAll().stream()
