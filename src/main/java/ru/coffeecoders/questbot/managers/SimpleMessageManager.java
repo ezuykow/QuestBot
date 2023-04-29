@@ -30,12 +30,16 @@ public class SimpleMessageManager {
 //TODO JavaDoc, когда метод будет готов
     public void manageMessage(ExtendedUpdate update) {
         long chatId = update.getMessageChatId();
+        int msgId = update.getMessageId();
+        String text = update.getMessageText();
 
         if (gameValidator.isNewGameCreating(chatId)) {
-            String text = update.getMessageText();
-            newGameManager.manageNewGamePart(chatId, text, update.getMessageId());
+            newGameManager.manageNewGamePart(chatId, text, msgId);
         }
-
+        if (gameValidator.isGameStarted(chatId) && text.toUpperCase().matches("В\\d{1,2}.*")) {
+            long senderId = update.getMessageFromUserId();
+            actions.validateAnswer(chatId, text, msgId, senderId);
+        }
         if (update.hasReplyToMessage()) {
             manageReplyToMessage(update);
         }

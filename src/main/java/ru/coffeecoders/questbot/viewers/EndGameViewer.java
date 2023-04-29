@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.AdminChat;
 import ru.coffeecoders.questbot.entities.GlobalChat;
 import ru.coffeecoders.questbot.entities.Team;
+import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.services.*;
 
@@ -43,18 +44,50 @@ public class EndGameViewer {
      */
     public void finishGameByTimeEnded(GlobalChat chat) {
         long chatId = chat.getTgChatId();
-        String results = results(chatId);
-        notifyGlobalChat(chatId, results);
-        notifyAdminChats(chatId, results);
-        clearDB(chat);
+        finishGame("⏰ Время игры вышло! ⏰", chat, chatId);
+    }
+
+    /**
+     * Заканчивает игру, в которой одна из команд ответила на необходимое количество вопросов
+     * - формирует результаты и отправляет сообщения с ними в чат и в админские чаты
+     * @param chatId id чата
+     * @param teamName название команды
+     * @param score очки команды
+     * @author ezuykow
+     */
+    public void finishGameByPerformedTasks(long chatId, String teamName, int score) {
+        GlobalChat chat = globalChatService.findById(chatId).orElseThrow(NonExistentChat::new);
+        finishGame("\uD83C\uDFC6 Команда \"" + teamName + "\" заработала " + score + " очка(-ов)! \uD83C\uDFC6",
+                chat, chatId);
+    }
+
+    /**
+     * Заканчивает игру, в которой закончились вопросы
+     * - формирует результаты и отправляет сообщения с ними в чат и в админские чаты
+     * @param chatId id чата
+     * @author ezuykow
+     */
+    public void finishGameByQuestionsEnded(long chatId) {
+        GlobalChat chat = globalChatService.findById(chatId).orElseThrow(NonExistentChat::new);
+        finishGame("✔ Игроки ответили на все вопросы! ✔", chat, chatId);
     }
 
     //-----------------API END-----------------
+
     /**
      * @author ezuykow
      */
-    private void clearDB(GlobalChat chat) {
-        long chatId = chat.getTgChatId();
+    private void finishGame(String cause, GlobalChat chat, long chatId) {
+        String results = results(chatId);
+        notifyGlobalChat(cause, chatId, results);
+        notifyAdminChats(chatId, results);
+        clearDB(chat, chatId);
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void clearDB(GlobalChat chat, long chatId) {
         playerService.deleteAllByChatId(chatId);
         teamService.deleteAllByChatId(chatId);
         taskService.deleteAllByChatId(chatId);
@@ -89,8 +122,8 @@ public class EndGameViewer {
     /**
      * @author ezuykow
      */
-    private void notifyGlobalChat(long chatId, String results) {
-        String text = "⏰ Время игры вышло! ⏰\n\n" + results +
+    private void notifyGlobalChat(String cause, long chatId, String results) {
+        String text = cause + "\n\n" + results +
                 "\n\n\uD83D\uDC4D Всем участникам спасибо за игру! Надеемся, Вам понравилось \uD83D\uDE1C";
         msgSender.send(chatId, text);
     }

@@ -39,6 +39,13 @@ public class TaskService {
         return repository.findByChatId(chatId);
     }
 
+    /**
+     * @author ezuykow
+     */
+    public List<Task> findActualTasksByChatId(long chatId) {
+        return findByChatId(chatId).stream().filter(Task::isActual).toList();
+    }
+
     public Task save(Task task) {
         logger.info("Task = {} has been saved", task);
         return repository.save(task);

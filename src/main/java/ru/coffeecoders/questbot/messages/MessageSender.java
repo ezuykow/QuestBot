@@ -84,24 +84,6 @@ public class MessageSender {
     }
 
     /**
-     * Отправляет сообщение с текстом {@code text} в чат c id {@code chatId}
-     * ответом на сообщение с id {@code replyToMessageId}
-     * @param chatId id чата, в который отправить сообщение
-     * @param text текст сообщения
-     * @param replyToMessageId id сообщения, на которое отвечаем
-     * @return {@link SendResponse} ответ сервера на отправленное сообщение
-     * @author ezuykow
-     */
-    public SendResponse send(long chatId, String text, int replyToMessageId) {
-        SendResponse response = bot.execute(new SendMessage(chatId, text)
-                .replyMarkup(new ForceReply(true)).replyToMessageId(replyToMessageId));
-        checkResponse(response,
-                String.format("Failed to send msg \"%s\" (reply to msg %d) to chat %d! Error code: {}",
-                        text, replyToMessageId, chatId));
-        return response;
-    }
-
-    /**
      * Отправляет сообщение с текстом {@code text} в чат c id {@code chatId},
      * а также клавиатуру {@code kb} ответом на сообщение с id {@code replyToMessageId}
      * @param chatId id чата, в который отправить сообщение
@@ -115,6 +97,38 @@ public class MessageSender {
                 new SendMessage(chatId, text).replyMarkup(kb).replyToMessageId(replyToMessageId)),
                 String.format("Failed to send msg \"%s\" (reply to msg %d) with kb to chat %d! Error code: {}",
                         text, replyToMessageId, chatId));
+    }
+
+    /**
+     * Отправляет сообщение с текстом {@code text} в чат c id {@code chatId}
+     * ответом на сообщение с id {@code replyToMessageId}
+     * @param chatId id чата, в который отправить сообщение
+     * @param text текст сообщения
+     * @param replyToMessageId id сообщения, на которое отвечаем
+     * @author ezuykow
+     */
+    public void sendReply(long chatId, String text, int replyToMessageId) {
+        checkResponse(bot.execute(new SendMessage(chatId, text).replyToMessageId(replyToMessageId) ),
+                String.format("Failed to send msg \"%s\" (reply to msg %d) to chat %d! Error code: {}",
+                        text, replyToMessageId, chatId));
+    }
+
+    /**
+     * Отправляет сообщение с текстом {@code text} в чат c id {@code chatId}
+     * ответом на сообщение с id {@code replyToMessageId} и заставляет ответить на него
+     * @param chatId id чата, в который отправить сообщение
+     * @param text текст сообщения
+     * @param replyToMessageId id сообщения, на которое отвечаем
+     * @return {@link SendResponse} ответ сервера на отправленное сообщение
+     * @author ezuykow
+     */
+    public SendResponse sendForceReply(long chatId, String text, int replyToMessageId) {
+        SendResponse response = bot.execute(new SendMessage(chatId, text)
+                .replyMarkup(new ForceReply(true)).replyToMessageId(replyToMessageId));
+        checkResponse(response,
+                String.format("Failed to send msg \"%s\" (reply to msg %d) to chat %d! Error code: {}",
+                        text, replyToMessageId, chatId));
+        return response;
     }
 
     /**

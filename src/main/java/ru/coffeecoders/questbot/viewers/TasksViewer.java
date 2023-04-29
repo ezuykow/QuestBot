@@ -50,9 +50,7 @@ public class TasksViewer {
      * @author ezuykow
      */
     public void showActualTasks(long chatId) {
-        List<Task> tasks = taskService.findByChatId(chatId).stream()
-                .filter(Task::isActual)
-                .toList();
+        List<Task> tasks = taskService.findActualTasksByChatId(chatId);
         msgSender.sendWithHTML(chatId, createMsg(tasks));
     }
 

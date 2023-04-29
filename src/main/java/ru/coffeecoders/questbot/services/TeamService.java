@@ -40,6 +40,13 @@ public class TeamService {
         return repository.findByChatId(chatId);
     }
 
+    /**
+     * @author ezuykow
+     */
+    public Optional<Team> findByChatIdAndTeamName(long chatId, String teamName) {
+        return findByChatId(chatId).stream().filter(t -> t.getTeamName().equals(teamName)).findAny();
+    }
+
     public Team save(Team team) {
         logger.info("Team = {} has been saved", team);
         return repository.save(team);

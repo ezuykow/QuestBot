@@ -1,17 +1,17 @@
 package ru.coffeecoders.questbot.actions;
 
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.entities.MessageToDelete;
-import ru.coffeecoders.questbot.entities.Player;
-import ru.coffeecoders.questbot.entities.Team;
-import ru.coffeecoders.questbot.exceptions.NonExistentChat;
-import ru.coffeecoders.questbot.models.ExtendedUpdate;
+import ru.coffeecoders.questbot.entities.*;
+import ru.coffeecoders.questbot.exceptions.*;
 import ru.coffeecoders.questbot.messages.MessageSender;
-import ru.coffeecoders.questbot.services.GlobalChatService;
-import ru.coffeecoders.questbot.services.MessageToDeleteService;
-import ru.coffeecoders.questbot.services.PlayerService;
-import ru.coffeecoders.questbot.services.TeamService;
+import ru.coffeecoders.questbot.models.ExtendedUpdate;
+import ru.coffeecoders.questbot.services.*;
+import ru.coffeecoders.questbot.viewers.EndGameViewer;
+import ru.coffeecoders.questbot.viewers.TasksViewer;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,17 +23,27 @@ public class SimpleMessageActions {
     private final TeamService teamService;
     private final PlayerService playerService;
     private final GlobalChatService globalChatService;
+    private final GameService gameService;
+    private final TaskService taskService;
+    private final QuestionService questionService;
+    private final EndGameViewer endGameViewer;
     private final MessageSender msgSender;
     private final MessageToDeleteService messageToDeleteService;
+    private final TasksViewer tasksViewer;
 
     public SimpleMessageActions(TeamService teamService, PlayerService playerService,
-                                GlobalChatService globalChatService, MessageSender msgSender,
-                                MessageToDeleteService messageToDeleteService) {
+                                GlobalChatService globalChatService, GameService gameService, TaskService taskService, QuestionService questionService, EndGameViewer endGameViewer, MessageSender msgSender,
+                                MessageToDeleteService messageToDeleteService, TasksViewer tasksViewer) {
         this.teamService = teamService;
         this.playerService = playerService;
         this.globalChatService = globalChatService;
+        this.gameService = gameService;
+        this.taskService = taskService;
+        this.questionService = questionService;
+        this.endGameViewer = endGameViewer;
         this.msgSender = msgSender;
         this.messageToDeleteService = messageToDeleteService;
+        this.tasksViewer = tasksViewer;
     }
 
     //-----------------API START-----------------
@@ -74,6 +84,27 @@ public class SimpleMessageActions {
                 teamName, chatId
         );
         addPlayersWithTeam(newPlayer, update);
+    }
+
+    public void validateAnswer(long chatId, String text, int msgId, long senderId) {
+        int taskNo = Integer.parseInt(text.substring(1, text.indexOf(" ")));
+        Task targetTask = taskService.findActualTasksByChatId(chatId).get(taskNo - 1);
+
+        String answer = text.substring(text.indexOf(" ") + 1).trim();
+        String rightAnswer = getRightAnswer(targetTask);
+        if (answer.equalsIgnoreCase(rightAnswer)) {
+            String teamName = playerService.findById(senderId)
+                    .orElseThrow(NonExistentPlayer::new).getTeamName();
+            targetTask.setPerformedTeamName(teamName);
+            targetTask.setActual(false);
+            taskService.save(targetTask);
+            setQuestionsLastUsage(targetTask.getQuestionId());
+            sendAcceptedMsg(chatId, teamName, taskNo, msgId);
+            checkTeamScoreAndTasksCount(chatId, teamName);
+            tasksViewer.showActualTasks(chatId);
+        } else {
+            msgSender.sendReply(chatId, "Ответ неверный! (Возможно Вы не соблюдали формат ответа)", msgId);
+        }
     }
 
     //-----------------API END-----------------
@@ -145,5 +176,68 @@ public class SimpleMessageActions {
                 .toList();
         mtds.forEach(m -> m.setActive(false));
         messageToDeleteService.saveAll(mtds);
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private String getRightAnswer(Task task) {
+        int targetQuestionId  = task.getQuestionId();
+        return questionService.findById(targetQuestionId)
+                .orElseThrow(NonExistentQuestion::new).getAnswer();
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void sendAcceptedMsg(long chatId, String teamName, int taskNo, int msgId) {
+        String text = "Команда \"" + teamName + "\" правильно ответила на вопрос № " + taskNo + " и зарабатывает 1 балл!";
+        msgSender.sendReply(chatId, text, msgId);
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void setQuestionsLastUsage(int questionId) {
+        Question q = questionService.findById(questionId).orElseThrow(NonExistentQuestion::new);
+        q.setLastUsage(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        questionService.save(q);
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void checkTeamScoreAndTasksCount(long chatId, String teamName) {
+        Team team = teamService.findByChatIdAndTeamName(chatId, teamName).orElseThrow(NonExistentTeam::new);
+        int score = team.getScore() + 1;
+        team.setScore(score);
+        teamService.save(team);
+        Game game = gameService.findByName(team.getGameName())
+                .orElseThrow(NonExistentGame::new);
+        int maxPerformedInGame = game.getMaxPerformedQuestionsCount();
+        if (score == maxPerformedInGame) {
+            endGameViewer.finishGameByPerformedTasks(chatId, teamName, score);
+        } else {
+            checkActualTasksCount(chatId, game);
+        }
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void checkActualTasksCount(long chatId, Game game) {
+        List<Task> actualTasks = taskService.findActualTasksByChatId(chatId);
+        List<Task> tasksToAdd = taskService.findByChatId(chatId)
+                .stream().filter(t -> !t.isActual())
+                .limit(game.getQuestionsCountToAdd())
+                .toList();
+
+        if (actualTasks.isEmpty() && tasksToAdd.isEmpty()) {
+            endGameViewer.finishGameByQuestionsEnded(chatId);
+        }
+        if (actualTasks.size() == game.getMinQuestionsCountInGame()) {
+            tasksToAdd.forEach(t -> t.setActual(true));
+            taskService.saveAll(tasksToAdd);
+        }
     }
 }
