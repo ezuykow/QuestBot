@@ -61,6 +61,7 @@ public class GameService {
      * @author ezuykow
      */
     public void saveAll(List<Game> games) {
+        logger.info("Games = {} has been saved", games);
         gameRepository.saveAll(games);
     }
 
@@ -69,6 +70,7 @@ public class GameService {
      */
     @Transactional
     public void deleteByGameName(String gameName) {
+        logger.info("Game with name = {} has been deleted", gameName);
         gameRepository.deleteByGameName(gameName);
     }
 
@@ -78,9 +80,11 @@ public class GameService {
      * @author ezuykow
      */
     public void setGroupIdIfItsDeleted(int groupId) {
+        logger.info("Setting group ID to 0 for all games with group ID = {}", groupId);
         List<Game> games = findAll();
         games.forEach(g -> swapGroupIdToZeroIfEquals(g, groupId));
         saveAll(games);
+        logger.info("Group ID has been set to 0 for all games with group ID = {}", groupId);
     }
 
     //-----------------API END-----------------
