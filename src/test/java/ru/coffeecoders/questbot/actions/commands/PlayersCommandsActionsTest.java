@@ -18,6 +18,7 @@ import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.services.*;
 import ru.coffeecoders.questbot.validators.GameValidator;
+import ru.coffeecoders.questbot.viewers.TasksViewer;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +41,8 @@ class PlayersCommandsActionsTest {
     private GlobalChatService globalChatService;
     @Mock
     private MessageToDeleteService msgToDelService;
+    @Mock
+    private TasksViewer tasksViewer;
 
     @Mock
     private ExtendedUpdate exUpdate;
@@ -70,9 +73,9 @@ class PlayersCommandsActionsTest {
     }
 
     @Test
-    void showScores() {
+    void showInfo() {
         when(teamService.findAll()).thenReturn(createTeamsList());
-        actions.showScores(exUpdate.getMessageChatId());
+        actions.showInfo(exUpdate.getMessageChatId());
         Mockito.verify(msgSender).send(id,
                 appendTeamScore(teamName1, teamScore1) +
                         appendTeamScore(teamName2, teamScore2)
@@ -84,7 +87,7 @@ class PlayersCommandsActionsTest {
         String msg = "Запущенных игр нет";
         when(gameValidator.isGameStarted(exUpdate.getMessageChatId())).thenReturn(false);
         when(messages.haventStartedGame()).thenReturn(msg);
-        actions.showTasks(exUpdate.getMessageChatId());
+        actions.showQuestions(exUpdate.getMessageChatId());
         Mockito.verify(msgSender).send(id, msg);
     }
 
@@ -102,7 +105,7 @@ class PlayersCommandsActionsTest {
         ));
         when(questionService.findById(questionId1)).thenReturn(createQuestion(questionId1));
         when(questionService.findById(questionId2)).thenReturn(createQuestion(questionId2));
-        actions.showTasks(exUpdate.getMessageChatId());
+        actions.showQuestions(exUpdate.getMessageChatId());
         Mockito.verify(msgSender).send(id, appendQuestion() + appendQuestion());
     }
 
