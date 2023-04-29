@@ -43,6 +43,7 @@ public class PlayerService {
      */
     @Transactional
     public void deleteAllByChatId(long chatId) {
+        logger.info("Players with chatId = {} has been deleted", chatId);
         repository.deleteAllByChatId(chatId);
     }
 }
