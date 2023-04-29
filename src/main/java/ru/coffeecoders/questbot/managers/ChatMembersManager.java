@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.ChatMemberUpdated;
 import com.pengrad.telegrambot.model.User;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.actions.ChatMembersActions;
+import ru.coffeecoders.questbot.logs.LogSender;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
 
 /**
@@ -13,9 +14,11 @@ import ru.coffeecoders.questbot.models.ExtendedUpdate;
 public class ChatMembersManager {
 
     private final ChatMembersActions chatMembersActions;
+    private final LogSender logger;
 
-    public ChatMembersManager(ChatMembersActions actions) {
+    public ChatMembersManager(ChatMembersActions actions, LogSender logger) {
         this.chatMembersActions = actions;
+        this.logger = logger;
     }
 
     //-----------------API START-----------------
@@ -27,6 +30,7 @@ public class ChatMembersManager {
      * @author ezuykow
      */
     public void manageChatMembers(ExtendedUpdate update, ExtendedUpdate.UpdateType type) {
+        logger.warn("Обрабатываю изменение статуса пользователя");
         long chatId = update.getUpdatedMemberChatId();
         User updatedMember = update.getUpdatedMemberUser();
         switch (type) {

@@ -60,19 +60,11 @@ public class PlayersCommandsActions {
      */
     public void showInfo(long chatId) {
         if (gameValidator.isGameStarted(chatId)) {
-            StringBuilder sb = new StringBuilder();
             List<Team> teams = teamService.findByChatId(chatId);
             GlobalChat chat = globalChatService.findById(chatId).orElseThrow(NonExistentChat::new);
             Game game = gameService.findByName(chat.getCreatingGameName())
                     .orElseThrow(NonExistentGame::new);
-            sb.append("\uD83C\uDFB2Информация об игре\uD83C\uDFB2\n\n");
-            sb.append("⏰ Оставшееся время - ").append(game.getMaxTimeMinutes() - chat.getMinutesSinceStart())
-                            .append(" минут\n\n");
-            teams.forEach( t ->
-                    sb.append("\uD83D\uDC65 Команда \"").append(t.getTeamName()).append("\" - ")
-                            .append(t.getScore()).append(" очков;\n")
-            );
-            msgSender.send(chatId, sb.toString());
+            msgSender.send(chatId, createInfoText(game, chat, teams));
         }
     }
 
@@ -123,14 +115,7 @@ public class PlayersCommandsActions {
         if (gameValidator.isGameCreating(chatId) && !gameValidator.isGameStarted(chatId)) {
             List<String> teamsNames = teamService.findAll()
                     .stream().map(Team::getTeamName).toList();
-            if (teamsNames.isEmpty()) {
-                msgSender.send(chatId, messages.noTeamsRegisteredYet());
-            } else {
-                msgSender.send(chatId,
-                        "@" + update.getUsernameFromMessage() + messages.chooseYourTeam(),
-                        JoinTeamKeyboard.createKeyboard(teamsNames), update.getMessageId()
-                );
-            }
+            validateTeamListAndSentJoinTeamKeyboard(teamsNames, chatId, update);
         }
     }
 
@@ -146,5 +131,34 @@ public class PlayersCommandsActions {
     private void saveToMessageToDelete(int msgId, long userId, long chatId) {
         messageToDeleteService.save(
                 new MessageToDelete(msgId, userId, "REGTEAM", chatId, true));
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private String createInfoText(Game game, GlobalChat chat, List<Team> teams) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\uD83C\uDFB2Информация об игре\uD83C\uDFB2\n\n");
+        sb.append("⏰ Оставшееся время - ").append(game.getMaxTimeMinutes() - chat.getMinutesSinceStart())
+                .append(" минут\n\n");
+        teams.forEach( t ->
+                sb.append("\uD83D\uDC65 Команда \"").append(t.getTeamName()).append("\" - ")
+                        .append(t.getScore()).append(" очков;\n")
+        );
+        return sb.toString();
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void validateTeamListAndSentJoinTeamKeyboard(List<String> teamsNames, long chatId, ExtendedUpdate update) {
+        if (teamsNames.isEmpty()) {
+            msgSender.send(chatId, messages.noTeamsRegisteredYet());
+        } else {
+            msgSender.send(chatId,
+                    "@" + update.getUsernameFromMessage() + messages.chooseYourTeam(),
+                    JoinTeamKeyboard.createKeyboard(teamsNames), update.getMessageId()
+            );
+        }
     }
 }

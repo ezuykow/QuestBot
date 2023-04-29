@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.ChatPermissions;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.AdminChatMembers;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
+import ru.coffeecoders.questbot.logs.LogSender;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.services.AdminChatMembersService;
 import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
@@ -19,12 +20,14 @@ public class RestrictingManager {
     private final AdminChatMembersService adminChatMembersService;
     private final ChatAndUserValidator validator;
     private final MessageSender msgSender;
+    private final LogSender logger;
 
     public RestrictingManager(AdminChatMembersService adminChatMembersService, ChatAndUserValidator validator,
-                              MessageSender msgSender) {
+                              MessageSender msgSender, LogSender logger) {
         this.adminChatMembersService = adminChatMembersService;
         this.validator = validator;
         this.msgSender = msgSender;
+        this.logger = logger;
     }
 
     //-----------------API START-----------------
@@ -36,6 +39,7 @@ public class RestrictingManager {
      * @author ezuykow
      */
     public void restrictMembers(long chatId, long initiatorId) {
+        logger.warn("Ограничиваю пользователей");
         switchPermissions(chatId, initiatorId, false);
     }
 
@@ -45,6 +49,7 @@ public class RestrictingManager {
      * @author ezuykow
      */
     public void unRestrictMembers(long chatId) {
+        logger.warn("Снимаю ограничение пользователей");
         switchPermissions(chatId, -1, true);
     }
 

@@ -27,7 +27,11 @@ public class SimpleMessageManager {
 
     //-----------------API START-----------------
 
-//TODO JavaDoc, когда метод будет готов
+    /**
+     * Обрабатываю сообщение
+     * @param update апдейт
+     * @author ezuykow
+     */
     public void manageMessage(ExtendedUpdate update) {
         long chatId = update.getMessageChatId();
         int msgId = update.getMessageId();

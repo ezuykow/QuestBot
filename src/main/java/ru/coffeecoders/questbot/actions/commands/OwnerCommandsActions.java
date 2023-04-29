@@ -36,8 +36,9 @@ public class OwnerCommandsActions {
     private final Messages messages;
     private final MessageSender msgSender;
 
-    public OwnerCommandsActions(ChatAndUserValidator validator, AdminService adminService, GlobalChatService globalChatService,
-                                AdminChatService adminChatService, AdminChatMembersService adminChatMembersService,
+    public OwnerCommandsActions(ChatAndUserValidator validator, AdminService adminService,
+                                GlobalChatService globalChatService, AdminChatService adminChatService,
+                                AdminChatMembersService adminChatMembersService,
                                 Messages messages, MessageSender msgSender)
     {
         this.validator = validator;
