@@ -118,7 +118,7 @@ class PlayersCommandsActionsTest {
         long userId = 111L;
         when(exUpdate.getMessageFromUserId()).thenReturn(userId);
         when(exUpdate.getMessageId()).thenReturn(msgId);
-        when(msgSender.send(id, msg, msgId))
+        when(msgSender.sendForceReply(id, msg, msgId))
                 .thenReturn(response);
         when(response.message()).thenReturn(message);
         when(message.messageId()).thenReturn(replyToMsgId);
@@ -126,7 +126,7 @@ class PlayersCommandsActionsTest {
         when(gameValidator.isGameCreating(exUpdate.getMessageChatId())).thenReturn(true);
         when(messages.enterTeamName()).thenReturn(msg);
         actions.regTeam(exUpdate);
-        Mockito.verify(msgSender).send(id, msg, msgId);
+        Mockito.verify(msgSender).sendForceReply(id, msg, msgId);
         Mockito.verify(msgToDelService).save(new MessageToDelete(msgId, userId, relateTo, id, true));
         Mockito.verify(msgToDelService).save(new MessageToDelete(replyToMsgId, userId, relateTo, id, true));
     }
