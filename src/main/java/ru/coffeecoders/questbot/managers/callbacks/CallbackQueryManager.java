@@ -9,14 +9,21 @@ import ru.coffeecoders.questbot.models.ExtendedUpdate;
 @Component
 public class CallbackQueryManager {
 
-    //TODO Заменить константы и развилки на private enum и switch как в QuestionViewerCallbackManager
+    private enum Manager {
+        QUESTION_VIEWER("QuestionViewer.*"),
+        GAME_VIEWER("GameViewer.*"),
+        PROMOTE_USER("PromoteUser.*"),
+        DEMOTE_USER("DemoteUser.*"),
+        QUESTION_GROUP_SELECTED("QuestionGroupSelected.*"),
+        PREPARE_GAME("PrepareGame.*"),
+        UNKNOWN("");
 
-    private static final String QUESTION_VIEWER_CALLBACK_REGEXP = "QuestionViewer.*";
-    private static final String GAME_VIEWER_CALLBACK_REGEXP = "GameViewer.*";
-    private static final String PROMOTE_USER_CALLBACK_REGEXP = "PromoteUser.*";
-    private static final String DEMOTE_USER_CALLBACK_REGEXP = "DemoteUser.*";
-    private static final String QUESTION_GROUP_SELECTED_REGEXP = "QuestionGroupSelected.*";
-    private static final String PREPARE_GAME_REGEXP = "PrepareGame.*";
+        private final String regexp;
+
+        Manager(String regexp) {
+            this.regexp = regexp;
+        }
+    }
 
     private final QuestionViewerCallbackManager questionViewerCallbackManager;
     private final GamesViewerCallbackManager gamesViewerCallbackManager;
@@ -53,27 +60,28 @@ public class CallbackQueryManager {
         final int msgId = update.getCallbackMessageId();
         final String data = update.getCallbackQueryData();
         final String id = update.getCallbackQueryId();
-
-        if (data.matches(QUESTION_VIEWER_CALLBACK_REGEXP)) {
-            questionViewerCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
-        }
-        if (data.matches(GAME_VIEWER_CALLBACK_REGEXP)) {
-            gamesViewerCallbackManager.manageCallback(id, senderUserId, chatId, msgId, data);
-        }
-        if (data.matches(PROMOTE_USER_CALLBACK_REGEXP)) {
-            promoteUserCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
-        }
-        if (data.matches(DEMOTE_USER_CALLBACK_REGEXP)) {
-            demoteUserCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
-        }
-        if (data.matches(QUESTION_GROUP_SELECTED_REGEXP)) {
-            newGameCreatingCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
-        }
-        if (data.matches(PREPARE_GAME_REGEXP)) {
-            prepareGameCallbackManager.manageCallback(id, senderUserId, chatId, msgId, data);
+        switch (findManager(data)) {
+            case QUESTION_VIEWER -> questionViewerCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
+            case GAME_VIEWER -> gamesViewerCallbackManager.manageCallback(id, senderUserId, chatId, msgId, data);
+            case PROMOTE_USER -> promoteUserCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
+            case DEMOTE_USER -> demoteUserCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
+            case QUESTION_GROUP_SELECTED -> newGameCreatingCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
+            case PREPARE_GAME -> prepareGameCallbackManager.manageCallback(id, senderUserId, chatId, msgId, data);
+            case UNKNOWN -> {} //Игнорируем неизвестный калбак
         }
     }
 
     //-----------------API END-----------------
 
+    /**
+     * @author ezuykow
+     */
+    private Manager findManager(String data) {
+        for (Manager a : Manager.values()) {
+            if (data.matches(a.regexp)) {
+                return a;
+            }
+        }
+        return Manager.UNKNOWN;
+    }
 }
