@@ -27,10 +27,10 @@ public class SimpleMessageActions {
     private final GameService gameService;
     private final TaskService taskService;
     private final QuestionService questionService;
-    private final EndGameViewer endGameViewer;
-    private final MessageSender msgSender;
     private final MessageToDeleteService messageToDeleteService;
+    private final EndGameViewer endGameViewer;
     private final TasksViewer tasksViewer;
+    private final MessageSender msgSender;
 
     public SimpleMessageActions(TeamService teamService, PlayerService playerService,
                                 GlobalChatService globalChatService, GameService gameService, TaskService taskService, QuestionService questionService, EndGameViewer endGameViewer, MessageSender msgSender,
