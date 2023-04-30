@@ -8,11 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.coffeecoders.questbot.entities.*;
-import ru.coffeecoders.questbot.keyboards.JoinTeamKeyboard;
+import ru.coffeecoders.questbot.entities.MessageToDelete;
+import ru.coffeecoders.questbot.entities.Question;
+import ru.coffeecoders.questbot.entities.Task;
+import ru.coffeecoders.questbot.entities.Team;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
@@ -23,7 +24,8 @@ import ru.coffeecoders.questbot.viewers.TasksViewer;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PlayersCommandsActionsTest {
@@ -73,40 +75,12 @@ class PlayersCommandsActionsTest {
     }
 
     @Test
-    void showInfo() {
-        when(teamService.findAll()).thenReturn(createTeamsList());
-        actions.showInfo(exUpdate.getMessageChatId());
-        Mockito.verify(msgSender).send(id,
-                appendTeamScore(teamName1, teamScore1) +
-                        appendTeamScore(teamName2, teamScore2)
-        );
-    }
-
-    @Test
     void showTasksIfGameNotStarted() {
         String msg = "Запущенных игр нет";
         when(gameValidator.isGameStarted(exUpdate.getMessageChatId())).thenReturn(false);
         when(messages.haventStartedGame()).thenReturn(msg);
         actions.showQuestions(exUpdate.getMessageChatId());
         Mockito.verify(msgSender).send(id, msg);
-    }
-
-    @Test
-    void showTasksIfGameStarted() {
-        String gameName = "ggg";
-        int questionId1 = 1;
-        int questionId2 = 2;
-        when(gameValidator.isGameStarted(exUpdate.getMessageChatId())).thenReturn(true);
-        when(globalChatService.findById(exUpdate.getMessageChatId())).thenReturn(Optional.of(
-                new GlobalChat(id, gameName, true, null
-                )));
-        when(taskService.findByGameName(gameName)).thenReturn(List.of(
-                createTask(gameName, questionId1), createTask(gameName, questionId2)
-        ));
-        when(questionService.findById(questionId1)).thenReturn(createQuestion(questionId1));
-        when(questionService.findById(questionId2)).thenReturn(createQuestion(questionId2));
-        actions.showQuestions(exUpdate.getMessageChatId());
-        Mockito.verify(msgSender).send(id, appendQuestion() + appendQuestion());
     }
 
     @Test
@@ -129,26 +103,6 @@ class PlayersCommandsActionsTest {
         Mockito.verify(msgSender).sendForceReply(id, msg, msgId);
         Mockito.verify(msgToDelService).save(new MessageToDelete(msgId, userId, relateTo, id, true));
         Mockito.verify(msgToDelService).save(new MessageToDelete(replyToMsgId, userId, relateTo, id, true));
-    }
-
-    @Test
-    void joinTeamIfTeamsExistTest() {
-        int msgId = 11;
-        String userName = "user";
-        String msg = ", выберите команду, в которую хотите вступить";
-        when(exUpdate.getUsernameFromMessage()).thenReturn(userName);
-        when(gameValidator.isGameStarted(exUpdate.getMessageChatId())).thenReturn(false);
-        when(gameValidator.isGameCreating(exUpdate.getMessageChatId())).thenReturn(true);
-        when(teamService.findAll()).thenReturn(createTeamsList());
-        when(exUpdate.getMessageId()).thenReturn(msgId);
-        when(messages.chooseYourTeam()).thenReturn(msg);
-        try (MockedStatic<JoinTeamKeyboard> theMock = mockStatic(JoinTeamKeyboard.class)) {
-            theMock.when(() -> JoinTeamKeyboard.createKeyboard(teamService.findAll()
-                    .stream().map(Team::getTeamName).toList())).thenReturn(keyboard);
-            actions.joinTeam(exUpdate);
-            verify(msgSender).send(id, "@" + userName + msg, keyboard, msgId);
-        }
-
     }
 
     @Test

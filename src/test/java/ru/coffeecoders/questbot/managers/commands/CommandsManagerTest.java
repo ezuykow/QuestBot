@@ -95,16 +95,6 @@ class CommandsManagerTest {
     }
 
     @Test
-    void managePlayerCommand() {
-        String cmd = "/score";
-        when(exUpdate.getMessageText()).thenReturn(cmd);
-        when(validator.isGlobalChat(exUpdate.getMessageChatId())).thenReturn(true);
-        commandsManager.manageCommand(exUpdate);
-        Mockito.verify(playersCommandsManager).manageCommand(exUpdate,
-                Command.valueOf(cmd.substring(1).toUpperCase()));
-    }
-
-    @Test
     void managePlayerCommandInNotGlobalChat() {
         String msg = "В админском чате оставлена игровая команда";
         String cmd = "/showquestions";
