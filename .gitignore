@@ -37,3 +37,4 @@ out/
 .vscode/
 /gradle/
 /src/main/resources/application.properties
+/logs/

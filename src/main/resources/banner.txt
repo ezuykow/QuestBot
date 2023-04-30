@@ -1,0 +1,20 @@
+${AnsiBackground.16}
+${AnsiColor.54}     QQQQQQQQQ                                                                     tttt          BBBBBBBBBBBBBBBBB                             tttt
+   QQ:::::::::QQ                                                                ttt:::t          B::::::::::::::::B                         ttt:::t
+QQ:::::::::::::QQ                                                              t:::::t          B::::::BBBBBB:::::B                        t:::::t
+Q:::::::QQQ:::::::Q                                                             t:::::t          BB:::::B     B:::::B                       t:::::t
+Q::::::O   Q::::::Quuuuuu    uuuuuu      eeeeeeeeeeee        ssssssssss   ttttttt:::::ttttttt      B::::B     B:::::B   ooooooooooo   ttttttt:::::ttttttt
+Q:::::O     Q:::::Qu::::u    u::::u    ee::::::::::::ee    ss::::::::::s  t:::::::::::::::::t      B::::B     B:::::B oo:::::::::::oo t:::::::::::::::::t
+Q:::::O     Q:::::Qu::::u    u::::u   e::::::eeeee:::::eess:::::::::::::s t:::::::::::::::::t      B::::BBBBBB:::::B o:::::::::::::::ot:::::::::::::::::t
+Q:::::O     Q:::::Qu::::u    u::::u  e::::::e     e:::::es::::::ssss:::::stttttt:::::::tttttt      B:::::::::::::BB  o:::::ooooo:::::otttttt:::::::tttttt
+Q:::::O     Q:::::Qu::::u    u::::u  e:::::::eeeee::::::e s:::::s  ssssss       t:::::t            B::::BBBBBB:::::B o::::o     o::::o      t:::::t
+Q:::::O     Q:::::Qu::::u    u::::u  e:::::::::::::::::e    s::::::s            t:::::t            B::::B     B:::::Bo::::o     o::::o      t:::::t
+Q:::::O  QQQQ:::::Qu::::u    u::::u  e::::::eeeeeeeeeee        s::::::s         t:::::t            B::::B     B:::::Bo::::o     o::::o      t:::::t
+Q::::::O Q::::::::Qu:::::uuuu:::::u  e:::::::e           ssssss   s:::::s       t:::::t    tttttt  B::::B     B:::::Bo::::o     o::::o      t:::::t    tttttt
+Q:::::::QQ::::::::Qu:::::::::::::::uue::::::::e          s:::::ssss::::::s      t::::::tttt:::::tBB:::::BBBBBB::::::Bo:::::ooooo:::::o      t::::::tttt:::::t
+ QQ::::::::::::::Q  u:::::::::::::::u e::::::::eeeeeeee  s::::::::::::::s       tt::::::::::::::tB:::::::::::::::::B o:::::::::::::::o      tt::::::::::::::t
+   QQ:::::::::::Q    uu::::::::uu:::u  ee:::::::::::::e   s:::::::::::ss          tt:::::::::::ttB::::::::::::::::B   oo:::::::::::oo         tt:::::::::::tt
+     QQQQQQQQ::::QQ    uuuuuuuu  uuuu    eeeeeeeeeeeeee    sssssssssss              ttttttttttt  BBBBBBBBBBBBBBBBB      ooooooooooo             ttttttttttt
+             Q:::::Q
+              QQQQQQ                                         ${AnsiColor.157}${application.title} v${application.version}           Developed by @The_Coffee_Coders@            Powered by Spring Boot ${spring-boot.version}
+${AnsiBackground.DEFAULT}${AnsiColor.DEFAULT}

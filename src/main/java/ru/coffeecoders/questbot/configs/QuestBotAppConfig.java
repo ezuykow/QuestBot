@@ -1,11 +1,13 @@
 package ru.coffeecoders.questbot.configs;
 
 import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.model.DeleteMyCommands;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author ezuykow
+ */
 @Configuration
 public class QuestBotAppConfig {
 
@@ -14,8 +16,6 @@ public class QuestBotAppConfig {
 
     @Bean
     public TelegramBot telegramBot() {
-        TelegramBot bot = new TelegramBot(token);
-        bot.execute(new DeleteMyCommands());
-        return bot;
+        return new TelegramBot(token);
     }
 }

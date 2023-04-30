@@ -1,3 +1,27 @@
 databaseChangeLog:
   - include:
       file: db/changelog/scripts/admins.sql
+  - include:
+      file: db/changelog/scripts/admin_chats.sql
+  - include:
+      file: db/changelog/scripts/global_chats.sql
+  - include:
+      file: db/changelog/scripts/questions.sql
+  - include:
+      file: db/changelog/scripts/question_groups.sql
+  - include:
+      file: db/changelog/scripts/games.sql
+  - include:
+      file: db/changelog/scripts/tasks.sql
+  - include:
+      file: db/changelog/scripts/teams.sql
+  - include:
+      file: db/changelog/scripts/players.sql
+  - include:
+      file: db/changelog/scripts/msg_to_delete.sql
+  - include:
+      file: db/changelog/scripts/admins_admin_chats.sql
+  - include:
+      file: db/changelog/scripts/admin_chats_members.sql
+  - include:
+      file: db/changelog/scripts/new_game_creating_state.sql
