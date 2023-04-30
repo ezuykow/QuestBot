@@ -1,5 +1,6 @@
 package ru.coffeecoders.questbot.actions;
 
+import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.*;
 import ru.coffeecoders.questbot.exceptions.*;
@@ -83,6 +84,8 @@ public class SimpleMessageActions {
                 globalChatService.findById(chatId).orElseThrow(NonExistentChat::new).getCreatingGameName(),
                 teamName, chatId
         );
+        saveToMessageToDelete(update);
+        markUselessRegTeamMsgAsInactive(update);
         addPlayersWithTeam(newPlayer, update);
     }
 
@@ -120,7 +123,8 @@ public class SimpleMessageActions {
         playerService.save(player);
         msgSender.send(update.getMessageChatId(),
                 "Игрок @" + update.getUsernameFromMessage() + " вступил в команду \"" +
-                        update.getMessageText() + "\""
+                        update.getMessageText() + "\"",
+                new ReplyKeyboardRemove(true)
         );
     }
 
@@ -220,7 +224,7 @@ public class SimpleMessageActions {
     private void checkActualTasksCount(long chatId, Game game) {
         List<Task> actualTasks = taskService.findActualTasksByChatId(chatId);
         List<Task> tasksToAdd = taskService.findByChatId(chatId)
-                .stream().filter(t -> !t.isActual())
+                .stream().filter(t -> !t.isActual() && t.getPerformedTeamName() == null)
                 .limit(game.getQuestionsCountToAdd())
                 .toList();
 

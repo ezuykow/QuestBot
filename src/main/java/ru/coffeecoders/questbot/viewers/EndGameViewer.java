@@ -104,7 +104,7 @@ public class EndGameViewer {
         StringBuilder sb = new StringBuilder();
         sb.append("✔ Результаты:\n");
         List<Team> teams = teamService.findByChatId(chatId);
-        teams.sort(Comparator.comparing(Team::getScore, Comparator.naturalOrder()));
+        teams.sort(Comparator.comparing(Team::getScore, Comparator.reverseOrder()));
         for (int place = 1; place <= teams.size(); place++) {
             Team team = teams.get(place - 1);
             switch (place) {
@@ -114,7 +114,7 @@ public class EndGameViewer {
                 default -> sb.append(place).append(" ");
             }
             sb.append("Команда \"").append(team.getTeamName()).append("\" заработала очков: ")
-                    .append(team.getScore());
+                    .append(team.getScore()).append("\n");
         }
         return sb.toString();
     }

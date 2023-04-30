@@ -155,10 +155,12 @@ public class PlayersCommandsActions {
         if (teamsNames.isEmpty()) {
             msgSender.send(chatId, messages.noTeamsRegisteredYet());
         } else {
-            msgSender.send(chatId,
+            SendResponse response = msgSender.send(chatId,
                     "@" + update.getUsernameFromMessage() + messages.chooseYourTeam(),
                     JoinTeamKeyboard.createKeyboard(teamsNames), update.getMessageId()
             );
+            saveToMessageToDelete(update.getMessageId(), update.getMessageFromUserId(), chatId);
+            saveToMessageToDelete(response.message().messageId(), update.getMessageFromUserId(), chatId);
         }
     }
 }

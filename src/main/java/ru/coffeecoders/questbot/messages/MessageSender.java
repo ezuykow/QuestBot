@@ -60,14 +60,16 @@ public class MessageSender {
      */
     public void send(long chatId, String text) {
         checkResponse(bot.execute(new SendMessage(chatId, text)),
-                String.format("Failed to send msg \"%s\" to chat %d! Error code: {}", text, chatId));
+                String.format("Failed to send msg \"%s\" to chat %d!", text, chatId)
+                        + " Error %d");
     }
 
     public void sendWithHTML(long chatId, String text) {
         checkResponse(bot.execute(new SendMessage(chatId, text)
                         .parseMode(ParseMode.HTML)
                         .disableWebPagePreview(true)),
-                String.format("Failed to send msg \"%s\" to chat %d! Error code: {}", text, chatId));
+                String.format("Failed to send msg \"%s\" to chat %d!", text, chatId)
+                        + " Error %d");
     }
 
     /**
@@ -80,7 +82,8 @@ public class MessageSender {
      */
     public void send(long chatId, String text, Keyboard kb) {
         checkResponse(bot.execute(new SendMessage(chatId, text).replyMarkup(kb)),
-                String.format("Failed to send msg \"%s\" with kb to chat %d! Error code: {}", text, chatId));
+                String.format("Failed to send msg \"%s\" with kb to chat %d!", text, chatId)
+                        + " Error %d");
     }
 
     /**
@@ -92,11 +95,14 @@ public class MessageSender {
      * @param replyToMessageId id сообщения, на которое отвечаем
      * @author ezuykow
      */
-    public void send(long chatId, String text, Keyboard kb, int replyToMessageId) {
-        checkResponse(bot.execute(
-                new SendMessage(chatId, text).replyMarkup(kb).replyToMessageId(replyToMessageId)),
-                String.format("Failed to send msg \"%s\" (reply to msg %d) with kb to chat %d! Error code: {}",
-                        text, replyToMessageId, chatId));
+    public SendResponse send(long chatId, String text, Keyboard kb, int replyToMessageId) {
+        SendResponse response = bot.execute(
+                new SendMessage(chatId, text).replyMarkup(kb).replyToMessageId(replyToMessageId));
+        checkResponse(response,
+                String.format("Failed to send msg \"%s\" (reply to msg %d) with kb to chat %d!",
+                        text, replyToMessageId, chatId)
+                        + " Error %d");
+        return response;
     }
 
     /**
@@ -109,8 +115,9 @@ public class MessageSender {
      */
     public void sendReply(long chatId, String text, int replyToMessageId) {
         checkResponse(bot.execute(new SendMessage(chatId, text).replyToMessageId(replyToMessageId) ),
-                String.format("Failed to send msg \"%s\" (reply to msg %d) to chat %d! Error code: {}",
-                        text, replyToMessageId, chatId));
+                String.format("Failed to send msg \"%s\" (reply to msg %d) to chat %d!",
+                        text, replyToMessageId, chatId)
+                        + " Error %d");
     }
 
     /**
@@ -126,8 +133,9 @@ public class MessageSender {
         SendResponse response = bot.execute(new SendMessage(chatId, text)
                 .replyMarkup(new ForceReply(true)).replyToMessageId(replyToMessageId));
         checkResponse(response,
-                String.format("Failed to send msg \"%s\" (reply to msg %d) to chat %d! Error code: {}",
-                        text, replyToMessageId, chatId));
+                String.format("Failed to send msg \"%s\" (reply to msg %d) to chat %d!",
+                        text, replyToMessageId, chatId)
+                        + " Error %d");
         return response;
     }
 
@@ -141,7 +149,8 @@ public class MessageSender {
      */
     public void edit(long chatId, int msgId, String text) {
         checkResponse(bot.execute(new EditMessageText(chatId, msgId, text)),
-        String.format("Failed to edit msg %d in chat %d! Error {}", msgId, chatId));
+        String.format("Failed to edit msg %d in chat %d!", msgId, chatId)
+                + " Error %d");
     }
 
     /**
@@ -156,7 +165,8 @@ public class MessageSender {
     public void edit(long chatId, int msgId, String text, InlineKeyboardMarkup kb) {
         checkResponse(bot.execute(new EditMessageText(chatId, msgId, text)
                         .replyMarkup(kb)),
-                String.format("Failed to edit msg %d in chat %d! Error {}", msgId, chatId));
+                String.format("Failed to edit msg %d in chat %d!", msgId, chatId)
+                        + " Error %d");
     }
 
     /**

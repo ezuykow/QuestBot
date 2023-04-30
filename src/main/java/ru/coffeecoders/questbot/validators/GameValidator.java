@@ -66,7 +66,7 @@ public class GameValidator {
      */
     public boolean isGameCreating(String gameName) {
         return globalChatService.findAll().stream()
-                .anyMatch(gc -> gc.getCreatingGameName().equals(gameName));
+                .anyMatch(gc -> gc.getCreatingGameName() != null && gc.getCreatingGameName().equals(gameName));
     }
 
     /**
@@ -101,9 +101,11 @@ public class GameValidator {
         int existentCount = 0;
 
         for (int groupId : game.getGroupsIds()) {
-            String groupName = questionGroupService.findById(groupId)
-                    .orElseThrow(NonExistentQuestionGroup::new).getGroupName();
-            existentCount += questionService.findByGroupName(groupName).size();
+            if (groupId != 0) {
+                String groupName = questionGroupService.findById(groupId)
+                        .orElseThrow(NonExistentQuestionGroup::new).getGroupName();
+                existentCount += questionService.findByGroupName(groupName).size();
+            }
         }
 
         return requestCount <= existentCount;
