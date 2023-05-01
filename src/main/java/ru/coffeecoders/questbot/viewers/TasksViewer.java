@@ -41,7 +41,7 @@ public class TasksViewer {
                 .toList();
         tasks.forEach(t -> t.setActual(true));
         taskService.saveAll(tasks);
-        msgSender.sendWithHTML(chatId, createMsg(tasks));
+        msgSender.send(chatId, createMsg(tasks));
     }
 
     /**
@@ -51,7 +51,7 @@ public class TasksViewer {
      */
     public void showActualTasks(long chatId) {
         List<Task> tasks = taskService.findActualTasksByChatId(chatId);
-        msgSender.sendWithHTML(chatId, createMsg(tasks));
+        msgSender.send(chatId, createMsg(tasks));
     }
 
     //-----------------API END-----------------
@@ -69,7 +69,7 @@ public class TasksViewer {
             if (q.getMapUrl() == null) {
                 sb.append("\n");
             } else {
-                sb.append("\uD83D\uDDFA <a href=\"").append(q.getMapUrl()).append("\">На карте</a>\n\n");
+                sb.append("\uD83D\uDDFA На карте: ").append(q.getMapUrl()).append("\n\n");
             }
         }
         return sb.toString();

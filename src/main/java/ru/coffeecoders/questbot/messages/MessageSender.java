@@ -8,7 +8,6 @@ import com.pengrad.telegrambot.model.User;
 import com.pengrad.telegrambot.model.request.ForceReply;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.Keyboard;
-import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.*;
 import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetChatMemberResponse;
@@ -59,14 +58,7 @@ public class MessageSender {
      * @author ezuykow
      */
     public void send(long chatId, String text) {
-        checkResponse(bot.execute(new SendMessage(chatId, text)),
-                String.format("Failed to send msg \"%s\" to chat %d!", text, chatId)
-                        + " Error %d");
-    }
-
-    public void sendWithHTML(long chatId, String text) {
         checkResponse(bot.execute(new SendMessage(chatId, text)
-                        .parseMode(ParseMode.HTML)
                         .disableWebPagePreview(true)),
                 String.format("Failed to send msg \"%s\" to chat %d!", text, chatId)
                         + " Error %d");
