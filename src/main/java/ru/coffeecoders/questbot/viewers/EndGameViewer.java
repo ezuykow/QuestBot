@@ -43,8 +43,7 @@ public class EndGameViewer {
      * @author ezuykow
      */
     public void finishGameByTimeEnded(GlobalChat chat) {
-        long chatId = chat.getTgChatId();
-        finishGame("⏰ Время игры вышло! ⏰", chat, chatId);
+        finishGame("⏰ Время игры вышло! ⏰", chat.getTgChatId());
     }
 
     /**
@@ -56,9 +55,8 @@ public class EndGameViewer {
      * @author ezuykow
      */
     public void finishGameByPerformedTasks(long chatId, String teamName, int score) {
-        GlobalChat chat = globalChatService.findById(chatId).orElseThrow(NonExistentChat::new);
         finishGame("\uD83C\uDFC6 Команда \"" + teamName + "\" заработала " + score + " очка(-ов)! \uD83C\uDFC6",
-                chat, chatId);
+                chatId);
     }
 
     /**
@@ -68,8 +66,17 @@ public class EndGameViewer {
      * @author ezuykow
      */
     public void finishGameByQuestionsEnded(long chatId) {
-        GlobalChat chat = globalChatService.findById(chatId).orElseThrow(NonExistentChat::new);
-        finishGame("✔ Игроки ответили на все вопросы! ✔", chat, chatId);
+        finishGame("✔ Игроки ответили на все вопросы! ✔", chatId);
+    }
+
+    /**
+     * Заканчивает игру по команде админа
+     * - формирует результаты и отправляет сообщения с ними в чат и в админские чаты
+     * @param chatId id чата
+     * @author ezuykow
+     */
+    public void finishGameByAdminsCmd(long chatId, String adminUsername) {
+        finishGame("❗ " + adminUsername + " прервал игру! ❗", chatId);
     }
 
     //-----------------API END-----------------
@@ -77,17 +84,18 @@ public class EndGameViewer {
     /**
      * @author ezuykow
      */
-    private void finishGame(String cause, GlobalChat chat, long chatId) {
+    private void finishGame(String cause, long chatId) {
         String results = results(chatId);
         notifyGlobalChat(cause, chatId, results);
         notifyAdminChats(chatId, results);
-        clearDB(chat, chatId);
+        clearDB(chatId);
     }
 
     /**
      * @author ezuykow
      */
-    private void clearDB(GlobalChat chat, long chatId) {
+    private void clearDB(long chatId) {
+        GlobalChat chat = globalChatService.findById(chatId).orElseThrow(NonExistentChat::new);
         playerService.deleteAllByChatId(chatId);
         teamService.deleteAllByChatId(chatId);
         taskService.deleteAllByChatId(chatId);

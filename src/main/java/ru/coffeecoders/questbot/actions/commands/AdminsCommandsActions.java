@@ -14,10 +14,7 @@ import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.*;
 import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 import ru.coffeecoders.questbot.validators.GameValidator;
-import ru.coffeecoders.questbot.viewers.GamesViewer;
-import ru.coffeecoders.questbot.viewers.PrepareGameViewer;
-import ru.coffeecoders.questbot.viewers.QuestionsViewer;
-import ru.coffeecoders.questbot.viewers.TasksViewer;
+import ru.coffeecoders.questbot.viewers.*;
 
 @Component
 public class AdminsCommandsActions {
@@ -34,6 +31,7 @@ public class AdminsCommandsActions {
     private final TaskService taskService;
     private final PlayerService playerService;
     private final PrepareGameViewer prepareGameViewer;
+    private final EndGameViewer endGameViewer;
     private final ChatAndUserValidator chatValidator;
     private final GameValidator gameValidator;
     private final MessageSender msgSender;
@@ -45,7 +43,8 @@ public class AdminsCommandsActions {
                                   RestrictingManager restrictingManager, GlobalChatService globalChatService,
                                   GameService gameService, TeamService teamService, TaskService taskService,
                                   PlayerService playerService, PrepareGameViewer prepareGameViewer,
-                                  ChatAndUserValidator chatValidator, GameValidator gameValidator, Messages messages)
+                                  EndGameViewer endGameViewer, ChatAndUserValidator chatValidator,
+                                  GameValidator gameValidator, Messages messages)
     {
         this.gamesViewer = gamesViewer;
         this.tasksViewer = tasksViewer;
@@ -60,6 +59,7 @@ public class AdminsCommandsActions {
         this.taskService = taskService;
         this.playerService = playerService;
         this.prepareGameViewer = prepareGameViewer;
+        this.endGameViewer = endGameViewer;
         this.chatValidator = chatValidator;
         this.gameValidator = gameValidator;
         this.messages = messages;
@@ -148,6 +148,19 @@ public class AdminsCommandsActions {
         if (gameValidator.isGameCreating(chatId)) {
             msgSender.send(chatId, adminUsername + messages.gameStarted().substring(0, 14) + "!");
             startGame(chatId);
+        }
+    }
+
+    /**
+     * Завершает игру принудительно
+     * @param senderAdminId id инициировавшего админа
+     * @param chatId id чата
+     * @author ezuykow
+     */
+    public void performDropGameCmd(long senderAdminId, long chatId) {
+        final String adminUsername = "@" + msgSender.getChatMember(chatId, senderAdminId).username();
+        if (gameValidator.isGameStarted(chatId)) {
+            endGameViewer.finishGameByAdminsCmd(chatId, adminUsername);
         }
     }
 

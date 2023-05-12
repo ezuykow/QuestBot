@@ -31,6 +31,7 @@ public class AdminsCommandsManager {
             case PREPAREGAME -> cmdActions.performPrepareGameCmd(senderAdminId, chatId);
             case DROPPREPARE -> cmdActions.performDropPrepareGameCmd(senderAdminId, chatId);
             case STARTGAME -> cmdActions.performStartGameCmd(senderAdminId, chatId);
+            case DROPGAME -> cmdActions.performDropGameCmd(senderAdminId, chatId);
             case STOPBOT -> cmdActions.performStopBotCmd();
         }
     }
