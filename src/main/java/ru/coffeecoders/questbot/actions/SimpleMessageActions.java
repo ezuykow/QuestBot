@@ -91,7 +91,9 @@ public class SimpleMessageActions {
 
     public void validateAnswer(long chatId, String text, int msgId, long senderId) {
         int taskNo = Integer.parseInt(text.substring(1, text.indexOf(" ")));
-        Task targetTask = taskService.findActualTasksByChatId(chatId).get(taskNo - 1);
+        Task targetTask = taskService.findActualTasksByChatId(chatId)
+                .stream().filter(t -> t.getTaskNumber() == taskNo).findAny()
+                .orElseThrow(NonExistentTask::new);
 
         String answer = text.substring(text.indexOf(" ") + 1).trim();
         String rightAnswer = getRightAnswer(targetTask);

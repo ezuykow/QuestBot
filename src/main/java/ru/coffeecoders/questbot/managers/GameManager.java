@@ -44,9 +44,12 @@ public class GameManager {
         logger.warn("Создаю задачи");
         String gameName = game.getGameName();
         List<Question> questions = getSortedByLastUsageQuestionsByGroupsIds(game.getGroupsIds(), game.getMaxQuestionsCount());
-        List<Task> tasks = questions.stream()
-                .map(q -> new Task(gameName, q.getQuestionId(), null, chatId))
-                .toList();
+
+        List<Task> tasks = new ArrayList<>();
+        for (int i = 0; i < questions.size(); i++) {
+            tasks.add(new Task(gameName, questions.get(i).getQuestionId(), null, chatId, i + 1));
+        }
+
         taskService.saveAll(tasks);
     }
 
@@ -58,8 +61,8 @@ public class GameManager {
     private List<Question> getSortedByLastUsageQuestionsByGroupsIds(int[] groupsIds, int maxQuestionsCount) {
         Set<String> groupNames = getGroupNames(groupsIds);
         return questionService.findAll().stream().filter(q -> groupNames.contains(q.getGroup()))
-                .limit(maxQuestionsCount)
                 .sorted(Comparator.comparing(Question::getLastUsage, Comparator.nullsFirst(Comparator.naturalOrder())))
+                .limit(maxQuestionsCount)
                 .toList();
     }
 

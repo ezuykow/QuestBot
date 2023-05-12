@@ -16,3 +16,7 @@ ALTER TABLE tasks
 -- changeset ezuykow:3
 ALTER TABLE tasks
     ADD COLUMN actual BOOLEAN;
+
+-- changeset ezuykow:4
+ALTER TABLE tasks
+    ADD COLUMN task_number INT;

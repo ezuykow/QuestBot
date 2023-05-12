@@ -51,7 +51,9 @@ public class TasksViewer {
      */
     public void showActualTasks(long chatId) {
         List<Task> tasks = taskService.findActualTasksByChatId(chatId);
-        msgSender.send(chatId, createMsg(tasks));
+        if (!tasks.isEmpty()) {
+            msgSender.send(chatId, createMsg(tasks));
+        }
     }
 
     //-----------------API END-----------------
@@ -61,9 +63,9 @@ public class TasksViewer {
      */
     private String createMsg(List<Task> tasks) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < tasks.size(); i++) {
-            Question q = questionService.findById(tasks.get(i).getQuestionId()).orElseThrow(NonExistentQuestion::new);
-            sb.append("\uD83C\uDFAF Вопрос № ").append(i + 1).append("\n")
+        for (Task task : tasks) {
+            Question q = questionService.findById(task.getQuestionId()).orElseThrow(NonExistentQuestion::new);
+            sb.append("\uD83C\uDFAF Вопрос № ").append(task.getTaskNumber()).append("\n")
                     .append("❓ ").append(q.getQuestion()).append("\n")
                     .append("❗ Формат ответа: ").append(q.getAnswerFormat()).append("\n");
             if (q.getMapUrl() == null) {

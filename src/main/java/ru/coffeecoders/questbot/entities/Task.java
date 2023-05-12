@@ -31,15 +31,27 @@ public class Task {
     @Column(name = "actual")
     private boolean actual;
 
+    @Column(name = "task_number")
+    private int taskNumber;
+
     public Task() {
     }
 
-    public Task(String gameName, int questionId, String performedTeamName, long chatId) {
+    public Task(String gameName, int questionId, String performedTeamName, long chatId, int taskNumber) {
         this.gameName = gameName;
         this.questionId = questionId;
         this.performedTeamName = performedTeamName;
         this.chatId = chatId;
+        this.taskNumber = taskNumber;
         this.actual = false;
+    }
+
+    public int getTaskNumber() {
+        return taskNumber;
+    }
+
+    public void setTaskNumber(int taskNumber) {
+        this.taskNumber = taskNumber;
     }
 
     public boolean isActual() {
@@ -103,6 +115,7 @@ public class Task {
         return Objects.hash(taskId);
     }
 
+
     @Override
     public String toString() {
         return "Task{" +
@@ -112,6 +125,7 @@ public class Task {
                 ", performedTeamName='" + performedTeamName + '\'' +
                 ", chatId=" + chatId +
                 ", actual=" + actual +
+                ", taskNumber=" + taskNumber +
                 '}';
     }
 }
