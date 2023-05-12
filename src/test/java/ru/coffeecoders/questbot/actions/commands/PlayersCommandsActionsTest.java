@@ -126,7 +126,7 @@ class PlayersCommandsActionsTest {
     }
 
     private Task createTask(String gameName, int questionId) {
-        return new Task(gameName, questionId, null, id);
+        return new Task(gameName, questionId, null, id, 1);
     }
 
     private List<Team> createTeamsList() {
