@@ -23,9 +23,13 @@
 
 * [Wiki](https://github.com/ezuykow/QuestBot/wiki/%D0%98%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5)
 
-## Планы
+## История
 
 :white_check_mark: Сделать версию 1.0
+
+:white_check_mark: Версия 1.1
+* Добавлена команда на прерывание запущенной игры
+* Добавлена сквозная нумерация вопросов
 
 ## Над проектом работают
 ### "The Coffee Coders"
