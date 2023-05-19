@@ -43,7 +43,7 @@ public class TaskCreationManager {
     public void createTasks(long chatId, Game game) {
         logger.warn("Создаю задачи");
         String gameName = game.getGameName();
-        List<Question> questions = getSortedByLastUsageQuestionsByGroupsIds(game.getGroupsIds(), game.getMaxQuestionsCount());
+        List<Question> questions = getSortedByLastUsageAndShuffledQuestionsByGroupsIds(game.getGroupsIds(), game.getMaxQuestionsCount());
 
         List<Task> tasks = new ArrayList<>();
         for (int i = 0; i < questions.size(); i++) {
@@ -54,6 +54,16 @@ public class TaskCreationManager {
     }
 
     //-----------------API END-----------------
+
+    /**
+     * @author ezuykow
+     */
+    private List<Question> getSortedByLastUsageAndShuffledQuestionsByGroupsIds(int[] groupsIds, int maxQuestionsCount) {
+        List<Question> sortedByLastUsageQuestions = getSortedByLastUsageQuestionsByGroupsIds(groupsIds, maxQuestionsCount);
+        Map<Date, List<Question>> map = mapQuestionsByDate(sortedByLastUsageQuestions);
+        shuffleListsOfQuestions(map);
+        return reduceQuestions(map);
+    }
 
     /**
      * @author ezuykow
@@ -75,5 +85,38 @@ public class TaskCreationManager {
                         .orElseThrow(NonExistentQuestionGroup::new)
                         .getGroupName())
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private Map<Date, List<Question>> mapQuestionsByDate(List<Question> questions) {
+        Map<Date, List<Question>> map = new TreeMap<>(Comparator.nullsFirst(Comparator.naturalOrder()));
+        questions.forEach(question -> {
+                    Date lastUsage = question.getLastUsage();
+                    if (map.containsKey(lastUsage)) {
+                        map.get(lastUsage).add(question);
+                    } else {
+                        map.put(lastUsage, new ArrayList<>(List.of(question)));
+                    }
+                }
+        );
+        return map;
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private void shuffleListsOfQuestions(Map<Date, List<Question>> map) {
+        map.forEach((date, list) -> Collections.shuffle(list));
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private List<Question> reduceQuestions(Map<Date, List<Question>> map) {
+        List<Question> questions = new ArrayList<>();
+        map.values().forEach(questions::addAll);
+        return questions;
     }
 }
