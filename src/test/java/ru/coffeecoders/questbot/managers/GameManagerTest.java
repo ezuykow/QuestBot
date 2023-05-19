@@ -35,7 +35,7 @@ class GameManagerTest {
     private LogSender logger;
 
     @InjectMocks
-    private GameManager gameManager;
+    private TaskCreationManager gameManager;
 
     @Test
     public void shouldSaveTasksList() {

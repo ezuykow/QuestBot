@@ -17,15 +17,15 @@ import java.util.stream.Collectors;
  * @author ezuykow
  */
 @Component
-public class GameManager {
+public class TaskCreationManager {
 
     private final QuestionService questionService;
     private final QuestionGroupService questionGroupService;
     private final TaskService taskService;
     private final LogSender logger;
 
-    public GameManager(QuestionService questionService, QuestionGroupService questionGroupService,
-                       TaskService taskService, LogSender logger) {
+    public TaskCreationManager(QuestionService questionService, QuestionGroupService questionGroupService,
+                               TaskService taskService, LogSender logger) {
         this.questionService = questionService;
         this.questionGroupService = questionGroupService;
         this.taskService = taskService;

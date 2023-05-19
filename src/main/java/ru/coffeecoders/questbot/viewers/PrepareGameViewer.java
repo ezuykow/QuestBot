@@ -6,7 +6,7 @@ import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.entities.GlobalChat;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.keyboards.PrepareGameRequestKeyboard;
-import ru.coffeecoders.questbot.managers.GameManager;
+import ru.coffeecoders.questbot.managers.TaskCreationManager;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.GameService;
@@ -20,13 +20,13 @@ import java.util.List;
 @Component
 public class PrepareGameViewer {
 
-    private final GameManager gameManager;
+    private final TaskCreationManager gameManager;
     private final GameService gameService;
     private final GlobalChatService globalChatService;
     private final MessageSender msgSender;
     private final Messages messages;
 
-    public PrepareGameViewer(GameManager gameManager, GameService gameService, GlobalChatService globalChatService,
+    public PrepareGameViewer(TaskCreationManager gameManager, GameService gameService, GlobalChatService globalChatService,
                              MessageSender msgSender, Messages messages) {
         this.gameManager = gameManager;
         this.gameService = gameService;
