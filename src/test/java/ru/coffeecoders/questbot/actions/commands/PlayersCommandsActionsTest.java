@@ -79,7 +79,6 @@ class PlayersCommandsActionsTest {
         String msg = "Запущенных игр нет";
         when(gameValidator.isGameStarted(exUpdate.getMessageChatId())).thenReturn(false);
         when(messages.haventStartedGame()).thenReturn(msg);
-        actions.showQuestions(exUpdate.getMessageChatId());
         Mockito.verify(msgSender).send(id, msg);
     }
 

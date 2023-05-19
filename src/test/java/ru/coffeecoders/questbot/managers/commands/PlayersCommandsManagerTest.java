@@ -9,8 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.coffeecoders.questbot.actions.commands.PlayersCommandsActions;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
 
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class PlayersCommandsManagerTest {
     @Mock
@@ -19,13 +17,6 @@ class PlayersCommandsManagerTest {
     private ExtendedUpdate exUpdate;
     @InjectMocks
     private PlayersCommandsManager playersCommandsManager;
-
-    @Test
-    void manageCommandScoreTest() {
-        when(exUpdate.getMessageChatId()).thenReturn(1L);
-        playersCommandsManager.manageCommand(exUpdate, Command.INFO);
-        Mockito.verify(playersCommandsActions).showInfo(exUpdate.getMessageChatId());
-    }
 
     @Test
     void manageCommandRegTeamTest() {

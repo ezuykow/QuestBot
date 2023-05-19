@@ -2,22 +2,15 @@ package ru.coffeecoders.questbot.actions.commands;
 
 import com.pengrad.telegrambot.response.SendResponse;
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.entities.Game;
-import ru.coffeecoders.questbot.entities.GlobalChat;
 import ru.coffeecoders.questbot.entities.MessageToDelete;
 import ru.coffeecoders.questbot.entities.Team;
-import ru.coffeecoders.questbot.exceptions.NonExistentChat;
-import ru.coffeecoders.questbot.exceptions.NonExistentGame;
 import ru.coffeecoders.questbot.keyboards.JoinTeamKeyboard;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
-import ru.coffeecoders.questbot.services.GameService;
-import ru.coffeecoders.questbot.services.GlobalChatService;
 import ru.coffeecoders.questbot.services.MessageToDeleteService;
 import ru.coffeecoders.questbot.services.TeamService;
 import ru.coffeecoders.questbot.validators.GameValidator;
-import ru.coffeecoders.questbot.viewers.TasksViewer;
 
 import java.util.List;
 
@@ -28,23 +21,16 @@ import java.util.List;
 public class PlayersCommandsActions {
 
     private final TeamService teamService;
-    private final GameService gameService;
-    private final GlobalChatService globalChatService;
-    private final TasksViewer tasksViewer;
     private final MessageSender msgSender;
     private final MessageToDeleteService messageToDeleteService;
     private final GameValidator gameValidator;
     private final Messages messages;
 
-    public PlayersCommandsActions(TeamService teamService, GameService gameService, GlobalChatService globalChatService,
-                                  TasksViewer tasksViewer, MessageSender msgSender,
+    public PlayersCommandsActions(TeamService teamService, MessageSender msgSender,
                                   MessageToDeleteService messageToDeleteService,
                                   GameValidator gameValidator, Messages messages)
     {
         this.teamService = teamService;
-        this.gameService = gameService;
-        this.globalChatService = globalChatService;
-        this.tasksViewer = tasksViewer;
         this.msgSender = msgSender;
         this.messageToDeleteService = messageToDeleteService;
         this.gameValidator = gameValidator;
@@ -52,36 +38,6 @@ public class PlayersCommandsActions {
     }
 
     //-----------------API START-----------------
-
-    /**
-     * Собирает сообщение из пар название команды-счет и передает его
-     * в {@link MessageSender}
-     * @param chatId id чата
-     */
-    public void showInfo(long chatId) {
-        if (gameValidator.isGameStarted(chatId)) {
-            List<Team> teams = teamService.findByChatId(chatId);
-            GlobalChat chat = globalChatService.findById(chatId).orElseThrow(NonExistentChat::new);
-            Game game = gameService.findByName(chat.getCreatingGameName())
-                    .orElseThrow(NonExistentGame::new);
-            msgSender.send(chatId, createInfoText(game, chat, teams));
-        }
-    }
-
-    /**
-     * Получает название текущей игры по chatId, передает в {@link MessageSender} список
-     * актуальных вопросов
-     * @param chatId id чата
-     * @author anna
-     * @Redact: ezuykow
-     */
-    public void showQuestions(long chatId) {
-        if (gameValidator.isGameStarted(chatId)) {
-            tasksViewer.showActualTasks(chatId);
-        } else {
-            msgSender.send(chatId, messages.haventStartedGame());
-        }
-    }
 
     /**
      * Отправляет в {@link  MessageSender} строку с предложением ввести название команды
@@ -131,21 +87,6 @@ public class PlayersCommandsActions {
     private void saveToMessageToDelete(int msgId, long userId, long chatId) {
         messageToDeleteService.save(
                 new MessageToDelete(msgId, userId, "REGTEAM", chatId, true));
-    }
-
-    /**
-     * @author ezuykow
-     */
-    private String createInfoText(Game game, GlobalChat chat, List<Team> teams) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\uD83C\uDFB2Информация об игре\uD83C\uDFB2\n\n");
-        sb.append("⏰ Оставшееся время - ").append(game.getMaxTimeMinutes() - chat.getMinutesSinceStart())
-                .append(" минут\n\n");
-        teams.forEach( t ->
-                sb.append("\uD83D\uDC65 Команда \"").append(t.getTeamName()).append("\" - ")
-                        .append(t.getScore()).append(" очков;\n")
-        );
-        return sb.toString();
     }
 
     /**

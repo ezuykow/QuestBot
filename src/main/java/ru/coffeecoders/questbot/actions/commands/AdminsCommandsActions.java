@@ -3,6 +3,7 @@ package ru.coffeecoders.questbot.actions.commands;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.entities.GlobalChat;
+import ru.coffeecoders.questbot.entities.Team;
 import ru.coffeecoders.questbot.exceptions.NonExistentCallbackQuery;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.exceptions.NonExistentGame;
@@ -15,6 +16,8 @@ import ru.coffeecoders.questbot.services.*;
 import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 import ru.coffeecoders.questbot.validators.GameValidator;
 import ru.coffeecoders.questbot.viewers.*;
+
+import java.util.List;
 
 @Component
 public class AdminsCommandsActions {
@@ -66,6 +69,36 @@ public class AdminsCommandsActions {
     }
 
     //-----------------API START-----------------
+
+    /**
+     * Собирает сообщение из пар название команды-счет и передает его
+     * в {@link MessageSender}
+     * @param chatId id чата
+     */
+    public void showInfo(long chatId) {
+        if (gameValidator.isGameStarted(chatId)) {
+            List<Team> teams = teamService.findByChatId(chatId);
+            GlobalChat chat = globalChatService.findById(chatId).orElseThrow(NonExistentChat::new);
+            Game game = gameService.findByName(chat.getCreatingGameName())
+                    .orElseThrow(NonExistentGame::new);
+            msgSender.send(chatId, createInfoText(game, chat, teams));
+        }
+    }
+
+    /**
+     * Получает название текущей игры по chatId, передает в {@link MessageSender} список
+     * актуальных вопросов
+     * @param chatId id чата
+     * @author anna
+     * @Redact: ezuykow
+     */
+    public void showQuestions(long chatId) {
+        if (gameValidator.isGameStarted(chatId)) {
+            tasksViewer.showActualTasks(chatId);
+        } else {
+            msgSender.send(chatId, messages.haventStartedGame());
+        }
+    }
 
     /**
      * Блокирует чат, ограничивает членов и вызывает {@link GamesViewer#viewGames}
@@ -174,6 +207,21 @@ public class AdminsCommandsActions {
     }
 
     //-----------------API END-----------------
+
+    /**
+     * @author ezuykow
+     */
+    private String createInfoText(Game game, GlobalChat chat, List<Team> teams) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\uD83C\uDFB2Информация об игре\uD83C\uDFB2\n\n");
+        sb.append("⏰ Оставшееся время - ").append(game.getMaxTimeMinutes() - chat.getMinutesSinceStart())
+                .append(" минут\n\n");
+        teams.forEach( t ->
+                sb.append("\uD83D\uDC65 Команда \"").append(t.getTeamName()).append("\" - ")
+                        .append(t.getScore()).append(" очков;\n")
+        );
+        return sb.toString();
+    }
 
     /**
      * @author ezuykow

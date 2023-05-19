@@ -9,6 +9,8 @@ public enum Command {
     STARTGAME(GLOBALADMIN),
     DROPGAME(GLOBALADMIN),
     DELETECHAT(GLOBALADMIN),
+    QUESTIONS(GLOBALADMIN),
+    INFO(GLOBALADMIN),
 
     SHOWGAMES(ADMIN),
     SHOWQUESTIONS(ADMIN),
@@ -20,10 +22,8 @@ public enum Command {
     PROMOTE(OWNER),
     DEMOTE(OWNER),
 
-    INFO(PLAYER),
     REGTEAM(PLAYER),
-    JOINTEAM(PLAYER),
-    QUESTIONS(PLAYER);
+    JOINTEAM(PLAYER);
 
     public enum Attribute {
         OWNER,

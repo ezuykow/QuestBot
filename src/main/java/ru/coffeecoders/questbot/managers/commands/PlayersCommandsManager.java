@@ -22,12 +22,9 @@ public class PlayersCommandsManager {
      * @param cmd - команда (enum)
      */
     public void manageCommand(ExtendedUpdate update, Command cmd) {
-        long chatId = update.getMessageChatId();
         switch (cmd) {
-            case INFO -> playersCommandsActions.showInfo(chatId);
             case REGTEAM -> playersCommandsActions.regTeam(update);
             case JOINTEAM -> playersCommandsActions.joinTeam(update);
-            case QUESTIONS -> playersCommandsActions.showQuestions(chatId);
         }
     }
 }
