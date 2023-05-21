@@ -35,12 +35,12 @@ public class SimpleMessageManager {
     public void manageMessage(ExtendedUpdate update) {
         long chatId = update.getMessageChatId();
         int msgId = update.getMessageId();
-        String text = update.getMessageText();
+        String text = update.getMessageText().trim();
 
         if (gameValidator.isNewGameCreating(chatId)) {
             newGameManager.manageNewGamePart(chatId, text, msgId);
         }
-        if (gameValidator.isGameStarted(chatId) && text.toUpperCase().matches("В\\d{1,2}.*")) {
+        if (gameValidator.isGameStarted(chatId) && text.toUpperCase().matches("\\d+.*")) {
             long senderId = update.getMessageFromUserId();
             actions.validateAnswer(chatId, text, msgId, senderId);
         }
