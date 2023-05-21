@@ -197,8 +197,8 @@ public class Messages {
         return env.getProperty("messages.documents.emptyQuestionsNotAdded");
     }
 
-    public String equalsQuestionsNotAdded() {
-        return env.getProperty("messages.documents.equalsQuestionsNotAdded");
+    public String equalsQuestionsUpdated() {
+        return env.getProperty("messages.documents.equalsQuestionsUpdated");
     }
 
     public String questionsAdded() {

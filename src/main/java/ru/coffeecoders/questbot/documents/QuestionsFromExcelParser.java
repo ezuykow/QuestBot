@@ -196,7 +196,7 @@ public class QuestionsFromExcelParser {
             msgSB.append(messages.emptyQuestionsNotAdded());
         }
         if (findAndRemoveEqualsQuestions()) {
-            msgSB.append(messages.equalsQuestionsNotAdded());
+            msgSB.append(messages.equalsQuestionsUpdated());
         }
         return msgSB;
     }
@@ -206,11 +206,13 @@ public class QuestionsFromExcelParser {
      */
     private boolean findAndRemoveEqualsQuestions() {
         boolean hasEquals = false;
-        List<String> questionsText = questionService.findAll().
-                stream().map(Question::getQuestion).toList();
-        for (int i = 0; i < newQuestions.size(); i++) {
-            if (questionsText.contains(newQuestions.get(i).getQuestion())) {
-                newQuestions.remove(i--);
+        List<String> questionsText = questionService.getQuestionsTexts();
+        for (Question newQuestion : newQuestions) {
+            String text = newQuestion.getQuestion();
+            if (questionsText.contains(text)) {
+                Question oldQuestion = questionService.findByText(text);
+                newQuestion.setQuestionId(oldQuestion.getQuestionId());
+                newQuestion.setLastUsage(oldQuestion.getLastUsage());
                 hasEquals = true;
             }
         }

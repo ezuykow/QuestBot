@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.coffeecoders.questbot.entities.Question;
+import ru.coffeecoders.questbot.exceptions.NonExistentQuestion;
 import ru.coffeecoders.questbot.repositories.QuestionRepository;
 
 import java.util.List;
@@ -33,6 +34,13 @@ public class QuestionService {
     }
 
     /**
+     * @author ezuykow
+     */
+    public Question findByText(String text) {
+        return repository.findQuestionByQuestion(text).orElseThrow(NonExistentQuestion::new);
+    }
+
+    /**
      * @author anatoliy
      * @Redact: ezuykow
      */
@@ -40,6 +48,13 @@ public class QuestionService {
         List<Question> list = repository.findByGroup(groupName);
         logger.info("Questions with group name = {} are {} displaying",groupName, list.isEmpty() ? "not" : "");
         return list;
+    }
+
+    /**
+     * @author ezuykow
+     */
+    public List<String> getQuestionsTexts() {
+        return repository.getQuestionsTexts();
     }
 
     public Question save(Question question) {

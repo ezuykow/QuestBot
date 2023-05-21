@@ -55,7 +55,7 @@ messages:
     fromNotAdmin: Добавлять вопросы может только администратор
     wrongDocumentType: Поддерживается добавление вопросов только с файла Excel
     emptyQuestionsNotAdded: "Пустые вопросы не добавлены! (Без текста вопроса или ответа)\n\n"
-    equalsQuestionsNotAdded: "Повторяющиеся вопросы не добавлены!\n\n"
+    equalsQuestionsUpdated: "Повторяющиеся вопросы отредактированы!\n\n"
     questionsAdded: "Добавлены вопросы (%d):\n\n"
     noOneQuestionAdded: Ни одного вопроса не добавлено
     defaultQuestionGroup: Вопросы без группы
