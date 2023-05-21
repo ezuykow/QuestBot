@@ -16,3 +16,7 @@ CREATE TABLE questions
 -- changeset ezuykow:2
 ALTER TABLE questions
     ALTER COLUMN answer_format DROP NOT NULL;
+
+-- changeset ezuykow:3
+ALTER TABLE questions
+    RENAME COLUMN map_url TO additional;

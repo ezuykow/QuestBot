@@ -68,7 +68,7 @@ public class TasksViewer {
             sb.append("\uD83C\uDFAF Вопрос № ").append(task.getTaskNumber()).append("\n")
                     .append("❓ ").append(q.getQuestion()).append("\n")
                     .append(answerFormat(q))
-                    .append(mapUrl(q));
+                    .append(additional(q));
         }
         return sb.toString();
     }
@@ -86,9 +86,9 @@ public class TasksViewer {
     /**
      * @author ezuykow
      */
-    private String mapUrl(Question q) {
-        if (q.getMapUrl() != null) {
-            return "\uD83D\uDDFA На карте: "+ q.getMapUrl()+ "\n\n";
+    private String additional(Question q) {
+        if (q.getAdditional() != null) {
+            return "➕ Доп. информация: "+ q.getAdditional()+ "\n\n";
         }
         return "\n";
     }

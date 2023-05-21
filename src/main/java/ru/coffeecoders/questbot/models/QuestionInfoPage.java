@@ -61,7 +61,7 @@ public class QuestionInfoPage {
         text = Character.toString(0x2753) + " Вопрос: " + question.getQuestion() + "\n" +
                 Character.toString(0x270F) + " Формат ответа: " + answerFormat() + "\n" +
                 Character.toString(0x2757) + " Ответ: " + question.getAnswer() + "\n" +
-                Character.toString(0X1F5FA) + " Карта: " + mapUrl() + "\n" +
+                "➕ Доп. информация: " + additional() + "\n" +
                 Character.toString(0x23F1) + " Дата последнего использования: " + lastUsage() + "\n" +
                 Character.toString(0x1F4A0) + " Группа: " + group();
     }
@@ -84,8 +84,8 @@ public class QuestionInfoPage {
     /**
      * @author ezuykow
      */
-    private String mapUrl() {
-        String s = question.getMapUrl();
+    private String additional() {
+        String s = question.getAdditional();
         return (s == null) ? "<пусто>" : s;
     }
 

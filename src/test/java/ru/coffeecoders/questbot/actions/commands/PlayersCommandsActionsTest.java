@@ -120,7 +120,7 @@ class PlayersCommandsActionsTest {
         question.setQuestionId(i);
         question.setQuestion(questionText);
         question.setAnswerFormat(answerFormat);
-        question.setMapUrl(mapUrl);
+        question.setAdditional(mapUrl);
         return Optional.of(question);
     }
 

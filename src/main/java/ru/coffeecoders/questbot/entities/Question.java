@@ -26,8 +26,8 @@ public class Question {
     @Column(name = "answer")
     private String answer;
 
-    @Column(name = "map_url")
-    private String mapUrl;
+    @Column(name = "additional")
+    private String additional;
 
     @Column(name = "last_usage")
     private Date lastUsage;
@@ -67,12 +67,12 @@ public class Question {
         this.answer = answer;
     }
 
-    public String getMapUrl() {
-        return mapUrl;
+    public String getAdditional() {
+        return additional;
     }
 
-    public void setMapUrl(String mapUrl) {
-        this.mapUrl = mapUrl;
+    public void setAdditional(String mapUrl) {
+        this.additional = mapUrl;
     }
 
     public Date getLastUsage() {
@@ -111,7 +111,7 @@ public class Question {
                 ", question='" + question + '\'' +
                 ", answerFormat='" + answerFormat + '\'' +
                 ", answer='" + answer + '\'' +
-                ", mapUrl present='" + !(mapUrl == null) + '\'' +
+                ", additional='" + !(additional == null) + '\'' +
                 ", lastUsage=" + lastUsage +
                 ", group='" + group + '\'' +
                 '}';

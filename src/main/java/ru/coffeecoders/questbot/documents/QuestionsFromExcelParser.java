@@ -114,7 +114,7 @@ public class QuestionsFromExcelParser {
             case 2 -> newQuestion.setQuestion(cell.getStringCellValue().trim());
             case 3 -> newQuestion.setAnswerFormat(cell.getStringCellValue().trim());
             case 4 -> newQuestion.setAnswer(cell.getStringCellValue().trim());
-            case 5 -> newQuestion.setMapUrl(cell.getStringCellValue().trim());
+            case 5 -> newQuestion.setAdditional(cell.getStringCellValue().trim());
             case 6 -> newQuestion.setGroup(cell.getStringCellValue().trim());
         }
     }
@@ -130,8 +130,8 @@ public class QuestionsFromExcelParser {
         if (newQuestion.getAnswerFormat().equalsIgnoreCase("нет")) {
             newQuestion.setAnswerFormat(null);
         }
-        if (newQuestion.getMapUrl().equalsIgnoreCase("нет")) {
-            newQuestion.setMapUrl(null);
+        if (newQuestion.getAdditional().equalsIgnoreCase("нет")) {
+            newQuestion.setAdditional(null);
         }
         if (newQuestion.getGroup().equalsIgnoreCase("нет")) {
             newQuestion.setGroup(messages.defaultQuestionGroup());
