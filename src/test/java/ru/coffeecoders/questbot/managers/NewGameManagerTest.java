@@ -206,9 +206,9 @@ class NewGameManagerTest {
                 null);
 
         when(utils.getNewGameCreatingState(chatId)).thenReturn(state);
-        doNothing().when(actions).validateMaxTimeMinutesToStateAmdSaveNewGame(chatId, state, "", msgId);
+        doNothing().when(actions).validateMaxTimeMinutesAndRequestAddition(chatId, state, "", msgId);
 
         newGameManager.manageNewGamePart(chatId, text, msgId);
-        verify(actions).validateMaxTimeMinutesToStateAmdSaveNewGame(chatId, state, "", msgId);
+        verify(actions).validateMaxTimeMinutesAndRequestAddition(chatId, state, "", msgId);
     }
 }

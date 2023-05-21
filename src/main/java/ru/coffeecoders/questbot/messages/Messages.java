@@ -317,6 +317,10 @@ public class Messages {
         return env.getProperty("messages.games.gameStartedHint");
     }
 
+    public String requestAdditionWithTask() {
+        return env.getProperty("messages.games.requestAdditionWithTask");
+    }
+
     //-----------------API END-----------------
 
 }

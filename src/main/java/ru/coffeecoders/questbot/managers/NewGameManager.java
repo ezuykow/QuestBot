@@ -66,8 +66,10 @@ public class NewGameManager {
             actions.validateMinQuestionsCountInGameAndRequestNextPart(chatId, state, text, msgId);
         } else if (state.getQuestionsCountToAdd() == null) {
             actions.validateQuestionsCountToAddAndRequestNextPart(chatId, state, text, msgId);
+        } else if (state.getMaxTimeMinutes() == null) {
+            actions.validateMaxTimeMinutesAndRequestAddition(chatId, state, text, msgId);
         } else {
-            actions.validateMaxTimeMinutesToStateAmdSaveNewGame(chatId, state, text, msgId);
+            actions.validateAdditionWithTaskAndSaveNewGame(chatId, state, text, msgId);
         }
     }
 

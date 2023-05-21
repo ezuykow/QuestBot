@@ -97,12 +97,14 @@ public class SimpleMessageActions {
         Task targetTask = taskService.findActualTasksByChatId(chatId)
                 .stream().filter(t -> t.getTaskNumber() == taskNo).findAny()
                 .orElseThrow(NonExistentTask::new);
+        Question question = questionService.findById(targetTask.getQuestionId())
+                .orElseThrow(NonExistentQuestion::new);
 
         String answer = text.substring(text.indexOf(" ") + 1).trim();
-        String rightAnswers = getRightAnswers(targetTask);
+        String rightAnswers = question.getAnswer();
 
         if (checkAnswer(answer, rightAnswers)) {
-            acceptAnswer(senderId, targetTask, taskNo, msgId, chatId);
+            acceptAnswer(senderId, targetTask, taskNo, msgId, chatId, question.getAdditional());
         } else {
             msgSender.sendReply(chatId, "Ответ неверный! (Возможно Вы не соблюдали формат ответа)", msgId);
         }
@@ -183,17 +185,14 @@ public class SimpleMessageActions {
     /**
      * @author ezuykow
      */
-    private String getRightAnswers(Task task) {
-        int targetQuestionId  = task.getQuestionId();
-        return questionService.findById(targetQuestionId)
-                .orElseThrow(NonExistentQuestion::new).getAnswer();
-    }
-
-    /**
-     * @author ezuykow
-     */
-    private void sendAcceptedMsg(long chatId, String teamName, int taskNo, int msgId) {
-        String text = "Команда \"" + teamName + "\" правильно ответила на вопрос № " + taskNo + " и зарабатывает 1 балл!";
+    private void sendAcceptedMsg(long chatId, String teamName, int taskNo, int msgId, String additional) {
+        String hat = "Команда \"" + teamName + "\" правильно ответила на вопрос № " + taskNo + " и зарабатывает 1 балл!";
+        boolean additionalNotNeeded = gameService.findByName(globalChatService.findById(chatId)
+                        .orElseThrow(NonExistentChat::new).getCreatingGameName())
+                .orElseThrow(NonExistentGame::new).isAdditionWithTask();
+        String text = additionalNotNeeded || additional == null
+                ? hat
+                : hat + "\n➕Дополнительная информация: " + additional;
         msgSender.sendReply(chatId, text, msgId);
     }
 
@@ -259,14 +258,14 @@ public class SimpleMessageActions {
     /**
      * @author ezuykow
      */
-    private void acceptAnswer(long senderId, Task targetTask, int taskNo, int msgId, long chatId) {
+    private void acceptAnswer(long senderId, Task targetTask, int taskNo, int msgId, long chatId, String additional) {
         String teamName = playerService.findById(senderId)
                 .orElseThrow(NonExistentPlayer::new).getTeamName();
         targetTask.setPerformedTeamName(teamName);
         targetTask.setActual(false);
         taskService.save(targetTask);
         setQuestionsLastUsage(targetTask.getQuestionId());
-        sendAcceptedMsg(chatId, teamName, taskNo, msgId);
+        sendAcceptedMsg(chatId, teamName, taskNo, msgId, additional);
         checkTeamScoreAndTasksCount(chatId, teamName);
         tasksViewer.showActualTasks(chatId);
     }

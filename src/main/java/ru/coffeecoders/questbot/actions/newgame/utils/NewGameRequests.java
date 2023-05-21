@@ -137,6 +137,12 @@ public class NewGameRequests {
                         messages.requestMaxTimeMinutes(), 7, state));
     }
 
+    public void requestAdditionWithTask(long chatId, int msgIdToEdit, NewGameCreatingState state) {
+        msgSender.edit(chatId, msgIdToEdit,
+                utils.createTextFromStateFields(
+                        messages.requestAdditionWithTask() , 8, state));
+    }
+
     //-----------------API END-----------------
 
 }

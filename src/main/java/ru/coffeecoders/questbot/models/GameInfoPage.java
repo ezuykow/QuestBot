@@ -62,7 +62,8 @@ public class GameInfoPage {
                 game.getMaxPerformedQuestionsCount(),
                 game.getMinQuestionsCountInGame(),
                 game.getQuestionsCountToAdd(),
-                game.getMaxTimeMinutes()
+                game.getMaxTimeMinutes(),
+                game.isAdditionWithTask()
                 );
     }
 }

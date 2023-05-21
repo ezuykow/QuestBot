@@ -123,9 +123,11 @@ public class NewGameUtils {
                     prop1 + messages.requestMinQuestionsCountInGame(), 5, state));
             case 7 -> msgSender.edit(chatId, msgId, createTextFromStateFields(
                     prop1 + messages.requestQuestionsCountToAdd(), 6, state));
-            case 8 -> msgSender.edit(chatId, msgId, createTextFromStateFields(prop1, 8, state));
+            case 8 -> msgSender.edit(chatId, msgId, createTextFromStateFields(prop1, 9, state));
             case 9 -> msgSender.edit(chatId, msgId, createTextFromStateFields(
                     prop1 + messages.requestMaxTimeMinutes(), 7, state));
+            case 10 -> msgSender.edit(chatId, msgId, createTextFromStateFields(
+                    prop1 + messages.requestAdditionWithTask(), 8, state));
         }
     }
 
@@ -135,6 +137,7 @@ public class NewGameUtils {
     public String createTextFromStateFields(String property, int argsCount, NewGameCreatingState state) {
         Object[] args = new Object[argsCount];
         switch (argsCount) {
+            case 9: args[8] = state.isAdditionWithTask();
             case 8: args[7] = state.getMaxTimeMinutes();
             case 7: args[6] = state.getQuestionsCountToAdd();
             case 6: args[5] = state.getMinQuestionsCountInGame();
@@ -160,7 +163,8 @@ public class NewGameUtils {
                         state.getMaxPerformedQuestionsCount(),
                         state.getMinQuestionsCountInGame(),
                         state.getQuestionsCountToAdd(),
-                        state.getStartCountTasks()
+                        state.getStartCountTasks(),
+                        state.isAdditionWithTask()
                 )
         );
     }

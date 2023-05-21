@@ -20,3 +20,7 @@ ALTER TABLE games
     DROP COLUMN global_chat_id;
 ALTER TABLE games
     DROP COLUMN is_started;
+
+-- changeset ezuykow:3
+ALTER TABLE games
+    ADD COLUMN addition_with_task BOOLEAN DEFAULT true;

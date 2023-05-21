@@ -46,19 +46,22 @@ public class NewGameCreatingState {
     @Column(name = "request_msg_id")
     private Integer requestMsgId;
 
+    @Column(name = "addition_with_task")
+    private boolean additionWithTask;
+
     public NewGameCreatingState() {
     }
 
     public NewGameCreatingState(long initiatorChatId) {
         this(initiatorChatId,
                 null, null, null, null, null,
-                null, null, null, null);
+                null, null, null, null, true);
     }
 
     public NewGameCreatingState(long initiatorChatId, String gameName, int[] groupsIds, Integer startCountTasks,
                                 Integer maxQuestionsCount, Integer maxPerformedQuestionsCount,
                                 Integer minQuestionsCountInGame, Integer questionsCountToAdd, Integer maxTimeMinutes,
-                                Integer requestMsgId)
+                                Integer requestMsgId, boolean additionWithTask)
     {
         this.initiatorChatId = initiatorChatId;
         this.gameName = gameName;
@@ -70,7 +73,18 @@ public class NewGameCreatingState {
         this.questionsCountToAdd = questionsCountToAdd;
         this.maxTimeMinutes = maxTimeMinutes;
         this.requestMsgId = requestMsgId;
+        this.additionWithTask = additionWithTask;
     }
+
+    public boolean isAdditionWithTask() {
+        return additionWithTask;
+    }
+
+    public void setAdditionWithTask(boolean additionWithTask) {
+        this.additionWithTask = additionWithTask;
+    }
+
+
 
     public long getInitiatorChatId() {
         return initiatorChatId;
@@ -178,6 +192,7 @@ public class NewGameCreatingState {
                 ", questionsCountToAdd=" + questionsCountToAdd +
                 ", maxTimeMinutes=" + maxTimeMinutes +
                 ", requestMsgId=" + requestMsgId +
+                ", additionWithTask=" + additionWithTask +
                 '}';
     }
 }

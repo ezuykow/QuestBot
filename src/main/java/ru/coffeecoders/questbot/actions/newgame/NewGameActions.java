@@ -238,7 +238,7 @@ public class NewGameActions {
     /**
      * Проверяет, что время проведения игры в минутах
      * введено корректно и больше 0
-     * и вызывает {@link NewGameActions#addTimeAndSaveGame},
+     * и вызывает {@link NewGameActions#addTimeAndRequestAddition},
      * в противном случае повторяет запрос
      * @param chatId id чата
      * @param state {@link NewGameCreatingState} - состояние создания новой игры
@@ -246,15 +246,25 @@ public class NewGameActions {
      * @param msgId id сообщения с ответом
      * @author ezuykow
      */
-    public void validateMaxTimeMinutesToStateAmdSaveNewGame(long chatId, NewGameCreatingState state,
-                                                            String text, int msgId) {
+    public void validateMaxTimeMinutesAndRequestAddition(long chatId, NewGameCreatingState state,
+                                                         String text, int msgId) {
         Integer minutes = utils.parseTextToInteger(text);
         msgSender.sendDelete(chatId, msgId);
         int requestMsgId = state.getRequestMsgId();
         if (minutes != null && minutes > 0) {
-            addTimeAndSaveGame(state, minutes, chatId, requestMsgId);
+            addTimeAndRequestAddition(state, minutes, chatId, requestMsgId);
         } else {
             switchMsg(9, chatId, requestMsgId, state, messages.invalidNumber());
+        }
+    }
+
+    public void validateAdditionWithTaskAndSaveNewGame(long chatId, NewGameCreatingState state, String text, int msgId) {
+        Integer i = utils.parseTextToInteger(text);
+        msgSender.sendDelete(chatId, msgId);
+        int requestMsgId = state.getRequestMsgId();
+        switch (i) {
+            case 1, 0 -> addAdditionWithTaskAndSaveNewGame(state, i, chatId, requestMsgId);
+            default -> switchMsg(10, chatId, requestMsgId, state, messages.invalidNumber());
         }
     }
 
@@ -322,8 +332,14 @@ public class NewGameActions {
     /**
      * @author ezuykow
      */
-    private void addTimeAndSaveGame(NewGameCreatingState state, Integer minutes, long chatId, int requestMsgId) {
+    private void addTimeAndRequestAddition(NewGameCreatingState state, Integer minutes, long chatId, int requestMsgId) {
         state.setMaxTimeMinutes(minutes);
+        newGameCreatingStateService.save(state);
+        requests.requestAdditionWithTask(chatId, requestMsgId, state);
+    }
+
+    private void addAdditionWithTaskAndSaveNewGame(NewGameCreatingState state, Integer i, long chatId, int requestMsgId) {
+        state.setAdditionWithTask(i == 0);
         utils.saveNewGame(state);
         unblockAndUnrestrictChat(chatId);
         switchMsg(8, chatId, requestMsgId, state, messages.gameAdded());

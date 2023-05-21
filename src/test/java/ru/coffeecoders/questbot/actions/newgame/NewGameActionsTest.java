@@ -262,7 +262,7 @@ class NewGameActionsTest {
         when(utils.parseTextToInteger(text)).thenReturn(minutes);
         when(messages.gameAdded()).thenReturn(msg);
         when(messages.endGameCreating()).thenReturn(msg1);
-        actions.validateMaxTimeMinutesToStateAmdSaveNewGame(chatId, state, text, msgId);
+        actions.validateMaxTimeMinutesAndRequestAddition(chatId, state, text, msgId);
         verify(msgSender).sendDelete(chatId, msgId);
         verify(state).setMaxTimeMinutes(minutes);
         verify(utils).saveNewGame(state);
@@ -275,7 +275,7 @@ class NewGameActionsTest {
     void validateMaxTimeMinutesToStateAmdSaveNewGameInvalidValueTest() {
         Integer minutes = -90;
         when(utils.parseTextToInteger(text)).thenReturn(minutes);
-        actions.validateMaxTimeMinutesToStateAmdSaveNewGame(chatId, state, text, msgId);
+        actions.validateMaxTimeMinutesAndRequestAddition(chatId, state, text, msgId);
         verify(msgSender).sendDelete(chatId, msgId);
         verify(utils).switchMsg(9, chatId, requestMsgId, state, msg, null);
     }

@@ -3,8 +3,12 @@ package ru.coffeecoders.questbot.viewers;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Question;
 import ru.coffeecoders.questbot.entities.Task;
+import ru.coffeecoders.questbot.exceptions.NonExistentChat;
+import ru.coffeecoders.questbot.exceptions.NonExistentGame;
 import ru.coffeecoders.questbot.exceptions.NonExistentQuestion;
 import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.services.GameService;
+import ru.coffeecoders.questbot.services.GlobalChatService;
 import ru.coffeecoders.questbot.services.QuestionService;
 import ru.coffeecoders.questbot.services.TaskService;
 
@@ -17,11 +21,15 @@ import java.util.List;
 public class TasksViewer {
 
     private final TaskService taskService;
+    private final GameService gameService;
+    private final GlobalChatService globalChatService;
     private final QuestionService questionService;
     private final MessageSender msgSender;
 
-    public TasksViewer(TaskService taskService, QuestionService questionService, MessageSender msgSender) {
+    public TasksViewer(TaskService taskService, GameService gameService, GlobalChatService globalChatService, QuestionService questionService, MessageSender msgSender) {
         this.taskService = taskService;
+        this.gameService = gameService;
+        this.globalChatService = globalChatService;
         this.questionService = questionService;
         this.msgSender = msgSender;
     }
@@ -41,7 +49,7 @@ public class TasksViewer {
                 .toList();
         tasks.forEach(t -> t.setActual(true));
         taskService.saveAll(tasks);
-        msgSender.send(chatId, createMsg(tasks));
+        msgSender.send(chatId, createMsg(tasks, chatId));
     }
 
     /**
@@ -52,7 +60,7 @@ public class TasksViewer {
     public void showActualTasks(long chatId) {
         List<Task> tasks = taskService.findActualTasksByChatId(chatId);
         if (!tasks.isEmpty()) {
-            msgSender.send(chatId, createMsg(tasks));
+            msgSender.send(chatId, createMsg(tasks, chatId));
         }
     }
 
@@ -61,14 +69,14 @@ public class TasksViewer {
     /**
      * @author ezuykow
      */
-    private String createMsg(List<Task> tasks) {
+    private String createMsg(List<Task> tasks, long chatId) {
         StringBuilder sb = new StringBuilder();
         for (Task task : tasks) {
             Question q = questionService.findById(task.getQuestionId()).orElseThrow(NonExistentQuestion::new);
             sb.append("\uD83C\uDFAF Вопрос № ").append(task.getTaskNumber()).append("\n")
                     .append("❓ ").append(q.getQuestion()).append("\n")
                     .append(answerFormat(q))
-                    .append(additional(q));
+                    .append(additional(q, chatId));
         }
         return sb.toString();
     }
@@ -86,8 +94,11 @@ public class TasksViewer {
     /**
      * @author ezuykow
      */
-    private String additional(Question q) {
-        if (q.getAdditional() != null) {
+    private String additional(Question q, long chatId) {
+        boolean additionalNeeded = gameService.findByName(globalChatService.findById(chatId)
+                .orElseThrow(NonExistentChat::new).getCreatingGameName())
+                .orElseThrow(NonExistentGame::new).isAdditionWithTask();
+        if (additionalNeeded && q.getAdditional() != null) {
             return "➕ Доп. информация: "+ q.getAdditional()+ "\n\n";
         }
         return "\n";

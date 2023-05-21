@@ -21,3 +21,7 @@ ALTER TABLE new_game_creating_state
 -- changeset ezuykow:3
 ALTER TABLE new_game_creating_state
     RENAME COLUMN requestMsgId TO request_msg_id;
+
+-- changeset ezuykow:4
+ALTER TABLE new_game_creating_state
+    ADD COLUMN addition_with_task BOOLEAN;

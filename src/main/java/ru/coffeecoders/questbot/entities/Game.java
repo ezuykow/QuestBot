@@ -40,20 +40,23 @@ public class Game {
     @Column(name = "start_count_tasks")
     private int startCountTasks;
 
+    @Column(name = "addition_with_task")
+    private boolean additionWithTask;
+
     public Game() {
     }
 
     public Game(String gameName, int maxTimeMinutes, int maxQuestionsCount, int maxPerformedQuestionsCount,
-                int minQuestionsCountInGame, int questionsCountToAdd, int startCountTasks)
+                int minQuestionsCountInGame, int questionsCountToAdd, int startCountTasks, boolean additionWithTask)
     {
         this(gameName, null, maxTimeMinutes, maxQuestionsCount, maxPerformedQuestionsCount,
-                minQuestionsCountInGame, questionsCountToAdd, startCountTasks
+                minQuestionsCountInGame, questionsCountToAdd, startCountTasks, additionWithTask
         );
     }
 
     public Game(String gameName, int[] groupsIds, int maxTimeMinutes, int maxQuestionsCount,
                 int maxPerformedQuestionsCount, int minQuestionsCountInGame, int questionsCountToAdd,
-                int startCountTasks)
+                int startCountTasks, boolean additionWithTask)
     {
         this.gameName = gameName;
         this.groupsIds = groupsIds;
@@ -63,6 +66,15 @@ public class Game {
         this.minQuestionsCountInGame = minQuestionsCountInGame;
         this.questionsCountToAdd = questionsCountToAdd;
         this.startCountTasks = startCountTasks;
+        this.additionWithTask = additionWithTask;
+    }
+
+    public boolean isAdditionWithTask() {
+        return additionWithTask;
+    }
+
+    public void setAdditionWithTask(boolean additionWithTask) {
+        this.additionWithTask = additionWithTask;
     }
 
     public String getGameName() {
@@ -153,6 +165,7 @@ public class Game {
                 ", minQuestionsCountInGame=" + minQuestionsCountInGame +
                 ", questionsCountToAdd=" + questionsCountToAdd +
                 ", startCountTasks=" + startCountTasks +
+                ", additionWithTask=" + additionWithTask +
                 '}';
     }
 }
