@@ -21,6 +21,9 @@ import java.util.List;
 @Component
 public class SimpleMessageActions {
 
+    //TODO Убрать эту лажу
+    private final static String answerDesc = "!";
+
     private final TeamService teamService;
     private final PlayerService playerService;
     private final GlobalChatService globalChatService;
@@ -96,8 +99,9 @@ public class SimpleMessageActions {
                 .orElseThrow(NonExistentTask::new);
 
         String answer = text.substring(text.indexOf(" ") + 1).trim();
-        String rightAnswer = getRightAnswer(targetTask);
-        if (answer.equalsIgnoreCase(rightAnswer)) {
+        String rightAnswers = getRightAnswers(targetTask);
+
+        if (checkAnswer(answer, rightAnswers)) {
             acceptAnswer(senderId, targetTask, taskNo, msgId, chatId);
         } else {
             msgSender.sendReply(chatId, "Ответ неверный! (Возможно Вы не соблюдали формат ответа)", msgId);
@@ -179,7 +183,7 @@ public class SimpleMessageActions {
     /**
      * @author ezuykow
      */
-    private String getRightAnswer(Task task) {
+    private String getRightAnswers(Task task) {
         int targetQuestionId  = task.getQuestionId();
         return questionService.findById(targetQuestionId)
                 .orElseThrow(NonExistentQuestion::new).getAnswer();
@@ -237,6 +241,19 @@ public class SimpleMessageActions {
             tasksToAdd.forEach(t -> t.setActual(true));
             taskService.saveAll(tasksToAdd);
         }
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private boolean checkAnswer(String answer, String rightAnswers) {
+        String[] answers = rightAnswers.split(answerDesc);
+        for (String s : answers) {
+            if (answer.equals(s.trim())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

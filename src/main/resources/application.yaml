@@ -43,3 +43,6 @@ viewer:
   questions:
     page:
       size: 5
+
+answers:
+  descriptor: !
