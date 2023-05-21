@@ -11,3 +11,8 @@ CREATE TABLE questions
     question_group TEXT,
     last_usage     DATE
 );
+
+
+-- changeset ezuykow:2
+ALTER TABLE questions
+    ALTER COLUMN answer_format DROP NOT NULL;

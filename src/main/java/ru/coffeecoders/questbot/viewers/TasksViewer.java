@@ -67,13 +67,29 @@ public class TasksViewer {
             Question q = questionService.findById(task.getQuestionId()).orElseThrow(NonExistentQuestion::new);
             sb.append("\uD83C\uDFAF Вопрос № ").append(task.getTaskNumber()).append("\n")
                     .append("❓ ").append(q.getQuestion()).append("\n")
-                    .append("❗ Формат ответа: ").append(q.getAnswerFormat()).append("\n");
-            if (q.getMapUrl() == null) {
-                sb.append("\n");
-            } else {
-                sb.append("\uD83D\uDDFA На карте: ").append(q.getMapUrl()).append("\n\n");
-            }
+                    .append(answerFormat(q))
+                    .append(mapUrl(q));
         }
         return sb.toString();
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private String answerFormat(Question q) {
+        if (q.getAnswerFormat() != null) {
+            return "❗ Формат ответа: " + q.getAnswerFormat() + "\n";
+        }
+        return "";
+    }
+
+    /**
+     * @author ezuykow
+     */
+    private String mapUrl(Question q) {
+        if (q.getMapUrl() != null) {
+            return "\uD83D\uDDFA На карте: "+ q.getMapUrl()+ "\n\n";
+        }
+        return "\n";
     }
 }

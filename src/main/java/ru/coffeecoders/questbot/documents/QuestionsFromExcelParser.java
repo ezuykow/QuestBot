@@ -127,6 +127,9 @@ public class QuestionsFromExcelParser {
             blankQuestionsPresent = true;
             return Optional.empty();
         }
+        if (newQuestion.getAnswerFormat().equalsIgnoreCase("нет")) {
+            newQuestion.setAnswerFormat(null);
+        }
         if (newQuestion.getMapUrl().equalsIgnoreCase("нет")) {
             newQuestion.setMapUrl(null);
         }
