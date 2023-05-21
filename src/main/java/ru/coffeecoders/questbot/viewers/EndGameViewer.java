@@ -85,9 +85,8 @@ public class EndGameViewer {
      * @author ezuykow
      */
     private void finishGame(String cause, long chatId) {
-        String results = results(chatId);
-        notifyGlobalChat(cause, chatId, results);
-        notifyAdminChats(chatId, results);
+        notifyGlobalChat(cause, chatId);
+        notifyAdminChats(chatId);
         clearDB(chatId);
     }
 
@@ -130,19 +129,23 @@ public class EndGameViewer {
     /**
      * @author ezuykow
      */
-    private void notifyGlobalChat(String cause, long chatId, String results) {
-        String text = cause + "\n\n" + results +
-                "\n\n\uD83D\uDC4D Всем участникам спасибо за игру! Надеемся, Вам понравилось \uD83D\uDE1C";
+    private void notifyGlobalChat(String cause, long chatId) {
+        String text = cause +
+                "\n\uD83D\uDC4D Всем участникам спасибо за игру! Надеемся, Вам понравилось \uD83D\uDE1C";
         msgSender.send(chatId, text);
     }
 
     /**
      * @author ezuykow
      */
-    private void notifyAdminChats(long chatId, String results) {
+    private void notifyAdminChats(long chatId) {
+        String results = results(chatId);
         Chat chat = msgSender.sendGetChat(chatId);
-        String text = "В чате @" + chat.username() + " закончена игра!\n" + results;
+        String text = "В чате @" + chat.username() + " закончена игра!\n";
         List<AdminChat> chats = adminChatService.findAll();
-        chats.forEach(c -> msgSender.send(c.getTgAdminChatId(), text));
+        chats.forEach(c -> {
+            msgSender.send(c.getTgAdminChatId(), text);
+            msgSender.send(c.getTgAdminChatId(), results);
+        });
     }
 }
