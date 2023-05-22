@@ -12,6 +12,7 @@ import ru.coffeecoders.questbot.logs.LogSender;
 import ru.coffeecoders.questbot.managers.ExceptionManager;
 import ru.coffeecoders.questbot.managers.UpdateManager;
 import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.properties.PropertyService;
 
 import java.util.List;
 
@@ -22,13 +23,15 @@ public class QuestBotUpdatesListener implements UpdatesListener {
     private final TelegramBot bot;
     private final UpdateManager updateManager;
     private final ExceptionManager exceptionManager;
+    private final PropertyService propertyService;
     private final MessageSender msgSender;
     private final LogSender logger;
 
     private boolean startUp = true;
 
     public QuestBotUpdatesListener(UpdateManager updateManager, TelegramBot bot, ExceptionManager exceptionManager,
-                                   MessageSender msgSender, LogSender logger) {
+                                   PropertyService propertyService, MessageSender msgSender, LogSender logger) {
+        this.propertyService = propertyService;
         this.logger = logger;
         this.logger.warn("Starting bot...");
 
@@ -44,6 +47,7 @@ public class QuestBotUpdatesListener implements UpdatesListener {
      */
     @PostConstruct
     public void init() {
+        propertyService.fillProperties();
         bot.execute(createSetMyCommands());
         bot.setUpdatesListener(this, createGetUpdates());
     }

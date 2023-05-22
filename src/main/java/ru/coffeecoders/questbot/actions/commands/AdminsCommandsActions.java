@@ -179,7 +179,7 @@ public class AdminsCommandsActions {
     public void performStartGameCmd(long senderAdminId, long chatId) {
         final String adminUsername = "@" + msgSender.getChatMember(chatId, senderAdminId).username();
         if (gameValidator.isGameCreating(chatId)) {
-            msgSender.send(chatId, adminUsername + messages.gameStarted().substring(0, 14) + "!");
+            msgSender.send(chatId, adminUsername + messages.gameStarted());
             startGame(chatId);
         }
     }

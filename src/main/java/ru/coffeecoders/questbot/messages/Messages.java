@@ -1,7 +1,9 @@
 package ru.coffeecoders.questbot.messages;
 
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.properties.PropertySeed;
+
+import java.util.Map;
 
 /**
  * @author ezuykow
@@ -9,10 +11,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class Messages {
 
-    private final Environment env;
+    private final Map<String, PropertySeed> properties;
 
-    public Messages(Environment env) {
-        this.env = env;
+    public Messages(Map<String, PropertySeed> properties) {
+        this.properties = properties;
     }
 
     //-----------------API START-----------------
@@ -20,305 +22,305 @@ public class Messages {
     //general messages
 
     public String welcome() {
-        return env.getProperty("messages.welcome");
+        return properties.get("messages.welcome").getActualProperty();
     }
 
     public String startUp() {
-        return env.getProperty("messages.startUp");
+        return properties.get("messages.startUp").getActualProperty();
     }
 
     public String stopBot() {
-        return env.getProperty("messages.stopBot");
+        return properties.get("messages.stopBot").getActualProperty();
     }
 
     //owner messages
 
     public String chatIsAdminNow() {
-        return env.getProperty("messages.owner.chatIsAdminNow");
+        return properties.get("messages.owner.chatIsAdminNow").getActualProperty();
     }
 
     public String chatIsGlobalNow() {
-        return env.getProperty("messages.owner.chatIsGlobalNow");
+        return properties.get("messages.owner.chatIsGlobalNow").getActualProperty();
     }
 
     public String emptyPromotionList() {
-        return env.getProperty("messages.owner.emptyPromotionList");
+        return properties.get("messages.owner.emptyPromotionList").getActualProperty();
     }
 
     public String promote() {
-        return env.getProperty("messages.owner.promote");
+        return properties.get("messages.owner.promote").getActualProperty();
     }
 
     public String demote() {
-        return env.getProperty("messages.owner.demote");
+        return properties.get("messages.owner.demote").getActualProperty();
     }
 
     public String userPromoted() {
-        return env.getProperty("messages.owner.userPromoted");
+        return properties.get("messages.owner.userPromoted").getActualProperty();
     }
 
     public String userDemoted() {
-        return env.getProperty("messages.owner.userDemoted");
+        return properties.get("messages.owner.userDemoted").getActualProperty();
     }
 
     public String startCmdFailed() {
-        return env.getProperty("messages.owner.validation.startCmdFailed");
+        return properties.get("messages.owner.validation.startCmdFailed").getActualProperty();
     }
 
     public String adminOnCmdFailed() {
-        return env.getProperty("messages.owner.validation.adminOnCmdFailed");
+        return properties.get("messages.owner.validation.adminOnCmdFailed").getActualProperty();
     }
 
     public String chatIsNotAdmin() {
-        return env.getProperty("messages.owner.validation.chatIsNotAdmin");
+        return properties.get("messages.owner.validation.chatIsNotAdmin").getActualProperty();
     }
 
     //admins messages
 
     public String invalidMsg() {
-        return env.getProperty("messages.admins.invalidMsg");
+        return properties.get("messages.admins.invalidMsg").getActualProperty();
     }
 
     public String cmdSendByNotAdmin() {
-        return env.getProperty("messages.admins.cmdSendByNotAdmin");
+        return properties.get("messages.admins.cmdSendByNotAdmin").getActualProperty();
     }
 
     public String adminCmdInGlobalChat() {
-        return env.getProperty("messages.admins.adminCmdInGlobalChat");
+        return properties.get("messages.admins.adminCmdInGlobalChat").getActualProperty();
     }
 
     public String gameCmdInAdminChat() {
-        return env.getProperty("messages.admins.gameCmdInAdminChat");
+        return properties.get("messages.admins.gameCmdInAdminChat").getActualProperty();
     }
 
     public String isOwnerCommand() {
-        return env.getProperty("messages.admins.isOwnerCommand");
+        return properties.get("messages.admins.isOwnerCommand").getActualProperty();
     }
 
     public String startGameCreating() {
-        return env.getProperty("messages.admins.startGameCreating");
+        return properties.get("messages.admins.startGameCreating").getActualProperty();
     }
 
     public String endGameCreating() {
-        return env.getProperty("messages.admins.endGameCreating");
+        return properties.get("messages.admins.endGameCreating").getActualProperty();
     }
 
     public String startQuestionView() {
-        return env.getProperty("messages.admins.startQuestionView");
+        return properties.get("messages.admins.startQuestionView").getActualProperty();
     }
 
     public String endQuestionView() {
-        return env.getProperty("messages.admins.endQuestionView");
+        return properties.get("messages.admins.endQuestionView").getActualProperty();
     }
 
     public String startGamesView() {
-        return env.getProperty("messages.admins.startGamesView");
+        return properties.get("messages.admins.startGamesView").getActualProperty();
     }
 
     public String endGamesView() {
-        return env.getProperty("messages.admins.endGamesView");
+        return properties.get("messages.admins.endGamesView").getActualProperty();
     }
 
     public String cmdForGlobalChat() {
-        return env.getProperty("messages.admins.cmdForGlobalChat");
+        return properties.get("messages.admins.cmdForGlobalChat").getActualProperty();
     }
 
     public String chatNotInGame() {
-        return env.getProperty("messages.admins.chatNotInGame");
+        return properties.get("messages.admins.chatNotInGame").getActualProperty();
     }
 
     public String choosePreparingGame() {
-        return env.getProperty("messages.admins.choosePreparingGame");
+        return properties.get("messages.admins.choosePreparingGame").getActualProperty();
     }
 
     //players messages
 
     public String haventStartedGame() {
-        return env.getProperty("messages.players.haventStartedGame");
+        return properties.get("messages.players.haventStartedGame").getActualProperty();
     }
 
     public String enterTeamName() {
-        return env.getProperty("messages.players.enterTeamName");
+        return properties.get("messages.players.enterTeamName").getActualProperty();
     }
 
     public String noTeamsRegisteredYet() {
-        return env.getProperty("messages.players.noTeamsRegisteredYet");
+        return properties.get("messages.players.noTeamsRegisteredYet").getActualProperty();
     }
 
     public String chooseYourTeam() {
-        return env.getProperty("messages.players.chooseYourTeam");
+        return properties.get("messages.players.chooseYourTeam").getActualProperty();
     }
 
     //members messages
 
     public String welcomePrefix() {
-        return env.getProperty("messages.members.welcomePrefix");
+        return properties.get("messages.members.welcomePrefix").getActualProperty();
     }
 
     public String welcomeSuffix() {
-        return env.getProperty("messages.members.welcomeSuffix");
+        return properties.get("messages.members.welcomeSuffix").getActualProperty();
     }
 
     public String byePrefix() {
-        return env.getProperty("messages.members.byePrefix");
+        return properties.get("messages.members.byePrefix").getActualProperty();
     }
 
     public String byeSuffix() {
-        return env.getProperty("messages.members.byeSuffix");
+        return properties.get("messages.members.byeSuffix").getActualProperty();
     }
 
     public String welcomeAdminPrefix() {
-        return env.getProperty("messages.members.welcomeAdminPrefix");
+        return properties.get("messages.members.welcomeAdminPrefix").getActualProperty();
     }
 
     public String welcomeAdminSuffix() {
-        return env.getProperty("messages.members.welcomeAdminSuffix");
+        return properties.get("messages.members.welcomeAdminSuffix").getActualProperty();
     }
 
     public String byeAdmin() {
-        return env.getProperty("messages.members.byeAdmin");
+        return properties.get("messages.members.byeAdmin").getActualProperty();
     }
 
     //documents messages
 
     public String emptyQuestionList() {
-        return env.getProperty("messages.documents.emptyQuestionList");
+        return properties.get("messages.documents.emptyQuestionList").getActualProperty();
     }
 
     public String fromNotAdmin() {
-        return env.getProperty("messages.documents.fromNotAdmin");
+        return properties.get("messages.documents.fromNotAdmin").getActualProperty();
     }
 
     public String wrongDocumentType() {
-        return env.getProperty("messages.documents.wrongDocumentType");
+        return properties.get("messages.documents.wrongDocumentType").getActualProperty();
     }
 
     public String emptyQuestionsNotAdded() {
-        return env.getProperty("messages.documents.emptyQuestionsNotAdded");
+        return properties.get("messages.documents.emptyQuestionsNotAdded").getActualProperty();
     }
 
     public String equalsQuestionsUpdated() {
-        return env.getProperty("messages.documents.equalsQuestionsUpdated");
+        return properties.get("messages.documents.equalsQuestionsUpdated").getActualProperty();
     }
 
     public String questionsAdded() {
-        return env.getProperty("messages.documents.questionsAdded");
+        return properties.get("messages.documents.questionsAdded").getActualProperty();
     }
 
     public String noOneQuestionAdded() {
-        return env.getProperty("messages.documents.noOneQuestionAdded");
+        return properties.get("messages.documents.noOneQuestionAdded").getActualProperty();
     }
 
     public String defaultQuestionGroup() {
-        return env.getProperty("messages.documents.defaultQuestionGroup");
+        return properties.get("messages.documents.defaultQuestionGroup").getActualProperty();
     }
 
     public String mimeType() {
-        return env.getProperty("document.excel.mimeType");
+        return properties.get("document.excel.mimeType").getActualProperty();
     }
 
     //questions messages
 
     public String emptyList() {
-        return env.getProperty("messages.questions.emptyList");
+        return properties.get("messages.questions.emptyList").getActualProperty();
     }
 
     //games messages
 
     public String requestNewGameName() {
-        return env.getProperty("messages.games.requestNewGameName");
+        return properties.get("messages.games.requestNewGameName").getActualProperty();
     }
 
     public String requestQuestionsGroups() {
-        return env.getProperty("messages.games.requestQuestionsGroups");
+        return properties.get("messages.games.requestQuestionsGroups").getActualProperty();
     }
 
     public String addedQuestionGroup() {
-        return env.getProperty("messages.games.addedQuestionGroup");
+        return properties.get("messages.games.addedQuestionGroup").getActualProperty();
     }
 
     public String requestMaxQuestionsCount() {
-        return env.getProperty("messages.games.requestMaxQuestionsCount");
+        return properties.get("messages.games.requestMaxQuestionsCount").getActualProperty();
     }
 
     public String requestStartCountTasks() {
-        return env.getProperty("messages.games.requestStartCountTasks");
+        return properties.get("messages.games.requestStartCountTasks").getActualProperty();
     }
 
     public String requestMaxPerformedQuestionCount() {
-        return env.getProperty("messages.games.requestMaxPerformedQuestionCount");
+        return properties.get("messages.games.requestMaxPerformedQuestionCount").getActualProperty();
     }
 
     public String requestMinQuestionsCountInGame() {
-        return env.getProperty("messages.games.requestMinQuestionsCountInGame");
+        return properties.get("messages.games.requestMinQuestionsCountInGame").getActualProperty();
     }
 
     public String requestQuestionsCountToAdd() {
-        return env.getProperty("messages.games.requestQuestionsCountToAdd");
+        return properties.get("messages.games.requestQuestionsCountToAdd").getActualProperty();
     }
 
     public String requestMaxTimeMinutes() {
-        return env.getProperty("messages.games.requestMaxTimeMinutes");
+        return properties.get("messages.games.requestMaxTimeMinutes").getActualProperty();
     }
 
     public String gameAdded() {
-        return env.getProperty("messages.games.gameAdded");
+        return properties.get("messages.games.gameAdded").getActualProperty();
     }
 
     public String gameInfo() {
-        return env.getProperty("messages.games.gameInfo");
+        return properties.get("messages.games.gameInfo").getActualProperty();
     }
 
     public String nameAlreadyTaken() {
-        return env.getProperty("messages.games.nameAlreadyTaken");
+        return properties.get("messages.games.nameAlreadyTaken").getActualProperty();
     }
 
     public String invalidNumber() {
-        return env.getProperty("messages.games.invalidNumber");
+        return properties.get("messages.games.invalidNumber").getActualProperty();
     }
 
     public String invalidQuestionCount() {
-        return env.getProperty("messages.games.invalidQuestionCount");
+        return properties.get("messages.games.invalidQuestionCount").getActualProperty();
     }
 
     public String startQMoreMaxQ() {
-        return env.getProperty("messages.games.startQMoreMaxQ");
+        return properties.get("messages.games.startQMoreMaxQ").getActualProperty();
     }
 
     public String maxPerformedQMoreMaxQ() {
-        return env.getProperty("messages.games.maxPerformedQMoreMaxQ");
+        return properties.get("messages.games.maxPerformedQMoreMaxQ").getActualProperty();
     }
 
     public String emptyGamesList() {
-        return env.getProperty("messages.games.emptyGamesList");
+        return properties.get("messages.games.emptyGamesList").getActualProperty();
     }
 
     public String failedDeletingGame() {
-        return env.getProperty("messages.games.failedDeletingGame");
+        return properties.get("messages.games.failedDeletingGame").getActualProperty();
     }
 
     public String notEnoughQuestions() {
-        return env.getProperty("messages.games.notEnoughQuestions");
+        return properties.get("messages.games.notEnoughQuestions").getActualProperty();
     }
 
     public String prepareGameStartedHint() {
-        return env.getProperty("messages.games.prepareGameStartedHint");
+        return properties.get("messages.games.prepareGameStartedHint").getActualProperty();
     }
 
     public String prepareInterrupted() {
-        return env.getProperty("messages.games.prepareInterrupted");
+        return properties.get("messages.games.prepareInterrupted").getActualProperty();
     }
 
     public String gameStarted() {
-        return env.getProperty("messages.games.gameStarted");
+        return properties.get("messages.games.gameStarted").getActualProperty();
     }
 
     public String gameStartedHint() {
-        return env.getProperty("messages.games.gameStartedHint");
+        return properties.get("messages.games.gameStartedHint").getActualProperty();
     }
 
     public String requestAdditionWithTask() {
-        return env.getProperty("messages.games.requestAdditionWithTask");
+        return properties.get("messages.games.requestAdditionWithTask").getActualProperty();
     }
 
     //-----------------API END-----------------
