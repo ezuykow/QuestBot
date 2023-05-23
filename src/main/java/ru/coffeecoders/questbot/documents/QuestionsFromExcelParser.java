@@ -123,7 +123,8 @@ public class QuestionsFromExcelParser {
      * @author ezuykow
      */
     private Optional<Question> validateAndReturnNewQuestion(Question newQuestion) {
-        if (newQuestion.getQuestion() == null || newQuestion.getAnswer() == null) {
+        if (newQuestion.getQuestion() == null || newQuestion.getQuestion().isBlank()
+                || newQuestion.getAnswer() == null || newQuestion.getAnswer().isBlank()) {
             blankQuestionsPresent = true;
             return Optional.empty();
         }

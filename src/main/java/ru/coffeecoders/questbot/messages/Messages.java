@@ -215,10 +215,6 @@ public class Messages {
         return properties.get("messages.documents.defaultQuestionGroup").getActualProperty();
     }
 
-    public String mimeType() {
-        return properties.get("document.excel.mimeType").getActualProperty();
-    }
-
     //questions messages
 
     public String emptyList() {

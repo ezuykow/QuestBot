@@ -29,11 +29,18 @@ public class PropertyService {
                         row.getKey(),
                         new PropertySeed(
                                 row.getDescription(),
-                                row.getActualProperty(),
-                                row.getDefaultProperty()
+                                row.getActualProperty().replace("\\n", "\n"),
+                                row.getDefaultProperty().replace("\\n", "\n")
                         )
                 )
         );
+    }
+
+    /**
+     * @author ezuykow
+     */
+    public int getDefaultPageSize() {
+        return Integer.parseInt(properties.get("viewer.questions.page.size").getActualProperty());
     }
 
     //-----------------API END-----------------

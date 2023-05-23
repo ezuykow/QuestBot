@@ -1,6 +1,5 @@
 package ru.coffeecoders.questbot.viewers;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Question;
 import ru.coffeecoders.questbot.exceptions.NonExistentQuestion;
@@ -10,6 +9,7 @@ import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.models.QuestionInfoPage;
 import ru.coffeecoders.questbot.models.QuestionsViewerPage;
+import ru.coffeecoders.questbot.properties.PropertyService;
 import ru.coffeecoders.questbot.services.QuestionGroupService;
 import ru.coffeecoders.questbot.services.QuestionService;
 
@@ -23,22 +23,21 @@ import static java.lang.Math.min;
 @Component
 public class QuestionsViewer {
 
-    @Value("${viewer.questions.page.size}")
-    private int defaultPageSize;
-
     private final QuestionService questionService;
     private final QuestionGroupService questionGroupService;
     private final BlockingManager blockingManager;
     private final RestrictingManager restrictingManager;
     private final MessageSender msgSender;
     private final Messages messages;
+    private final PropertyService propertyService;
 
+    private int defaultPageSize;
     private List<Question> questions;
     private int lastShowedFirstIndex;
 
     public QuestionsViewer(QuestionService questionService, QuestionGroupService questionGroupService,
                            BlockingManager blockingManager, RestrictingManager restrictingManager,
-                           MessageSender msgSender, Messages messages)
+                           MessageSender msgSender, Messages messages, PropertyService propertyService)
     {
         this.questionService = questionService;
         this.questionGroupService = questionGroupService;
@@ -46,6 +45,7 @@ public class QuestionsViewer {
         this.restrictingManager = restrictingManager;
         this.msgSender = msgSender;
         this.messages = messages;
+        this.propertyService = propertyService;
     }
 
     //-----------------API START-----------------
@@ -58,6 +58,7 @@ public class QuestionsViewer {
      * @author ezuykow
      */
     public void viewQuestions(long chatId) {
+        defaultPageSize = propertyService.getDefaultPageSize();
         refreshQuestionsList();
         validateAndCreateView(chatId, -1, defaultPageSize, 0);
     }

@@ -1,6 +1,7 @@
 package ru.coffeecoders.questbot.managers;
 
 import com.pengrad.telegrambot.model.Document;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.documents.DocumentDownloader;
 import ru.coffeecoders.questbot.documents.QuestionsFromExcelParser;
@@ -15,6 +16,9 @@ import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
  */
 @Component
 public class DocumentsManager {
+
+    @Value("${document.excel.mimeType}")
+    private String excelMimeType;
 
     private final MessageSender msgSender;
     private final QuestionsFromExcelParser parser;
@@ -77,7 +81,7 @@ public class DocumentsManager {
      * @author ezuykow
      */
     private boolean isExcelFile(Document doc) {
-        return doc.mimeType().equals(messages.mimeType());
+        return doc.mimeType().equals(excelMimeType);
     }
 
     /**
