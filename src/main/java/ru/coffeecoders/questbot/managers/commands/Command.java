@@ -21,6 +21,7 @@ public enum Command {
     ADMINOFF(OWNER),
     PROMOTE(OWNER),
     DEMOTE(OWNER),
+    PROPERTIES(OWNER),
 
     REGTEAM(PLAYER),
     JOINTEAM(PLAYER);

@@ -1,5 +1,6 @@
 package ru.coffeecoders.questbot.properties;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -41,6 +42,14 @@ public class PropertyService {
      */
     public int getDefaultPageSize() {
         return Integer.parseInt(properties.get("viewer.questions.page.size").getActualProperty());
+    }
+
+    /**
+     * @author ezuykow
+     */
+    @Transactional
+    public void setActualByKey(String newActual, String key) {
+        repository.setActualByKey(newActual, key);
     }
 
     //-----------------API END-----------------

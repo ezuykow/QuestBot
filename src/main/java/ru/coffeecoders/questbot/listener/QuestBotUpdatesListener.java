@@ -112,7 +112,8 @@ public class QuestBotUpdatesListener implements UpdatesListener {
                 new BotCommand("adminon", "(Владелец) Сделать текущий чат администраторским"),
                 new BotCommand("adminoff", "(Владелец) Сделать текущий чат не администраторским"),
                 new BotCommand("promote", "(Владелец) Назначить администратором бота"),
-                new BotCommand("demote", "(Владелец) Понизить администратора бота")
+                new BotCommand("demote", "(Владелец) Понизить администратора бота"),
+                new BotCommand("properties", "(Владелец) Показать изменяемые параметры бота")
         );
     }
 

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.actions.SimpleMessageActions;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
+import ru.coffeecoders.questbot.properties.viewer.PropertiesViewer;
 import ru.coffeecoders.questbot.validators.GameValidator;
 
 /**
@@ -15,13 +16,15 @@ public class SimpleMessageManager {
     private final SimpleMessageActions actions;
     private final NewGameManager newGameManager;
     private final GameValidator gameValidator;
+    private final PropertiesViewer propertiesViewer;
     private final Messages messages;
 
     public SimpleMessageManager(SimpleMessageActions actions, NewGameManager newGameManager,
-                                GameValidator gameValidator, Messages messages) {
+                                GameValidator gameValidator, PropertiesViewer propertiesViewer, Messages messages) {
         this.actions = actions;
         this.newGameManager = newGameManager;
         this.gameValidator = gameValidator;
+        this.propertiesViewer = propertiesViewer;
         this.messages = messages;
     }
 
@@ -59,6 +62,9 @@ public class SimpleMessageManager {
             }
             if (replyMsgText.contains(messages.chooseYourTeam())) {
                 actions.joinTeam(update, update.getMessageText());
+            }
+            if (replyMsgText.contains("новое значение параметра")) {
+                propertiesViewer.performEditProperty(update, update.getMessageText());
             }
         }
     }

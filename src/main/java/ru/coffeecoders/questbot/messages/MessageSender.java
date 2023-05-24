@@ -72,10 +72,12 @@ public class MessageSender {
      * @param kb клавиатура, которую нужно отправить с сообщением
      * @author ezuykow
      */
-    public void send(long chatId, String text, Keyboard kb) {
-        checkResponse(bot.execute(new SendMessage(chatId, text).replyMarkup(kb)),
+    public int send(long chatId, String text, Keyboard kb) {
+        SendResponse response = bot.execute(new SendMessage(chatId, text).replyMarkup(kb));
+        checkResponse(response,
                 String.format("Failed to send msg \"%s\" with kb to chat %d!", text, chatId)
                         + " Error %d");
+        return (response.message() != null) ? response.message().messageId() : -1;
     }
 
     /**
@@ -129,6 +131,14 @@ public class MessageSender {
                         text, replyToMessageId, chatId)
                         + " Error %d");
         return response;
+    }
+
+    /**
+     * @author ezuykow
+     */
+    public void sendForceReply(long chatId, String text) {
+        bot.execute(new SendMessage(chatId, text)
+                .replyMarkup(new ForceReply(false)));
     }
 
     /**

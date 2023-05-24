@@ -30,6 +30,7 @@ public class OwnerCommandsManager {
             case ADMINOFF -> actions.validateAndPerformAdminOffCmd(chatId);
             case PROMOTE -> actions.validateAndPerformPromoteCmd(chatId);
             case DEMOTE -> actions.validateAndPerformDemoteCmd(chatId);
+            case PROPERTIES -> actions.validateAndPerformPropertiesCmd(chatId);
         }
     }
 

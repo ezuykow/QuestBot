@@ -27,6 +27,16 @@ public class PropertyRow {
     @Column(name = "default_property")
     private String defaultProperty;
 
+    public PropertyRow() {
+    }
+
+    public PropertyRow(String key, String description, String actualProperty, String defaultProperty) {
+        this.key = key;
+        this.description = description;
+        this.actualProperty = actualProperty;
+        this.defaultProperty = defaultProperty;
+    }
+
     public String getKey() {
         return key;
     }

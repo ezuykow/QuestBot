@@ -69,7 +69,8 @@ public class BlockingManager {
         AdminChat chat = adminChatService.findById(chatId).orElseThrow(NonExistentChat::new);
         chat.setBlockedByAdminId(userId);
         adminChatService.save(chat);
-        msgSender.send(chatId, buildName(chatId, userId) + cause);
+        String text = (userId == -1) ? cause : buildName(chatId, userId) + cause;
+        msgSender.send(chatId, text);
     }
 
     /**

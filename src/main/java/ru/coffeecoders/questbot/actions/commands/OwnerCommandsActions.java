@@ -9,8 +9,11 @@ import ru.coffeecoders.questbot.entities.AdminChatMembers;
 import ru.coffeecoders.questbot.entities.GlobalChat;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.keyboards.PromoteOrDemoteUserKeyboard;
+import ru.coffeecoders.questbot.managers.BlockingManager;
+import ru.coffeecoders.questbot.managers.RestrictingManager;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
+import ru.coffeecoders.questbot.properties.viewer.PropertiesViewer;
 import ru.coffeecoders.questbot.services.AdminChatMembersService;
 import ru.coffeecoders.questbot.services.AdminChatService;
 import ru.coffeecoders.questbot.services.AdminService;
@@ -33,21 +36,27 @@ public class OwnerCommandsActions {
     private final GlobalChatService globalChatService;
     private final AdminChatService adminChatService;
     private final AdminChatMembersService adminChatMembersService;
+    private final PropertiesViewer propertyViewer;
     private final Messages messages;
     private final MessageSender msgSender;
+    private final BlockingManager blockingManager;
+    private final RestrictingManager restrictingManager;
 
     public OwnerCommandsActions(ChatAndUserValidator validator, AdminService adminService,
                                 GlobalChatService globalChatService, AdminChatService adminChatService,
                                 AdminChatMembersService adminChatMembersService,
-                                Messages messages, MessageSender msgSender)
+                                PropertiesViewer propertyViewer, Messages messages, MessageSender msgSender, BlockingManager blockingManager, RestrictingManager restrictingManager)
     {
         this.validator = validator;
         this.adminService = adminService;
         this.globalChatService = globalChatService;
         this.adminChatService = adminChatService;
         this.adminChatMembersService = adminChatMembersService;
+        this.propertyViewer = propertyViewer;
         this.messages = messages;
         this.msgSender = msgSender;
+        this.blockingManager = blockingManager;
+        this.restrictingManager = restrictingManager;
     }
 
     //-----------------API START-----------------
@@ -119,6 +128,19 @@ public class OwnerCommandsActions {
     public void validateAndPerformDemoteCmd(long chatId) {
         if (validator.isAdminChat(chatId)) {
             validateAdminsInChatAndPerformDemoteCmd(chatId);
+        } else {
+            msgSender.send(chatId, messages.chatIsNotAdmin());
+        }
+    }
+
+    /**
+     * @author ezuykow
+     */
+    public void validateAndPerformPropertiesCmd(long chatId) {
+        if (validator.isAdminChat(chatId)) {
+            blockingManager.blockAdminChatByAdmin(chatId, -1, "Владелец просматривает параметры");
+            restrictingManager.restrictMembers(chatId, -1);
+            propertyViewer.viewProperties(chatId);
         } else {
             msgSender.send(chatId, messages.chatIsNotAdmin());
         }

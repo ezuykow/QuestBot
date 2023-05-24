@@ -2,6 +2,7 @@ package ru.coffeecoders.questbot.managers.callbacks;
 
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
+import ru.coffeecoders.questbot.properties.PropertiesViewerCallbackManager;
 
 /**
  * @author ezuykow
@@ -16,6 +17,7 @@ public class CallbackQueryManager {
         DEMOTE_USER("DemoteUser.*"),
         QUESTION_GROUP_SELECTED("QuestionGroupSelected.*"),
         PREPARE_GAME("PrepareGame.*"),
+        PROPERTIES("PropertiesViewer.*"),
         UNKNOWN("");
 
         private final String regexp;
@@ -31,13 +33,15 @@ public class CallbackQueryManager {
     private final DemoteUserCallbackManager demoteUserCallbackManager;
     private final NewGameCreatingCallbackManager newGameCreatingCallbackManager;
     private final PrepareGameCallbackManager prepareGameCallbackManager;
+    private final PropertiesViewerCallbackManager propertiesViewerCallbackManager;
 
     public CallbackQueryManager(QuestionViewerCallbackManager questionViewerCallbackManager,
                                 GamesViewerCallbackManager gamesViewerCallbackManager,
                                 PromoteUserCallbackManager promoteUserCallbackManager,
                                 DemoteUserCallbackManager demoteUserCallbackManager,
                                 NewGameCreatingCallbackManager newGameCreatingCallbackManager,
-                                PrepareGameCallbackManager prepareGameCallbackManager)
+                                PrepareGameCallbackManager prepareGameCallbackManager,
+                                PropertiesViewerCallbackManager propertiesViewerCallbackManager)
     {
         this.questionViewerCallbackManager = questionViewerCallbackManager;
         this.gamesViewerCallbackManager = gamesViewerCallbackManager;
@@ -45,6 +49,7 @@ public class CallbackQueryManager {
         this.demoteUserCallbackManager = demoteUserCallbackManager;
         this.newGameCreatingCallbackManager = newGameCreatingCallbackManager;
         this.prepareGameCallbackManager = prepareGameCallbackManager;
+        this.propertiesViewerCallbackManager = propertiesViewerCallbackManager;
     }
 
     //-----------------API START-----------------
@@ -67,6 +72,7 @@ public class CallbackQueryManager {
             case DEMOTE_USER -> demoteUserCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
             case QUESTION_GROUP_SELECTED -> newGameCreatingCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
             case PREPARE_GAME -> prepareGameCallbackManager.manageCallback(id, senderUserId, chatId, msgId, data);
+            case PROPERTIES -> propertiesViewerCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
             case UNKNOWN -> {} //Игнорируем неизвестный калбак
         }
     }
