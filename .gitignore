@@ -38,3 +38,4 @@ out/
 /gradle/
 /src/main/resources/application.properties
 /logs/
+/properties/
