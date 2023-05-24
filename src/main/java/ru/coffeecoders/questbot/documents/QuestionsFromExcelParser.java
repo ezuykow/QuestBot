@@ -96,12 +96,16 @@ public class QuestionsFromExcelParser {
     private Optional<Question> searchQuestionFieldsInRowCells(Row row, Question newQuestion) {
         int cellNo = 1;
         for (Cell cell : row) {
+            if (cell.getCellType() == CellType.NUMERIC && cellNo == 4) {
+                fillQuestionFieldFromCell(cellNo++, cell, newQuestion);
+            }
             if (cell.getCellType() == CellType.STRING) {
                 if ((cellNo == 1) && !(cell.getStringCellValue().equalsIgnoreCase("нет"))) {
                     return Optional.empty(); //Если в таблице не стоит, что этот вопрос не добавлялся ("нет")
                 }
                 fillQuestionFieldFromCell(cellNo++, cell, newQuestion);
             }
+
         }
         return validateAndReturnNewQuestion(newQuestion);
     }
@@ -113,7 +117,15 @@ public class QuestionsFromExcelParser {
         switch (cellNo) {
             case 2 -> newQuestion.setQuestion(cell.getStringCellValue().trim());
             case 3 -> newQuestion.setAnswerFormat(cell.getStringCellValue().trim());
-            case 4 -> newQuestion.setAnswer(cell.getStringCellValue().trim());
+            case 4 -> {
+                String answer;
+                if (cell.getCellType() == CellType.STRING) {
+                    answer = cell.getStringCellValue().trim();
+                } else {
+                    answer = String.valueOf((int) cell.getNumericCellValue()).trim();
+                }
+                newQuestion.setAnswer(answer);
+            }
             case 5 -> newQuestion.setAdditional(cell.getStringCellValue().trim());
             case 6 -> newQuestion.setGroup(cell.getStringCellValue().trim());
         }
