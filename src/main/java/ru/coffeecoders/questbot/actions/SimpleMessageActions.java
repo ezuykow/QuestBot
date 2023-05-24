@@ -6,6 +6,7 @@ import ru.coffeecoders.questbot.entities.*;
 import ru.coffeecoders.questbot.exceptions.*;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
+import ru.coffeecoders.questbot.properties.PropertySeed;
 import ru.coffeecoders.questbot.services.*;
 import ru.coffeecoders.questbot.viewers.EndGameViewer;
 import ru.coffeecoders.questbot.viewers.TasksViewer;
@@ -14,15 +15,13 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ezuykow
  */
 @Component
 public class SimpleMessageActions {
-
-    //TODO Убрать эту лажу
-    private final static String answerDesc = "!";
 
     private final TeamService teamService;
     private final PlayerService playerService;
@@ -34,10 +33,11 @@ public class SimpleMessageActions {
     private final EndGameViewer endGameViewer;
     private final TasksViewer tasksViewer;
     private final MessageSender msgSender;
+    private final Map<String, PropertySeed> properties;
 
     public SimpleMessageActions(TeamService teamService, PlayerService playerService,
                                 GlobalChatService globalChatService, GameService gameService, TaskService taskService, QuestionService questionService, EndGameViewer endGameViewer, MessageSender msgSender,
-                                MessageToDeleteService messageToDeleteService, TasksViewer tasksViewer) {
+                                MessageToDeleteService messageToDeleteService, TasksViewer tasksViewer, Map<String, PropertySeed> properties) {
         this.teamService = teamService;
         this.playerService = playerService;
         this.globalChatService = globalChatService;
@@ -48,6 +48,7 @@ public class SimpleMessageActions {
         this.msgSender = msgSender;
         this.messageToDeleteService = messageToDeleteService;
         this.tasksViewer = tasksViewer;
+        this.properties = properties;
     }
 
     //-----------------API START-----------------
@@ -246,9 +247,10 @@ public class SimpleMessageActions {
      * @author ezuykow
      */
     private boolean checkAnswer(String answer, String rightAnswers) {
+        String answerDesc = properties.get("answers.descriptor").getActualProperty();
         String[] answers = rightAnswers.split(answerDesc);
         for (String s : answers) {
-            if (answer.equals(s.trim())) {
+            if (answer.equalsIgnoreCase(s.trim())) {
                 return true;
             }
         }

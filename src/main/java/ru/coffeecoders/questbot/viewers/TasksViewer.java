@@ -49,7 +49,12 @@ public class TasksViewer {
                 .toList();
         tasks.forEach(t -> t.setActual(true));
         taskService.saveAll(tasks);
-        msgSender.send(chatId, createMsg(tasks, chatId));
+        String[] allTasks = createMsg(tasks, chatId);
+        for (String allTask : allTasks) {
+            if (allTask != null) {
+                msgSender.send(chatId, allTask);
+            }
+        }
     }
 
     /**
@@ -60,7 +65,12 @@ public class TasksViewer {
     public void showActualTasks(long chatId) {
         List<Task> tasks = taskService.findActualTasksByChatId(chatId);
         if (!tasks.isEmpty()) {
-            msgSender.send(chatId, createMsg(tasks, chatId));
+            String[] allTasks = createMsg(tasks, chatId);
+            for (String allTask : allTasks) {
+                if (allTask != null) {
+                    msgSender.send(chatId, allTask);
+                }
+            }
         }
     }
 
@@ -69,7 +79,10 @@ public class TasksViewer {
     /**
      * @author ezuykow
      */
-    private String createMsg(List<Task> tasks, long chatId) {
+    private String[] createMsg(List<Task> tasks, long chatId) {
+        String[] allTasks = new String[10];
+
+        int i = 0;
         StringBuilder sb = new StringBuilder();
         for (Task task : tasks) {
             Question q = questionService.findById(task.getQuestionId()).orElseThrow(NonExistentQuestion::new);
@@ -77,8 +90,13 @@ public class TasksViewer {
                     .append("❓ ").append(q.getQuestion()).append("\n")
                     .append(answerFormat(q))
                     .append(additional(q, chatId));
+            if (sb.length() >= 3000) {
+                allTasks[i++] = sb.toString();
+                sb = new StringBuilder();
+            }
         }
-        return sb.toString();
+        allTasks[i] = sb.toString();
+        return allTasks;
     }
 
     /**
