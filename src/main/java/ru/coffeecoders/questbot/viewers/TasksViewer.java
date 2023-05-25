@@ -12,6 +12,8 @@ import ru.coffeecoders.questbot.services.GlobalChatService;
 import ru.coffeecoders.questbot.services.QuestionService;
 import ru.coffeecoders.questbot.services.TaskService;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -63,8 +65,9 @@ public class TasksViewer {
      * @author ezuykow
      */
     public void showActualTasks(long chatId) {
-        List<Task> tasks = taskService.findActualTasksByChatId(chatId);
+        List<Task> tasks = new ArrayList<>(taskService.findActualTasksByChatId(chatId));
         if (!tasks.isEmpty()) {
+            tasks.sort(Comparator.comparingInt(Task::getTaskNumber));
             String[] allTasks = createMsg(tasks, chatId);
             for (String allTask : allTasks) {
                 if (allTask != null) {

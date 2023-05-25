@@ -25,6 +25,7 @@ public class ExceptionManager {
     public void logException(Exception e) {
         logger.error("DEATH\n" +
                 "☠☠☠☠☠☠☠☠☠☠☠☠☠☠☠☠☠☠☠☠☠☠ " + e.getMessage() + " ☠☠☠☠☠☠☠☠☠☠☠☠☠☠☠☠☠☠☠☠☠☠");
+        e.printStackTrace();
     }
 
     //-----------------API END-----------------
