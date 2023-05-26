@@ -178,9 +178,15 @@ public class QuestionsFromExcelParser {
             sb.append(String.format(messages.questionsAdded(),
                     newQuestions.size())
             );
-            newQuestions.forEach(question -> sb.append(Character.toString(0x2714)).append(" ")
-                    .append(question.getQuestion()).append("\n")
-            );
+            for (Question q : newQuestions) {
+                if (sb.length() <= 3000) {
+                    sb.append(Character.toString(0x2714)).append(" ")
+                            .append(q.getQuestion()).append("\n");
+                } else {
+                    sb.append("И так далее...");
+                    break;
+                }
+            }
         }
         return sb.toString();
     }
