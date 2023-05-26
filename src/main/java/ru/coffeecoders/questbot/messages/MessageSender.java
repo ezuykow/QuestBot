@@ -57,11 +57,12 @@ public class MessageSender {
      * @param text текст сообщения
      * @author ezuykow
      */
-    public void send(long chatId, String text) {
-        checkResponse(bot.execute(new SendMessage(chatId, text)
-                        .disableWebPagePreview(true)),
-                String.format("Failed to send msg \"%s\" to chat %d!", text, chatId)
-                        + " Error %d");
+    public int send(long chatId, String text) {
+        SendResponse response = bot.execute(
+                new SendMessage(chatId, text).disableWebPagePreview(true));
+        checkResponse(response,
+                String.format("Failed to send msg \"%s\" to chat %d!", text, chatId) + " Error %d");
+        return (response.message() != null) ? response.message().messageId() : -1;
     }
 
     /**
@@ -75,8 +76,7 @@ public class MessageSender {
     public int send(long chatId, String text, Keyboard kb) {
         SendResponse response = bot.execute(new SendMessage(chatId, text).replyMarkup(kb));
         checkResponse(response,
-                String.format("Failed to send msg \"%s\" with kb to chat %d!", text, chatId)
-                        + " Error %d");
+                String.format("Failed to send msg \"%s\" with kb to chat %d!", text, chatId) + " Error %d");
         return (response.message() != null) ? response.message().messageId() : -1;
     }
 
@@ -97,6 +97,30 @@ public class MessageSender {
                         text, replyToMessageId, chatId)
                         + " Error %d");
         return response;
+    }
+
+    /**
+     * @author ezuykow
+     */
+    public void sendPinMessage(long chatId, int msgId) {
+        checkResponse(bot.execute(new PinChatMessage(chatId, msgId)),
+                String.format("Failed to pin msg in chat %d", chatId) + " Error %d");
+    }
+
+    /**
+     * @author ezuykow
+     */
+    public void sendUnPinMessage(long chatId, int msgId) {
+        checkResponse(bot.execute(new UnpinChatMessage(chatId).messageId(msgId)),
+                String.format("Failed to unpin msg in chat %d", chatId) + " Error %d");
+    }
+
+    /**
+     * @author ezuykow
+     */
+    public void sendUnPinAllMessages(long chatId) {
+        checkResponse(bot.execute(new UnpinAllChatMessages(chatId)),
+                String.format("Failed to unpin msg in chat %d", chatId) + " Error %d");
     }
 
     /**

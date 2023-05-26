@@ -27,3 +27,5 @@ databaseChangeLog:
       file: db/changelog/scripts/new_game_creating_state.sql
   - include:
       file: db/changelog/scripts/properties.sql
+  - include:
+      file: db/changelog/scripts/pinned_tasks_messages.sql

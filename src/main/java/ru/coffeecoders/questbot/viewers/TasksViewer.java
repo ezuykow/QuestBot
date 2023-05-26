@@ -1,16 +1,14 @@
 package ru.coffeecoders.questbot.viewers;
 
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.entities.PinnedTasksMessage;
 import ru.coffeecoders.questbot.entities.Question;
 import ru.coffeecoders.questbot.entities.Task;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.exceptions.NonExistentGame;
 import ru.coffeecoders.questbot.exceptions.NonExistentQuestion;
 import ru.coffeecoders.questbot.messages.MessageSender;
-import ru.coffeecoders.questbot.services.GameService;
-import ru.coffeecoders.questbot.services.GlobalChatService;
-import ru.coffeecoders.questbot.services.QuestionService;
-import ru.coffeecoders.questbot.services.TaskService;
+import ru.coffeecoders.questbot.services.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -26,13 +24,16 @@ public class TasksViewer {
     private final GameService gameService;
     private final GlobalChatService globalChatService;
     private final QuestionService questionService;
+    private final PinnedTasksMessageService pinnedTasksMessageService;
     private final MessageSender msgSender;
 
-    public TasksViewer(TaskService taskService, GameService gameService, GlobalChatService globalChatService, QuestionService questionService, MessageSender msgSender) {
+    public TasksViewer(TaskService taskService, GameService gameService, GlobalChatService globalChatService,
+                       QuestionService questionService, PinnedTasksMessageService pinnedTasksMessageService, MessageSender msgSender) {
         this.taskService = taskService;
         this.gameService = gameService;
         this.globalChatService = globalChatService;
         this.questionService = questionService;
+        this.pinnedTasksMessageService = pinnedTasksMessageService;
         this.msgSender = msgSender;
     }
 
@@ -51,11 +52,11 @@ public class TasksViewer {
                 .toList();
         tasks.forEach(t -> t.setActual(true));
         taskService.saveAll(tasks);
-        String[] allTasks = createMsg(tasks, chatId);
-        for (String allTask : allTasks) {
-            if (allTask != null) {
-                msgSender.send(chatId, allTask);
-            }
+        List<String> allTasks = createMsg(tasks, chatId);
+        for (String tasksPart : allTasks) {
+            int msgId = msgSender.send(chatId, tasksPart);
+            msgSender.sendPinMessage(chatId, msgId);
+            pinnedTasksMessageService.save(new PinnedTasksMessage(msgId, chatId));
         }
     }
 
@@ -68,11 +69,24 @@ public class TasksViewer {
         List<Task> tasks = new ArrayList<>(taskService.findActualTasksByChatId(chatId));
         if (!tasks.isEmpty()) {
             tasks.sort(Comparator.comparingInt(Task::getTaskNumber));
-            String[] allTasks = createMsg(tasks, chatId);
-            for (String allTask : allTasks) {
-                if (allTask != null) {
-                    msgSender.send(chatId, allTask);
-                }
+            List<String> allTasks = createMsg(tasks, chatId);
+
+            List<PinnedTasksMessage> pinnedMsgs = new ArrayList<>(pinnedTasksMessageService.findAllByChatId(chatId));
+            pinnedMsgs.sort(Comparator.comparingInt(PinnedTasksMessage::getMsgId));
+
+            int i = 0;
+            for ( ; i < Math.min(pinnedMsgs.size(), allTasks.size()); i++) {
+                msgSender.edit(chatId, pinnedMsgs.get(i).getMsgId(), allTasks.get(i));
+            }
+            for (int j = i; j < pinnedMsgs.size(); j++) {
+                int msgId = pinnedMsgs.get(j).getMsgId();
+                msgSender.sendUnPinMessage(chatId, msgId);
+                msgSender.sendDelete(chatId, msgId);
+                pinnedTasksMessageService.deleteByMsgId(msgId);
+            }
+            for (int j = i; j < allTasks.size(); j++) {
+                int msgId = msgSender.send(chatId, allTasks.get(j));
+                msgSender.sendPinMessage(chatId, msgId);
             }
         }
     }
@@ -82,10 +96,9 @@ public class TasksViewer {
     /**
      * @author ezuykow
      */
-    private String[] createMsg(List<Task> tasks, long chatId) {
-        String[] allTasks = new String[10];
+    private List<String> createMsg(List<Task> tasks, long chatId) {
+        List<String> allTasks = new ArrayList<>(5);
 
-        int i = 0;
         StringBuilder sb = new StringBuilder();
         for (Task task : tasks) {
             Question q = questionService.findById(task.getQuestionId()).orElseThrow(NonExistentQuestion::new);
@@ -94,11 +107,13 @@ public class TasksViewer {
                     .append(answerFormat(q))
                     .append(additional(q, chatId));
             if (sb.length() >= 3000) {
-                allTasks[i++] = sb.toString();
+                allTasks.add(sb.toString());
                 sb = new StringBuilder();
             }
         }
-        allTasks[i] = sb.toString();
+        if (!sb.isEmpty()) {
+            allTasks.add(sb.toString());
+        }
         return allTasks;
     }
 

@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Chat;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.AdminChat;
 import ru.coffeecoders.questbot.entities.GlobalChat;
+import ru.coffeecoders.questbot.entities.PinnedTasksMessage;
 import ru.coffeecoders.questbot.entities.Team;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.messages.MessageSender;
@@ -23,14 +24,18 @@ public class EndGameViewer {
     private final PlayerService playerService;
     private final GlobalChatService globalChatService;
     private final AdminChatService adminChatService;
+    private final PinnedTasksMessageService pinnedTasksMessageService;
     private final MessageSender msgSender;
 
-    public EndGameViewer(TeamService teamService, TaskService taskService, PlayerService playerService, GlobalChatService globalChatService, AdminChatService adminChatService, MessageSender msgSender) {
+    public EndGameViewer(TeamService teamService, TaskService taskService, PlayerService playerService,
+                         GlobalChatService globalChatService, AdminChatService adminChatService,
+                         PinnedTasksMessageService pinnedTasksMessageService, MessageSender msgSender) {
         this.teamService = teamService;
         this.taskService = taskService;
         this.playerService = playerService;
         this.globalChatService = globalChatService;
         this.adminChatService = adminChatService;
+        this.pinnedTasksMessageService = pinnedTasksMessageService;
         this.msgSender = msgSender;
     }
 
@@ -85,6 +90,10 @@ public class EndGameViewer {
      * @author ezuykow
      */
     private void finishGame(String cause, long chatId) {
+        msgSender.sendUnPinAllMessages(chatId);
+        List<PinnedTasksMessage> tasksMessages = pinnedTasksMessageService.findAllByChatId(chatId);
+        tasksMessages.forEach(m -> msgSender.sendDelete(chatId, m.getMsgId()));
+
         notifyGlobalChat(cause, chatId);
         notifyAdminChats(chatId);
         clearDB(chatId);
@@ -98,6 +107,7 @@ public class EndGameViewer {
         playerService.deleteAllByChatId(chatId);
         teamService.deleteAllByChatId(chatId);
         taskService.deleteAllByChatId(chatId);
+        pinnedTasksMessageService.deleteAllByChatId(chatId);
         chat.setGameStarted(false);
         chat.setCreatingGameName(null);
         chat.setMinutesSinceStart(0);
