@@ -319,6 +319,10 @@ public class Messages {
         return properties.get("messages.games.requestAdditionWithTask").getActualProperty();
     }
 
+    public String time() {
+        return properties.get("messages.games.time").getActualProperty();
+    }
+
     //-----------------API END-----------------
 
 }

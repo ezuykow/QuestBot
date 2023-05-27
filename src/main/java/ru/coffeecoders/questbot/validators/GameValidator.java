@@ -3,12 +3,9 @@ package ru.coffeecoders.questbot.validators;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.entities.GlobalChat;
-import ru.coffeecoders.questbot.exceptions.NonExistentGame;
 import ru.coffeecoders.questbot.exceptions.NonExistentQuestionGroup;
 import ru.coffeecoders.questbot.services.*;
 import ru.coffeecoders.questbot.viewers.EndGameViewer;
-
-import java.util.List;
 
 /**
  * @author ezuykow
@@ -116,9 +113,12 @@ public class GameValidator {
      * заканчивает игру
      * @author ezuykow
      */
-    public void validateGamesTimeEnded(List<GlobalChat> chats) {
-        chats.stream().filter(this::isTimeIsMax)
-                .forEach(endGameViewer::finishGameByTimeEnded);
+    public boolean validateGamesTimeEnded(GlobalChat chat, int minsToEnd) {
+        if (minsToEnd <= 0) {
+            endGameViewer.finishGameByTimeEnded(chat);
+            return true;
+        }
+        return false;
     }
 
     //-----------------API END-----------------
@@ -137,14 +137,4 @@ public class GameValidator {
         return globalChat.getCreatingGameName() != null
                 && !isGameStarted(globalChat);
     }
-
-    /**
-     * @author ezuykow
-     */
-    private boolean isTimeIsMax(GlobalChat chat) {
-        return chat.getMinutesSinceStart() ==
-                gameService.findByName(chat.getCreatingGameName())
-                        .orElseThrow(NonExistentGame::new).getMaxTimeMinutes();
-    }
-
 }

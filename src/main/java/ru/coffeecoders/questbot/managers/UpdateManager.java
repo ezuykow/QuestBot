@@ -47,10 +47,8 @@ public class UpdateManager {
                     documentsManager.manageDocument(exUpdate);
             case CALLBACK ->
                     callbackManager.manageCallback(exUpdate);
-            case NEW_CHAT_MEMBER ->
-                    chatMembersManager.manageChatMembers(exUpdate, NEW_CHAT_MEMBER);
-            case LEFT_CHAT_MEMBER ->
-                    chatMembersManager.manageChatMembers(exUpdate, LEFT_CHAT_MEMBER);
+            case NEW_CHAT_MEMBER, LEFT_CHAT_MEMBER ->
+                    chatMembersManager.manageChatMembers(exUpdate, exUpdate.getUpdateType());
             case SIMPLE_MESSAGE ->
                     simpleMessageManager.manageMessage(exUpdate);
             case UNKNOWN -> {} //Игнорировать апдейт
@@ -64,11 +62,9 @@ public class UpdateManager {
      */
     public void performUpdateAfterSleep(Update update) {
         ExtendedUpdate exUpdate = new ExtendedUpdate(update);
-        switch (exUpdate.getUpdateType()) {
-            case NEW_CHAT_MEMBER ->
-                    chatMembersManager.manageChatMembers(exUpdate, NEW_CHAT_MEMBER);
-            case LEFT_CHAT_MEMBER ->
-                    chatMembersManager.manageChatMembers(exUpdate, LEFT_CHAT_MEMBER);
+        ExtendedUpdate.UpdateType type = exUpdate.getUpdateType();
+        if (type.equals(NEW_CHAT_MEMBER) || type.equals(LEFT_CHAT_MEMBER)) {
+            chatMembersManager.manageChatMembers(exUpdate, type);
         }
     }
 }

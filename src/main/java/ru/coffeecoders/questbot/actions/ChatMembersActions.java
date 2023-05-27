@@ -45,7 +45,6 @@ public class ChatMembersActions {
 
     /**
      * Если чат админский, то вызывает {@link ChatMembersActions#newChatMemberInAdminChat},
-     * Если чат не админский, то вызывает {@link ChatMembersActions#newChatMemberInGlobalChat}
      * @param newMember новый пользователь чата
      * @param chatId id чата
      * @author ezuykow
@@ -53,14 +52,11 @@ public class ChatMembersActions {
     public void newChatMember(User newMember, long chatId) {
         if (validator.isAdminChat(chatId)) {
             newChatMemberInAdminChat(newMember, chatId);
-        } else if (validator.isGlobalChat(chatId)){
-            newChatMemberInGlobalChat(newMember, chatId);
         }
     }
 
     /**
      * Если чат админский, то вызывает {@link ChatMembersActions#leftChatMemberInAdminChat},
-     * Если чат не админский, то вызывает {@link ChatMembersActions#leftChatMemberInGlobalChat}
      * @param leftMember пользователь, покинувший чат
      * @param chatId id чата
      * @author ezuykow
@@ -68,8 +64,6 @@ public class ChatMembersActions {
     public void leftChatMember(User leftMember, long chatId) {
         if (validator.isAdminChat(chatId)) {
             leftChatMemberInAdminChat(leftMember, chatId);
-        } else if (validator.isGlobalChat(chatId)){
-            leftChatMemberInGlobalChat(leftMember, chatId);
         }
     }
 
@@ -90,17 +84,6 @@ public class ChatMembersActions {
     /**
      * @author ezuykow
      */
-    private void newChatMemberInGlobalChat(User newMember, long chatId) {
-        StringBuilder nameSB = new StringBuilder(newMember.firstName());
-        if (newMember.lastName() != null) {
-                nameSB.append(" ").append(newMember.lastName());
-        }
-        msgSender.send(chatId, messages.welcomePrefix() + nameSB + messages.welcomeSuffix());
-    }
-
-    /**
-     * @author ezuykow
-     */
     private void leftChatMemberInAdminChat(User leftMember, long chatId) {
         if (hasItMemberInAdminChatsMembers(chatId, leftMember)) {
             deleteAdminFromChat(chatId, leftMember);
@@ -110,17 +93,6 @@ public class ChatMembersActions {
             nameSB.append(" ").append(leftMember.lastName());
         }
         msgSender.send(chatId, nameSB + messages.byeAdmin());
-    }
-
-    /**
-     * @author ezuykow
-     */
-    private void leftChatMemberInGlobalChat(User leftMember, long chatId) {
-        StringBuilder nameSB = new StringBuilder(leftMember.firstName());
-        if (leftMember.lastName() != null) {
-            nameSB.append(" ").append(leftMember.lastName());
-        }
-        msgSender.send(chatId, messages.byePrefix() + nameSB + messages.byeSuffix());
     }
 
     /**
