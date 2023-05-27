@@ -2,10 +2,8 @@ package ru.coffeecoders.questbot.listener;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
-import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.GetUpdates;
-import com.pengrad.telegrambot.request.SetMyCommands;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 import ru.coffeecoders.questbot.logs.LogSender;
@@ -48,7 +46,6 @@ public class QuestBotUpdatesListener implements UpdatesListener {
     @PostConstruct
     public void init() {
         propertyService.fillProperties();
-        bot.execute(createSetMyCommands());
         bot.setUpdatesListener(this, createGetUpdates());
     }
 
@@ -90,36 +87,6 @@ public class QuestBotUpdatesListener implements UpdatesListener {
         });
         msgSender.sendDeleteAllMessageToDelete();
     }
-
-    /**
-     * @author ezuykow
-     */
-    private SetMyCommands createSetMyCommands() {
-        return new SetMyCommands(
-                new BotCommand("regteam", "(Игрок) Создать команду"),
-                new BotCommand("jointeam", "(Игрок) Вступить в команду"),
-                new BotCommand("questions", "(Админ) Показать актуальные вопросы"),
-                new BotCommand("info", "(Админ) Показать информацию об игре - таблицу лидеров и оставшееся время"),
-                new BotCommand("preparegame", "(Админ) Запустить подготовку к игре"),
-                new BotCommand("dropprepare", "(Админ) Прервать подготовку к игре"),
-                new BotCommand("startgame", "(Админ) Запустить подготовленную игру"),
-                new BotCommand("dropgame", "(Админ) Запустить подготовленную игру"),
-                new BotCommand("deletechat", "(Админ) Удалить этот чат из системы"),
-                new BotCommand("showgames", "(Админ) Показать все игры"),
-                new BotCommand("showquestions", "(Админ) Показать все вопросы"),
-                new BotCommand("newgame", "(Админ) Создать новую игру"),
-                new BotCommand("stopbot", "(Админ) Остановить бота"),
-                new BotCommand("adminon", "(Владелец) Сделать текущий чат администраторским"),
-                new BotCommand("adminoff", "(Владелец) Сделать текущий чат не администраторским"),
-                new BotCommand("promote", "(Владелец) Назначить администратором бота"),
-                new BotCommand("demote", "(Владелец) Понизить администратора бота"),
-                new BotCommand("properties", "(Владелец) Показать изменяемые параметры бота")
-        );
-    }
-
-//    private String myCommandsMsg() {
-//        return "";
-//    }
 
     /**
      * @author ezuykow

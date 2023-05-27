@@ -19,8 +19,6 @@ class CommandsManagerTest {
     @Mock
     private AdminsCommandsManager adminsCommandsManager;
     @Mock
-    private PlayersCommandsManager playersCommandsManager;
-    @Mock
     private OwnerCommandsManager ownerCommandsManager;
     @Mock
     private ChatAndUserValidator validator;

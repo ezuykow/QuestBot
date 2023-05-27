@@ -31,6 +31,8 @@ public class OwnerCommandsManager {
             case PROMOTE -> actions.validateAndPerformPromoteCmd(chatId);
             case DEMOTE -> actions.validateAndPerformDemoteCmd(chatId);
             case PROPERTIES -> actions.validateAndPerformPropertiesCmd(chatId);
+            case STOPBOT -> actions.performStopBotCmd();
+
         }
     }
 

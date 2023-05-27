@@ -24,6 +24,7 @@ public class AdminsCommandsManager {
         long senderAdminId = update.getMessageFromUserId();
         long chatId = update.getMessageChatId();
         switch (cmd) {
+            case EMPTY -> cmdActions.showMyCommands(chatId);
             case INFO -> cmdActions.showInfo(chatId);
             case QUESTIONS -> cmdActions.showQuestions(chatId);
             case SHOWGAMES -> cmdActions.performShowGamesCmd(senderAdminId, chatId);
@@ -34,7 +35,6 @@ public class AdminsCommandsManager {
             case DROPPREPARE -> cmdActions.performDropPrepareGameCmd(senderAdminId, chatId);
             case STARTGAME -> cmdActions.performStartGameCmd(senderAdminId, chatId);
             case DROPGAME -> cmdActions.performDropGameCmd(senderAdminId, chatId);
-            case STOPBOT -> cmdActions.performStopBotCmd();
         }
     }
 }

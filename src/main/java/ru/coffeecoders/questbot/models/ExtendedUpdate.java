@@ -10,7 +10,7 @@ import static ru.coffeecoders.questbot.models.ExtendedUpdate.UpdateType.*;
  */
 public class ExtendedUpdate{
 
-    private static final String TEXT_COMMAND_REGEXP = "/.+";
+    private static final String TEXT_COMMAND_REGEXP = "/.*";
 
     public enum UpdateType {
         SIMPLE_MESSAGE,

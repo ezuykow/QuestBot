@@ -9,6 +9,7 @@ import ru.coffeecoders.questbot.entities.AdminChatMembers;
 import ru.coffeecoders.questbot.entities.GlobalChat;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.keyboards.PromoteOrDemoteUserKeyboard;
+import ru.coffeecoders.questbot.managers.ApplicationShutdownManager;
 import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.managers.RestrictingManager;
 import ru.coffeecoders.questbot.messages.MessageSender;
@@ -41,11 +42,14 @@ public class OwnerCommandsActions {
     private final MessageSender msgSender;
     private final BlockingManager blockingManager;
     private final RestrictingManager restrictingManager;
+    private final ApplicationShutdownManager applicationShutdownManager;
 
     public OwnerCommandsActions(ChatAndUserValidator validator, AdminService adminService,
                                 GlobalChatService globalChatService, AdminChatService adminChatService,
                                 AdminChatMembersService adminChatMembersService,
-                                PropertiesViewer propertyViewer, Messages messages, MessageSender msgSender, BlockingManager blockingManager, RestrictingManager restrictingManager)
+                                PropertiesViewer propertyViewer, Messages messages, MessageSender msgSender,
+                                BlockingManager blockingManager, RestrictingManager restrictingManager,
+                                ApplicationShutdownManager applicationShutdownManager)
     {
         this.validator = validator;
         this.adminService = adminService;
@@ -57,6 +61,7 @@ public class OwnerCommandsActions {
         this.msgSender = msgSender;
         this.blockingManager = blockingManager;
         this.restrictingManager = restrictingManager;
+        this.applicationShutdownManager = applicationShutdownManager;
     }
 
     //-----------------API START-----------------
@@ -144,6 +149,15 @@ public class OwnerCommandsActions {
         } else {
             msgSender.send(chatId, messages.chatIsNotAdmin());
         }
+    }
+
+    /**
+     * Вызывает {@link MessageSender#sendStopBot} и {@link ApplicationShutdownManager#stopBot}
+     * @author ezuykow
+     */
+    public void performStopBotCmd() {
+        msgSender.sendStopBot();
+        applicationShutdownManager.stopBot();
     }
 
     //-----------------API END-----------------

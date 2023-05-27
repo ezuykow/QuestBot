@@ -18,19 +18,16 @@ public class CommandsManager {
 
     private final OwnerCommandsManager ownerCommandsManager;
     private final AdminsCommandsManager adminsCommandsManager;
-    private final PlayersCommandsManager playersCommandsManager;
     private final ChatAndUserValidator validator;
     private final MessageSender msgSender;
     private final Messages messages;
     private long chatId;
 
     public CommandsManager(OwnerCommandsManager ownerCommandsManager, AdminsCommandsManager adminsCommandsManager,
-                           PlayersCommandsManager playersCommandsManager, ChatAndUserValidator validator,
-                           MessageSender msgSender, Messages messages)
+                           ChatAndUserValidator validator, MessageSender msgSender, Messages messages)
     {
         this.ownerCommandsManager = ownerCommandsManager;
         this.adminsCommandsManager = adminsCommandsManager;
-        this.playersCommandsManager = playersCommandsManager;
         this.validator = validator;
         this.msgSender = msgSender;
         this.messages = messages;
@@ -47,7 +44,12 @@ public class CommandsManager {
         chatId = update.getMessageChatId();
         String textCommand = getTextCommand(update);
         try {
-            Command cmd = Command.valueOf(textCommand);
+            Command cmd;
+            if (textCommand.isEmpty()) {
+                cmd = Command.EMPTY;
+            } else {
+                cmd = Command.valueOf(textCommand);
+            }
             manageCommandByAttribute(update, cmd);
         } catch (IllegalArgumentException e) {
             msgSender.send(chatId, messages.invalidMsg());
@@ -66,7 +68,6 @@ public class CommandsManager {
             case OWNER -> checkAndSendOwnersCommand(update, cmd);
             case ADMIN -> checkAndSendAdminsCommand(update, cmd);
             case GLOBALADMIN -> checkAndSendGlobalAdminsCommand(update, cmd);
-            case PLAYER -> checkAndSendPlayersCommand(update, cmd);
         }
     }
 
@@ -79,14 +80,6 @@ public class CommandsManager {
             ownerCommandsManager.manageCommand(update.getMessageChatId(), cmd);
         } else {
             msgSender.send(chatId, messages.isOwnerCommand());
-        }
-    }
-
-    private void checkAndSendPlayersCommand(ExtendedUpdate update, Command cmd) {
-        if (validator.isGlobalChat(chatId)) {
-            playersCommandsManager.manageCommand(update, cmd);
-        } else {
-            msgSender.send(chatId, messages.gameCmdInAdminChat());
         }
     }
 
@@ -116,9 +109,13 @@ public class CommandsManager {
      */
     private String getTextCommand(ExtendedUpdate update) {
         String text = update.getMessageText();
-        return text.trim().
-                substring(1, (text.contains("@") ? text.indexOf("@") : text.length()))
-                .toUpperCase();
+        if (text.length() > 1) {
+            return text.trim().
+                    substring(1, (text.contains("@") ? text.indexOf("@") : text.length()))
+                    .toUpperCase();
+        } else {
+            return "";
+        }
     }
 
     /**

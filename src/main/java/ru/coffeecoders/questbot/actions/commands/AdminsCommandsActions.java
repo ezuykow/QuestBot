@@ -7,9 +7,9 @@ import ru.coffeecoders.questbot.entities.Team;
 import ru.coffeecoders.questbot.exceptions.NonExistentCallbackQuery;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.exceptions.NonExistentGame;
-import ru.coffeecoders.questbot.managers.ApplicationShutdownManager;
 import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.managers.RestrictingManager;
+import ru.coffeecoders.questbot.managers.commands.Command;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.*;
@@ -27,7 +27,6 @@ public class AdminsCommandsActions {
     private final TasksViewer tasksViewer;
     private final BlockingManager blockingManager;
     private final RestrictingManager restrictingManager;
-    private final ApplicationShutdownManager applicationShutdownManager;
     private final GlobalChatService globalChatService;
     private final GameService gameService;
     private final TeamService teamService;
@@ -42,7 +41,6 @@ public class AdminsCommandsActions {
 
     private AdminsCommandsActions(GamesViewer gamesViewer, TasksViewer tasksViewer, MessageSender msgSender,
                                   QuestionsViewer questionsViewer, BlockingManager blockingManager,
-                                  ApplicationShutdownManager applicationShutdownManager,
                                   RestrictingManager restrictingManager, GlobalChatService globalChatService,
                                   GameService gameService, TeamService teamService, TaskService taskService,
                                   PlayerService playerService, PrepareGameViewer prepareGameViewer,
@@ -53,7 +51,6 @@ public class AdminsCommandsActions {
         this.tasksViewer = tasksViewer;
         this.msgSender = msgSender;
         this.questionsViewer = questionsViewer;
-        this.applicationShutdownManager = applicationShutdownManager;
         this.blockingManager = blockingManager;
         this.restrictingManager = restrictingManager;
         this.globalChatService = globalChatService;
@@ -69,6 +66,13 @@ public class AdminsCommandsActions {
     }
 
     //-----------------API START-----------------
+
+    /**
+     * @author ezuykow
+     */
+    public void showMyCommands(long chatId) {
+        msgSender.send(chatId, Command.MY_COMMANDS);
+    }
 
     /**
      * Собирает сообщение из пар название команды-счет и передает его
@@ -195,15 +199,6 @@ public class AdminsCommandsActions {
         if (gameValidator.isGameStarted(chatId)) {
             endGameViewer.finishGameByAdminsCmd(chatId, adminUsername);
         }
-    }
-
-    /**
-     * Вызывает {@link MessageSender#sendStopBot} и {@link ApplicationShutdownManager#stopBot}
-     * @author ezuykow
-     */
-    public void performStopBotCmd() {
-        msgSender.sendStopBot();
-        applicationShutdownManager.stopBot();
     }
 
     //-----------------API END-----------------

@@ -85,11 +85,11 @@ class AdminsCommandsActionsTest {
         verify(msgSender).sendLeaveChat(chatId);
         verify(globalChatService).deleteById(chatId);
     }
-
+/*
     @Test
     void performStopBotCmdTest() {
         actions.performStopBotCmd();
         verify(msgSender).sendStopBot();
         verify(applicationShutdownManager).stopBot();
-    }
+    }*/
 }
