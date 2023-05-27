@@ -153,22 +153,6 @@ public class Messages {
 
     //members messages
 
-    public String welcomePrefix() {
-        return properties.get("messages.members.welcomePrefix").getActualProperty();
-    }
-
-    public String welcomeSuffix() {
-        return properties.get("messages.members.welcomeSuffix").getActualProperty();
-    }
-
-    public String byePrefix() {
-        return properties.get("messages.members.byePrefix").getActualProperty();
-    }
-
-    public String byeSuffix() {
-        return properties.get("messages.members.byeSuffix").getActualProperty();
-    }
-
     public String welcomeAdminPrefix() {
         return properties.get("messages.members.welcomeAdminPrefix").getActualProperty();
     }

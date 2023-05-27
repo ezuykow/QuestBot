@@ -117,6 +117,10 @@ public class QuestBotUpdatesListener implements UpdatesListener {
         );
     }
 
+//    private String myCommandsMsg() {
+//        return "";
+//    }
+
     /**
      * @author ezuykow
      */

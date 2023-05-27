@@ -243,34 +243,6 @@ INSERT INTO properties VALUES
     );
 INSERT INTO properties VALUES
     (
-        'messages.members.welcomePrefix',
-        'Префикс сообщения, отправляемого ботом, когда в общий чат вступил новый игрок',
-        'Поприветствуем нового игрока - ',
-        'Поприветствуем нового игрока - '
-    );
-INSERT INTO properties VALUES
-    (
-        'messages.members.welcomeSuffix',
-        'Суффикс сообщения, отправляемого ботом, когда в общий чат вступил новый игрок',
-        '! Приятного времяпрепровождения и удачи на игре!',
-        '! Приятного времяпрепровождения и удачи на игре!'
-    );
-INSERT INTO properties VALUES
-    (
-        'messages.members.byePrefix',
-        'Префикс сообщения, отправляемого ботом, когда общий чат покинул игрок',
-        'Пока, ',
-        'Пока, '
-    );
-INSERT INTO properties VALUES
-    (
-        'messages.members.byeSuffix',
-        'Суффикс сообщения, отправляемого ботом, когда общий чат покинул игрок',
-        ', надеемся вы еще вернетесь!',
-        ', надеемся вы еще вернетесь!'
-    );
-INSERT INTO properties VALUES
-    (
         'messages.members.welcomeAdminPrefix',
         'Префикс сообщения, отправляемого ботом, когда в админский чат вступил новый помощник',
         'Новый помощник - ',

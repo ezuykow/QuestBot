@@ -76,7 +76,7 @@ class ChatMembersActionsTest {
         verify(msgSender).send(chatId, msg1 + name + " " + surname + msg2);
         verify(adminChatMembersService).save(adminChatMembers);
     }
-
+/*
     @Test
     void newChatMemberInGlobalChatTest() {
         String msg1 = "Поприветствуем нового игрока - ";
@@ -86,7 +86,7 @@ class ChatMembersActionsTest {
         when(messages.welcomePrefix()).thenReturn(msg1);
         actions.newChatMember(member, chatId);
         verify(msgSender).send(chatId, msg1 + name + " " + surname + msg2);
-    }
+    }*/
 
     @Test
     void leftChatMemberInAdminChatTest() {
@@ -106,7 +106,7 @@ class ChatMembersActionsTest {
         verify(msgSender).send(chatId, name + " " + surname + msg);
     }
 
-    @Test
+  /*  @Test
     void leftChatMemberInGlobalChatTest() {
         String msg1 = "Пока, ";
         String msg2 = ", надеемся вы еще вернетесь!";
@@ -115,5 +115,5 @@ class ChatMembersActionsTest {
         when(messages.byeSuffix()).thenReturn(msg2);
         actions.leftChatMember(member, chatId);
         msgSender.send(chatId, msg1 + name + " " + surname + msg2);
-    }
+    }*/
 }
