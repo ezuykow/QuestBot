@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 public class GameService {
 
-    Logger logger = LoggerFactory.getLogger(GameService.class);
+    final Logger logger = LoggerFactory.getLogger(GameService.class);
 
     private final GameRepository gameRepository;
 

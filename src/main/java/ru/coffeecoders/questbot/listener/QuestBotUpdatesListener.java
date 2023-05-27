@@ -85,7 +85,6 @@ public class QuestBotUpdatesListener implements UpdatesListener {
                 exceptionManager.logException(e);
             }
         });
-        msgSender.sendDeleteAllMessageToDelete();
     }
 
     /**

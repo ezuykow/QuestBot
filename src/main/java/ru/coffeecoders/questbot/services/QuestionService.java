@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 public class QuestionService {
 
-    Logger logger = LoggerFactory.getLogger(QuestionService.class);
+    final Logger logger = LoggerFactory.getLogger(QuestionService.class);
 
     private final QuestionRepository repository;
 

@@ -15,7 +15,7 @@ import java.util.Optional;
 @Service
 public class NewGameCreatingStateService {
 
-    Logger logger = LoggerFactory.getLogger(NewGameCreatingStateService.class);
+    final Logger logger = LoggerFactory.getLogger(NewGameCreatingStateService.class);
 
     private final NewGameCreatingStateRepository repository;
 

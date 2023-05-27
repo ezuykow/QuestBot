@@ -15,7 +15,7 @@ import java.util.Optional;
 @Service
 public class AdminChatMembersService {
 
-    Logger logger = LoggerFactory.getLogger(AdminChatMembersService.class);
+    final Logger logger = LoggerFactory.getLogger(AdminChatMembersService.class);
 
     private final AdminChatMembersRepository repository;
 

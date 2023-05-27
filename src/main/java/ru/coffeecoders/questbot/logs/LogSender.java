@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LogSender {
 
-    Logger logger = LoggerFactory.getLogger(LogSender.class);
+    final Logger logger = LoggerFactory.getLogger(LogSender.class);
 
     //-----------------API START-----------------
 

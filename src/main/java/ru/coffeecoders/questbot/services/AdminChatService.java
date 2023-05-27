@@ -12,7 +12,7 @@ import java.util.Optional;
 @Service
 public class AdminChatService {
 
-    Logger logger = LoggerFactory.getLogger(AdminChatService.class);
+    final Logger logger = LoggerFactory.getLogger(AdminChatService.class);
 
     private final AdminChatRepository repository;
 

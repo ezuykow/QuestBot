@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 public class TeamService {
 
-    Logger logger = LoggerFactory.getLogger(TeamService.class);
+    final Logger logger = LoggerFactory.getLogger(TeamService.class);
 
     private final TeamRepository repository;
 
@@ -55,9 +55,23 @@ public class TeamService {
     /**
      * @author ezuykow
      */
+    public void saveAll(List<Team> teams) {
+        repository.saveAll(teams);
+    }
+
+    /**
+     * @author ezuykow
+     */
     @Transactional
     public void deleteAllByChatId(long chatId) {
         logger.info("Teams with chatId = {} has been deleted", chatId);
         repository.deleteAllByChatId(chatId);
+    }
+
+    /**
+     * @author ezuykow
+     */
+    public List<String> getTeamNamesByChatId(long chatId) {
+        return repository.findTeamNamesByChatId(chatId);
     }
 }

@@ -1,5 +1,6 @@
 package ru.coffeecoders.questbot.actions.commands;
 
+import com.pengrad.telegrambot.model.User;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.entities.GlobalChat;
@@ -36,6 +37,7 @@ public class AdminsCommandsActions {
     private final EndGameViewer endGameViewer;
     private final ChatAndUserValidator chatValidator;
     private final GameValidator gameValidator;
+    private final TeamsViewer teamsViewer;
     private final MessageSender msgSender;
     private final Messages messages;
 
@@ -45,7 +47,7 @@ public class AdminsCommandsActions {
                                   GameService gameService, TeamService teamService, TaskService taskService,
                                   PlayerService playerService, PrepareGameViewer prepareGameViewer,
                                   EndGameViewer endGameViewer, ChatAndUserValidator chatValidator,
-                                  GameValidator gameValidator, Messages messages)
+                                  GameValidator gameValidator, TeamsViewer teamsViewer, Messages messages)
     {
         this.gamesViewer = gamesViewer;
         this.tasksViewer = tasksViewer;
@@ -62,6 +64,7 @@ public class AdminsCommandsActions {
         this.endGameViewer = endGameViewer;
         this.chatValidator = chatValidator;
         this.gameValidator = gameValidator;
+        this.teamsViewer = teamsViewer;
         this.messages = messages;
     }
 
@@ -77,8 +80,13 @@ public class AdminsCommandsActions {
     /**
      * @author ezuykow
      */
-    public void performRegTeamCmd(long chatId) {
-
+    public void performRegTeamCmd(int msgId, long chatId, long senderAdminId) {
+        if (gameValidator.isGameCreating(chatId) && !gameValidator.isGameStarted(chatId)) {
+            User senderAdmin = msgSender.getChatMember(chatId, senderAdminId);
+            msgSender.sendForceReply(chatId, "@" + senderAdmin.username() + messages.enterTeamCount(),
+                    msgId);
+        }
+        msgSender.sendDelete(chatId, msgId);
     }
 
     /**
@@ -238,6 +246,7 @@ public class AdminsCommandsActions {
      */
     private void dropPrepareGame(long chatId) {
         GlobalChat chat = globalChatService.findById(chatId).orElseThrow(NonExistentChat::new);
+        teamsViewer.deleteShowedTeamsChooser(chatId);
         chat.setCreatingGameName(null);
         globalChatService.save(chat);
         taskService.deleteAllByChatId(chatId);
@@ -252,12 +261,17 @@ public class AdminsCommandsActions {
         GlobalChat chat = globalChatService.findById(chatId).orElseThrow(NonExistentChat::new);
         chat.setGameStarted(true);
         globalChatService.save(chat);
+
         Game game = gameService.findByName(chat.getCreatingGameName()).orElseThrow(NonExistentGame::new);
+
         msgSender.send(chatId,
                 String.format(messages.gameStartedHint(),
                         game.getGameName(),
                         game.getMaxTimeMinutes(),
                         game.getMaxPerformedQuestionsCount()));
+
         tasksViewer.createAndSendTasksMsg(chatId, game.getStartCountTasks());
+        teamsViewer.deleteShowedTeamsChooser(chatId);
+        teamsViewer.sendCommandsToAdmins(chatId);
     }
 }

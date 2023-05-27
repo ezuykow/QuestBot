@@ -11,7 +11,6 @@ import ru.coffeecoders.questbot.entities.Team;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.services.GlobalChatService;
-import ru.coffeecoders.questbot.services.MessageToDeleteService;
 import ru.coffeecoders.questbot.services.PlayerService;
 import ru.coffeecoders.questbot.services.TeamService;
 
@@ -30,8 +29,6 @@ class SimpleMessageActionsTest {
     private GlobalChatService globalChatService;
     @Mock
     private MessageSender msgSender;
-    @Mock
-    private MessageToDeleteService messageToDeleteService;
     @Mock
     private ExtendedUpdate update;
     @Mock
@@ -59,7 +56,7 @@ class SimpleMessageActionsTest {
         Team team = new Team(teamName, gameName, 0, chatId);
         when(update.hasMessageText()).thenReturn(true);
         when(teamService.findByTeamName(teamName)).thenReturn(Optional.of(team));
-        actions.registerNewTeam(update);
+        actions.registerNewTeams(update);
         verify(msgSender).send(update.getMessageChatId(), "Команда \"" + teamName + "\" уже существует!");
     }
 }

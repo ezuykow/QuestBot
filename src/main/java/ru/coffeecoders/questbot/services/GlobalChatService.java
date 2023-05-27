@@ -12,7 +12,7 @@ import java.util.Optional;
 @Service
 public class GlobalChatService {
 
-    Logger logger = LoggerFactory.getLogger(GlobalChatService.class);
+    final Logger logger = LoggerFactory.getLogger(GlobalChatService.class);
 
     private final GlobalChatRepository repository;
 
@@ -35,13 +35,6 @@ public class GlobalChatService {
     public GlobalChat save(GlobalChat globalChat) {
         logger.info("GlobalChat = {} has been saved", globalChat);
         return repository.save(globalChat);
-    }
-
-    /**
-     * @author ezuykow
-     */
-    public void saveAll(List<GlobalChat> chats) {
-        repository.saveAll(chats);
     }
 
     /**

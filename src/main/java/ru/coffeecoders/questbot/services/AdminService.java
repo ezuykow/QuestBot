@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 public class AdminService {
 
-    Logger logger = LoggerFactory.getLogger(AdminService.class);
+    final Logger logger = LoggerFactory.getLogger(AdminService.class);
 
     private final AdminRepository repository;
 

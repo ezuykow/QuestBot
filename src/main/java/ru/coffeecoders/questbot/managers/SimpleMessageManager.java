@@ -2,10 +2,12 @@ package ru.coffeecoders.questbot.managers;
 
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.actions.SimpleMessageActions;
-import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
+import ru.coffeecoders.questbot.properties.PropertySeed;
 import ru.coffeecoders.questbot.properties.viewer.PropertiesViewer;
 import ru.coffeecoders.questbot.validators.GameValidator;
+
+import java.util.Map;
 
 /**
  * @author ezuykow
@@ -17,15 +19,16 @@ public class SimpleMessageManager {
     private final NewGameManager newGameManager;
     private final GameValidator gameValidator;
     private final PropertiesViewer propertiesViewer;
-    private final Messages messages;
+    private final Map<String, PropertySeed> properties;
 
     public SimpleMessageManager(SimpleMessageActions actions, NewGameManager newGameManager,
-                                GameValidator gameValidator, PropertiesViewer propertiesViewer, Messages messages) {
+                                GameValidator gameValidator, PropertiesViewer propertiesViewer,
+                                Map<String, PropertySeed> properties) {
         this.actions = actions;
         this.newGameManager = newGameManager;
         this.gameValidator = gameValidator;
         this.propertiesViewer = propertiesViewer;
-        this.messages = messages;
+        this.properties = properties;
     }
 
     //-----------------API START-----------------
@@ -57,11 +60,8 @@ public class SimpleMessageManager {
     private void manageReplyToMessage(ExtendedUpdate update) {
         String replyMsgText = update.getReplyToMessage().text();
         if (replyMsgText != null) {
-            if (replyMsgText.contains(messages.enterTeamName())) {
-                actions.registerNewTeam(update);
-            }
-            if (replyMsgText.contains(messages.chooseYourTeam())) {
-                actions.joinTeam(update, update.getMessageText());
+            if (replyMsgText.contains(properties.get("messages.players.enterTeamCount").getActualProperty())) {
+                actions.registerNewTeams(update);
             }
             if (replyMsgText.contains("новое значение параметра")) {
                 propertiesViewer.performEditProperty(update, update.getMessageText());

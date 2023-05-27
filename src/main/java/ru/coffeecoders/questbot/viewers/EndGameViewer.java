@@ -151,7 +151,7 @@ public class EndGameViewer {
     private void notifyAdminChats(long chatId) {
         String results = results(chatId);
         Chat chat = msgSender.sendGetChat(chatId);
-        String text = "В чате @" + chat.username() + " закончена игра!\n";
+        String text = "In chat @" + chat.username() + " the game was ended!\n";
         List<AdminChat> chats = adminChatService.findAll();
         chats.forEach(c -> {
             msgSender.send(c.getTgAdminChatId(), text);

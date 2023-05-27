@@ -25,4 +25,7 @@ public interface TeamRepository extends JpaRepository<Team, String> {
     @Modifying
     @Query(value = "DELETE FROM teams WHERE chat_id=:chatId", nativeQuery = true)
     void deleteAllByChatId(long chatId);
+
+    @Query(value = "SELECT team_name FROM teams WHERE chat_id=:chatId",nativeQuery = true)
+    List<String> findTeamNamesByChatId(long chatId);
 }

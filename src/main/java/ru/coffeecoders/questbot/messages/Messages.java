@@ -89,10 +89,6 @@ public class Messages {
         return properties.get("messages.admins.adminCmdInGlobalChat").getActualProperty();
     }
 
-    public String gameCmdInAdminChat() {
-        return properties.get("messages.admins.gameCmdInAdminChat").getActualProperty();
-    }
-
     public String isOwnerCommand() {
         return properties.get("messages.admins.isOwnerCommand").getActualProperty();
     }
@@ -139,16 +135,12 @@ public class Messages {
         return properties.get("messages.players.haventStartedGame").getActualProperty();
     }
 
-    public String enterTeamName() {
-        return properties.get("messages.players.enterTeamName").getActualProperty();
+    public String enterTeamCount() {
+        return properties.get("messages.players.enterTeamCount").getActualProperty();
     }
 
-    public String noTeamsRegisteredYet() {
-        return properties.get("messages.players.noTeamsRegisteredYet").getActualProperty();
-    }
-
-    public String chooseYourTeam() {
-        return properties.get("messages.players.chooseYourTeam").getActualProperty();
+    public String teamChooserHat() {
+        return properties.get("messages.players.teamChooserHat").getDefaultProperty();
     }
 
     //members messages

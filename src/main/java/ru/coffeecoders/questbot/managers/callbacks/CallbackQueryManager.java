@@ -17,6 +17,7 @@ public class CallbackQueryManager {
         DEMOTE_USER("DemoteUser.*"),
         QUESTION_GROUP_SELECTED("QuestionGroupSelected.*"),
         PREPARE_GAME("PrepareGame.*"),
+        TEAM_CHOOSER("TeamChooser.*"),
         PROPERTIES("PropertiesViewer.*"),
         UNKNOWN("");
 
@@ -34,6 +35,7 @@ public class CallbackQueryManager {
     private final NewGameCreatingCallbackManager newGameCreatingCallbackManager;
     private final PrepareGameCallbackManager prepareGameCallbackManager;
     private final PropertiesViewerCallbackManager propertiesViewerCallbackManager;
+    private final TeamChooserCallbackManager teamChooserCallbackManager;
 
     public CallbackQueryManager(QuestionViewerCallbackManager questionViewerCallbackManager,
                                 GamesViewerCallbackManager gamesViewerCallbackManager,
@@ -41,7 +43,8 @@ public class CallbackQueryManager {
                                 DemoteUserCallbackManager demoteUserCallbackManager,
                                 NewGameCreatingCallbackManager newGameCreatingCallbackManager,
                                 PrepareGameCallbackManager prepareGameCallbackManager,
-                                PropertiesViewerCallbackManager propertiesViewerCallbackManager)
+                                PropertiesViewerCallbackManager propertiesViewerCallbackManager,
+                                TeamChooserCallbackManager teamChooserCallbackManager)
     {
         this.questionViewerCallbackManager = questionViewerCallbackManager;
         this.gamesViewerCallbackManager = gamesViewerCallbackManager;
@@ -50,6 +53,7 @@ public class CallbackQueryManager {
         this.newGameCreatingCallbackManager = newGameCreatingCallbackManager;
         this.prepareGameCallbackManager = prepareGameCallbackManager;
         this.propertiesViewerCallbackManager = propertiesViewerCallbackManager;
+        this.teamChooserCallbackManager = teamChooserCallbackManager;
     }
 
     //-----------------API START-----------------
@@ -73,6 +77,7 @@ public class CallbackQueryManager {
             case QUESTION_GROUP_SELECTED -> newGameCreatingCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
             case PREPARE_GAME -> prepareGameCallbackManager.manageCallback(id, senderUserId, chatId, msgId, data);
             case PROPERTIES -> propertiesViewerCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
+            case TEAM_CHOOSER -> teamChooserCallbackManager.manageCallback(senderUserId, chatId, msgId, data);
             case UNKNOWN -> {} //Игнорируем неизвестный калбак
         }
     }

@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 public class PlayerService {
 
-    Logger logger = LoggerFactory.getLogger(PlayerService.class);
+    final Logger logger = LoggerFactory.getLogger(PlayerService.class);
 
     private final PlayerRepository repository;
 
@@ -25,6 +25,13 @@ public class PlayerService {
         List<Player> list = repository.findAll();
         logger.info("Players are {} displaying", list.isEmpty() ? "not" : "");
         return list;
+    }
+
+    /**
+     * @author ezuykow
+     */
+    public List<Player> findAllByChatId(long chatId) {
+        return repository.findAllByChatId(chatId);
     }
 
     public Optional<Player> findById(long id) {
