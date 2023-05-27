@@ -25,6 +25,7 @@ public class AdminsCommandsManager {
         long chatId = update.getMessageChatId();
         switch (cmd) {
             case EMPTY -> cmdActions.showMyCommands(chatId);
+            case REGTEAM -> cmdActions.performRegTeamCmd(chatId);
             case INFO -> cmdActions.showInfo(chatId);
             case QUESTIONS -> cmdActions.showQuestions(chatId);
             case SHOWGAMES -> cmdActions.performShowGamesCmd(senderAdminId, chatId);

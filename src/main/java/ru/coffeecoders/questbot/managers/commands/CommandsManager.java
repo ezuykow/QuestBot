@@ -96,7 +96,9 @@ public class CommandsManager {
      * @Redact: ezuykow
      */
     private void checkAndSendGlobalAdminsCommand(ExtendedUpdate update, Command cmd) {
-        deleteMessageWithCommand(update);
+        if (cmd != Command.REGTEAM) {
+            deleteMessageWithCommand(update);
+        }
         if (validator.isAdmin(update.getMessageFromUserId())) {
             adminsCommandsManager.manageCommand(update, cmd);
         } else {

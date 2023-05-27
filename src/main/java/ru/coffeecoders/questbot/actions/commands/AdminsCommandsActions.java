@@ -75,6 +75,13 @@ public class AdminsCommandsActions {
     }
 
     /**
+     * @author ezuykow
+     */
+    public void performRegTeamCmd(long chatId) {
+
+    }
+
+    /**
      * Собирает сообщение из пар название команды-счет и передает его
      * в {@link MessageSender}
      * @param chatId id чата
