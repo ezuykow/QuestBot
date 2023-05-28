@@ -109,7 +109,7 @@ public class PropertiesViewer {
      */
     public void editProperty(long chatId, int propertyId) {
         msgSender.sendForceReply(chatId,
-                "В ответ на это сообщение введите новое значение параметра " + propertyId);
+                "В ответ на это сообщение введите новое значение параметра " + propertyId + 1);
     }
 
     /**
@@ -117,7 +117,7 @@ public class PropertiesViewer {
      */
     public void performEditProperty(ExtendedUpdate update, String messageText) {
         String replyText = update.getReplyToMessage().text();
-        int propertyId = Integer.parseInt(replyText.substring(replyText.lastIndexOf(" ") + 1));
+        int propertyId = Integer.parseInt(replyText.substring(replyText.lastIndexOf(" ") + 1)) - 1;
         confirmEdit(propertyId, messageText);
         endEdit(propertyId, update.getMessageChatId(), update.getMessageId(), update.getReplyToMessage().messageId());
     }
