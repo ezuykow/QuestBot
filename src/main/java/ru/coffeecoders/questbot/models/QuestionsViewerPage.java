@@ -80,7 +80,7 @@ public class QuestionsViewerPage {
         StringBuilder sb = new StringBuilder();
         sb.append(calcPage());
         for (int i = startIndex; i <= lastIndex; i++) {
-            sb.append(i + 1)
+            sb.append("✔️").append(i + 1)
                     .append(". ")
                     .append(questions.get(i).getQuestion())
                     .append("\n");

@@ -6,6 +6,7 @@ import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.exceptions.NonExistentGame;
 import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.managers.RestrictingManager;
+import ru.coffeecoders.questbot.messages.MessageBuilder;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.models.GameInfoPage;
@@ -30,9 +31,11 @@ public class GamesViewer {
     private final GameValidator validator;
     private final MessageSender msgSender;
     private final Messages messages;
+    private final MessageBuilder messageBuilder;
 
     public GamesViewer(GameService gameService, BlockingManager blockingManager, RestrictingManager restrictingManager,
-                       NewGameUtils utils, GameValidator validator, MessageSender msgSender, Messages messages) {
+                       NewGameUtils utils, GameValidator validator, MessageSender msgSender, Messages messages,
+                       MessageBuilder messageBuilder) {
         this.gameService = gameService;
         this.blockingManager = blockingManager;
         this.restrictingManager = restrictingManager;
@@ -40,6 +43,7 @@ public class GamesViewer {
         this.validator = validator;
         this.msgSender = msgSender;
         this.messages = messages;
+        this.messageBuilder = messageBuilder;
     }
 
     //-----------------API START-----------------
@@ -126,7 +130,8 @@ public class GamesViewer {
         if (!games.isEmpty()) {
             showGames(chatId, games, msgId);
         } else {
-            msgSender.send(chatId, messages.emptyGamesList());
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.emptyGamesList(), chatId));
             unBlockAndUnrestrictChat(chatId);
         }
     }

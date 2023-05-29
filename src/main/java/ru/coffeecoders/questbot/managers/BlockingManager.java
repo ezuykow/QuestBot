@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.AdminChat;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.logs.LogSender;
+import ru.coffeecoders.questbot.messages.MessageBuilder;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.services.AdminChatService;
 
@@ -16,11 +17,13 @@ public class BlockingManager {
 
     private final AdminChatService adminChatService;
     private final MessageSender msgSender;
+    private final MessageBuilder messageBuilder;
     private final LogSender logger;
 
-    public BlockingManager(AdminChatService adminChatService, MessageSender msgSender, LogSender logger) {
+    public BlockingManager(AdminChatService adminChatService, MessageSender msgSender, MessageBuilder messageBuilder, LogSender logger) {
         this.adminChatService = adminChatService;
         this.msgSender = msgSender;
+        this.messageBuilder = messageBuilder;
         this.logger = logger;
     }
 
@@ -70,7 +73,8 @@ public class BlockingManager {
         chat.setBlockedByAdminId(userId);
         adminChatService.save(chat);
         String text = (userId == -1) ? cause : buildName(chatId, userId) + cause;
-        msgSender.send(chatId, text);
+        msgSender.send(chatId,
+                messageBuilder.build(text, chatId));
     }
 
     /**

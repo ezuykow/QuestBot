@@ -5,6 +5,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.GlobalChat;
 import ru.coffeecoders.questbot.exceptions.NonExistentGame;
+import ru.coffeecoders.questbot.messages.MessageBuilder;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.GameService;
@@ -27,14 +28,16 @@ public class GamesTimer {
     private final GameValidator gameValidator;
     private final MessageSender messageSender;
     private final Messages messages;
+    private final MessageBuilder messageBuilder;
 
     public GamesTimer(GlobalChatService globalChatService, GameService gameService, GameValidator gameValidator,
-                      MessageSender messageSender, Messages messages) {
+                      MessageSender messageSender, Messages messages, MessageBuilder messageBuilder) {
         this.globalChatService = globalChatService;
         this.gameService = gameService;
         this.gameValidator = gameValidator;
         this.messageSender = messageSender;
         this.messages = messages;
+        this.messageBuilder = messageBuilder;
     }
 
     //-----------------API START-----------------
@@ -61,12 +64,12 @@ public class GamesTimer {
                 if (minsToEnd > 30) {
                     if (minsToEnd % 20 == 0) {
                         messageSender.send(c.getTgChatId(),
-                                String.format(messages.time(), minsToEnd));
+                                messageBuilder.build(messages.time(), c.getTgChatId()));
                     }
                 } else {
                     if (minsToEnd % 5 == 0) {
                         messageSender.send(c.getTgChatId(),
-                                String.format(messages.time(), minsToEnd));
+                                messageBuilder.build(messages.time(), c.getTgChatId()));
                     }
                 }
             }

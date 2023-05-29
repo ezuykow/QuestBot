@@ -5,6 +5,7 @@ import ru.coffeecoders.questbot.entities.Question;
 import ru.coffeecoders.questbot.exceptions.NonExistentQuestion;
 import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.managers.RestrictingManager;
+import ru.coffeecoders.questbot.messages.MessageBuilder;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.models.QuestionInfoPage;
@@ -29,6 +30,7 @@ public class QuestionsViewer {
     private final RestrictingManager restrictingManager;
     private final MessageSender msgSender;
     private final Messages messages;
+    private final MessageBuilder messageBuilder;
     private final PropertyService propertyService;
 
     private int defaultPageSize;
@@ -37,7 +39,8 @@ public class QuestionsViewer {
 
     public QuestionsViewer(QuestionService questionService, QuestionGroupService questionGroupService,
                            BlockingManager blockingManager, RestrictingManager restrictingManager,
-                           MessageSender msgSender, Messages messages, PropertyService propertyService)
+                           MessageSender msgSender, Messages messages, MessageBuilder messageBuilder,
+                           PropertyService propertyService)
     {
         this.questionService = questionService;
         this.questionGroupService = questionGroupService;
@@ -45,6 +48,7 @@ public class QuestionsViewer {
         this.restrictingManager = restrictingManager;
         this.msgSender = msgSender;
         this.messages = messages;
+        this.messageBuilder = messageBuilder;
         this.propertyService = propertyService;
     }
 
@@ -150,7 +154,8 @@ public class QuestionsViewer {
     private void validateAndCreateView(long chatId, int msgId, int pageSize, int startIndex) {
         if (questions.isEmpty()) {
             msgSender.sendDelete(chatId, msgId);
-            msgSender.send(chatId, messages.emptyList());
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.emptyList(), chatId));
             unblockAndUnrestrictChat(chatId);
         } else {
             createView(chatId, msgId, pageSize, startIndex);

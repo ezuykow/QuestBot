@@ -7,6 +7,7 @@ import ru.coffeecoders.questbot.actions.newgame.utils.NewGameUtils;
 import ru.coffeecoders.questbot.entities.NewGameCreatingState;
 import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.managers.RestrictingManager;
+import ru.coffeecoders.questbot.messages.MessageBuilder;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.NewGameCreatingStateService;
@@ -28,11 +29,12 @@ public class NewGameActions {
     private final RestrictingManager restrictingManager;
     private final MessageSender msgSender;
     private final Messages messages;
+    private final MessageBuilder messageBuilder;
 
     public NewGameActions(NewGameCreatingStateService newGameCreatingStateService,
                           QuestionsValidator questionsValidator, GameValidator gameValidator, NewGameRequests requests,
                           NewGameUtils utils, BlockingManager blockingManager, RestrictingManager restrictingManager,
-                          MessageSender msgSender, Messages messages) {
+                          MessageSender msgSender, Messages messages, MessageBuilder messageBuilder) {
         this.newGameCreatingStateService = newGameCreatingStateService;
         this.questionsValidator = questionsValidator;
         this.gameValidator = gameValidator;
@@ -42,6 +44,7 @@ public class NewGameActions {
         this.restrictingManager = restrictingManager;
         this.msgSender = msgSender;
         this.messages = messages;
+        this.messageBuilder = messageBuilder;
     }
 
     //-----------------API START-----------------
@@ -77,7 +80,8 @@ public class NewGameActions {
             addGameNameAndRequestNext(chatId, state, gameName, requestMsgId);
         } else {
             state.setGameName(gameName);
-            switchMsg(1, chatId, requestMsgId, state, messages.nameAlreadyTaken());
+            msgSender.edit(chatId, requestMsgId,
+                    messageBuilder.build(messages.nameAlreadyTaken() + messages.requestNewGameName(), chatId));
         }
     }
 
@@ -90,8 +94,8 @@ public class NewGameActions {
      */
     public void addSelectedQuestionGroupAndRefreshMsg(long chatId, int msgId, int questionGroupId) {
         InlineKeyboardMarkup kb = utils.addQuestionGroupAndGetKeyboard(chatId, questionGroupId);
-        utils.switchMsg(2, chatId, msgId, utils.getNewGameCreatingState(chatId),
-                messages.addedQuestionGroup(), kb);
+        msgSender.edit(chatId, msgId,
+                messageBuilder.build(messages.addedQuestionGroup(), chatId), kb);
     }
 
     /**
@@ -128,10 +132,11 @@ public class NewGameActions {
         {
                 addMaxQuestionsCountAndRequestNext(chatId, state, maxQuestionCount, requestMsgId);
         } else {
-            switchMsg(3, chatId, requestMsgId, state,
-                    (maxQuestionCount != null && maxQuestionCount > 0)
-                            ? messages.invalidQuestionCount()
-                            : messages.invalidNumber());
+            String msgHat = ((maxQuestionCount != null) && (maxQuestionCount > 0))
+                    ? messages.invalidQuestionCount()
+                    : messages.invalidNumber();
+            msgSender.edit(chatId, msgId,
+                    messageBuilder.build(msgHat + messages.requestMaxQuestionsCount(), chatId));
         }
     }
 
@@ -154,10 +159,11 @@ public class NewGameActions {
         if ((startCountTask != null && startCountTask > 0) && (startCountTask <= maxQuestionCount)) {
             addStartCountTasksAndRequestNext(chatId, state, startCountTask, requestMsgId);
         } else {
-            switchMsg(4, chatId, requestMsgId, state,
-                    (startCountTask != null && startCountTask > 0)
-                            ? messages.startQMoreMaxQ()
-                            : messages.invalidNumber());
+            String msgHat = ((startCountTask != null) && (startCountTask > 0))
+                    ? messages.startQMoreMaxQ()
+                    : messages.invalidNumber();
+            msgSender.edit(chatId, msgId,
+                    messageBuilder.build(msgHat + messages.requestStartCountTasks(), chatId));
         }
     }
 
@@ -182,10 +188,11 @@ public class NewGameActions {
         {
             addMaxPerformedAndRequestNext(chatId, state, maxPerformedQuestionsCount, requestMsgId);
         } else {
-            switchMsg(5, chatId, requestMsgId, state,
-                    (maxPerformedQuestionsCount != null && maxPerformedQuestionsCount > 0)
-                            ? messages.maxPerformedQMoreMaxQ()
-                            : messages.invalidNumber());
+            String msgHat = ((maxPerformedQuestionsCount != null) && (maxPerformedQuestionsCount > 0))
+                    ? messages.maxPerformedQMoreMaxQ()
+                    : messages.invalidNumber();
+            msgSender.edit(chatId, msgId,
+                    messageBuilder.build(msgHat + messages.requestMaxPerformedQuestionCount(), chatId));
         }
     }
 
@@ -208,7 +215,8 @@ public class NewGameActions {
         if (minQuestionsInGame != null && minQuestionsInGame >= 0) {
             addMinQuestionAndRequestNext(state, chatId, minQuestionsInGame, requestMsgId);
         } else {
-            switchMsg(6, chatId, requestMsgId, state, messages.invalidNumber());
+            msgSender.edit(chatId, msgId,
+                    messageBuilder.build(messages.invalidNumber() + messages.requestMinQuestionsCountInGame(), chatId));
         }
     }
 
@@ -231,7 +239,8 @@ public class NewGameActions {
         if (questionsToAdd != null && questionsToAdd >= 0) {
             addQuestionsToAddAndPerformNext(state, chatId, questionsToAdd, requestMsgId);
         } else {
-            switchMsg(7, chatId, requestMsgId, state, messages.invalidNumber());
+            msgSender.edit(chatId, msgId,
+                    messageBuilder.build(messages.invalidNumber() + messages.requestQuestionsCountToAdd(), chatId));
         }
     }
 
@@ -254,7 +263,8 @@ public class NewGameActions {
         if (minutes != null && minutes > 0) {
             addTimeAndRequestAddition(state, minutes, chatId, requestMsgId);
         } else {
-            switchMsg(9, chatId, requestMsgId, state, messages.invalidNumber());
+            msgSender.edit(chatId, msgId,
+                    messageBuilder.build(messages.invalidNumber() + messages.requestMaxTimeMinutes(), chatId));
         }
     }
 
@@ -264,7 +274,9 @@ public class NewGameActions {
         int requestMsgId = state.getRequestMsgId();
         switch (i) {
             case 1, 0 -> addAdditionWithTaskAndSaveNewGame(state, i, chatId, requestMsgId);
-            default -> switchMsg(10, chatId, requestMsgId, state, messages.invalidNumber());
+            default ->
+                    msgSender.edit(chatId, msgId,
+                            messageBuilder.build(messages.invalidNumber() + messages.requestAdditionWithTask(), chatId));
         }
     }
 
@@ -276,7 +288,7 @@ public class NewGameActions {
     private void addGameNameAndRequestNext(long chatId, NewGameCreatingState state, String gameName, int requestMsgId) {
         state.setGameName(gameName);
         newGameCreatingStateService.save(state);
-        requests.requestQuestionGroups(gameName, chatId, requestMsgId);
+        requests.requestQuestionGroups(chatId, requestMsgId);
     }
 
     /**
@@ -286,7 +298,7 @@ public class NewGameActions {
                                                     Integer maxQuestionCount, int requestMsgId) {
         state.setMaxQuestionsCount(maxQuestionCount);
         newGameCreatingStateService.save(state);
-        requests.requestStartCountTasks(chatId, requestMsgId, state);
+        requests.requestStartCountTasks(chatId, requestMsgId);
     }
 
     /**
@@ -296,7 +308,7 @@ public class NewGameActions {
                                                   Integer startCountTask, int requestMsgId) {
         state.setStartCountTasks(startCountTask);
         newGameCreatingStateService.save(state);
-        requests.requestMaxPerformedQuestionCount(chatId, requestMsgId, state);
+        requests.requestMaxPerformedQuestionCount(chatId, requestMsgId);
     }
 
     /**
@@ -306,7 +318,7 @@ public class NewGameActions {
                                                Integer maxPerformedQuestionsCount, int requestMsgId) {
         state.setMaxPerformedQuestionsCount(maxPerformedQuestionsCount);
         newGameCreatingStateService.save(state);
-        requests.requestMinQuestionsCountInGame(chatId, requestMsgId, state);
+        requests.requestMinQuestionsCountInGame(chatId, requestMsgId);
     }
 
     /**
@@ -316,7 +328,7 @@ public class NewGameActions {
                                               Integer minQuestionsInGame, int requestMsgId) {
         state.setMinQuestionsCountInGame(minQuestionsInGame);
         newGameCreatingStateService.save(state);
-        requests.requestQuestionsCountToAdd(chatId, requestMsgId, state);
+        requests.requestQuestionsCountToAdd(chatId, requestMsgId);
     }
 
     /**
@@ -326,7 +338,7 @@ public class NewGameActions {
                                                  Integer questionsToAdd, int requestMsgId) {
         state.setQuestionsCountToAdd(questionsToAdd);
         newGameCreatingStateService.save(state);
-        requests.requestMaxTimeMinutes(chatId, requestMsgId, state);
+        requests.requestMaxTimeMinutes(chatId, requestMsgId);
     }
 
     /**
@@ -335,14 +347,15 @@ public class NewGameActions {
     private void addTimeAndRequestAddition(NewGameCreatingState state, Integer minutes, long chatId, int requestMsgId) {
         state.setMaxTimeMinutes(minutes);
         newGameCreatingStateService.save(state);
-        requests.requestAdditionWithTask(chatId, requestMsgId, state);
+        requests.requestAdditionWithTask(chatId, requestMsgId);
     }
 
     private void addAdditionWithTaskAndSaveNewGame(NewGameCreatingState state, Integer i, long chatId, int requestMsgId) {
         state.setAdditionWithTask(i == 0);
         utils.saveNewGame(state);
         unblockAndUnrestrictChat(chatId);
-        switchMsg(8, chatId, requestMsgId, state, messages.gameAdded());
+        msgSender.edit(chatId, requestMsgId,
+                messageBuilder.build(messages.gameAdded(), chatId));
         newGameCreatingStateService.delete(state);
     }
 
@@ -352,12 +365,5 @@ public class NewGameActions {
     private void unblockAndUnrestrictChat(long chatId) {
         blockingManager.unblockAdminChat(chatId, messages.endGameCreating());
         restrictingManager.unRestrictMembers(chatId);
-    }
-
-    /**
-     * @author ezuykow
-     */
-    private void switchMsg(int msgN, long chatId, int requestMsgId, NewGameCreatingState state, String prop) {
-        utils.switchMsg(msgN, chatId, requestMsgId, state, prop, null);
     }
 }

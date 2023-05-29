@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.documents.DocumentDownloader;
 import ru.coffeecoders.questbot.documents.QuestionsFromExcelParser;
 import ru.coffeecoders.questbot.logs.LogSender;
+import ru.coffeecoders.questbot.messages.MessageBuilder;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
@@ -25,15 +26,17 @@ public class DocumentsManager {
     private final DocumentDownloader downloader;
     private final ChatAndUserValidator validator;
     private final Messages messages;
+    private final MessageBuilder messageBuilder;
     private final LogSender logger;
 
     public DocumentsManager(MessageSender msgSender, QuestionsFromExcelParser parser, DocumentDownloader downloader,
-                            ChatAndUserValidator validator, Messages messages, LogSender logger) {
+                            ChatAndUserValidator validator, Messages messages, MessageBuilder messageBuilder, LogSender logger) {
         this.msgSender = msgSender;
         this.parser = parser;
         this.downloader = downloader;
         this.validator = validator;
         this.messages = messages;
+        this.messageBuilder = messageBuilder;
         this.logger = logger;
     }
 
@@ -68,10 +71,12 @@ public class DocumentsManager {
                 if (isExcelFile(exUpdate.getDocument())) {
                     return true;
                 } else {
-                    msgSender.send(exUpdate.getMessageChatId(), messages.wrongDocumentType());
+                    msgSender.send(exUpdate.getMessageChatId(),
+                            messageBuilder.build(messages.wrongDocumentType(), exUpdate.getMessageChatId()));
                 }
             } else {
-                msgSender.send(exUpdate.getMessageChatId(), messages.fromNotAdmin());
+                msgSender.send(exUpdate.getMessageChatId(),
+                        messageBuilder.build(messages.fromNotAdmin(), exUpdate.getMessageChatId()));
             }
         }
         return false;

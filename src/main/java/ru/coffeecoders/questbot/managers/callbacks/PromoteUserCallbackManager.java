@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Admin;
 import ru.coffeecoders.questbot.entities.AdminChat;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
+import ru.coffeecoders.questbot.messages.MessageBuilder;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.AdminChatService;
@@ -22,13 +23,15 @@ public class PromoteUserCallbackManager {
     private final AdminChatService adminChatService;
     private final MessageSender msgSender;
     private final Messages messages;
+    private final MessageBuilder messageBuilder;
 
     public PromoteUserCallbackManager(ChatAndUserValidator validator, AdminChatService adminChatService,
-                                      MessageSender msgSender, Messages messages) {
+                                      MessageSender msgSender, Messages messages, MessageBuilder messageBuilder) {
         this.validator = validator;
         this.adminChatService = adminChatService;
         this.msgSender = msgSender;
         this.messages = messages;
+        this.messageBuilder = messageBuilder;
     }
 
     //-----------------API START-----------------
@@ -84,8 +87,9 @@ public class PromoteUserCallbackManager {
      */
     private void sendPromotionMessage(long chatId, String data) {
         msgSender.send(chatId,
-                data.substring(data.indexOf(".") + 1, data.lastIndexOf("."))
-                        + messages.userPromoted()
+                messageBuilder.build(
+                data.substring(data.indexOf(".") + 1, data.lastIndexOf(".")) + messages.userPromoted(),
+                        chatId)
         );
     }
 }

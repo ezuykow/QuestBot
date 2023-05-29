@@ -7,7 +7,9 @@ import ru.coffeecoders.questbot.entities.GlobalChat;
 import ru.coffeecoders.questbot.entities.PinnedTasksMessage;
 import ru.coffeecoders.questbot.entities.Team;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
+import ru.coffeecoders.questbot.messages.MessageBuilder;
 import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.*;
 
 import java.util.Comparator;
@@ -26,10 +28,13 @@ public class EndGameViewer {
     private final AdminChatService adminChatService;
     private final PinnedTasksMessageService pinnedTasksMessageService;
     private final MessageSender msgSender;
+    private final Messages messages;
+    private final MessageBuilder messageBuilder;
 
     public EndGameViewer(TeamService teamService, TaskService taskService, PlayerService playerService,
                          GlobalChatService globalChatService, AdminChatService adminChatService,
-                         PinnedTasksMessageService pinnedTasksMessageService, MessageSender msgSender) {
+                         PinnedTasksMessageService pinnedTasksMessageService, MessageSender msgSender,
+                         Messages messages, MessageBuilder messageBuilder) {
         this.teamService = teamService;
         this.taskService = taskService;
         this.playerService = playerService;
@@ -37,6 +42,8 @@ public class EndGameViewer {
         this.adminChatService = adminChatService;
         this.pinnedTasksMessageService = pinnedTasksMessageService;
         this.msgSender = msgSender;
+        this.messages = messages;
+        this.messageBuilder = messageBuilder;
     }
 
     //-----------------API START-----------------
@@ -140,9 +147,8 @@ public class EndGameViewer {
      * @author ezuykow
      */
     private void notifyGlobalChat(String cause, long chatId) {
-        String text = cause +
-                "\n\uD83D\uDC4D Всем участникам спасибо за игру! Надеемся, Вам понравилось \uD83D\uDE1C";
-        msgSender.send(chatId, text);
+        msgSender.send(chatId,
+                messageBuilder.build(cause + messages.endGamePostfix(), chatId));
     }
 
     /**

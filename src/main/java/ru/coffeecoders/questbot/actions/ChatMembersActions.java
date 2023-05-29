@@ -6,6 +6,7 @@ import ru.coffeecoders.questbot.entities.Admin;
 import ru.coffeecoders.questbot.entities.AdminChat;
 import ru.coffeecoders.questbot.entities.AdminChatMembers;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
+import ru.coffeecoders.questbot.messages.MessageBuilder;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.AdminChatMembersService;
@@ -28,10 +29,11 @@ public class ChatMembersActions {
     private final ChatAndUserValidator validator;
     private final MessageSender msgSender;
     private final Messages messages;
+    private final MessageBuilder messageBuilder;
 
     public ChatMembersActions(AdminChatMembersService adminChatMembersService, AdminChatService adminChatService,
                               AdminService adminService, ChatAndUserValidator validator, MessageSender msgSender,
-                              Messages messages)
+                              Messages messages, MessageBuilder messageBuilder)
     {
         this.adminChatMembersService = adminChatMembersService;
         this.adminChatService = adminChatService;
@@ -39,6 +41,7 @@ public class ChatMembersActions {
         this.validator = validator;
         this.msgSender = msgSender;
         this.messages = messages;
+        this.messageBuilder = messageBuilder;
     }
 
     //-----------------API START-----------------
@@ -77,7 +80,8 @@ public class ChatMembersActions {
         if (newMember.lastName() != null) {
                 nameSB.append(" ").append(newMember.lastName());
         }
-        msgSender.send(chatId, messages.welcomeAdminPrefix() + nameSB + messages.welcomeAdminSuffix());
+        msgSender.send(chatId,
+                messageBuilder.build(messages.welcomeAdminPrefix() + nameSB + messages.welcomeAdminSuffix(), chatId));
         refreshAdminChatMember(newMember, chatId);
     }
 
@@ -92,7 +96,8 @@ public class ChatMembersActions {
         if (leftMember.lastName() != null) {
             nameSB.append(" ").append(leftMember.lastName());
         }
-        msgSender.send(chatId, nameSB + messages.byeAdmin());
+        msgSender.send(chatId,
+                messageBuilder.build(nameSB + messages.byeAdmin(), chatId));
     }
 
     /**

@@ -5,6 +5,7 @@ import ru.coffeecoders.questbot.entities.Admin;
 import ru.coffeecoders.questbot.entities.AdminChat;
 import ru.coffeecoders.questbot.exceptions.NonExistentAdmin;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
+import ru.coffeecoders.questbot.messages.MessageBuilder;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.AdminChatService;
@@ -24,14 +25,17 @@ public class DemoteUserCallbackManager {
     private final ChatAndUserValidator validator;
     private final MessageSender msgSender;
     private final Messages messages;
+    private final MessageBuilder messageBuilder;
 
     public DemoteUserCallbackManager(AdminChatService adminChatService, AdminService adminService,
-                                     ChatAndUserValidator validator, MessageSender msgSender, Messages messages) {
+                                     ChatAndUserValidator validator, MessageSender msgSender, Messages messages,
+                                     MessageBuilder messageBuilder) {
         this.adminChatService = adminChatService;
         this.adminService = adminService;
         this.validator = validator;
         this.msgSender = msgSender;
         this.messages = messages;
+        this.messageBuilder = messageBuilder;
     }
 
     //-----------------API START-----------------
@@ -89,8 +93,9 @@ public class DemoteUserCallbackManager {
      */
     private void sendDemotionMessage(long chatId, String data) {
         msgSender.send(chatId,
-                data.substring(data.indexOf(".") + 1, data.lastIndexOf("."))
-                        + messages.userDemoted()
+                messageBuilder.build(
+                data.substring(data.indexOf(".") + 1, data.lastIndexOf(".")) + messages.userDemoted(),
+                        chatId)
         );
     }
 }

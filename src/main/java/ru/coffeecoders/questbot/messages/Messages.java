@@ -33,6 +33,14 @@ public class Messages {
         return properties.get("messages.stopBot").getActualProperty();
     }
 
+    public String answersWrong() {
+        return properties.get("answers.wrong").getActualProperty();
+    }
+
+    public String endGamePostfix() {
+        return properties.get("endGame.postfix").getActualProperty();
+    }
+
     //owner messages
 
     public String chatIsAdminNow() {

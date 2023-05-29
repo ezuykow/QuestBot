@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Question;
 import ru.coffeecoders.questbot.entities.QuestionGroup;
 import ru.coffeecoders.questbot.logs.LogSender;
+import ru.coffeecoders.questbot.messages.MessageBuilder;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.QuestionGroupService;
@@ -33,17 +34,20 @@ public class QuestionsFromExcelParser {
     private final QuestionService questionService;
     private final QuestionGroupService questionGroupService;
     private final Messages messages;
+    private final MessageBuilder messageBuilder;
     private final LogSender logger;
 
     private List<Question> newQuestions;
     boolean blankQuestionsPresent;
 
     public QuestionsFromExcelParser(MessageSender msgSender, QuestionService questionService,
-                                    QuestionGroupService questionGroupService, Messages messages, LogSender logger) {
+                                    QuestionGroupService questionGroupService, Messages messages,
+                                    MessageBuilder messageBuilder, LogSender logger) {
         this.msgSender = msgSender;
         this.questionService = questionService;
         this.questionGroupService = questionGroupService;
         this.messages = messages;
+        this.messageBuilder = messageBuilder;
         this.logger = logger;
     }
 
@@ -160,11 +164,13 @@ public class QuestionsFromExcelParser {
      */
     private void saveQuestionsIfPresent(long chatId) {
         if (newQuestions.isEmpty()) {
-            msgSender.send(chatId, messages.emptyQuestionList());
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.emptyQuestionList(), chatId));
         } else {
             StringBuilder msgSB = checkBlankAndRemoveEqualsQuestions();
             questionService.saveAll(newQuestions);
-            msgSender.send(chatId, createNewQuestionsMsg(msgSB));
+            msgSender.send(chatId,
+                    messageBuilder.build(createNewQuestionsMsg(msgSB), chatId));
         }
     }
 
@@ -175,9 +181,7 @@ public class QuestionsFromExcelParser {
         if (newQuestions.isEmpty()) {
             sb.append(messages.noOneQuestionAdded());
         } else {
-            sb.append(String.format(messages.questionsAdded(),
-                    newQuestions.size())
-            );
+            sb.append("(").append(newQuestions.size()).append(") ").append(messages.questionsAdded());
             for (Question q : newQuestions) {
                 if (sb.length() <= 3000) {
                     sb.append(Character.toString(0x2714)).append(" ")

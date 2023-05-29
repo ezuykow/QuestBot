@@ -3,6 +3,7 @@ package ru.coffeecoders.questbot.managers.callbacks;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.exceptions.NonExistentGame;
+import ru.coffeecoders.questbot.messages.MessageBuilder;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.GameService;
@@ -20,14 +21,17 @@ public class PrepareGameCallbackManager {
     private final GameValidator validator;
     private final MessageSender msgSender;
     private final Messages messages;
+    private final MessageBuilder messageBuilder;
 
-    public PrepareGameCallbackManager(PrepareGameViewer prepareGameViewer, GameService gameService, GameValidator validator, MessageSender msgSender,
-                                      Messages messages) {
+    public PrepareGameCallbackManager(PrepareGameViewer prepareGameViewer, GameService gameService,
+                                      GameValidator validator, MessageSender msgSender,
+                                      Messages messages, MessageBuilder messageBuilder) {
         this.prepareGameViewer = prepareGameViewer;
         this.gameService = gameService;
         this.validator = validator;
         this.msgSender = msgSender;
         this.messages = messages;
+        this.messageBuilder = messageBuilder;
     }
 
     //-----------------API START-----------------
@@ -64,7 +68,8 @@ public class PrepareGameCallbackManager {
             msgSender.sendDelete(chatId, msgId);
             prepareGameViewer.startPrepare(chatId, game);
         } else {
-            msgSender.sendToast(callbackId, messages.notEnoughQuestions(), true);
+            msgSender.sendToast(callbackId,
+                    messageBuilder.build(messages.notEnoughQuestions(), chatId), true);
         }
     }
 }

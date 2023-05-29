@@ -7,6 +7,7 @@ import ru.coffeecoders.questbot.entities.GlobalChat;
 import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.keyboards.PrepareGameRequestKeyboard;
 import ru.coffeecoders.questbot.managers.TaskCreationManager;
+import ru.coffeecoders.questbot.messages.MessageBuilder;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.GameService;
@@ -25,14 +26,16 @@ public class PrepareGameViewer {
     private final GlobalChatService globalChatService;
     private final MessageSender msgSender;
     private final Messages messages;
+    private final MessageBuilder messageBuilder;
 
     public PrepareGameViewer(TaskCreationManager gameManager, GameService gameService, GlobalChatService globalChatService,
-                             MessageSender msgSender, Messages messages) {
+                             MessageSender msgSender, Messages messages, MessageBuilder messageBuilder) {
         this.gameManager = gameManager;
         this.gameService = gameService;
         this.globalChatService = globalChatService;
         this.msgSender = msgSender;
         this.messages = messages;
+        this.messageBuilder = messageBuilder;
     }
 
     //-----------------API START-----------------
@@ -52,8 +55,7 @@ public class PrepareGameViewer {
         GlobalChat chat = globalChatService.findById(chatId).orElseThrow(NonExistentChat::new);
         chat.setCreatingGameName(game.getGameName());
         globalChatService.save(chat);
-        msgSender.send(chatId,
-                String.format(messages.prepareGameStartedHint(), game.getGameName()));
+        msgSender.send(chatId, messageBuilder.build(messages.prepareGameStartedHint(), chatId));
         gameManager.createTasks(chatId, game);
     }
 
@@ -64,9 +66,9 @@ public class PrepareGameViewer {
      */
     private void validateListAndSendMsg(List<String> gamesNames, long senderAdminId, String adminUsername, long chatId) {
         if (!gamesNames.isEmpty()) {
-            final String text = adminUsername + messages.choosePreparingGame();
             final InlineKeyboardMarkup keyboard = PrepareGameRequestKeyboard.createKeyboard(gamesNames, senderAdminId);
-            msgSender.send(chatId, text, keyboard);
+            msgSender.send(chatId,
+                    messageBuilder.build(adminUsername + messages.choosePreparingGame(), chatId), keyboard);
         } else {
             msgSender.send(chatId, messages.emptyGamesList() + ", " + adminUsername);
         }

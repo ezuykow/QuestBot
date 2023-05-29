@@ -23,22 +23,22 @@ public class Game {
     private int[] groupsIds;
 
     @Column(name = "max_time_minutes")
-    private int maxTimeMinutes;
+    private Integer maxTimeMinutes;
 
     @Column(name = "max_questions_count")
-    private int maxQuestionsCount;
+    private Integer maxQuestionsCount;
 
     @Column(name = "max_performed_questions_count")
-    private int maxPerformedQuestionsCount;
+    private Integer maxPerformedQuestionsCount;
 
     @Column(name = "min_questions_count_in_game")
-    private int minQuestionsCountInGame;
+    private Integer minQuestionsCountInGame;
 
     @Column(name = "questions_count_to_add")
-    private int questionsCountToAdd;
+    private Integer questionsCountToAdd;
 
     @Column(name = "start_count_tasks")
-    private int startCountTasks;
+    private Integer startCountTasks;
 
     @Column(name = "addition_with_task")
     private boolean additionWithTask;
@@ -46,17 +46,23 @@ public class Game {
     public Game() {
     }
 
-    public Game(String gameName, int maxTimeMinutes, int maxQuestionsCount, int maxPerformedQuestionsCount,
-                int minQuestionsCountInGame, int questionsCountToAdd, int startCountTasks, boolean additionWithTask)
-    {
-        this(gameName, null, maxTimeMinutes, maxQuestionsCount, maxPerformedQuestionsCount,
-                minQuestionsCountInGame, questionsCountToAdd, startCountTasks, additionWithTask
+    public Game(NewGameCreatingState state) {
+        this(
+                state.getGameName(),
+                state.getGroupsIds(),
+                state.getMaxTimeMinutes(),
+                state.getMaxQuestionsCount(),
+                state.getMaxPerformedQuestionsCount(),
+                state.getMinQuestionsCountInGame(),
+                state.getQuestionsCountToAdd(),
+                state.getStartCountTasks(),
+                state.isAdditionWithTask()
         );
     }
 
-    public Game(String gameName, int[] groupsIds, int maxTimeMinutes, int maxQuestionsCount,
-                int maxPerformedQuestionsCount, int minQuestionsCountInGame, int questionsCountToAdd,
-                int startCountTasks, boolean additionWithTask)
+    public Game(String gameName, int[] groupsIds, Integer maxTimeMinutes, Integer maxQuestionsCount,
+                Integer maxPerformedQuestionsCount, Integer minQuestionsCountInGame, Integer questionsCountToAdd,
+                Integer startCountTasks, boolean additionWithTask)
     {
         this.gameName = gameName;
         this.groupsIds = groupsIds;
@@ -81,7 +87,7 @@ public class Game {
         return gameName;
     }
 
-    public int getStartCountTasks() {
+    public Integer getStartCountTasks() {
         return startCountTasks;
     }
 
@@ -101,7 +107,7 @@ public class Game {
         this.groupsIds = groupsIds;
     }
 
-    public int getMaxTimeMinutes() {
+    public Integer getMaxTimeMinutes() {
         return maxTimeMinutes;
     }
 
@@ -109,7 +115,7 @@ public class Game {
         this.maxTimeMinutes = maxTimeMinutes;
     }
 
-    public int getMaxQuestionsCount() {
+    public Integer getMaxQuestionsCount() {
         return maxQuestionsCount;
     }
 
@@ -117,7 +123,7 @@ public class Game {
         this.maxQuestionsCount = maxQuestionsCount;
     }
 
-    public int getMaxPerformedQuestionsCount() {
+    public Integer getMaxPerformedQuestionsCount() {
         return maxPerformedQuestionsCount;
     }
 
@@ -125,7 +131,7 @@ public class Game {
         this.maxPerformedQuestionsCount = maxPerformedQuestionsCount;
     }
 
-    public int getMinQuestionsCountInGame() {
+    public Integer getMinQuestionsCountInGame() {
         return minQuestionsCountInGame;
     }
 
@@ -133,7 +139,7 @@ public class Game {
         this.minQuestionsCountInGame = minQuestionsCountInGame;
     }
 
-    public int getQuestionsCountToAdd() {
+    public Integer getQuestionsCountToAdd() {
         return questionsCountToAdd;
     }
 

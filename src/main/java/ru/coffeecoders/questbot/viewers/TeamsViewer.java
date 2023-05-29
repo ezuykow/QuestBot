@@ -8,6 +8,7 @@ import ru.coffeecoders.questbot.entities.AdminChat;
 import ru.coffeecoders.questbot.entities.Player;
 import ru.coffeecoders.questbot.entities.Team;
 import ru.coffeecoders.questbot.keyboards.viewers.TeamChooserKeyboard;
+import ru.coffeecoders.questbot.messages.MessageBuilder;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.AdminChatService;
@@ -26,6 +27,7 @@ public class TeamsViewer {
 
     private final MessageSender msgSender;
     private final Messages messages;
+    private final MessageBuilder messageBuilder;
     private final TeamService teamService;
     private final PlayerService playerService;
     private final AdminChatService adminChatService;
@@ -33,10 +35,12 @@ public class TeamsViewer {
     private String msgHat;
     private final Map<Long, ViewerMeta> showedChoosers = new HashMap<>();
 
-    public TeamsViewer(MessageSender msgSender, Messages messages, TeamService teamService, PlayerService playerService,
+    public TeamsViewer(MessageSender msgSender, Messages messages, MessageBuilder messageBuilder,
+                       TeamService teamService, PlayerService playerService,
                        AdminChatService adminChatService) {
         this.msgSender = msgSender;
         this.messages = messages;
+        this.messageBuilder = messageBuilder;
         this.teamService = teamService;
         this.playerService = playerService;
         this.adminChatService = adminChatService;
@@ -48,7 +52,8 @@ public class TeamsViewer {
         msgHat = messages.teamChooserHat();
         String text = msgHat + teamsMsg(chatId);
         InlineKeyboardMarkup keyboard = TeamChooserKeyboard.createKeyboard(teamService.getTeamNamesByChatId(chatId));
-        int msgId = msgSender.send(chatId, text, keyboard);
+        int msgId = msgSender.send(chatId,
+                messageBuilder.build(text, chatId), keyboard);
         msgSender.sendPinMessage(chatId, msgId);
         showedChoosers.put(chatId, new ViewerMeta(msgId, keyboard));
     }
@@ -56,7 +61,8 @@ public class TeamsViewer {
     public void refreshMsgInChat(long chatId) {
         String text = msgHat + teamsMsg(chatId);
         ViewerMeta meta = showedChoosers.get(chatId);
-        msgSender.edit(chatId, meta.msgId, text, meta.keyboard);
+        msgSender.edit(chatId, meta.msgId,
+                messageBuilder.build(text, chatId), meta.keyboard);
     }
 
     public void deleteShowedTeamsChooser(long chatId) {
@@ -76,7 +82,8 @@ public class TeamsViewer {
         String teams = teamsMsg(chatId);
 
         List<AdminChat> chats = adminChatService.findAll();
-        chats.forEach(c -> msgSender.send(c.getTgAdminChatId(), hat + teams));
+        chats.forEach(c -> msgSender.send(c.getTgAdminChatId(),
+                messageBuilder.build(hat + teams, chatId)));
     }
 
     //-----------------API END-----------------

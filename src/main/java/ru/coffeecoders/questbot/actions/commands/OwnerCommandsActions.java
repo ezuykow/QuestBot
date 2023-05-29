@@ -12,6 +12,7 @@ import ru.coffeecoders.questbot.keyboards.PromoteOrDemoteUserKeyboard;
 import ru.coffeecoders.questbot.managers.ApplicationShutdownManager;
 import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.managers.RestrictingManager;
+import ru.coffeecoders.questbot.messages.MessageBuilder;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.properties.viewer.PropertiesViewer;
@@ -39,6 +40,7 @@ public class OwnerCommandsActions {
     private final AdminChatMembersService adminChatMembersService;
     private final PropertiesViewer propertyViewer;
     private final Messages messages;
+    private final MessageBuilder messageBuilder;
     private final MessageSender msgSender;
     private final BlockingManager blockingManager;
     private final RestrictingManager restrictingManager;
@@ -47,8 +49,9 @@ public class OwnerCommandsActions {
     public OwnerCommandsActions(ChatAndUserValidator validator, AdminService adminService,
                                 GlobalChatService globalChatService, AdminChatService adminChatService,
                                 AdminChatMembersService adminChatMembersService,
-                                PropertiesViewer propertyViewer, Messages messages, MessageSender msgSender,
-                                BlockingManager blockingManager, RestrictingManager restrictingManager,
+                                PropertiesViewer propertyViewer, Messages messages, MessageBuilder messageBuilder,
+                                MessageSender msgSender, BlockingManager blockingManager,
+                                RestrictingManager restrictingManager,
                                 ApplicationShutdownManager applicationShutdownManager)
     {
         this.validator = validator;
@@ -58,6 +61,7 @@ public class OwnerCommandsActions {
         this.adminChatMembersService = adminChatMembersService;
         this.propertyViewer = propertyViewer;
         this.messages = messages;
+        this.messageBuilder = messageBuilder;
         this.msgSender = msgSender;
         this.blockingManager = blockingManager;
         this.restrictingManager = restrictingManager;
@@ -76,7 +80,8 @@ public class OwnerCommandsActions {
         if (validator.chatNotAdded(chatId)) {
             performStartCmd(chatId);
         } else {
-            msgSender.send(chatId, messages.startCmdFailed());
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.startCmdFailed(), chatId));
         }
     }
 
@@ -90,7 +95,8 @@ public class OwnerCommandsActions {
         if (validator.isGlobalChat(chatId)) {
             performAdminOnCmd(chatId);
         } else {
-            msgSender.send(chatId, messages.adminOnCmdFailed());
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.adminOnCmdFailed(), chatId));
         }
     }
 
@@ -104,7 +110,8 @@ public class OwnerCommandsActions {
         if (validator.isAdminChat(chatId)) {
             performAdminOffCmd(chatId);
         } else {
-            msgSender.send(chatId, messages.chatIsNotAdmin());
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.chatIsNotAdmin(), chatId));
         }
     }
 
@@ -119,7 +126,8 @@ public class OwnerCommandsActions {
         if (validator.isAdminChat(chatId)) {
             validateAdminChatMembersAndPerformPromoteCmd(chatId);
         } else {
-            msgSender.send(chatId, messages.chatIsNotAdmin());
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.chatIsNotAdmin(), chatId));
         }
     }
 
@@ -134,7 +142,8 @@ public class OwnerCommandsActions {
         if (validator.isAdminChat(chatId)) {
             validateAdminsInChatAndPerformDemoteCmd(chatId);
         } else {
-            msgSender.send(chatId, messages.chatIsNotAdmin());
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.chatIsNotAdmin(), chatId));
         }
     }
 
@@ -147,7 +156,8 @@ public class OwnerCommandsActions {
             restrictingManager.restrictMembers(chatId, -1);
             propertyViewer.viewProperties(chatId);
         } else {
-            msgSender.send(chatId, messages.chatIsNotAdmin());
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.chatIsNotAdmin(), chatId));
         }
     }
 
@@ -170,7 +180,8 @@ public class OwnerCommandsActions {
      */
     private void performStartCmd(long chatId) {
         globalChatService.save(new GlobalChat(chatId));
-        msgSender.send(chatId, messages.welcome());
+        msgSender.send(chatId,
+                messageBuilder.build(messages.welcome(), chatId));
     }
 
     /**
@@ -184,7 +195,8 @@ public class OwnerCommandsActions {
         Admin owner = adminService.getOwner();
         swapGlobalChatToAdminChat(chatId, owner);
         createAdminChatMembers(chatId, owner);
-        msgSender.send(chatId, messages.chatIsAdminNow());
+        msgSender.send(chatId,
+                messageBuilder.build(messages.chatIsAdminNow(), chatId));
     }
 
     /**
@@ -199,7 +211,8 @@ public class OwnerCommandsActions {
         swapAdminChatToGlobalChat(chatId);
         adminChatMembersService.deleteByChatId(chatId);
         adminService.deleteUselessAdmins();
-        msgSender.send(chatId, messages.chatIsGlobalNow());
+        msgSender.send(chatId,
+                messageBuilder.build(messages.chatIsGlobalNow(), chatId));
     }
 
     /**
@@ -212,9 +225,11 @@ public class OwnerCommandsActions {
     private void validateAdminChatMembersAndPerformPromoteCmd(long chatId) {
         Set<User> notAdminMembers = getNotAdminMembersInAdminChat(chatId);
         if (notAdminMembers.isEmpty()) {
-            msgSender.send(chatId, messages.emptyPromotionList());
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.emptyPromotionList(), chatId));
         } else {
-            msgSender.send(chatId, messages.promote(),
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.promote(), chatId),
                     PromoteOrDemoteUserKeyboard.createKeyboard(notAdminMembers, "PromoteUser.")
             );
         }
@@ -230,9 +245,11 @@ public class OwnerCommandsActions {
     private void validateAdminsInChatAndPerformDemoteCmd(long chatId) {
         Set<User> admins = getAdminUsersFromChat(chatId);
         if (admins.isEmpty()) {
-            msgSender.send(chatId, messages.emptyPromotionList());
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.emptyPromotionList(), chatId));
         } else {
-            msgSender.send(chatId, messages.demote(),
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.demote(), chatId),
                     PromoteOrDemoteUserKeyboard.createKeyboard(admins, "DemoteUser.")
             );
         }

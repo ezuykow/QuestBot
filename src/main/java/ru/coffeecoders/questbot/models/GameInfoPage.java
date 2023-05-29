@@ -56,7 +56,7 @@ public class GameInfoPage {
     private void createText(Game game, String prop, NewGameUtils utils) {
         text = String.format(prop,
                 game.getGameName(),
-                utils.getGroupsNames(game.getGroupsIds()),
+                utils.getGroupsNamesMsg(game.getGroupsIds()),
                 game.getMaxQuestionsCount(),
                 game.getStartCountTasks(),
                 game.getMaxPerformedQuestionsCount(),

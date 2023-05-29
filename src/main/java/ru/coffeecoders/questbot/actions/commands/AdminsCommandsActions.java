@@ -11,6 +11,7 @@ import ru.coffeecoders.questbot.exceptions.NonExistentGame;
 import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.managers.RestrictingManager;
 import ru.coffeecoders.questbot.managers.commands.Command;
+import ru.coffeecoders.questbot.messages.MessageBuilder;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.*;
@@ -40,6 +41,7 @@ public class AdminsCommandsActions {
     private final TeamsViewer teamsViewer;
     private final MessageSender msgSender;
     private final Messages messages;
+    private final MessageBuilder messageBuilder;
 
     private AdminsCommandsActions(GamesViewer gamesViewer, TasksViewer tasksViewer, MessageSender msgSender,
                                   QuestionsViewer questionsViewer, BlockingManager blockingManager,
@@ -47,7 +49,8 @@ public class AdminsCommandsActions {
                                   GameService gameService, TeamService teamService, TaskService taskService,
                                   PlayerService playerService, PrepareGameViewer prepareGameViewer,
                                   EndGameViewer endGameViewer, ChatAndUserValidator chatValidator,
-                                  GameValidator gameValidator, TeamsViewer teamsViewer, Messages messages)
+                                  GameValidator gameValidator, TeamsViewer teamsViewer, Messages messages,
+                                  MessageBuilder messageBuilder)
     {
         this.gamesViewer = gamesViewer;
         this.tasksViewer = tasksViewer;
@@ -66,6 +69,7 @@ public class AdminsCommandsActions {
         this.gameValidator = gameValidator;
         this.teamsViewer = teamsViewer;
         this.messages = messages;
+        this.messageBuilder = messageBuilder;
     }
 
     //-----------------API START-----------------
@@ -83,7 +87,8 @@ public class AdminsCommandsActions {
     public void performRegTeamCmd(int msgId, long chatId, long senderAdminId) {
         if (gameValidator.isGameCreating(chatId) && !gameValidator.isGameStarted(chatId)) {
             User senderAdmin = msgSender.getChatMember(chatId, senderAdminId);
-            msgSender.sendForceReply(chatId, "@" + senderAdmin.username() + messages.enterTeamCount(),
+            msgSender.sendForceReply(chatId,
+                    messageBuilder.build("@" + senderAdmin.username() + messages.enterTeamCount(), chatId),
                     msgId);
         }
         msgSender.sendDelete(chatId, msgId);
@@ -100,7 +105,8 @@ public class AdminsCommandsActions {
             GlobalChat chat = globalChatService.findById(chatId).orElseThrow(NonExistentChat::new);
             Game game = gameService.findByName(chat.getCreatingGameName())
                     .orElseThrow(NonExistentGame::new);
-            msgSender.send(chatId, createInfoText(game, chat, teams));
+            msgSender.send(chatId,
+                    messageBuilder.build(createInfoText(game, chat, teams), chatId));
         }
     }
 
@@ -115,7 +121,8 @@ public class AdminsCommandsActions {
         if (gameValidator.isGameStarted(chatId)) {
             tasksViewer.showActualTasks(chatId);
         } else {
-            msgSender.send(chatId, messages.haventStartedGame());
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.haventStartedGame(), chatId));
         }
     }
 
@@ -149,10 +156,12 @@ public class AdminsCommandsActions {
     public void performDeleteChatCmd(long chatId) {
         if (chatValidator.isGlobalChat(chatId)) {
             globalChatService.deleteById(chatId);
-            msgSender.send(chatId, messages.chatNotInGame());
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.chatNotInGame(), chatId));
             msgSender.sendLeaveChat(chatId);
         } else {
-            msgSender.send(chatId, messages.cmdForGlobalChat());
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.cmdForGlobalChat(), chatId));
         }
     }
 
@@ -171,7 +180,8 @@ public class AdminsCommandsActions {
                 prepareGameViewer.requestGameName(senderAdminId, adminUsername, chatId);
             }
         } else {
-            msgSender.send(chatId, messages.cmdForGlobalChat() + ", " + adminUsername);
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.cmdForGlobalChat() + ", " + adminUsername, chatId));
         }
     }
 
@@ -184,7 +194,8 @@ public class AdminsCommandsActions {
     public void performDropPrepareGameCmd(long senderAdminId, long chatId) {
         final String adminUsername = "@" + msgSender.getChatMember(chatId, senderAdminId).username();
         if (gameValidator.isGameCreating(chatId)) {
-            msgSender.send(chatId, adminUsername + messages.prepareInterrupted());
+            msgSender.send(chatId,
+                    messageBuilder.build(adminUsername + messages.prepareInterrupted(), chatId));
             dropPrepareGame(chatId);
         }
     }
@@ -198,7 +209,8 @@ public class AdminsCommandsActions {
     public void performStartGameCmd(long senderAdminId, long chatId) {
         final String adminUsername = "@" + msgSender.getChatMember(chatId, senderAdminId).username();
         if (gameValidator.isGameCreating(chatId)) {
-            msgSender.send(chatId, adminUsername + messages.gameStarted());
+            msgSender.send(chatId,
+                    messageBuilder.build(adminUsername + messages.gameStarted(), chatId));
             startGame(chatId);
         }
     }
@@ -265,10 +277,7 @@ public class AdminsCommandsActions {
         Game game = gameService.findByName(chat.getCreatingGameName()).orElseThrow(NonExistentGame::new);
 
         msgSender.send(chatId,
-                String.format(messages.gameStartedHint(),
-                        game.getGameName(),
-                        game.getMaxTimeMinutes(),
-                        game.getMaxPerformedQuestionsCount()));
+                messageBuilder.build(messages.gameStartedHint(), chatId));
 
         tasksViewer.createAndSendTasksMsg(chatId, game.getStartCountTasks());
         teamsViewer.deleteShowedTeamsChooser(chatId);

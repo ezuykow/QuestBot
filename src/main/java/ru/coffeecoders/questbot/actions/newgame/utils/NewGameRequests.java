@@ -1,8 +1,8 @@
 package ru.coffeecoders.questbot.actions.newgame.utils;
 
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.entities.NewGameCreatingState;
 import ru.coffeecoders.questbot.keyboards.QuestionsGroupsKeyboard;
+import ru.coffeecoders.questbot.messages.MessageBuilder;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.QuestionGroupService;
@@ -14,16 +14,16 @@ import ru.coffeecoders.questbot.services.QuestionGroupService;
 public class NewGameRequests {
 
     private final QuestionGroupService questionGroupService;
-    private final NewGameUtils utils;
     private final MessageSender msgSender;
     private final Messages messages;
+    private final MessageBuilder messageBuilder;
 
-    public NewGameRequests(QuestionGroupService questionGroupService, NewGameUtils utils, MessageSender msgSender,
-                           Messages messages) {
+    public NewGameRequests(QuestionGroupService questionGroupService, MessageSender msgSender,
+                           Messages messages, MessageBuilder messageBuilder) {
         this.questionGroupService = questionGroupService;
-        this.utils = utils;
         this.msgSender = msgSender;
         this.messages = messages;
+        this.messageBuilder = messageBuilder;
     }
 
     //-----------------API START-----------------
@@ -34,20 +34,19 @@ public class NewGameRequests {
      * @author ezuykow
      */
     public void requestNewGameName(long chatId) {
-        msgSender.send(chatId, messages.requestNewGameName());
+        msgSender.send(chatId,
+                messageBuilder.build(messages.requestNewGameName(), chatId));
     }
 
     /**
      * Изменяет сообщение с {@code requestMsgId} в чате с {@code chatId}  на запрос групп вопросов для новой игры
-     * @param gameName название новой игры
      * @param chatId id чата
      * @param requestMsgId id изменяемого сообщения
      * @author ezuykow
      */
-    public void requestQuestionGroups(String gameName, long chatId, int requestMsgId) {
+    public void requestQuestionGroups(long chatId, int requestMsgId) {
         msgSender.edit(chatId, requestMsgId,
-                String.format(
-                        messages.requestQuestionsGroups(), gameName),
+                messageBuilder.build(messages.requestQuestionsGroups(), chatId),
                 QuestionsGroupsKeyboard.createKeyboard(questionGroupService.findAll())
         );
     }
@@ -60,10 +59,7 @@ public class NewGameRequests {
      * @author ezuykow
      */
     public void requestMaxQuestionsCount(long chatId, int msgIdToEdit) {
-        NewGameCreatingState state = utils.getNewGameCreatingState(chatId);
-        msgSender.edit(chatId, msgIdToEdit,
-                utils.createTextFromStateFields(
-                        messages.requestMaxQuestionsCount(), 2, state));
+        msgSender.edit(chatId, msgIdToEdit, messageBuilder.build(messages.requestMaxQuestionsCount(), chatId));
     }
 
     /**
@@ -71,14 +67,10 @@ public class NewGameRequests {
      * количества вопросов для новой игры
      * @param chatId id чата
      * @param msgIdToEdit id изменяемого сообщения
-     * @param state {@link NewGameCreatingState} - состояние создания новой игры
      * @author ezuykow
      */
-    public void requestStartCountTasks(long chatId, int msgIdToEdit,
-                                        NewGameCreatingState state) {
-        msgSender.edit(chatId, msgIdToEdit,
-                utils.createTextFromStateFields(
-                        messages.requestStartCountTasks(), 3, state));
+    public void requestStartCountTasks(long chatId, int msgIdToEdit) {
+        msgSender.edit(chatId, msgIdToEdit, messageBuilder.build(messages.requestStartCountTasks(), chatId));
     }
 
     /**
@@ -86,13 +78,10 @@ public class NewGameRequests {
      * количества вопросов на которое нужно ответить для досрочной победы для новой игры
      * @param chatId id чата
      * @param msgIdToEdit id изменяемого сообщения
-     * @param state {@link NewGameCreatingState} - состояние создания новой игры
      * @author ezuykow
      */
-    public void requestMaxPerformedQuestionCount(long chatId, int msgIdToEdit, NewGameCreatingState state) {
-        msgSender.edit(chatId, msgIdToEdit,
-                utils.createTextFromStateFields(
-                        messages.requestMaxPerformedQuestionCount(), 4, state));
+    public void requestMaxPerformedQuestionCount(long chatId, int msgIdToEdit) {
+        msgSender.edit(chatId, msgIdToEdit, messageBuilder.build(messages.requestMaxPerformedQuestionCount(), chatId));
     }
 
     /**
@@ -100,13 +89,10 @@ public class NewGameRequests {
      * количества активных вопросов для новой игры
      * @param chatId id чата
      * @param msgIdToEdit id изменяемого сообщения
-     * @param state {@link NewGameCreatingState} - состояние создания новой игры
      * @author ezuykow
      */
-    public void requestMinQuestionsCountInGame(long chatId, int msgIdToEdit, NewGameCreatingState state) {
-        msgSender.edit(chatId, msgIdToEdit,
-                utils.createTextFromStateFields(
-                        messages.requestMinQuestionsCountInGame(), 5, state));
+    public void requestMinQuestionsCountInGame(long chatId, int msgIdToEdit) {
+        msgSender.edit(chatId, msgIdToEdit, messageBuilder.build(messages.requestMinQuestionsCountInGame(), chatId));
     }
 
     /**
@@ -114,13 +100,10 @@ public class NewGameRequests {
      * количества вопросов, которое нужно добавлять при достижении минимального количества активных вопросов для новой игры
      * @param chatId id чата
      * @param msgIdToEdit id изменяемого сообщения
-     * @param state {@link NewGameCreatingState} - состояние создания новой игры
      * @author ezuykow
      */
-    public void requestQuestionsCountToAdd(long chatId, int msgIdToEdit, NewGameCreatingState state) {
-        msgSender.edit(chatId, msgIdToEdit,
-                utils.createTextFromStateFields(
-                        messages.requestQuestionsCountToAdd(), 6, state));
+    public void requestQuestionsCountToAdd(long chatId, int msgIdToEdit) {
+        msgSender.edit(chatId, msgIdToEdit, messageBuilder.build(messages.requestQuestionsCountToAdd(), chatId));
     }
 
     /**
@@ -128,19 +111,14 @@ public class NewGameRequests {
      * времени проведения в минутах для новой игры
      * @param chatId id чата
      * @param msgIdToEdit id изменяемого сообщения
-     * @param state {@link NewGameCreatingState} - состояние создания новой игры
      * @author ezuykow
      */
-    public void requestMaxTimeMinutes(long chatId, int msgIdToEdit, NewGameCreatingState state) {
-        msgSender.edit(chatId, msgIdToEdit,
-                utils.createTextFromStateFields(
-                        messages.requestMaxTimeMinutes(), 7, state));
+    public void requestMaxTimeMinutes(long chatId, int msgIdToEdit) {
+        msgSender.edit(chatId, msgIdToEdit, messageBuilder.build(messages.requestMaxTimeMinutes(), chatId));
     }
 
-    public void requestAdditionWithTask(long chatId, int msgIdToEdit, NewGameCreatingState state) {
-        msgSender.edit(chatId, msgIdToEdit,
-                utils.createTextFromStateFields(
-                        messages.requestAdditionWithTask() , 8, state));
+    public void requestAdditionWithTask(long chatId, int msgIdToEdit) {
+        msgSender.edit(chatId, msgIdToEdit, messageBuilder.build(messages.requestAdditionWithTask(), chatId));
     }
 
     //-----------------API END-----------------

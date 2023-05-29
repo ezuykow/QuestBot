@@ -2,6 +2,7 @@
 package ru.coffeecoders.questbot.managers.commands;
 
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.messages.MessageBuilder;
 import ru.coffeecoders.questbot.messages.MessageSender;
 import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
@@ -21,16 +22,19 @@ public class CommandsManager {
     private final ChatAndUserValidator validator;
     private final MessageSender msgSender;
     private final Messages messages;
+    private final MessageBuilder messageBuilder;
+
     private long chatId;
 
     public CommandsManager(OwnerCommandsManager ownerCommandsManager, AdminsCommandsManager adminsCommandsManager,
-                           ChatAndUserValidator validator, MessageSender msgSender, Messages messages)
+                           ChatAndUserValidator validator, MessageSender msgSender, Messages messages, MessageBuilder messageBuilder)
     {
         this.ownerCommandsManager = ownerCommandsManager;
         this.adminsCommandsManager = adminsCommandsManager;
         this.validator = validator;
         this.msgSender = msgSender;
         this.messages = messages;
+        this.messageBuilder = messageBuilder;
     }
 
     /**
@@ -52,7 +56,8 @@ public class CommandsManager {
             }
             manageCommandByAttribute(update, cmd);
         } catch (IllegalArgumentException e) {
-            msgSender.send(chatId, messages.invalidMsg());
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.invalidMsg(), chatId));
         }
     }
 
@@ -79,7 +84,8 @@ public class CommandsManager {
         if (validator.isOwner(update.getMessageFromUserId())) {
             ownerCommandsManager.manageCommand(update.getMessageChatId(), cmd);
         } else {
-            msgSender.send(chatId, messages.isOwnerCommand());
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.isOwnerCommand(), chatId));
         }
     }
 
@@ -87,7 +93,8 @@ public class CommandsManager {
         if (validator.isAdminChat(chatId)) {
             checkAndSendGlobalAdminsCommand(update, cmd);
         } else {
-            msgSender.send(chatId, messages.adminCmdInGlobalChat());
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.adminCmdInGlobalChat(), chatId));
         }
     }
 
@@ -102,7 +109,8 @@ public class CommandsManager {
         if (validator.isAdmin(update.getMessageFromUserId())) {
             adminsCommandsManager.manageCommand(update, cmd);
         } else {
-            msgSender.send(chatId, messages.cmdSendByNotAdmin());
+            msgSender.send(chatId,
+                    messageBuilder.build(messages.cmdSendByNotAdmin(), chatId));
         }
     }
 

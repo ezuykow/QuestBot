@@ -7,7 +7,9 @@ import ru.coffeecoders.questbot.entities.Question;
 import ru.coffeecoders.questbot.entities.Task;
 import ru.coffeecoders.questbot.entities.Team;
 import ru.coffeecoders.questbot.exceptions.*;
+import ru.coffeecoders.questbot.messages.MessageBuilder;
 import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.models.ExtendedUpdate;
 import ru.coffeecoders.questbot.properties.PropertySeed;
 import ru.coffeecoders.questbot.services.*;
@@ -38,14 +40,16 @@ public class SimpleMessageActions {
     private final TasksViewer tasksViewer;
     private final TeamsViewer teamsViewer;
     private final MessageSender msgSender;
+    private final Messages messages;
+    private final MessageBuilder messageBuilder;
     private final Map<String, PropertySeed> properties;
     private final AdminsCommandsActions adminsCommandsActions;
 
     public SimpleMessageActions(TeamService teamService, PlayerService playerService,
                                 GlobalChatService globalChatService, GameService gameService, TaskService taskService,
                                 QuestionService questionService, EndGameViewer endGameViewer, MessageSender msgSender,
-                                TasksViewer tasksViewer, TeamsViewer teamsViewer, Map<String, PropertySeed> properties,
-                                AdminsCommandsActions adminsCommandsActions) {
+                                TasksViewer tasksViewer, TeamsViewer teamsViewer, Messages messages, MessageBuilder messageBuilder,
+                                Map<String, PropertySeed> properties, AdminsCommandsActions adminsCommandsActions) {
         this.teamService = teamService;
         this.playerService = playerService;
         this.globalChatService = globalChatService;
@@ -56,6 +60,8 @@ public class SimpleMessageActions {
         this.msgSender = msgSender;
         this.tasksViewer = tasksViewer;
         this.teamsViewer = teamsViewer;
+        this.messages = messages;
+        this.messageBuilder = messageBuilder;
         this.properties = properties;
         this.adminsCommandsActions = adminsCommandsActions;
     }
@@ -115,7 +121,8 @@ public class SimpleMessageActions {
         if (checkAnswer(answer, rightAnswers)) {
             acceptAnswer(senderId, targetTask, taskNo, msgId, chatId, question.getAdditional());
         } else {
-            msgSender.sendReply(chatId, "Ответ неверный! (Возможно Вы не соблюдали формат ответа)", msgId);
+            msgSender.sendReply(chatId,
+                    messageBuilder.build(messages.answersWrong(), chatId), msgId);
         }
     }
 
@@ -132,7 +139,7 @@ public class SimpleMessageActions {
         String text = additionalNotNeeded || additional == null
                 ? hat
                 : hat + "\n➕Дополнительная информация: " + additional;
-        msgSender.sendReply(chatId, text, msgId);
+        msgSender.sendReply(chatId, messageBuilder.build(text, chatId), msgId);
     }
 
     /**
