@@ -101,6 +101,7 @@ public class PropertiesViewer {
     public void deleteView(long chatId, int msgId) {
         unblockAndUnrestrictChat(chatId);
         msgSender.sendDelete(chatId, msgId);
+        msgSender.sendDelete(chatId, msgId - 1);
         PropertiesViewMsgId = 0;
     }
 

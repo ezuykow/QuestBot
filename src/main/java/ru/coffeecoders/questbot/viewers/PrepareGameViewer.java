@@ -55,7 +55,7 @@ public class PrepareGameViewer {
         GlobalChat chat = globalChatService.findById(chatId).orElseThrow(NonExistentChat::new);
         chat.setCreatingGameName(game.getGameName());
         globalChatService.save(chat);
-        msgSender.send(chatId, messageBuilder.build(messages.prepareGameStartedHint(), chatId));
+        msgSender.send(chatId, messageBuilder.build(messages.prepareGameStartedHint(), game, chat));
         gameManager.createTasks(chatId, game);
     }
 

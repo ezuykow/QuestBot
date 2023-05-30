@@ -3,6 +3,7 @@ package ru.coffeecoders.questbot.scheduling;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.entities.GlobalChat;
 import ru.coffeecoders.questbot.exceptions.NonExistentGame;
 import ru.coffeecoders.questbot.messages.MessageBuilder;
@@ -53,8 +54,9 @@ public class GamesTimer {
 
         chats.forEach(c -> {
             int minsSinceStart = c.getMinutesSinceStart() + 1;
-            int maxMins = gameService.findByName(c.getCreatingGameName())
-                    .orElseThrow(NonExistentGame::new).getMaxTimeMinutes();
+            final Game game = gameService.findByName(c.getCreatingGameName())
+                    .orElseThrow(NonExistentGame::new);
+            int maxMins = game.getMaxTimeMinutes();
             int minsToEnd = maxMins - minsSinceStart;
 
             c.setMinutesSinceStart(minsSinceStart);
@@ -64,12 +66,12 @@ public class GamesTimer {
                 if (minsToEnd > 30) {
                     if (minsToEnd % 20 == 0) {
                         messageSender.send(c.getTgChatId(),
-                                messageBuilder.build(messages.time(), c.getTgChatId()));
+                                messageBuilder.build(messages.time(), game, c));
                     }
                 } else {
                     if (minsToEnd % 5 == 0) {
                         messageSender.send(c.getTgChatId(),
-                                messageBuilder.build(messages.time(), c.getTgChatId()));
+                                messageBuilder.build(messages.time(), game, c));
                     }
                 }
             }

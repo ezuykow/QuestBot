@@ -19,6 +19,8 @@ import ru.coffeecoders.questbot.validators.ChatAndUserValidator;
 import ru.coffeecoders.questbot.validators.GameValidator;
 import ru.coffeecoders.questbot.viewers.*;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Component
@@ -238,7 +240,9 @@ public class AdminsCommandsActions {
         sb.append("\uD83C\uDFB2Информация об игре\uD83C\uDFB2\n\n");
         sb.append("⏰ Оставшееся время - ").append(game.getMaxTimeMinutes() - chat.getMinutesSinceStart())
                 .append(" минут\n\n");
-        teams.forEach( t ->
+        List<Team> sortedTeams = new ArrayList<>(teams);
+        sortedTeams.sort(Comparator.comparing(Team::getScore, Comparator.reverseOrder()));
+        sortedTeams.forEach( t ->
                 sb.append("\uD83D\uDC65 Команда \"").append(t.getTeamName()).append("\" - ")
                         .append(t.getScore()).append(" очков;\n")
         );
@@ -277,7 +281,7 @@ public class AdminsCommandsActions {
         Game game = gameService.findByName(chat.getCreatingGameName()).orElseThrow(NonExistentGame::new);
 
         msgSender.send(chatId,
-                messageBuilder.build(messages.gameStartedHint(), chatId));
+                messageBuilder.build(messages.gameStartedHint(), game, chat));
 
         tasksViewer.createAndSendTasksMsg(chatId, game.getStartCountTasks());
         teamsViewer.deleteShowedTeamsChooser(chatId);

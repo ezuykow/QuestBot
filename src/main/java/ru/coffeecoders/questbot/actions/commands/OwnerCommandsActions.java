@@ -154,6 +154,7 @@ public class OwnerCommandsActions {
         if (validator.isAdminChat(chatId)) {
             blockingManager.blockAdminChatByAdmin(chatId, -1, "Владелец просматривает параметры");
             restrictingManager.restrictMembers(chatId, -1);
+            msgSender.send(chatId, messages.escapes());
             propertyViewer.viewProperties(chatId);
         } else {
             msgSender.send(chatId,

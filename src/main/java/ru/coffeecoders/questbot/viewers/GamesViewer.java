@@ -1,7 +1,6 @@
 package ru.coffeecoders.questbot.viewers;
 
 import org.springframework.stereotype.Component;
-import ru.coffeecoders.questbot.actions.newgame.utils.NewGameUtils;
 import ru.coffeecoders.questbot.entities.Game;
 import ru.coffeecoders.questbot.exceptions.NonExistentGame;
 import ru.coffeecoders.questbot.managers.BlockingManager;
@@ -27,19 +26,17 @@ public class GamesViewer {
     private final GameService gameService;
     private final BlockingManager blockingManager;
     private final RestrictingManager restrictingManager;
-    private final NewGameUtils utils;
     private final GameValidator validator;
     private final MessageSender msgSender;
     private final Messages messages;
     private final MessageBuilder messageBuilder;
 
     public GamesViewer(GameService gameService, BlockingManager blockingManager, RestrictingManager restrictingManager,
-                       NewGameUtils utils, GameValidator validator, MessageSender msgSender, Messages messages,
+                       GameValidator validator, MessageSender msgSender, Messages messages,
                        MessageBuilder messageBuilder) {
         this.gameService = gameService;
         this.blockingManager = blockingManager;
         this.restrictingManager = restrictingManager;
-        this.utils = utils;
         this.validator = validator;
         this.msgSender = msgSender;
         this.messages = messages;
@@ -68,7 +65,7 @@ public class GamesViewer {
     public void showGame(long chatId, int msgId, String data) {
         String gameName = data.substring(START_GAME_NAME_IN_DATA_IDX);
         Game game = gameService.findByName(gameName).orElseThrow(NonExistentGame::new);
-        GameInfoPage page = GameInfoPage.createPage(game, messages.gameInfo(), utils);
+        GameInfoPage page = GameInfoPage.createPage(game, messages.gameInfo(), messageBuilder);
         msgSender.edit(chatId, msgId, page.getText(), page.getKeyboard());
     }
 
@@ -82,7 +79,7 @@ public class GamesViewer {
      * @author ezuykow
      */
     public void deleteGame(String callbackId, long chatId, int msgId, String data) {
-        String gameName = data.substring(data.lastIndexOf(".") + 1);
+        String gameName = data.substring(28);
         if (validator.isGameCreating(gameName)) {
             msgSender.sendToast(callbackId, messages.failedDeletingGame(), true);
         } else {

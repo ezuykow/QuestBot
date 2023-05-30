@@ -41,6 +41,10 @@ public class Messages {
         return properties.get("endGame.postfix").getActualProperty();
     }
 
+    public String escapes() {
+        return MessageBuilder.ESCAPES;
+    }
+
     //owner messages
 
     public String chatIsAdminNow() {

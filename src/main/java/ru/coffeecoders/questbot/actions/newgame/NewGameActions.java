@@ -136,7 +136,7 @@ public class NewGameActions {
                     ? messages.invalidQuestionCount()
                     : messages.invalidNumber();
             msgSender.edit(chatId, msgId,
-                    messageBuilder.build(msgHat + messages.requestMaxQuestionsCount(), chatId));
+                    messageBuilder.build(msgHat + messages.requestMaxQuestionsCount(), chatId, state));
         }
     }
 
@@ -192,7 +192,7 @@ public class NewGameActions {
                     ? messages.maxPerformedQMoreMaxQ()
                     : messages.invalidNumber();
             msgSender.edit(chatId, msgId,
-                    messageBuilder.build(msgHat + messages.requestMaxPerformedQuestionCount(), chatId));
+                    messageBuilder.build(msgHat + messages.requestMaxPerformedQuestionCount(), chatId, state));
         }
     }
 
@@ -216,7 +216,7 @@ public class NewGameActions {
             addMinQuestionAndRequestNext(state, chatId, minQuestionsInGame, requestMsgId);
         } else {
             msgSender.edit(chatId, msgId,
-                    messageBuilder.build(messages.invalidNumber() + messages.requestMinQuestionsCountInGame(), chatId));
+                    messageBuilder.build(messages.invalidNumber() + messages.requestMinQuestionsCountInGame(), chatId, state));
         }
     }
 
@@ -240,7 +240,7 @@ public class NewGameActions {
             addQuestionsToAddAndPerformNext(state, chatId, questionsToAdd, requestMsgId);
         } else {
             msgSender.edit(chatId, msgId,
-                    messageBuilder.build(messages.invalidNumber() + messages.requestQuestionsCountToAdd(), chatId));
+                    messageBuilder.build(messages.invalidNumber() + messages.requestQuestionsCountToAdd(), chatId, state));
         }
     }
 
@@ -264,7 +264,7 @@ public class NewGameActions {
             addTimeAndRequestAddition(state, minutes, chatId, requestMsgId);
         } else {
             msgSender.edit(chatId, msgId,
-                    messageBuilder.build(messages.invalidNumber() + messages.requestMaxTimeMinutes(), chatId));
+                    messageBuilder.build(messages.invalidNumber() + messages.requestMaxTimeMinutes(), chatId, state));
         }
     }
 
@@ -276,7 +276,7 @@ public class NewGameActions {
             case 1, 0 -> addAdditionWithTaskAndSaveNewGame(state, i, chatId, requestMsgId);
             default ->
                     msgSender.edit(chatId, msgId,
-                            messageBuilder.build(messages.invalidNumber() + messages.requestAdditionWithTask(), chatId));
+                            messageBuilder.build(messages.invalidNumber() + messages.requestAdditionWithTask(), chatId, state));
         }
     }
 
@@ -288,7 +288,7 @@ public class NewGameActions {
     private void addGameNameAndRequestNext(long chatId, NewGameCreatingState state, String gameName, int requestMsgId) {
         state.setGameName(gameName);
         newGameCreatingStateService.save(state);
-        requests.requestQuestionGroups(chatId, requestMsgId);
+        requests.requestQuestionGroups(chatId, requestMsgId, state);
     }
 
     /**
@@ -298,7 +298,7 @@ public class NewGameActions {
                                                     Integer maxQuestionCount, int requestMsgId) {
         state.setMaxQuestionsCount(maxQuestionCount);
         newGameCreatingStateService.save(state);
-        requests.requestStartCountTasks(chatId, requestMsgId);
+        requests.requestStartCountTasks(chatId, requestMsgId, state);
     }
 
     /**
@@ -308,7 +308,7 @@ public class NewGameActions {
                                                   Integer startCountTask, int requestMsgId) {
         state.setStartCountTasks(startCountTask);
         newGameCreatingStateService.save(state);
-        requests.requestMaxPerformedQuestionCount(chatId, requestMsgId);
+        requests.requestMaxPerformedQuestionCount(chatId, requestMsgId, state);
     }
 
     /**
@@ -318,7 +318,7 @@ public class NewGameActions {
                                                Integer maxPerformedQuestionsCount, int requestMsgId) {
         state.setMaxPerformedQuestionsCount(maxPerformedQuestionsCount);
         newGameCreatingStateService.save(state);
-        requests.requestMinQuestionsCountInGame(chatId, requestMsgId);
+        requests.requestMinQuestionsCountInGame(chatId, requestMsgId, state);
     }
 
     /**
@@ -328,7 +328,7 @@ public class NewGameActions {
                                               Integer minQuestionsInGame, int requestMsgId) {
         state.setMinQuestionsCountInGame(minQuestionsInGame);
         newGameCreatingStateService.save(state);
-        requests.requestQuestionsCountToAdd(chatId, requestMsgId);
+        requests.requestQuestionsCountToAdd(chatId, requestMsgId, state);
     }
 
     /**
@@ -338,7 +338,7 @@ public class NewGameActions {
                                                  Integer questionsToAdd, int requestMsgId) {
         state.setQuestionsCountToAdd(questionsToAdd);
         newGameCreatingStateService.save(state);
-        requests.requestMaxTimeMinutes(chatId, requestMsgId);
+        requests.requestMaxTimeMinutes(chatId, requestMsgId, state);
     }
 
     /**
@@ -347,7 +347,7 @@ public class NewGameActions {
     private void addTimeAndRequestAddition(NewGameCreatingState state, Integer minutes, long chatId, int requestMsgId) {
         state.setMaxTimeMinutes(minutes);
         newGameCreatingStateService.save(state);
-        requests.requestAdditionWithTask(chatId, requestMsgId);
+        requests.requestAdditionWithTask(chatId, requestMsgId, state);
     }
 
     private void addAdditionWithTaskAndSaveNewGame(NewGameCreatingState state, Integer i, long chatId, int requestMsgId) {
@@ -355,7 +355,7 @@ public class NewGameActions {
         utils.saveNewGame(state);
         unblockAndUnrestrictChat(chatId);
         msgSender.edit(chatId, requestMsgId,
-                messageBuilder.build(messages.gameAdded(), chatId));
+                messageBuilder.build(messages.gameAdded(), chatId, state));
         newGameCreatingStateService.delete(state);
     }
 
