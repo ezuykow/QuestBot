@@ -140,14 +140,13 @@ public class AdminsCommandsActions {
     }
 
     /**
-     * Блокирует чат, ограничивает членов и вызывает {@link QuestionsViewer#viewQuestions}
      * @param senderAdminId id админа, который ввел команду /showquestion
      * @param chatId id чата, в котором была введена команда
      * @author ezuykow
      */
     public void performShowQuestionsCmd(long senderAdminId, long chatId) {
         blockAndRestrictChat(chatId, senderAdminId, messages.startQuestionView());
-        questionsViewer.viewQuestions(chatId);
+        questionsViewer.showQuestionsGroupChooser(chatId, -1);
     }
 
     /**

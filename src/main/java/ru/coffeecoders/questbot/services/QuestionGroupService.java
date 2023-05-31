@@ -66,6 +66,13 @@ public class QuestionGroupService {
     }
 
     /**
+     * @author ezuykow
+     */
+    public void deleteById(long id) {
+        repository.deleteById(id);
+    }
+
+    /**
      * Удаляет группу из БД, если вопросов с такой группой нет
      * @param groupName название группы
      * @author ezuykow

@@ -13,9 +13,9 @@ public class QuestionsGroupsKeyboard {
 
     private final InlineKeyboardMarkup keyboard;
 
-    private QuestionsGroupsKeyboard(List<QuestionGroup> groups) {
+    private QuestionsGroupsKeyboard(List<QuestionGroup> groups, boolean forViewer) {
         keyboard = new InlineKeyboardMarkup();
-        createButtons(groups);
+        createButtons(groups, forViewer);
     }
 
     //-----------------API START-----------------
@@ -26,8 +26,12 @@ public class QuestionsGroupsKeyboard {
      * @return {@link InlineKeyboardMarkup} - собранная клавиатура
      * @author ezuykow
      */
-    public static InlineKeyboardMarkup createKeyboard(List<QuestionGroup> groups) {
-        return new QuestionsGroupsKeyboard(groups).keyboard;
+    public static InlineKeyboardMarkup createKeyboardForPrepareGame(List<QuestionGroup> groups) {
+        return new QuestionsGroupsKeyboard(groups, false).keyboard;
+    }
+
+    public static InlineKeyboardMarkup createKeyboardForQuestionsViewer(List<QuestionGroup> groups) {
+        return new QuestionsGroupsKeyboard(groups, true).keyboard;
     }
 
     //-----------------API END-----------------
@@ -35,16 +39,21 @@ public class QuestionsGroupsKeyboard {
     /**
      * @author ezuykow
      */
-    private void createButtons(List<QuestionGroup> groups) {
-        groups.forEach(g ->
-                    keyboard.addRow(
-                            new InlineKeyboardButton(g.getGroupName())
-                                    .callbackData("QuestionGroupSelected." + g.getGroupId())
-                    )
+    private void createButtons(List<QuestionGroup> groups, boolean forViewer) {
+        String dataPrefix = forViewer
+                ? "QuestionViewer.QuestionGroupSelected."
+                : "QuestionGroupSelected.";
+
+        groups.forEach(g -> keyboard.addRow(
+                new InlineKeyboardButton(g.getGroupName())
+                        .callbackData(dataPrefix + g.getGroupId()))
         );
-        keyboard.addRow(
-                new InlineKeyboardButton(Character.toString(0x1F6D1) + "Закончить добавление")
-                        .callbackData("QuestionGroupSelected.Stop")
-        );
+
+        if (!forViewer) {
+            keyboard.addRow(
+                    new InlineKeyboardButton(Character.toString(0x1F6D1) + "Закончить добавление")
+                            .callbackData(dataPrefix + "Stop")
+            );
+        }
     }
 }

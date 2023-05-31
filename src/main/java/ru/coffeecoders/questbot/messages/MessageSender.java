@@ -285,6 +285,7 @@ public class MessageSender {
     private void checkResponse(BaseResponse response, String error) {
         if (!response.isOk()) {
             logger.warn(String.format(error, response.errorCode()));
+            logger.warn(response.description());
         }
     }
 }

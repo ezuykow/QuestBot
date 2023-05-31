@@ -49,7 +49,7 @@ public class NewGameRequests {
     public void requestQuestionGroups(long chatId, int requestMsgId, NewGameCreatingState state) {
         msgSender.edit(chatId, requestMsgId,
                 messageBuilder.build(messages.requestQuestionsGroups(), chatId, state),
-                QuestionsGroupsKeyboard.createKeyboard(questionGroupService.findAll())
+                QuestionsGroupsKeyboard.createKeyboardForPrepareGame(questionGroupService.findAll())
         );
     }
 

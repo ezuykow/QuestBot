@@ -1,5 +1,6 @@
 package ru.coffeecoders.questbot.services;
 
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -75,5 +76,13 @@ public class QuestionService {
     public void delete(Question question) {
         logger.info("Question = {} has been deleted", question);
         repository.delete(question);
+    }
+
+    /**
+     * @author ezuykow
+     */
+    @Transactional
+    public void deleteAllByGroupName(String groupName) {
+        repository.deleteAllByQuestionGroup(groupName);
     }
 }

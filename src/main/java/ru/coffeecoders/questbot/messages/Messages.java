@@ -45,6 +45,10 @@ public class Messages {
         return MessageBuilder.ESCAPES;
     }
 
+    public String selectGroupName() {
+        return properties.get("messages.QuestionsViewer.selectGroupName").getActualProperty();
+    }
+
     //owner messages
 
     public String chatIsAdminNow() {

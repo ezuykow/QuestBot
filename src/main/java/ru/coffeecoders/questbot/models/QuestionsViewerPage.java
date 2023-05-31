@@ -23,17 +23,17 @@ public class QuestionsViewerPage {
     private boolean rightArrowNeed;
 
     private QuestionsViewerPage(List<Question> questions, int pageSize, int startIndex,
-                                int pagesCount, int defaultPageSize) {
+                                int pagesCount, int defaultPageSize, int showedGroupId) {
         this.questions = questions;
         this.startIndex = startIndex;
-        this.pageSize = pageSize;
+        this.pageSize = Math.min(pageSize, questions.size());
         this.pagesCount = pagesCount;
         this.defaultPageSize = defaultPageSize;
 
         lastIndex = Math.min(startIndex + this.pageSize - 1, questions.size() - 1);
         createText();
         checkArrowsNeed();
-        createKeyboard();
+        createKeyboard(showedGroupId);
     }
 
     //-----------------API START-----------------
@@ -43,16 +43,17 @@ public class QuestionsViewerPage {
      * сообщения {@link QuestionsViewerPage#text} и Inline-клавиатуру {@link QuestionsViewerPage#keyboard}.
      * Собирается "постранично", количество вопросов на "странице" - {@code pageSize}, начиная с вопроса
      * {@code startIndex}
-     * @param questions вопросы, который нужно отобразить
-     * @param pageSize дефолтное количество вопросов на "странице"
-     * @param startIndex индекс вопроса из {@code questions}, который будет первым на "странице"
+     *
+     * @param questions     вопросы, который нужно отобразить
+     * @param pageSize      дефолтное количество вопросов на "странице"
+     * @param startIndex    индекс вопроса из {@code questions}, который будет первым на "странице"
      * @return собранную страницу {@link QuestionsViewerPage}
      * @author ezuykow
      */
     public static QuestionsViewerPage createPage(List<Question> questions, int pageSize, int startIndex,
-                                                 int pagesCount, int defaultPageSize)
+                                                 int pagesCount, int defaultPageSize, int showedGroupId)
     {
-        return new QuestionsViewerPage(questions, pageSize, startIndex, pagesCount, defaultPageSize);
+        return new QuestionsViewerPage(questions, pageSize, startIndex, pagesCount, defaultPageSize, showedGroupId);
     }
 
     /**
@@ -99,9 +100,9 @@ public class QuestionsViewerPage {
     /**
      * @author ezuykow
      */
-    private void createKeyboard() {
+    private void createKeyboard(int showedGroupId) {
         keyboard = QuestionsViewerKeyboard.createKeyboard(
-                pageSize, leftArrowNeed, startIndex, lastIndex, rightArrowNeed);
+                pageSize, leftArrowNeed, startIndex, lastIndex, rightArrowNeed, showedGroupId);
     }
 
     /**

@@ -13,7 +13,7 @@ class QuestionsGroupsKeyboardTest {
     void createKeyboard() {
         String groupName = "name";
         QuestionGroup g = new QuestionGroup(groupName);
-        assertEquals(QuestionsGroupsKeyboard.createKeyboard(List.of(g)).getClass(),
+        assertEquals(QuestionsGroupsKeyboard.createKeyboardForPrepareGame(List.of(g)).getClass(),
                 InlineKeyboardMarkup.class);
     }
 }

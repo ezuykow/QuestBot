@@ -15,31 +15,36 @@ public class QuestionsViewerKeyboard {
     private final InlineKeyboardMarkup keyboard;
 
     private QuestionsViewerKeyboard(
-            int pageSize, boolean leftArrowNeed, int startIndex, int lastIndex, boolean rightArrowNeed) {
+            int pageSize, boolean leftArrowNeed, int startIndex, int lastIndex, boolean rightArrowNeed, int showedGroupId) {
+        keyboard = new InlineKeyboardMarkup();
 
         buttons = new InlineKeyboardButton[pageSize + 2];
         createFirstButton(leftArrowNeed, startIndex);
         createQuestionsButtons(startIndex, lastIndex);
         createLastButton(leftArrowNeed, rightArrowNeed, lastIndex);
-        keyboard = new InlineKeyboardMarkup(buttons);
+
+        keyboard.addRow(buttons);
+        keyboard.addRow(new InlineKeyboardButton("Удалить все вопросы группы")
+                .callbackData("QuestionViewer.Delete group." + showedGroupId));
     }
 
     //-----------------API START-----------------
 
     /**
      * Создает Inline-клавиатуру для {@link QuestionsViewer}
-     * @param pageSize количество вопросов на "странице"
-     * @param leftArrowNeed нужна ли кнопка "предыдущая страница"
-     * @param startIndex индекс первого вопроса на "странице"
-     * @param lastIndex индекс последнего вопроса на "странице"
+     *
+     * @param pageSize       количество вопросов на "странице"
+     * @param leftArrowNeed  нужна ли кнопка "предыдущая страница"
+     * @param startIndex     индекс первого вопроса на "странице"
+     * @param lastIndex      индекс последнего вопроса на "странице"
      * @param rightArrowNeed нужна ли кнопка "следующая страница"
      * @return собранный {@link InlineKeyboardMarkup}
      * @author ezuykow
      */
     public static InlineKeyboardMarkup createKeyboard(
-            int pageSize, boolean leftArrowNeed, int startIndex, int lastIndex, boolean rightArrowNeed) {
+            int pageSize, boolean leftArrowNeed, int startIndex, int lastIndex, boolean rightArrowNeed, int showedGroupId) {
 
-        return new QuestionsViewerKeyboard(pageSize, leftArrowNeed, startIndex, lastIndex, rightArrowNeed)
+        return new QuestionsViewerKeyboard(pageSize, leftArrowNeed, startIndex, lastIndex, rightArrowNeed, showedGroupId)
                 .keyboard;
     }
 

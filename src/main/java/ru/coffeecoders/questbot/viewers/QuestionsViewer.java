@@ -1,8 +1,12 @@
 package ru.coffeecoders.questbot.viewers;
 
+import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import org.springframework.stereotype.Component;
 import ru.coffeecoders.questbot.entities.Question;
+import ru.coffeecoders.questbot.entities.QuestionGroup;
 import ru.coffeecoders.questbot.exceptions.NonExistentQuestion;
+import ru.coffeecoders.questbot.exceptions.NonExistentQuestionGroup;
+import ru.coffeecoders.questbot.keyboards.QuestionsGroupsKeyboard;
 import ru.coffeecoders.questbot.managers.BlockingManager;
 import ru.coffeecoders.questbot.managers.RestrictingManager;
 import ru.coffeecoders.questbot.messages.MessageBuilder;
@@ -14,7 +18,9 @@ import ru.coffeecoders.questbot.properties.PropertyService;
 import ru.coffeecoders.questbot.services.QuestionGroupService;
 import ru.coffeecoders.questbot.services.QuestionService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.Math.min;
 
@@ -36,6 +42,7 @@ public class QuestionsViewer {
     private int defaultPageSize;
     private List<Question> questions;
     private int lastShowedFirstIndex;
+    private final Map<Long, String> selectedGroupNameByChat = new HashMap<>();
 
     public QuestionsViewer(QuestionService questionService, QuestionGroupService questionGroupService,
                            BlockingManager blockingManager, RestrictingManager restrictingManager,
@@ -54,17 +61,41 @@ public class QuestionsViewer {
 
     //-----------------API START-----------------
 
+    public void showQuestionsGroupChooser(long chatId, int msgId) {
+        String text = messageBuilder.build(messages.selectGroupName(), chatId);
+        List<QuestionGroup> groups = questionGroupService.findAll();
+        InlineKeyboardMarkup kb = QuestionsGroupsKeyboard.createKeyboardForQuestionsViewer(groups);
+        if (msgId == -1) {
+            msgSender.send(chatId, text, kb);
+        } else {
+            msgSender.edit(chatId, msgId, text, kb);
+        }
+    }
+
+    public void deleteGroup(long chatId, String data, int msgId) {
+        int targetGroupId = Integer.parseInt(data.substring(data.lastIndexOf(".") + 1));
+        questionService.deleteAllByGroupName(selectedGroupNameByChat.get(chatId));
+        questionGroupService.deleteById(targetGroupId);
+        selectedGroupNameByChat.remove(chatId);
+        showQuestionsGroupChooser(chatId, msgId);
+    }
+
     /**
      * Вызывает метод
      * {@link QuestionsViewer#validateAndCreateView} c {@code msgId = -1} и {@code pageSize = defaultPageSize}
      * для отображения "страницы" вопросов
+     *
      * @param chatId id чата
      * @author ezuykow
      */
-    public void viewQuestions(long chatId) {
+    public void viewQuestions(long chatId, String dataWithSelectedGroupId, int msgId) {
+        int groupId = Integer.parseInt(dataWithSelectedGroupId.substring(dataWithSelectedGroupId.lastIndexOf(".") + 1));
+        String selectedGroupName = questionGroupService.findById(groupId)
+                .orElseThrow(NonExistentQuestionGroup::new).getGroupName();
+        selectedGroupNameByChat.put(chatId, selectedGroupName);
         defaultPageSize = propertyService.getDefaultPageSize();
-        refreshQuestionsList();
-        validateAndCreateView(chatId, -1, defaultPageSize, 0);
+        refreshQuestionsList(selectedGroupName);
+        validateAndCreateView(chatId, msgId, defaultPageSize, 0);
     }
 
     /**
@@ -76,7 +107,7 @@ public class QuestionsViewer {
      */
     public void switchPageToPrevious(long chatId, int msgId, String data) {
         final int firstIndexShowed = Integer.parseInt(data.substring(data.lastIndexOf(".") + 1));
-        QuestionsViewerPage newPage = createPage(defaultPageSize, firstIndexShowed - defaultPageSize);
+        QuestionsViewerPage newPage = createPage(defaultPageSize, firstIndexShowed - defaultPageSize, chatId);
         msgSender.edit(chatId, msgId, newPage.getText(), newPage.getKeyboard());
     }
 
@@ -90,7 +121,7 @@ public class QuestionsViewer {
     public void switchPageToNext(long chatId, int msgId, String data) {
         final int lastIndexShowed = Integer.parseInt(data.substring(data.lastIndexOf(".") + 1));
         final int newPageSize = min(defaultPageSize, questions.size() - (lastIndexShowed + 1));
-        QuestionsViewerPage newPage = createPage(newPageSize, lastIndexShowed + 1);
+        QuestionsViewerPage newPage = createPage(newPageSize, lastIndexShowed + 1, chatId);
         msgSender.edit(chatId, msgId, newPage.getText(), newPage.getKeyboard());
     }
 
@@ -130,7 +161,7 @@ public class QuestionsViewer {
      * @author ezuykow
      */
     public void backFromQuestionInfo(long chatId, int msgId) {
-        refreshQuestionsList();
+        refreshQuestionsList(selectedGroupNameByChat.get(chatId));
         int pageSize = min(defaultPageSize, questions.size() - lastShowedFirstIndex);
         validateAndCreateView(chatId, msgId, pageSize, lastShowedFirstIndex);
     }
@@ -144,6 +175,7 @@ public class QuestionsViewer {
     public void deleteView(long chatId, int msgId) {
         unblockAndUnrestrictChat(chatId);
         msgSender.sendDelete(chatId, msgId);
+        selectedGroupNameByChat.remove(chatId);
     }
 
     //-----------------API END-----------------
@@ -166,28 +198,26 @@ public class QuestionsViewer {
      * @author ezuykow
      */
     private void createView(long chatId, int msgId, int pageSize, int startIndex) {
-        QuestionsViewerPage page = createPage(pageSize, startIndex);
-        if (msgId == -1) {
-            msgSender.send(chatId, page.getText(), page.getKeyboard());
-        } else {
-            msgSender.edit(chatId, msgId, page.getText(), page.getKeyboard());
-        }
+        QuestionsViewerPage page = createPage(pageSize, startIndex, chatId);
+        msgSender.edit(chatId, msgId, page.getText(), page.getKeyboard());
     }
 
     /**
      * @author ezuykow
      */
-    private void refreshQuestionsList() {
-        questions = questionService.findAll();
+    private void refreshQuestionsList(String selectedGroupName) {
+        questions = questionService.findByGroupName(selectedGroupName);
     }
 
     /**
      * @author ezuykow
      */
-    private QuestionsViewerPage createPage(int pageSize, int startIndex) {
+    private QuestionsViewerPage createPage(int pageSize, int startIndex, long chatId) {
         int pagesCount = questions.size() / defaultPageSize;
         pagesCount = (questions.size() % defaultPageSize == 0) ? pagesCount : pagesCount + 1;
-        return QuestionsViewerPage.createPage(questions, pageSize, startIndex, pagesCount, defaultPageSize);
+        int showedGroupId = questionGroupService.findByGroupName(selectedGroupNameByChat.get(chatId))
+                .orElseThrow(NonExistentQuestionGroup::new).getGroupId();
+        return QuestionsViewerPage.createPage(questions, pageSize, startIndex, pagesCount, defaultPageSize, showedGroupId);
     }
 
     /**

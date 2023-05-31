@@ -1,6 +1,7 @@
 package ru.coffeecoders.questbot.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.coffeecoders.questbot.entities.Question;
@@ -20,4 +21,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     List<String> getQuestionsTexts();
 
     Optional<Question> findQuestionByQuestion(String question);
+
+    @Modifying
+    @Query(value = "DELETE FROM questions WHERE question_group=:groupName", nativeQuery = true)
+    void deleteAllByQuestionGroup(String groupName);
 }

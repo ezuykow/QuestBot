@@ -16,7 +16,9 @@ public class QuestionViewerCallbackManager {
         SHOW_QUESTION("QuestionViewer.Taken index.*"),
         DELETE_QUESTION("QuestionViewer.QuestionInfo.Delete question.*"),
         DELETE_MESSAGE("QuestionViewer.Delete message"),
+        DELETE_GROUP("QuestionViewer.Delete group.*"),
         BACK_FROM_QUESTION_INFO("QuestionViewer.QuestionInfo.Back"),
+        QUESTIONS_GROUP_SELECTED("QuestionViewer.QuestionGroupSelected.*"),
         UNKNOWN("");
 
         private final String dataRegexp;
@@ -64,6 +66,8 @@ public class QuestionViewerCallbackManager {
             case DELETE_QUESTION -> questionsViewer.deleteQuestion(chatId, msgId, data);
             case DELETE_MESSAGE -> questionsViewer.deleteView(chatId, msgId);
             case BACK_FROM_QUESTION_INFO -> questionsViewer.backFromQuestionInfo(chatId, msgId);
+            case QUESTIONS_GROUP_SELECTED -> questionsViewer.viewQuestions(chatId, data, msgId);
+            case DELETE_GROUP -> questionsViewer.deleteGroup(chatId, data, msgId);
             case UNKNOWN -> {} //Игнорируем неизвестный калбак
         }
     }

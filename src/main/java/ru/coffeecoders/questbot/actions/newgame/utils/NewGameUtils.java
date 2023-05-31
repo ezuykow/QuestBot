@@ -93,7 +93,7 @@ public class NewGameUtils {
      */
     public InlineKeyboardMarkup addQuestionGroupAndGetKeyboard(long chatId, int questionGroupId) {
         int[] allStateGroupsIds = addQuestionGroupIdToState(chatId, questionGroupId);
-        return QuestionsGroupsKeyboard.createKeyboard(questionGroupService.findAll()
+        return QuestionsGroupsKeyboard.createKeyboardForPrepareGame(questionGroupService.findAll()
                 .stream()
                 .filter(g -> !ArrayUtils.contains(allStateGroupsIds, g.getGroupId()))
                 .toList());
