@@ -49,19 +49,27 @@ public class NewGameCreatingState {
     @Column(name = "addition_with_task")
     private boolean additionWithTask;
 
+    @Column(name = "shuffle_questions")
+    private boolean shuffleQuestions;
+
+    @Column(name = "addition_requested")
+    private boolean additionRequested;
+
     public NewGameCreatingState() {
     }
 
     public NewGameCreatingState(long initiatorChatId) {
         this(initiatorChatId,
                 null, null, null, null, null,
-                null, null, null, null, true);
+                null, null, null, null, true,
+                true, false);
     }
 
     public NewGameCreatingState(long initiatorChatId, String gameName, int[] groupsIds, Integer startCountTasks,
                                 Integer maxQuestionsCount, Integer maxPerformedQuestionsCount,
                                 Integer minQuestionsCountInGame, Integer questionsCountToAdd, Integer maxTimeMinutes,
-                                Integer requestMsgId, boolean additionWithTask)
+                                Integer requestMsgId, boolean additionWithTask, boolean shuffleQuestions,
+                                boolean additionRequested)
     {
         this.initiatorChatId = initiatorChatId;
         this.gameName = gameName;
@@ -74,6 +82,16 @@ public class NewGameCreatingState {
         this.maxTimeMinutes = maxTimeMinutes;
         this.requestMsgId = requestMsgId;
         this.additionWithTask = additionWithTask;
+        this.shuffleQuestions = shuffleQuestions;
+        this.additionRequested = additionRequested;
+    }
+
+    public boolean isAdditionRequested() {
+        return additionRequested;
+    }
+
+    public void setAdditionRequested(boolean additionRequested) {
+        this.additionRequested = additionRequested;
     }
 
     public boolean isAdditionWithTask() {
@@ -84,7 +102,13 @@ public class NewGameCreatingState {
         this.additionWithTask = additionWithTask;
     }
 
+    public boolean isShuffleQuestions() {
+        return shuffleQuestions;
+    }
 
+    public void setShuffleQuestions(boolean shuffleQuestions) {
+        this.shuffleQuestions = shuffleQuestions;
+    }
 
     public long getInitiatorChatId() {
         return initiatorChatId;
@@ -193,6 +217,8 @@ public class NewGameCreatingState {
                 ", maxTimeMinutes=" + maxTimeMinutes +
                 ", requestMsgId=" + requestMsgId +
                 ", additionWithTask=" + additionWithTask +
+                ", shuffleQuestions=" + shuffleQuestions +
+                ", additionRequested=" + additionRequested +
                 '}';
     }
 }

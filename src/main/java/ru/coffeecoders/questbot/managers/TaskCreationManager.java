@@ -43,7 +43,15 @@ public class TaskCreationManager {
     public void createTasks(long chatId, Game game) {
         logger.warn("Создаю задачи");
         String gameName = game.getGameName();
-        List<Question> questions = getSortedByLastUsageAndShuffledQuestionsByGroupsIds(game.getGroupsIds(), game.getMaxQuestionsCount());
+
+        List<Question> questions;
+        if (game.isShuffleQuestions()) {
+            questions = getSortedByLastUsageAndShuffledQuestionsByGroupsIds(game.getGroupsIds(), game.getMaxQuestionsCount());
+        } else {
+            Set<String> groupNames = getGroupNames(game.getGroupsIds());
+            questions = questionService.findAll().stream().filter(q -> groupNames.contains(q.getGroup()))
+                    .limit(game.getMaxQuestionsCount()).toList();
+        }
 
         List<Task> tasks = new ArrayList<>();
         for (int i = 0; i < questions.size(); i++) {

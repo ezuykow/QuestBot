@@ -128,6 +128,10 @@ public class NewGameRequests {
         msgSender.edit(chatId, msgIdToEdit, messageBuilder.build(messages.requestAdditionWithTask(), chatId, state));
     }
 
+    public void requestShuffle(long chatId, int msgIdToEdit, NewGameCreatingState state) {
+        msgSender.edit(chatId, msgIdToEdit, messageBuilder.build(messages.requestShuffle(), chatId, state));
+    }
+
     //-----------------API END-----------------
 
 }

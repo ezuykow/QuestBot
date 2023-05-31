@@ -34,6 +34,7 @@ public class MessageBuilder {
             \\time - максимальное время проведения связанной с выводимым сообщением игры;
             \\addsWithTasks - добавляется ли доп. информация к вопросу у связанной с выводимым сообщением игры;
             \\remainingTime - оставшееся время проведения связанной с выводимым сообщением игры;
+            \\shuffle - перемешиваются ли вопросы в связанной с выводимым сообщением игре;
             """;
 
 
@@ -131,6 +132,7 @@ public class MessageBuilder {
         map.put("\\questionsToAdd", String.valueOf(game.getQuestionsCountToAdd()));
         map.put("\\time", String.valueOf(game.getMaxTimeMinutes()));
         map.put("\\addsWithTasks", String.valueOf(game.isAdditionWithTask()));
+        map.put("\\shuffle", String.valueOf(game.isShuffleQuestions()));
         map.put("\\remainingTime", String.valueOf(
                 chatOpt.map(chat -> game.getMaxTimeMinutes() - chat.getMinutesSinceStart())
                         .orElseGet(game::getMaxTimeMinutes)));

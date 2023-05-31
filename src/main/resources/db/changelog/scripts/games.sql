@@ -24,3 +24,7 @@ ALTER TABLE games
 -- changeset ezuykow:3
 ALTER TABLE games
     ADD COLUMN addition_with_task BOOLEAN DEFAULT true;
+
+--changeset ezuykow:4
+ALTER TABLE games
+    ADD COLUMN shuffle_questions BOOLEAN DEFAULT true;

@@ -268,15 +268,27 @@ public class NewGameActions {
         }
     }
 
-    public void validateAdditionWithTaskAndSaveNewGame(long chatId, NewGameCreatingState state, String text, int msgId) {
+    public void validateAdditionWithTaskAndRequestShuffle(long chatId, NewGameCreatingState state, String text, int msgId) {
         Integer i = utils.parseTextToInteger(text);
         msgSender.sendDelete(chatId, msgId);
         int requestMsgId = state.getRequestMsgId();
         switch (i) {
-            case 1, 0 -> addAdditionWithTaskAndSaveNewGame(state, i, chatId, requestMsgId);
+            case 1, 0 -> addAdditionWithTaskAndRequestShuffle(state, i, chatId, requestMsgId);
             default ->
                     msgSender.edit(chatId, msgId,
                             messageBuilder.build(messages.invalidNumber() + messages.requestAdditionWithTask(), chatId, state));
+        }
+    }
+
+    public void validateShuffleAndSaveNewGame(long chatId, NewGameCreatingState state, String text, int msgId) {
+        Integer i = utils.parseTextToInteger(text);
+        msgSender.sendDelete(chatId, msgId);
+        int requestMsgId = state.getRequestMsgId();
+        switch (i) {
+            case 1, 0 -> addShuffleAndSaveNewGame(state, i, chatId, requestMsgId);
+            default ->
+                    msgSender.edit(chatId, msgId,
+                            messageBuilder.build(messages.invalidNumber() + messages.requestShuffle(), chatId, state));
         }
     }
 
@@ -350,8 +362,15 @@ public class NewGameActions {
         requests.requestAdditionWithTask(chatId, requestMsgId, state);
     }
 
-    private void addAdditionWithTaskAndSaveNewGame(NewGameCreatingState state, Integer i, long chatId, int requestMsgId) {
+    private void addAdditionWithTaskAndRequestShuffle(NewGameCreatingState state, Integer i, long chatId, int requestMsgId) {
         state.setAdditionWithTask(i == 0);
+        state.setAdditionRequested(true);
+        newGameCreatingStateService.save(state);
+        requests.requestShuffle(chatId, requestMsgId, state);
+    }
+
+    public void addShuffleAndSaveNewGame(NewGameCreatingState state, Integer i, long chatId, int requestMsgId) {
+        state.setShuffleQuestions(i == 1);
         utils.saveNewGame(state);
         unblockAndUnrestrictChat(chatId);
         msgSender.edit(chatId, requestMsgId,

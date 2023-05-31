@@ -68,8 +68,10 @@ public class NewGameManager {
             actions.validateQuestionsCountToAddAndRequestNextPart(chatId, state, text, msgId);
         } else if (state.getMaxTimeMinutes() == null) {
             actions.validateMaxTimeMinutesAndRequestAddition(chatId, state, text, msgId);
+        } else if (!state.isAdditionRequested()){
+            actions.validateAdditionWithTaskAndRequestShuffle(chatId, state, text, msgId);
         } else {
-            actions.validateAdditionWithTaskAndSaveNewGame(chatId, state, text, msgId);
+            actions.validateShuffleAndSaveNewGame(chatId, state, text, msgId);
         }
     }
 

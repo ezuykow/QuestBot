@@ -25,3 +25,11 @@ ALTER TABLE new_game_creating_state
 -- changeset ezuykow:4
 ALTER TABLE new_game_creating_state
     ADD COLUMN addition_with_task BOOLEAN;
+
+-- changeset ezuykow:5
+ALTER TABLE new_game_creating_state
+    ADD COLUMN shuffle_questions BOOLEAN;
+
+-- changeset ezuykow:6
+ALTER TABLE new_game_creating_state
+    ADD COLUMN addition_requested BOOLEAN;

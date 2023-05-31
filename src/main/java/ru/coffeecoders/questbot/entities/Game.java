@@ -43,6 +43,9 @@ public class Game {
     @Column(name = "addition_with_task")
     private boolean additionWithTask;
 
+    @Column(name = "shuffle_questions")
+    private boolean shuffleQuestions;
+
     public Game() {
     }
 
@@ -56,13 +59,14 @@ public class Game {
                 state.getMinQuestionsCountInGame(),
                 state.getQuestionsCountToAdd(),
                 state.getStartCountTasks(),
-                state.isAdditionWithTask()
+                state.isAdditionWithTask(),
+                state.isShuffleQuestions()
         );
     }
 
     public Game(String gameName, int[] groupsIds, Integer maxTimeMinutes, Integer maxQuestionsCount,
                 Integer maxPerformedQuestionsCount, Integer minQuestionsCountInGame, Integer questionsCountToAdd,
-                Integer startCountTasks, boolean additionWithTask)
+                Integer startCountTasks, boolean additionWithTask, boolean shuffleQuestions)
     {
         this.gameName = gameName;
         this.groupsIds = groupsIds;
@@ -73,6 +77,15 @@ public class Game {
         this.questionsCountToAdd = questionsCountToAdd;
         this.startCountTasks = startCountTasks;
         this.additionWithTask = additionWithTask;
+        this.shuffleQuestions = shuffleQuestions;
+    }
+
+    public boolean isShuffleQuestions() {
+        return shuffleQuestions;
+    }
+
+    public void setShuffleQuestions(boolean shuffleQuestions) {
+        this.shuffleQuestions = shuffleQuestions;
     }
 
     public boolean isAdditionWithTask() {
@@ -172,6 +185,7 @@ public class Game {
                 ", questionsCountToAdd=" + questionsCountToAdd +
                 ", startCountTasks=" + startCountTasks +
                 ", additionWithTask=" + additionWithTask +
+                ", shuffleQuestions=" + shuffleQuestions +
                 '}';
     }
 }

@@ -251,6 +251,10 @@ public class Messages {
         return properties.get("messages.games.requestMaxTimeMinutes").getActualProperty();
     }
 
+    public String requestShuffle() {
+        return properties.get("messages.games.requestShuffle").getActualProperty();
+    }
+
     public String gameAdded() {
         return properties.get("messages.games.gameAdded").getActualProperty();
     }
