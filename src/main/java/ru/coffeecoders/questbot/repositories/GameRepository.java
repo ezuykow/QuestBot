@@ -6,11 +6,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.coffeecoders.questbot.entities.Game;
 
+import java.util.Optional;
+
 /**
  * @author ezuykow
  */
 @Repository
 public interface GameRepository extends JpaRepository<Game, String> {
+
+    Optional<Game> findByGameName(String gameName);
+
+    Optional<Game> findByGameId(int gameId);
 
     /**
      * @author ezuykow

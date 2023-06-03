@@ -21,7 +21,7 @@ import java.util.List;
 @Component
 public class GamesViewer {
 
-    private static final int START_GAME_NAME_IN_DATA_IDX = 22;
+    private static final int START_GAME_ID_IN_DATA_IDX = 22;
 
     private final GameService gameService;
     private final BlockingManager blockingManager;
@@ -63,8 +63,8 @@ public class GamesViewer {
      * @author ezuykow
      */
     public void showGame(long chatId, int msgId, String data) {
-        String gameName = data.substring(START_GAME_NAME_IN_DATA_IDX);
-        Game game = gameService.findByName(gameName).orElseThrow(NonExistentGame::new);
+        int gameId = Integer.parseInt(data.substring(START_GAME_ID_IN_DATA_IDX));
+        Game game = gameService.findById(gameId).orElseThrow(NonExistentGame::new);
         GameInfoPage page = GameInfoPage.createPage(game, messages.gameInfo(), messageBuilder);
         msgSender.edit(chatId, msgId, page.getText(), page.getKeyboard());
     }
@@ -79,7 +79,8 @@ public class GamesViewer {
      * @author ezuykow
      */
     public void deleteGame(String callbackId, long chatId, int msgId, String data) {
-        String gameName = data.substring(28);
+        int gameId = Integer.parseInt(data.substring(28));
+        String gameName = gameService.findById(gameId).orElseThrow(NonExistentGame::new).getGameName();
         if (validator.isGameCreating(gameName)) {
             msgSender.sendToast(callbackId, messages.failedDeletingGame(), true);
         } else {

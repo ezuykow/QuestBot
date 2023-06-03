@@ -1,9 +1,6 @@
 package ru.coffeecoders.questbot.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -16,6 +13,10 @@ import java.util.Objects;
 public class Game {
 
     @Id
+    @Column(name = "game_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer gameId;
+
     @Column(name = "game_name")
     private String gameName;
 
@@ -78,6 +79,14 @@ public class Game {
         this.startCountTasks = startCountTasks;
         this.additionWithTask = additionWithTask;
         this.shuffleQuestions = shuffleQuestions;
+    }
+
+    public Integer getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(Integer gameId) {
+        this.gameId = gameId;
     }
 
     public boolean isShuffleQuestions() {
@@ -165,18 +174,19 @@ public class Game {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Game game = (Game) o;
-        return gameName.equals(game.gameName);
+        return Objects.equals(gameId, game.gameId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gameName);
+        return Objects.hash(gameId);
     }
 
     @Override
     public String toString() {
         return "Game{" +
-                "gameName='" + gameName + '\'' +
+                "gameId=" + gameId +
+                ", gameName='" + gameName + '\'' +
                 ", groupsIds=" + Arrays.toString(groupsIds) +
                 ", maxTimeMinutes=" + maxTimeMinutes +
                 ", maxQuestionsCount=" + maxQuestionsCount +

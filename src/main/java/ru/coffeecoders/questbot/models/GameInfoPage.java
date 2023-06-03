@@ -15,7 +15,7 @@ public class GameInfoPage {
 
     private GameInfoPage(Game game, String prop, MessageBuilder messageBuilder) {
         text = messageBuilder.build(prop, -1, game);
-        keyboard = GameInfoKeyboard.createKeyboard(game.getGameName());
+        keyboard = GameInfoKeyboard.createKeyboard(game.getGameId());
     }
 
     //-----------------API START-----------------

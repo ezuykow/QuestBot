@@ -62,8 +62,8 @@ public class PrepareGameCallbackManager {
      * @author ezuykow
      */
     private void performCallback(String callbackId, long chatId, int msgId, String data) {
-        String gameName = data.substring(data.indexOf(".") + 1, data.lastIndexOf("."));
-        Game game = gameService.findByName(gameName).orElseThrow(NonExistentGame::new);
+        int gameId = Integer.parseInt(data.substring(data.indexOf(".") + 1, data.lastIndexOf(".")));
+        Game game = gameService.findById(gameId).orElseThrow(NonExistentGame::new);
         if (validator.isRightQuestionsCount(game)) {
             msgSender.sendDelete(chatId, msgId);
             prepareGameViewer.startPrepare(chatId, game);

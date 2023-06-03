@@ -28,3 +28,21 @@ ALTER TABLE games
 --changeset ezuykow:4
 ALTER TABLE games
     ADD COLUMN shuffle_questions BOOLEAN DEFAULT true;
+
+-- changeset ezuykow:5
+DROP TABLE games;
+CREATE TABLE games
+(
+    game_id                       SERIAL PRIMARY KEY,
+    game_name                     VARCHAR(100) UNIQUE NOT NULL,
+    groups_ids                    INT[],
+    max_time_minutes              INT CHECK ( max_time_minutes > 0 ),
+    max_questions_count           INT CHECK ( max_questions_count > 0 ),
+    max_performed_questions_count INT CHECK ( max_performed_questions_count > 0 ),
+    min_questions_count_in_game   INT CHECK ( min_questions_count_in_game > -1 ),
+    questions_count_to_add        INT CHECK ( questions_count_to_add > -1 ),
+    start_count_tasks             INT CHECK ( start_count_tasks > 0 ),
+    addition_with_task            BOOLEAN,
+    shuffle_questions             BOOLEAN
+);
+

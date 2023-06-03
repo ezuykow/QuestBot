@@ -11,20 +11,19 @@ public class GameInfoKeyboard {
 
     private final InlineKeyboardMarkup keyboard;
 
-    private GameInfoKeyboard(String gameName) {
-        keyboard = new InlineKeyboardMarkup(createButtons(gameName));
+    private GameInfoKeyboard(int gameId) {
+        keyboard = new InlineKeyboardMarkup(createButtons(gameId));
     }
 
     //-----------------API START-----------------
 
     /**
      * Создает новый {@link GameInfoKeyboard} и возвращает его клавиатуру
-     * @param gameName название выбранной игры
      * @return {@link InlineKeyboardMarkup} - клавиатура для {@link GameInfoPage}
      * @author ezuykow
      */
-    public static InlineKeyboardMarkup createKeyboard(String gameName) {
-        return new GameInfoKeyboard(gameName).keyboard;
+    public static InlineKeyboardMarkup createKeyboard(int gameId) {
+        return new GameInfoKeyboard(gameId).keyboard;
     }
 
     //-----------------API END-----------------
@@ -32,10 +31,10 @@ public class GameInfoKeyboard {
     /**
      * @author ezuykow
      */
-    private InlineKeyboardButton[] createButtons(String gameName) {
+    private InlineKeyboardButton[] createButtons(int gameId) {
         return new InlineKeyboardButton[]{
                 new InlineKeyboardButton("Удалить")
-                        .callbackData("GameViewer.Game info.Delete." + gameName),
+                        .callbackData("GameViewer.Game info.Delete." + gameId),
                 new InlineKeyboardButton(Character.toString(0x1F519))
                         .callbackData("GameViewer.Game info.Back")
         };

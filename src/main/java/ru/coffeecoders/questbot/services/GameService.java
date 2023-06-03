@@ -23,7 +23,6 @@ public class GameService {
 
     /**
      *
-     * @return
      *@author Anatoliy Shikin
      */
     public List<Game> findAll() {
@@ -33,13 +32,20 @@ public class GameService {
     }
 
     /**
+     * @author ezuykow
+     */
+    public Optional<Game> findById(int gameId) {
+        return gameRepository.findByGameId(gameId);
+    }
+
+    /**
      *
      * @param gameName
      * @return
      *@author Anatoliy Shikin
      */
     public Optional<Game> findByName(String gameName) {
-        Optional<Game> game = gameRepository.findById(gameName);
+        Optional<Game> game = gameRepository.findByGameName(gameName);
         logger.info("Game {} with id = {}", game.isPresent() ? "found" : "not found", gameName);
         return game;
     }

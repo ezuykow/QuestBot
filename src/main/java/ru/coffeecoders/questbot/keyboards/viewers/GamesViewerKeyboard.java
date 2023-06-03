@@ -63,7 +63,7 @@ public class GamesViewerKeyboard {
         InlineKeyboardButton[] buttons = new InlineKeyboardButton[buttonsCount];
         for (int i = 0; i < buttonsCount; i++, startIndex++) {
             buttons[i] = new InlineKeyboardButton(String.valueOf(startIndex + 1))
-                    .callbackData("GameViewer.Taken game." + games.get(startIndex).getGameName());
+                    .callbackData("GameViewer.Taken game." + games.get(startIndex).getGameId());
         }
         return buttons;
     }

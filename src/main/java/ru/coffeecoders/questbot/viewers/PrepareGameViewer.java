@@ -47,8 +47,8 @@ public class PrepareGameViewer {
      * @author ezuykow
      */
     public void requestGameName(long senderAdminId, String adminUsername, long chatId) {
-        final List<String> gamesNames = gameService.findAll().stream().map(Game::getGameName).toList();
-        validateListAndSendMsg(gamesNames, senderAdminId, adminUsername, chatId);
+        final List<Game> games = gameService.findAll();
+        validateListAndSendMsg(games, senderAdminId, adminUsername, chatId);
     }
 
     public void startPrepare(long chatId, Game game) {
@@ -64,9 +64,9 @@ public class PrepareGameViewer {
     /**
      * @author ezuykow
      */
-    private void validateListAndSendMsg(List<String> gamesNames, long senderAdminId, String adminUsername, long chatId) {
-        if (!gamesNames.isEmpty()) {
-            final InlineKeyboardMarkup keyboard = PrepareGameRequestKeyboard.createKeyboard(gamesNames, senderAdminId);
+    private void validateListAndSendMsg(List<Game> games, long senderAdminId, String adminUsername, long chatId) {
+        if (!games.isEmpty()) {
+            final InlineKeyboardMarkup keyboard = PrepareGameRequestKeyboard.createKeyboard(games, senderAdminId);
             msgSender.send(chatId,
                     messageBuilder.build(adminUsername + messages.choosePreparingGame(), chatId), keyboard);
         } else {
