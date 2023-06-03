@@ -48,6 +48,7 @@ public class TasksViewer {
     public void createAndSendTasksMsg(long chatId, int count) {
         List<Task> tasks = taskService.findByChatId(chatId).stream()
                 .filter(t -> t.getPerformedTeamName() == null)
+                .sorted(Comparator.comparing(Task::getTaskNumber))
                 .limit(count)
                 .toList();
         tasks.forEach(t -> t.setActual(true));

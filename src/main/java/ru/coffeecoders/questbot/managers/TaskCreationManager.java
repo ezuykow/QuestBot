@@ -49,8 +49,10 @@ public class TaskCreationManager {
             questions = getSortedByLastUsageAndShuffledQuestionsByGroupsIds(game.getGroupsIds(), game.getMaxQuestionsCount());
         } else {
             Set<String> groupNames = getGroupNames(game.getGroupsIds());
-            questions = questionService.findAll().stream().filter(q -> groupNames.contains(q.getGroup()))
-                    .limit(game.getMaxQuestionsCount()).toList();
+            questions = new ArrayList<>(questionService.findAll().stream()
+                    .filter(q -> groupNames.contains(q.getGroup()))
+                    .limit(game.getMaxQuestionsCount()).toList());
+            questions.sort(Comparator.comparing(Question::getQuestionId));
         }
 
         List<Task> tasks = new ArrayList<>();
