@@ -231,6 +231,7 @@ public class AdminsCommandsActions {
 
     //-----------------API END-----------------
 
+    //TODO Убрать хардкод
     /**
      * @author ezuykow
      */

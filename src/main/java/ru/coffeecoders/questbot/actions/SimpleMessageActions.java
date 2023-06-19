@@ -128,6 +128,7 @@ public class SimpleMessageActions {
 
     //-----------------API END-----------------
 
+    //TODO Убрать хардкод
     /**
      * @author ezuykow
      */
