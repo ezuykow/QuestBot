@@ -8,6 +8,7 @@ import ru.coffeecoders.questbot.exceptions.NonExistentChat;
 import ru.coffeecoders.questbot.exceptions.NonExistentGame;
 import ru.coffeecoders.questbot.exceptions.NonExistentQuestion;
 import ru.coffeecoders.questbot.messages.MessageSender;
+import ru.coffeecoders.questbot.messages.Messages;
 import ru.coffeecoders.questbot.services.*;
 
 import java.util.ArrayList;
@@ -26,15 +27,18 @@ public class TasksViewer {
     private final QuestionService questionService;
     private final PinnedTasksMessageService pinnedTasksMessageService;
     private final MessageSender msgSender;
+    private final Messages messages;
 
     public TasksViewer(TaskService taskService, GameService gameService, GlobalChatService globalChatService,
-                       QuestionService questionService, PinnedTasksMessageService pinnedTasksMessageService, MessageSender msgSender) {
+                       QuestionService questionService, PinnedTasksMessageService pinnedTasksMessageService,
+                       MessageSender msgSender, Messages messages) {
         this.taskService = taskService;
         this.gameService = gameService;
         this.globalChatService = globalChatService;
         this.questionService = questionService;
         this.pinnedTasksMessageService = pinnedTasksMessageService;
         this.msgSender = msgSender;
+        this.messages = messages;
     }
 
     //-----------------API START-----------------
@@ -103,7 +107,7 @@ public class TasksViewer {
         StringBuilder sb = new StringBuilder();
         for (Task task : tasks) {
             Question q = questionService.findById(task.getQuestionId()).orElseThrow(NonExistentQuestion::new);
-            sb.append("\uD83C\uDFAF Вопрос № ").append(task.getTaskNumber()).append("\n")
+            sb.append(messages.tasksViewerQuestion()).append(task.getTaskNumber()).append("\n")
                     .append("❓ ").append(q.getQuestion()).append("\n")
                     .append(answerFormat(q))
                     .append(additional(q, chatId));
@@ -123,7 +127,7 @@ public class TasksViewer {
      */
     private String answerFormat(Question q) {
         if (q.getAnswerFormat() != null) {
-            return "❗ Формат ответа: " + q.getAnswerFormat() + "\n";
+            return messages.tasksViewerAnswerFormat() + q.getAnswerFormat() + "\n";
         }
         return "";
     }
@@ -136,7 +140,7 @@ public class TasksViewer {
                 .orElseThrow(NonExistentChat::new).getCreatingGameName())
                 .orElseThrow(NonExistentGame::new).isAdditionWithTask();
         if (additionalNeeded && q.getAdditional() != null) {
-            return "➕ Доп. информация: "+ q.getAdditional()+ "\n\n";
+            return messages.tasksViewerAdditional() + q.getAdditional()+ "\n\n";
         }
         return "\n";
     }

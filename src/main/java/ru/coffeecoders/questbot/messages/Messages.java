@@ -49,6 +49,54 @@ public class Messages {
         return properties.get("messages.QuestionsViewer.selectGroupName").getActualProperty();
     }
 
+    public String gameInfoHat() {
+        return properties.get("messages.gameInfo.hat").getActualProperty();
+    }
+
+    public String gameInfoRemainingTime() {
+        return properties.get("messages.gameInfo.time").getActualProperty();
+    }
+
+    public String gameInfoRemainingTimePostfix() {
+        return properties.get("messages.gameInfo.timePostfix").getActualProperty();
+    }
+
+    public String gameInfoScorePrefix() {
+        return properties.get("messages.gameInfo.scorePrefix").getActualProperty();
+    }
+
+    public String gameInfoScorePostfix() {
+        return properties.get("messages.gameInfo.scorePostfix").getActualProperty();
+    }
+
+    public String answerAcceptedPrefix() {
+        return properties.get("messages.answersAccepting.prefix").getActualProperty();
+    }
+
+    public String answerAcceptedMiddle() {
+        return properties.get("messages.answersAccepting.middle").getActualProperty();
+    }
+
+    public String answerAcceptedPostfix() {
+        return properties.get("messages.answersAccepting.postfix").getActualProperty();
+    }
+
+    public String answerAcceptedAdd() {
+        return properties.get("messages.answersAccepting.add").getActualProperty();
+    }
+
+    public String tasksViewerQuestion() {
+        return properties.get("messages.tasksViewer.question").getActualProperty();
+    }
+
+    public String tasksViewerAnswerFormat() {
+        return properties.get("messages.tasksViewer.format").getActualProperty();
+    }
+
+    public String tasksViewerAdditional() {
+        return properties.get("messages.tasksViewer.add").getActualProperty();
+    }
+
     //owner messages
 
     public String chatIsAdminNow() {

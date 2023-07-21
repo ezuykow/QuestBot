@@ -128,18 +128,19 @@ public class SimpleMessageActions {
 
     //-----------------API END-----------------
 
-    //TODO Убрать хардкод
     /**
      * @author ezuykow
      */
     private void sendAcceptedMsg(long chatId, String teamName, int taskNo, int msgId, String additional) {
-        String hat = "Команда \"" + teamName + "\" правильно ответила на вопрос № " + taskNo + " и зарабатывает 1 балл!";
+        String hat = messages.answerAcceptedPrefix() + teamName
+                + messages.answerAcceptedMiddle() + taskNo
+                + messages.answerAcceptedPostfix();
         boolean additionalNotNeeded = gameService.findByName(globalChatService.findById(chatId)
                         .orElseThrow(NonExistentChat::new).getCreatingGameName())
                 .orElseThrow(NonExistentGame::new).isAdditionWithTask();
         String text = additionalNotNeeded || additional == null
                 ? hat
-                : hat + "\n➕Дополнительная информация: " + additional;
+                : hat + messages.answerAcceptedAdd() + additional;
         msgSender.sendReply(chatId, messageBuilder.build(text, chatId), msgId);
     }
 

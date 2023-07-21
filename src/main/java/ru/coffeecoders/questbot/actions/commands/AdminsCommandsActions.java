@@ -237,14 +237,14 @@ public class AdminsCommandsActions {
      */
     private String createInfoText(Game game, GlobalChat chat, List<Team> teams) {
         StringBuilder sb = new StringBuilder();
-        sb.append("\uD83C\uDFB2Информация об игре\uD83C\uDFB2\n\n");
-        sb.append("⏰ Оставшееся время - ").append(game.getMaxTimeMinutes() - chat.getMinutesSinceStart())
-                .append(" минут\n\n");
+        sb.append(messages.gameInfoHat());
+        sb.append(messages.gameInfoRemainingTime()).append(game.getMaxTimeMinutes() - chat.getMinutesSinceStart())
+                .append(messages.gameInfoRemainingTimePostfix());
         List<Team> sortedTeams = new ArrayList<>(teams);
         sortedTeams.sort(Comparator.comparing(Team::getScore, Comparator.reverseOrder()));
         sortedTeams.forEach( t ->
-                sb.append("\uD83D\uDC65 Команда \"").append(t.getTeamName()).append("\" - ")
-                        .append(t.getScore()).append(" очков;\n")
+                sb.append(messages.gameInfoScorePrefix()).append(t.getTeamName()).append("\" - ")
+                        .append(t.getScore()).append(messages.gameInfoScorePostfix())
         );
         return sb.toString();
     }

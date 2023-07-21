@@ -516,3 +516,90 @@ INSERT INTO properties VALUES
         'Выберите группу вопросов, которые нужно отобразить:',
         'Выберите группу вопросов, которые нужно отобразить:'
     )
+
+-- changeset ezuykow:4
+;
+INSERT INTO properties VALUES
+    (
+        'messages.gameInfo.hat',
+        'Команда /info. Шапка сообщения',
+        '🎲Game info🎲',
+        '🎲Информация об игре🎲'
+    );
+INSERT INTO properties VALUES
+    (
+        'messages.gameInfo.time',
+        'Команда /info. Оставшееся время',
+        '⏰ Remaining time - ',
+        '⏰ Оставшееся время - '
+    );
+INSERT INTO properties VALUES
+    (
+        'messages.gameInfo.timePostfix',
+        'Команда /info. Единицы оставшегося времени',
+        ' minutes\n\n',
+        ' минут\n\n'
+    );
+INSERT INTO properties VALUES
+    (
+        'messages.gameInfo.scorePrefix',
+        'Команда /info. Префикс вывода очков',
+        '👥 Command "',
+        '👥 Команда "'
+    );
+INSERT INTO properties VALUES
+    (
+        'messages.gameInfo.scorePostfix',
+        'Команда /info. Постфикс вывода очков',
+        ' points;\n',
+        ' очков;\n'
+    );
+INSERT INTO properties VALUES
+    (
+        'messages.answersAccepting.prefix',
+        'Сообщение о принятом ответе. Префикс',
+        'Command "',
+        'Команда "'
+    );
+INSERT INTO properties VALUES
+    (
+        'messages.answersAccepting.middle',
+        'Сообщение о принятом ответе. Середина сообщения',
+        '" correctly answered the question № ',
+        '" правильно ответила на вопрос № '
+    );
+INSERT INTO properties VALUES
+    (
+        'messages.answersAccepting.postfix',
+        'Сообщение о принятом ответе. Постфикс',
+        ' and take 1 point!',
+        ' и зарабатывает 1 балл!'
+    );
+INSERT INTO properties VALUES
+    (
+        'messages.answersAccepting.add',
+        'Сообщение о принятом ответе. Дополнительная инфа',
+        '\n➕Additional info: ',
+        '\n➕Дополнительная информация: '
+    );
+INSERT INTO properties VALUES
+    (
+        'messages.tasksViewer.question',
+        'Вывод вопроса. Шапка',
+        '🎯 Question № ',
+        '🎯 Вопрос № '
+    );
+INSERT INTO properties VALUES
+    (
+        'messages.tasksViewer.format',
+        'Вывод вопроса. Подраздел формата ответа',
+        '❗ Answer format: ',
+        '❗ Формат ответа: '
+    );
+INSERT INTO properties VALUES
+    (
+        'messages.tasksViewer.add',
+        'Вывод вопроса. Подраздел дополнительной инфы',
+        '➕ Additional info: ',
+        '➕ Доп. информация: '
+    );
