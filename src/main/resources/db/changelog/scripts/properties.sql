@@ -603,3 +603,47 @@ INSERT INTO properties VALUES
         '➕ Additional info: ',
         '➕ Доп. информация: '
     );
+
+-- changeset ezuykow:5
+INSERT INTO properties VALUES
+    (
+        'messages.endGame.time',
+        'Окончание игры. Время игры вышло',
+        '⏰ The game time is over! ⏰',
+        '⏰ Время игры вышло! ⏰'
+    );
+INSERT INTO properties VALUES
+    (
+        'messages.endGame.teamPrefix',
+        'Окончание игры. Победа команды. Префикс',
+        '🏆 Team "',
+        '🏆 Команда "'
+    );
+INSERT INTO properties VALUES
+    (
+        'messages.endGame.teamMiddle',
+        'Окончание игры. Победа команды. Середина',
+        '" taken ',
+        '" заработала '
+    );
+INSERT INTO properties VALUES
+    (
+        'messages.endGame.teamPostfix',
+        'Окончание игры. Победа команды. Постфикс',
+        ' point(s)! 🏆',
+        ' очка(-ов)! 🏆'
+    );
+INSERT INTO properties VALUES
+    (
+        'messages.endGame.questionsEnded',
+        'Окончание игры. Закончились вопросы',
+        '✔ The players answered all the questions! ✔',
+        '✔ Игроки ответили на все вопросы! ✔'
+    );
+INSERT INTO properties VALUES
+    (
+        'messages.endGame.interrupt',
+        'Окончание игры. Игра прервана',
+        ' interrupt game!',
+        ' прервал игру!'
+    );

@@ -97,6 +97,32 @@ public class Messages {
         return properties.get("messages.tasksViewer.add").getActualProperty();
     }
 
+    //endgame
+
+    public String endGameTime() {
+        return properties.get("messages.endGame.time").getActualProperty();
+    }
+
+    public String endGameTeamPrefix() {
+        return properties.get("messages.endGame.teamPrefix").getActualProperty();
+    }
+
+    public String endGameTeamMiddle() {
+        return properties.get("messages.endGame.teamMiddle").getActualProperty();
+    }
+
+    public String endGameTeamPostfix() {
+        return properties.get("messages.endGame.teamPostfix").getActualProperty();
+    }
+
+    public String endGameQuestionsEnded() {
+        return properties.get("messages.endGame.questionsEnded").getActualProperty();
+    }
+
+    public String endGameInterrupt() {
+        return properties.get("messages.endGame.interrupt").getActualProperty();
+    }
+
     //owner messages
 
     public String chatIsAdminNow() {

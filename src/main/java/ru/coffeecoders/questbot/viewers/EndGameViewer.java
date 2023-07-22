@@ -55,7 +55,7 @@ public class EndGameViewer {
      * @author ezuykow
      */
     public void finishGameByTimeEnded(GlobalChat chat) {
-        finishGame("⏰ Время игры вышло! ⏰", chat.getTgChatId());
+        finishGame(messages.endGameTime(), chat.getTgChatId());
     }
 
     /**
@@ -67,7 +67,9 @@ public class EndGameViewer {
      * @author ezuykow
      */
     public void finishGameByPerformedTasks(long chatId, String teamName, int score) {
-        finishGame("\uD83C\uDFC6 Команда \"" + teamName + "\" заработала " + score + " очка(-ов)! \uD83C\uDFC6",
+        finishGame(messages.endGameTeamPrefix() + teamName
+                        + messages.endGameTeamMiddle() + score
+                        + messages.endGameTeamPostfix(),
                 chatId);
     }
 
@@ -78,7 +80,7 @@ public class EndGameViewer {
      * @author ezuykow
      */
     public void finishGameByQuestionsEnded(long chatId) {
-        finishGame("✔ Игроки ответили на все вопросы! ✔", chatId);
+        finishGame(messages.endGameQuestionsEnded(), chatId);
     }
 
     /**
@@ -88,7 +90,7 @@ public class EndGameViewer {
      * @author ezuykow
      */
     public void finishGameByAdminsCmd(long chatId, String adminUsername) {
-        finishGame("❗ " + adminUsername + " прервал игру! ❗", chatId);
+        finishGame("❗ " + adminUsername + messages.endGameInterrupt() + " ❗", chatId);
     }
 
     //-----------------API END-----------------
@@ -137,8 +139,9 @@ public class EndGameViewer {
                 case 3 -> sb.append("\uD83E\uDD49 ");
                 default -> sb.append(place).append(" ");
             }
-            sb.append("Команда \"").append(team.getTeamName()).append("\" заработала очков: ")
-                    .append(team.getScore()).append("\n");
+            sb.append(messages.endGameTeamPrefix()).append(team.getTeamName())
+                    .append(messages.endGameTeamMiddle()).append(team.getScore())
+                    .append(messages.endGameTeamPostfix()).append("\n");
         }
         return sb.toString();
     }
